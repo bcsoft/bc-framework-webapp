@@ -43,10 +43,10 @@
 		<div class="formEditor">
 			<s:if test="%{isManager}">
 			<s:textarea name="e.content" cssClass="bc-editor" data-validate="required"
-				 data-ptype="bulletin.editor" data-puid='%{e.uid}'></s:textarea>
+				 data-ptype="bulletin.editor" data-puid='${e.uid}'></s:textarea>
 			</s:if>
 			<s:else>
-			<div class="bc-editor"><s:property value="%{e.content}" escapeHtml="false"/></div>
+			<div class="bc-editor"><s:property value="e.content" escapeHtml="false"/></div>
 			</s:else>
 		</div>
 		<s:property value="%{attachsUI}" escapeHtml="false"/>
