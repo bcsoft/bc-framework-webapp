@@ -182,6 +182,7 @@
 		<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/logger.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 		<script type="text/javascript" src="<s:url value='/bc/libs/logger.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/debug.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+		<script type="text/javascript" src="<s:url value='/bc/libs/browser.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 	</s:if>
 	<s:else>
 		<script type="text/javascript" src="<s:url value='/bc/libs/bc.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
