@@ -520,7 +520,7 @@ bc.page = {
 						//调用回调函数
 						if(option.afterClose) option.afterClose(status);
 						
-						//在ie9，如果内涵<object>,$this.remove()会报错,故先处理掉object
+						//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
 						//ie8试过没问题
 						if(jQuery.browser.msie && jQuery.browser.version >= 9){
 							logger.info("IE9坑爹啊");
@@ -611,6 +611,8 @@ bc.page = {
 				btn = _option.buttons[i];
 				if(btn.action == "save"){//内部的表单保存
 					btn.click = bc.page.save;
+				}else if(btn.action == "submit"){//提交表单保存，成功后自动关闭对话框
+					btn.click = bc.page.submit;
 				}else if(btn.action == "cancel"){//关闭对话框
 					btn.click = bc.page.cancel;
 				}else if(btn.action == "create"){//新建
@@ -675,6 +677,22 @@ bc.page = {
 					bc.msg.slide(json.msg);
 			}
 		});
+	},
+	/**提交表单保存数据后自动关闭表单对话框，上下文为dialog的原始dom元素*/
+	submit: function(callback) {
+		$this = $(this);
+		bc.page.save.call(this,function(json){
+			if(typeof callback == "function"){
+				//返回false将禁止提示信息的显示
+				if(callback.call($this[0],json) === false)
+					return false;;
+			}else{
+				bc.msg.slide("提交成功！");
+				$this.data("data-status",true);
+				$this.dialog("close");
+				return false;
+			}
+		})
 	},
 	/**删除*/
 	delete_: function() {
@@ -1474,15 +1492,27 @@ bc.form = {
 	 */
 	init : function($form) {
 		logger.info("bc.form.init");
-		//选择日期
+		
+		//绑定日期选择
 		$form.find('.bc-date[readonly!="readonly"]').datepicker({
-			showWeek: true,
+			//showWeek: true,
 			//showButtonPanel: true,//现时今天按钮
 			firstDay: 7,
 			dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
 		});
 		
-		//flash上传附件
+		//绑定富文本编辑器
+		$form.find("textarea.bc-editor").each(function(){
+			$this = $(this);
+			$this.xheditor(bc.editor.getConfig({
+				ptype: $this.attr("data-ptype"),
+				puid: $this.attr("data-puid"),
+				readonly: "true" == $this.attr("data-readonly"),
+				tools: $this.attr("data-tools")
+			}));
+		});
+		
+		//绑定flash上传附件
 		$form.find(".attachs.flashUpload").has(":file.uploadFile").each(function(){
 			bc.attach.flash.init.call(this);
 		});
@@ -1877,6 +1907,9 @@ bc.editor={
 	 * @param {Object} option 配置参数
 	 * @option {String} ptype 上传附件所属文档的类型，一般是使用类名的小写开头字母
 	 * @option {String} puid 上传附件所属文档的uid
+	 * @option {String} readonly 是否为只读状态
+	 * @option {String} tools full(完全),mfull(多行完全),simple(简单),mini(迷你)
+	 * 
 	 */
 	getConfig:function(option){
 		if(typeof option != "object")
@@ -1890,24 +1923,28 @@ bc.editor={
 			urlEx += "&puid=" + option.puid;
 		}
 			
-		return jQuery.extend({
-			//参考：http://xheditor.com/manual/2
-			//参数值：full(完全),mfull(多行完全),simple(简单),mini(迷你)
-			//或者自定义字符串，例如：'Paste,Pastetext,|,Source,Fullscreen,About'
-			tools:'mfull'
-			//图片上传接口地址
-			,upImgUrl:bc.root + "/upload4xhEditor/?type=img" + urlEx
-			//图片上传前限制的文件扩展名列表，默认为：jpg,jpeg,gif,png
-			//,upImgExt:"jpg,jpeg,gif,png"
-			//动画上传接口地址
-			,upFlashUrl:bc.root + "/upload4xhEditor/?type=flash" + urlEx
-			//动画上传前限制的文件扩展名列表，默认为：swf
-			//,upFlashExt:"swf"
-			//视频上传接口地址
-			,upMediaUrl:bc.root + "/upload4xhEditor/?type=media" + urlEx
-			//视频上传前限制的文件扩展名列表，默认为：avi
-			//,upMediaExt:"avi"
-		},option);
+		if(option.readonly){
+			return {tools:'Print,Fullscreen'};
+		}else{
+			return jQuery.extend({
+				//参考：http://xheditor.com/manual/2
+				//参数值：full(完全),mfull(多行完全),simple(简单),mini(迷你)
+				//或者自定义字符串，例如：'Paste,Pastetext,|,Source,Fullscreen,About'
+				tools: option.tools || 'mfull'
+				//图片上传接口地址
+				,upImgUrl: option.upImgUrl || bc.root + "/upload4xhEditor/?type=img" + urlEx
+				//图片上传前限制的文件扩展名列表，默认为：jpg,jpeg,gif,png
+				//,upImgExt:"jpg,jpeg,gif,png"
+				//动画上传接口地址
+				,upFlashUrl: option.upFlashUrl || bc.root + "/upload4xhEditor/?type=flash" + urlEx
+				//动画上传前限制的文件扩展名列表，默认为：swf
+				//,upFlashExt:"swf"
+				//视频上传接口地址
+				,upMediaUrl: option.upMediaUrl || bc.root + "/upload4xhEditor/?type=media" + urlEx
+				//视频上传前限制的文件扩展名列表，默认为：avi
+				//,upMediaExt:"avi"
+			},option);
+		}
 	},
 	readOnly:{
 		tools:''
@@ -1921,6 +1958,7 @@ bc.editor={
  * @depend attach.css
  */
 bc.attach={
+	uploadUrl: bc.root + "/upload/?a=1",
 	clearFileSelect:function($attachs){
 		//清空file控件:file.outerHTML=file.outerHTML; 
 		var file = $attachs.find(":file.uploadFile");
@@ -2161,7 +2199,7 @@ bc.attach.html5={
 		var $atm = $(this);
 	    //html5上传文件(不要批量异步上传，实测会乱，如Chrome后台合并为一个文件等，需逐个上传)
 		//用户选择的文件(name、fileName、type、size、fileSize、lastModifiedDate)
-	    var url = option.url || bc.root+"/upload4xhEditor/?type=img";
+	    var url = option.url || bc.attach.uploadUrl;
 	    if(option.ptype) url+="&ptype=" + option.ptype;
 	    if(option.puid) url+="&puid=" + option.puid;
 	    
