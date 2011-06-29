@@ -27,7 +27,7 @@ bc.browser = {
 			//弹出窗口让用户下载浏览器
 			bc.page.newWin({
 				url: bc.root + "/bc/attach/browser",
-				mid: "attachHistory.paging",
+				mid: "attach.browser",
 				name: "下载系统支持的浏览器"
 			});
 		}
@@ -41,5 +41,14 @@ bc.browser = {
 };
 	
 bc.browser.init();
+
+//事件处理
+$("ul.browsers>li.browser").live("mouseover", function() {
+	$(this).addClass("ui-state-hover");
+}).live("mouseout", function() {
+	$(this).removeClass("ui-state-hover");
+}).live("click", function() {
+	bc.browser.download($(this).attr("data-puid"));
+});
 
 })(jQuery);

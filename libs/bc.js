@@ -1932,15 +1932,15 @@ bc.editor={
 				//或者自定义字符串，例如：'Paste,Pastetext,|,Source,Fullscreen,About'
 				tools: option.tools || 'mfull'
 				//图片上传接口地址
-				,upImgUrl: option.upImgUrl || bc.root + "/upload4xhEditor/?type=img" + urlEx
+				,upImgUrl: option.upImgUrl || bc.root + "/upload/?a=0&type=img" + urlEx
 				//图片上传前限制的文件扩展名列表，默认为：jpg,jpeg,gif,png
 				//,upImgExt:"jpg,jpeg,gif,png"
 				//动画上传接口地址
-				,upFlashUrl: option.upFlashUrl || bc.root + "/upload4xhEditor/?type=flash" + urlEx
+				,upFlashUrl: option.upFlashUrl || bc.root + "/upload/?a=0&type=flash" + urlEx
 				//动画上传前限制的文件扩展名列表，默认为：swf
 				//,upFlashExt:"swf"
 				//视频上传接口地址
-				,upMediaUrl: option.upMediaUrl || bc.root + "/upload4xhEditor/?type=media" + urlEx
+				,upMediaUrl: option.upMediaUrl || bc.root + "/upload/?a=0&type=media" + urlEx
 				//视频上传前限制的文件扩展名列表，默认为：avi
 				//,upMediaExt:"avi"
 			},option);
