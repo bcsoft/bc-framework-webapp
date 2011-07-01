@@ -32,7 +32,7 @@ ul.browsers li.browser span.text{
 	padding-left: 56px;
 	line-height: 52px;
 }
-ul.browsers li.browser span.browser-icon{
+li.browser span.browser-icon{
 	position: absolute;
 	display:block;
 	width:52px;height:52px;
@@ -40,23 +40,23 @@ ul.browsers li.browser span.browser-icon{
 	margin-top: -26px;
 	padding:0;
 	border: 0;
-	background: url(images/shortcuts/shortcuts.png) no-repeat -208px -156px;
+	background: url(images/shortcuts/shortcuts.png) no-repeat 0 -52px;
 }
-span.browser-icon .chrome12{
-	background-position: -0px -0px;
+li.browser span.chrome12 {
+	background-position: -104px -52px;
 }
-span.browser-icon .firefox5{
-	background-position: -0px -0px;
+li.browser span.firefox5{
+	background-position: -156px -52px;
 }
-span.browser-icon .safari5{
-	background-position: -0px -0px;
+li.browser span.safari5{
+	background-position: -208px -52px;
 }
-span.browser-icon .opera11{
-	background-position: -0px -0px;
+li.browser span.opera11{
+	background-position: -260px -52px;
 }
-span.browser-icon .ie9{
-	background-position: -0px -0px;
+li.browser span.ie9{
+	background-position: -312px -52px;
 }
-span.browser-icon .ie8{
-	background-position: -0px -0px;
+li.browser span.ie8{
+	background-position: -468px -52px;
 }

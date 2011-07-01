@@ -87,7 +87,7 @@ a.shortcut:HOVER{
 a.shortcut .icon{
 	display: block;
 	width:52px;height:52px;
-	background: url(images/shortcuts/shortcuts.png) no-repeat -208px -156px;
+	background: url(images/shortcuts/shortcuts.png) no-repeat 0 0;
 	/*filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/logo48.png', sizingMethod='scale');*/
 	margin: auto;
 	margin-top:2px;
