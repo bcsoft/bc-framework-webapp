@@ -2382,7 +2382,7 @@ bc.attach.flash={
 		logger.info("bc.attach.flash.init:file.id=" + fileId);
 		//,bc.root + "/ui-libs/swfupload/2.2.0.1/plugins/swfupload.cookies.js?ts=0"
 		bc.load([bc.root + "/ui-libs/swfupload/2.2.0.1/swfupload.js?ts=0",function(){
-		    var url = bc.root+"/upload4xhEditor/?type=img";
+		    var url = bc.root+"/upload/?a=1";
 		    url += "&ptype=" + $atm.attr("data-ptype");
 		    url += "&puid=" + $atm.attr("data-puid") || $atm.parents("form").find(":input:hidden[name='e.uid']").val();
 			var swfuCfg = {
@@ -2530,6 +2530,7 @@ bc.attach.flash.handlers={
 				    var fileName;
 			    	for(var i=0;i<fileNames.length;i++){
 			    		fileName = fileNames[i];
+			    		logger.info("fileName=" + fileName);
 			    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1)) == -1){
 				    		alert("只能上传扩展名为\"" + _extensions.replace(/,/g,"、") + "\"的文件！");
 					    	this.cancelUpload();

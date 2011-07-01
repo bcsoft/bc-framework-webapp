@@ -244,7 +244,7 @@ a.shortcut:HOVER{
 a.shortcut .icon{
 	display: block;
 	width:52px;height:52px;
-	background: url(images/shortcuts/shortcuts.png) no-repeat -208px -156px;
+	background: url(images/shortcuts/shortcuts.png) no-repeat 0 0;
 	/*filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/logo48.png', sizingMethod='scale');*/
 	margin: auto;
 	margin-top:2px;
@@ -431,93 +431,116 @@ a.shortcut .text{
  * @author rongjihuang@gmail.com
  * @date 2011-04-11
  */
-a.shortcut .i0000{
-	background-position: 0 0;
-}
-a.shortcut .i0001{
-	background-position: -52px 0;
-}
-a.shortcut .i0002{
-	background-position: -104px 0;
-}
-a.shortcut .i0003{
-	background-position: -156px 0;
-}
-a.shortcut .i0004{
-	background-position: -208px 0;
-}
-a.shortcut .i0005{
-	background-position: -260px 0;
-}
-a.shortcut .i0006{
-	background-position: -312px 0;
-}
-a.shortcut .i0007{
-	background-position: -364px 0;
-}
-a.shortcut .i0008{
-	background-position: -416px 0;
-}
-a.shortcut .i0009{
-	background-position: -468px 0;
-}
-a.shortcut .i0204{
-	background-position: -208px -104px;
-}
-a.shortcut .i0300{
-	background-position: 0 -156px;
-}
-a.shortcut .i0500{
-	background-position: 0 -260px;
-}
-a.shortcut .i0501{
-	background-position: -52px -260px;
-}
-a.shortcut .i0502{
-	background-position: -104px -260px;
-}
-a.shortcut .i0503{
-	background-position: -156px -260px;
-}
-a.shortcut .i0504{
-	background-position: -208px -260px;
-}
-a.shortcut .i0505{
-	background-position: -260px -260px;
-}
-a.shortcut .i0506{
-	background-position: -312px -260px;
-}
-a.shortcut .i0507{
-	background-position: -364px -260px;
-}
-a.shortcut .i0508{
-	background-position: -416px -260px;
-}
-a.shortcut .i0509{
-	background-position: -468px -260px;
-}
-a.shortcut .i0600{
-	background-position: 0 -312px;
-}
-a.shortcut .i0601{
-	background-position: -52px -312px;
-}
-a.shortcut .i0602{
-	background-position: -104px -312px;
-}
-a.shortcut .i0603{
-	background-position: -156px -312px;
-}
-a.shortcut .i0604{
-	background-position: -208px -312px;
-}
-a.shortcut .i0605{
-	background-position: -260px -312px;
-}
-a.shortcut .i0606{
-	background-position: -312px -312px;
-}
+a.shortcut .i0000 {background-position: 0 0;}
+a.shortcut .i0001 {background-position: -52px 0;}
+a.shortcut .i0002 {background-position: -104px 0;}
+a.shortcut .i0003 {background-position: -156px 0;}
+a.shortcut .i0004 {background-position: -208px 0;}
+a.shortcut .i0005 {background-position: -260px 0;}
+a.shortcut .i0006 {background-position: -312px 0;}
+a.shortcut .i0007 {background-position: -364px 0;}
+a.shortcut .i0008 {background-position: -416px 0;}
+a.shortcut .i0009 {background-position: -468px 0;}
+
+a.shortcut .i0100 {background-position: 0 -52px;}
+a.shortcut .i0101 {background-position: -52px -52px;}
+a.shortcut .i0102 {background-position: -104px -52px;}
+a.shortcut .i0103 {background-position: -156px -52px;}
+a.shortcut .i0104 {background-position: -208px -52px;}
+a.shortcut .i0105 {background-position: -260px -52px;}
+a.shortcut .i0106 {background-position: -312px -52px;}
+a.shortcut .i0107 {background-position: -364px -52px;}
+a.shortcut .i0108 {background-position: -416px -52px;}
+a.shortcut .i0109 {background-position: -468px -52px;}
+
+a.shortcut .i0200 {background-position: 0 -104px;}
+a.shortcut .i0201 {background-position: -52px -104px;}
+a.shortcut .i0202 {background-position: -104px -104px;}
+a.shortcut .i0203 {background-position: -156px -104px;}
+a.shortcut .i0204 {background-position: -208px -104px;}
+a.shortcut .i0205 {background-position: -260px -104px;}
+a.shortcut .i0206 {background-position: -312px -104px;}
+a.shortcut .i0207 {background-position: -364px -104px;}
+a.shortcut .i0208 {background-position: -416px -104px;}
+a.shortcut .i0209 {background-position: -468px -104px;}
+
+a.shortcut .i0300 {background-position: 0 -156px;}
+a.shortcut .i0301 {background-position: -52px -156px;}
+a.shortcut .i0302 {background-position: -104px -156px;}
+a.shortcut .i0303 {background-position: -156px -156px;}
+a.shortcut .i0304 {background-position: -208px -156px;}
+a.shortcut .i0305 {background-position: -260px -156px;}
+a.shortcut .i0306 {background-position: -312px -156px;}
+a.shortcut .i0307 {background-position: -364px -156px;}
+a.shortcut .i0308 {background-position: -416px -156px;}
+a.shortcut .i0309 {background-position: -468px -156px;}
+
+a.shortcut .i0400 {background-position: 0 -208px;}
+a.shortcut .i0401 {background-position: -52px -208px;}
+a.shortcut .i0402 {background-position: -104px -208px;}
+a.shortcut .i0403 {background-position: -156px -208px;}
+a.shortcut .i0404 {background-position: -208px -208px;}
+a.shortcut .i0405 {background-position: -260px -208px;}
+a.shortcut .i0406 {background-position: -312px -208px;}
+a.shortcut .i0407 {background-position: -364px -208px;}
+a.shortcut .i0408 {background-position: -416px -208px;}
+a.shortcut .i0409 {background-position: -468px -208px;}
+
+a.shortcut .i0500 {background-position: 0 -260px;}
+a.shortcut .i0501 {background-position: -52px -260px;}
+a.shortcut .i0502 {background-position: -104px -260px;}
+a.shortcut .i0503 {background-position: -156px -260px;}
+a.shortcut .i0504 {background-position: -208px -260px;}
+a.shortcut .i0505 {background-position: -260px -260px;}
+a.shortcut .i0506 {background-position: -312px -260px;}
+a.shortcut .i0507 {background-position: -364px -260px;}
+a.shortcut .i0508 {background-position: -416px -260px;}
+a.shortcut .i0509 {background-position: -468px -260px;}
+
+a.shortcut .i0600 {background-position: 0 -312px;}
+a.shortcut .i0601 {background-position: -52px -312px;}
+a.shortcut .i0602 {background-position: -104px -312px;}
+a.shortcut .i0603 {background-position: -156px -312px;}
+a.shortcut .i0604 {background-position: -208px -312px;}
+a.shortcut .i0605 {background-position: -260px -312px;}
+a.shortcut .i0606 {background-position: -312px -312px;}
+a.shortcut .i0607 {background-position: -364px -312px;}
+a.shortcut .i0608 {background-position: -416px -312px;}
+a.shortcut .i0609 {background-position: -468px -312px;}
+
+a.shortcut .i0700 {background-position: 0 -364px;}
+a.shortcut .i0701 {background-position: -52px -364px;}
+a.shortcut .i0702 {background-position: -104px -364px;}
+a.shortcut .i0703 {background-position: -156px -364px;}
+a.shortcut .i0704 {background-position: -208px -364px;}
+a.shortcut .i0705 {background-position: -260px -364px;}
+a.shortcut .i0706 {background-position: -312px -364px;}
+a.shortcut .i0707 {background-position: -364px -364px;}
+a.shortcut .i0708 {background-position: -416px -364px;}
+a.shortcut .i0709 {background-position: -468px -364px;}
+
+a.shortcut .i0800 {background-position: 0 -416px;}
+a.shortcut .i0801 {background-position: -52px -416px;}
+a.shortcut .i0802 {background-position: -104px -416px;}
+a.shortcut .i0803 {background-position: -156px -416px;}
+a.shortcut .i0804 {background-position: -208px -416px;}
+a.shortcut .i0805 {background-position: -260px -416px;}
+a.shortcut .i0806 {background-position: -312px -416px;}
+a.shortcut .i0807 {background-position: -364px -416px;}
+a.shortcut .i0808 {background-position: -416px -416px;}
+a.shortcut .i0809 {background-position: -468px -416px;}
+
+a.shortcut .i0900 {background-position: 0 -468px;}
+a.shortcut .i0901 {background-position: -52px -468px;}
+a.shortcut .i0902 {background-position: -104px -468px;}
+a.shortcut .i0903 {background-position: -156px -468px;}
+a.shortcut .i0904 {background-position: -208px -468px;}
+a.shortcut .i0905 {background-position: -260px -468px;}
+a.shortcut .i0906 {background-position: -312px -468px;}
+a.shortcut .i0907 {background-position: -364px -468px;}
+a.shortcut .i0908 {background-position: -416px -468px;}
+a.shortcut .i0909 {background-position: -468px -468px;}
+
 /**
  * 列表视图样式
  *
