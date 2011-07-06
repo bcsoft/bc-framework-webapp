@@ -53,6 +53,7 @@ body {
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
 /**修改对话框*/
 .bc-ui-dialog {padding: 0 6px 6px 6px;}
+.bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
 .bc-ui-dialog .ui-widget-header {border-width: 0;background: none;}
 .bc-ui-dialog .ui-widget-header.ui-corner-all {
 	border-top-right-radius: 0;border-top-left-radius: 0;
@@ -62,12 +63,11 @@ body {
 	padding: 0;
 	/*margin: 0 8px 8px 8px;*/
 }
-.bc-ui-dialog.ui-widget-content {
-	/*border-width: 1px;*/
-}
 .bc-ui-dialog .bc-toolbar.ui-widget-content  {
 	border-top:0;border-left:0;border-right:0;
 }
+.bc-ui-dialog .ui-dialog-buttonpane{margin:0;}
+.bc-grid tr.ui-state-default {background: none;}
 
 .bc-slide {
 	position: absolute;

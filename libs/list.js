@@ -329,20 +329,20 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 //单击行切换样式
 $(".bc-grid>.data>.right tr.row").live("click",function(){
 	var $this = $(this);
-	var index = $this.toggleClass("ui-state-focus").index();
+	var index = $this.toggleClass("ui-state-default  ui-state-focus").index();
 	$this.parents(".right").prev()
-		.find("tr.row:eq("+index+")").toggleClass("ui-state-focus")
+		.find("tr.row:eq("+index+")").toggleClass("ui-state-default  ui-state-focus")
 		.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
 });
 
 //双击行执行编辑
 $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 	var $this = $(this);
-	var index = $this.toggleClass("ui-state-focus",true).index();
+	var index = $this.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false).index();
 	var $row = $this.parents(".right").prev()
 		.find("tr.row:eq("+index+")").add(this);
-	$row.toggleClass("ui-state-focus",true)
-		.siblings().removeClass("ui-state-focus")
+	$row.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false)
+		.siblings().removeClass("ui-state-focus").toggleClass("ui-state-default",true)
 		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
 	$row.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
 
