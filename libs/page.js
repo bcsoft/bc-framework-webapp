@@ -54,7 +54,7 @@ bc.page = {
 				function _init(){
 					//从dom构建并显示桌面组件
 					var cfg = jQuery.parseJSON($dom.attr("data-option"));
-					cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog";// ui-widget-header";
+					cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
 					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 					if(!$dom.attr("title"))
 						cfg.title=option.name;

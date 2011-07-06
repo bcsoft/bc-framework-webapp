@@ -52,8 +52,8 @@ body {
 .ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
 /**修改对话框*/
-.bc-ui-dialog {padding: 0;}
-.bc-ui-dialog .ui-widget-header {border-width: 0;}
+.bc-ui-dialog {padding: 0 6px 6px 6px;}
+.bc-ui-dialog .ui-widget-header {border-width: 0;background: none;}
 .bc-ui-dialog .ui-widget-header.ui-corner-all {
 	border-top-right-radius: 0;border-top-left-radius: 0;
 	border-bottom-right-radius: 0;border-bottom-left-radius: 0;
@@ -63,7 +63,7 @@ body {
 	/*margin: 0 8px 8px 8px;*/
 }
 .bc-ui-dialog.ui-widget-content {
-	border-width: 4px;
+	/*border-width: 1px;*/
 }
 .bc-ui-dialog .bc-toolbar.ui-widget-content  {
 	border-top:0;border-left:0;border-right:0;
