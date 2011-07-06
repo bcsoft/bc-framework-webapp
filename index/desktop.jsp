@@ -46,15 +46,15 @@
 			<div id="themeSwitcher"></div>
 		</div>
 	</div>
-	<div id="layout">
+	<div id="layout" class="ui-widget-content">
 		<!-- 任务条 -->
-		<table id="quickbar" class="" cellpadding="0" cellspacing="0" border="0">
+		<table id="quickbar"  class="ui-widget-header" cellpadding="0" cellspacing="0" border="0">
 			<tbody >
 			<tr>
 				<td id="quickStart"><a title="开始"></a></td>
 				<td id="quickButtons">&nbsp;</td>
 				<td id="quickLogout" title="点击注销并退出系统"><a>&nbsp;</a></td>
-				<td id="quickShowHide" title="显示桌面"><a>&nbsp;</a></td>
+				<td id="quickShowHide" title="显示桌面"><a class="ui-widget-header">&nbsp;</a></td>
 			</tr>
 			</tbody>
 		</table>

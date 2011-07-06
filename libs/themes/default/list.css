@@ -53,6 +53,10 @@ table.table{
 	top:50%;
 	margin-top: -8px;
 }
+
+.bc-grid tr.row.ui-state-default {background: none;}
+.bc-grid tr.row.even{/*filter: alpha(opacity=50);	opacity: 0.5;*/}
+
 .bc-grid .left{
 	border-right: 1px solid #aaa;
 }
