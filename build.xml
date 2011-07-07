@@ -75,6 +75,9 @@
 			<fileset dir="${bclibs.dir}">
 				<include name="desktop.js" />
 			</fileset>
+			<fileset dir="${bclibs.dir}">
+				<include name="browser.js" />
+			</fileset>
 		</concat>
 	</target>
 

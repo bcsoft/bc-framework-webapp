@@ -52,8 +52,9 @@ body {
 .ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
 /**修改对话框*/
-.bc-ui-dialog {padding: 0;}
-.bc-ui-dialog .ui-widget-header {border-width: 0;}
+.bc-ui-dialog {padding: 0 6px 6px 6px;}
+.bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
+.bc-ui-dialog .ui-widget-header {border-width: 0;background: none;}
 .bc-ui-dialog .ui-widget-header.ui-corner-all {
 	border-top-right-radius: 0;border-top-left-radius: 0;
 	border-bottom-right-radius: 0;border-bottom-left-radius: 0;
@@ -62,12 +63,10 @@ body {
 	padding: 0;
 	/*margin: 0 8px 8px 8px;*/
 }
-.bc-ui-dialog.ui-widget-content {
-	border-width: 4px;
-}
 .bc-ui-dialog .bc-toolbar.ui-widget-content  {
 	border-top:0;border-left:0;border-right:0;
 }
+.bc-ui-dialog .ui-dialog-buttonpane{margin:0;}
 
 .bc-slide {
 	position: absolute;
@@ -267,10 +266,10 @@ a.shortcut .text{
 	z-index: 10000;
 	height: 40px;/*这个不设置的话会导致元素高度全部计算诡异*/
 	top: 0;
-	background-color: #9EB1A3;
-	width: 100%;
-	/*overflow: hidden;
+	/*background-color: #9EB1A3;
+	overflow: hidden;
 	background: url(images/bg_quickbar1.png) repeat-x top left;*/
+	width: 100%;
 	z-index: 10!important;
 	border-width:0 0 1px 0;
 	table-layout: fixed;
@@ -300,11 +299,12 @@ a.shortcut .text{
 	height:100%;
 }
 #quickShowHide a {
-	background: url(images/showHide.png) repeat-y 0 0;
+	/*background: url(images/showHide.png) repeat-y 0 0;*/
 	display:block;
 	width:100%;
 	height:100%;
 	text-decoration: none;
+	border-width: 0 0 0 1px;
 }
 #quickShowHide a:HOVER {
 	background-position: -24px 0;
@@ -419,11 +419,11 @@ a.shortcut .text{
 	position: absolute;
 	bottom: 0;
 	left:0;
-	height: 30px;
-	line-height: 30px;
+	/*height: 30px;
+	line-height: 30px;*/
 	font-size:0.75em;
 	color:#888;
-	padding-left:10px;
+	padding:4px;
 }
 /**
  * 桌面图标
@@ -596,6 +596,10 @@ table.table{
 	top:50%;
 	margin-top: -8px;
 }
+
+.bc-grid tr.row.ui-state-default {background: none;}
+.bc-grid tr.row.even{/*filter: alpha(opacity=50);	opacity: 0.5;*/}
+
 .bc-grid .left{
 	border-right: 1px solid #aaa;
 }
