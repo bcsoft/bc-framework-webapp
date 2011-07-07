@@ -263,9 +263,9 @@ a.shortcut .text{
 	position: absolute;
 	bottom: 0;
 	left:0;
-	height: 30px;
-	line-height: 30px;
+	/*height: 30px;
+	line-height: 30px;*/
 	font-size:0.75em;
 	color:#888;
-	padding-left:10px;
+	padding:4px;
 }

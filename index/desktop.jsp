@@ -105,8 +105,8 @@
 	</div>
 	<div id="copyrightBar"><a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright" /></a></div>
 	<div id="loginInfo">
-	<s:text name="app.title"/> v<s:text name="app.version"/>
-	-- <s:property value="context.user.name" />(<s:property value="context.belong.name" />) 登录于  <s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>
+	<s:property value="context.user.name" />(<s:property value="context.belong.name" />) 登录于  <s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>
+	<br/><s:text name="app.title"/> v<s:text name="app.version"/>
 	</div>
 	<div id="quickStartMenu" class="hide" style="position:absolute; top:0; left:-9999px; width:1px; height:1px; overflow:hidden;">
 		<s:property value="startMenu" escapeHtml="false"/>
