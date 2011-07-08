@@ -161,7 +161,7 @@ bc.attach.flash.handlers={
 			    	for(var i=0;i<fileNames.length;i++){
 			    		fileName = fileNames[i];
 			    		logger.info("fileName=" + fileName);
-			    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1)) == -1){
+			    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
 				    		alert("只能上传扩展名为\"" + _extensions.replace(/,/g,"、") + "\"的文件！");
 					    	this.cancelUpload();
 				    		return false;

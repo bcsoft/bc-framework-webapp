@@ -56,7 +56,7 @@ bc.attach.html5={
 	    if(_extensions && _extensions.length > 0){
 	    	for(var i=0;i<files.length;i++){
 	    		fileName = files[i].fileName;
-	    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1)) == -1){
+	    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
 		    		alert("只能上传扩展名为\"" + _extensions.replace(/,/g,"、") + "\"的文件！");
 			    	bc.attach.clearFileSelect($atm);
 		    		return;
