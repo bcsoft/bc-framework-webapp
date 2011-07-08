@@ -160,22 +160,24 @@ span.ui-icon.verticalMiddle{position:absolute;top:50%;margin-top:-8px;width:16px
  * @author rongjihuang@gmail.com
  * @date 2011-04-11
  */
-html,body{
+html,body {
 	overflow: hidden;
 	height: 100%;
 	width: 100%;
 }
-body{
-	/*background: url(images/bg_page.png) repeat top left;
+
+body { /*background: url(images/bg_page.png) repeat top left;
 	background-color: #FAFAFA;*/
 	background-color: #CCD9C8;
 }
-body.ui-widget-content{
+
+body.ui-widget-content {
 	border-width: 0;
 }
+
 body .ui-widget-overlay {
 	opacity: .40;
-	filter: Alpha(Opacity=40);
+	filter: Alpha(Opacity =     40);
 }
 /*加载动画*/
 #loader {
@@ -196,13 +198,13 @@ body .ui-widget-overlay {
 }
 
 /*测试用*/
-#heavyControl{
+#heavyControl {
 	position: absolute;
-	border:1px solid #ccc;
-	right:10px;
-	bottom:60px;
-	width:300px;
-	padding:4px;
+	border: 1px solid #ccc;
+	right: 10px;
+	bottom: 60px;
+	width: 300px;
+	padding: 4px;
 }
 
 /*整体布局*/
@@ -224,7 +226,7 @@ body .ui-widget-overlay {
 }
 
 /**桌面快捷方式*/
-a.shortcut{
+a.shortcut {
 	float: left;
 	/*clear: left; 设置这个就默认竖排了*/
 	margin: 10px 5px 5px 10px;
@@ -232,56 +234,65 @@ a.shortcut{
 	/*color: #ffffff;*/
 	text-decoration: none;
 	border: 2px solid transparent;
-	border-radius: 8px; 
+	border-radius: 8px;
 	cursor: default;
-	_text-align: center;/*fixed ie6:使内部内容水平居中*/
-	width:5.5em;
+	_text-align: center; /*fixed ie6:使内部内容水平居中*/
+	width: 5.5em;
 }
-a.shortcut:HOVER{
+
+a.shortcut:HOVER {
 	border-color: green;
 }
-a.shortcut .icon{
+
+a.shortcut .icon {
 	display: block;
-	width:52px;height:52px;
+	width: 52px;
+	height: 52px;
 	background: url(images/shortcuts/shortcuts.png) no-repeat 0 0;
 	/*filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/logo48.png', sizingMethod='scale');*/
 	margin: auto;
-	margin-top:2px;
+	margin-top: 2px;
 }
-a.shortcut .text{
+
+a.shortcut .text {
 	margin: auto;
 	display: block;
-	width:5em;
+	width: 5em;
 	/*color: white;*/
 	overflow: hidden;
 	text-overflow: ellipsis;
 	cursor: default;
 	text-align: center;
-	padding:2px;
+	padding: 2px;
 }
 
 /**快速任务栏*/
 #quickbar {
 	position: absolute;
 	z-index: 10000;
-	height: 40px;/*这个不设置的话会导致元素高度全部计算诡异*/
+	height: 40px; /*这个不设置的话会导致元素高度全部计算诡异*/
 	top: 0;
 	/*background-color: #9EB1A3;
 	overflow: hidden;
 	background: url(images/bg_quickbar1.png) repeat-x top left;*/
 	width: 100%;
-	z-index: 10!important;
-	border-width:0 0 1px 0;
+	z-index: 10 !important;
+	border-width: 0 0 1px 0;
 	table-layout: fixed;
-	margin:0;padding:0;
+	margin: 0;
+	padding: 0;
 }
-#quickbar > tbody,#quickbar > tbody > tr{
-	margin:0;padding:0;
+
+#quickbar>tbody,#quickbar>tbody>tr {
+	margin: 0;
+	padding: 0;
 }
+
 #quickStart {
 	width: 40px;
 	vertical-align: middle;
 }
+
 #quickStart a {
 	cursor: pointer;
 	height: 32px;
@@ -290,42 +301,50 @@ a.shortcut .text{
 	text-decoration: none;
 	display: block;
 }
-#quickStart.ui-state-active{
-	border:0;
+
+#quickStart.ui-state-active {
+	border: 0;
 }
+
 #quickShowHide {
 	width: 12px;
 	vertical-align: top;
-	height:100%;
+	height: 100%;
 }
+
 #quickShowHide a {
 	/*background: url(images/showHide.png) repeat-y 0 0;*/
-	display:block;
-	width:100%;
-	height:100%;
+	display: block;
+	width: 100%;
+	height: 100%;
 	text-decoration: none;
 	border-width: 0 0 0 1px;
 }
+
 #quickShowHide a:HOVER {
 	background-position: -24px 0;
 }
+
 #quickLogout {
 	width: 40px;
 	vertical-align: middle;
-	height:100%;
+	height: 100%;
 }
+
 #quickLogout a {
 	background: url(images/logout.png) repeat-y 0 0;
-	display:block;
-	width:32px;
-	height:32px;
+	display: block;
+	width: 32px;
+	height: 32px;
 	text-decoration: none;
 	margin: auto;
 }
+
 #quickButtons {
 	height: 100%;
 	vertical-align: middle;
 }
+
 #quickButtons .quickButton {
 	float: left;
 	margin: 2px 0px 2px 2px;
@@ -335,36 +354,41 @@ a.shortcut .text{
 	cursor: default;
 	position: relative;
 }
-#quickButtons .quickButton .ui-icon{
+
+#quickButtons .quickButton .ui-icon {
 	position: absolute;
-	display:block;
-	width:16px;height:16px;
-	top:50%;
+	display: block;
+	width: 16px;
+	height: 16px;
+	top: 50%;
 	margin-top: -8px;
-	padding:0;
+	padding: 0;
 	border: 0;
 }
-#quickButtons .quickButton .text{
+
+#quickButtons .quickButton .text {
 	padding-left: 20px;
 	padding-right: 2px;
 }
-#quickButtons .quickButton .loading{
+
+#quickButtons .quickButton .loading {
 	background: url(images/loader/loader01_16x16.gif) no-repeat 0 0;
 }
 
 /*设置字体大小*/
-#setting{
+#setting {
 	position: fixed;
 	_position: absolute;
-	top:40px;
-	right:20px;
+	top: 40px;
+	right: 20px;
 	overflow: visible;
-	z-index:100;
-	*width:150px;/*ie6,ie7*/
+	z-index: 100;
+	*width: 150px; /*ie6,ie7*/
 	display: none;
 }
-#fontSliderContainer{
-	margin-bottom:10px;
+
+#fontSliderContainer {
+	margin-bottom: 10px;
 }
 
 /*版权相关*/
@@ -379,51 +403,101 @@ a.shortcut .text{
 	overflow: hidden;
 	text-align: center;
 }
-#copyrightBar a {
-	/*display:block;
+
+#copyrightBar a { /*display:block;
 	width:100%;height:100%;*/
-	font-size:0.75em;
-	color:#888;
+	font-size: 0.75em;
+	color: #888;
 	text-decoration: none;
 	cursor: pointer;
 	margin: auto;
 }
+
 #poweredBy {
-	margin:5px; float:right;
+	margin: 5px;
+	float: right;
 }
+
 .bc-slide,.bc-slide.ui-state-high {
-	border:2px solid red;
+	border: 2px solid red;
 }
-#poweredBy span{
-	display: block;width:83px;height:34px;
+
+#poweredBy span {
+	display: block;
+	width: 83px;
+	height: 34px;
 	background: url(images/poweredBy.png) 0 0 no-repeat;
 }
-#rightPanel{
-	position:absolute;
-	right:0;
-	top:50px;
+
+#rightPanel {
+	position: absolute;
+	right: 0;
+	top: 50px;
 }
-#rightPanel .item{
-	margin:4px;
+
+#rightPanel .item {
+	margin: 4px;
 }
-.imgtest{
-	display:block;
+
+.imgtest {
+	display: block;
 	background: url(images/shortcuts/shortcuts.png) no-repeat -52px 0;
-	width:52px;height:52px;
-	zoom:0.5;
+	width: 52px;
+	height: 52px;
+	zoom: 0.5;
+	width: 52px;
+	height: 52px;
 }
-.imgtest:HOVER{
-	zoom:1;
+
+.imgtest:HOVER {
+	zoom: 1;
 }
-#loginInfo{
+
+#loginInfo {
 	position: absolute;
 	bottom: 0;
-	left:0;
+	left: 0;
 	/*height: 30px;
 	line-height: 30px;*/
-	font-size:0.75em;
-	color:#888;
-	padding:4px;
+	font-size: 0.75em;
+	color: #888;
+	padding: 4px;
+}
+
+/*异常页面*/
+table.error {
+	table-layout: fixed;
+	padding: 0;margin: 0;
+	margin: 10px auto;
+	min-width:300px;
+}
+
+table.error td {
+	text-align: left;
+	vertical-align: middle;
+}
+
+table.error td.icon {
+	width: 52px;
+	overflow: hidden;
+}
+
+table.error td.icon div.icon{
+	background: url(images/shortcuts/shortcuts.png) no-repeat -468px -312px;
+	width: 52px;
+	height: 52px;
+}
+
+table.error td.label {
+	font-size: 32px;
+}
+table.error .detail {
+	font-size: 12px;
+	color: #888;
+}
+table.error .detail span.more{
+	text-decoration: underline;
+	cursor: pointer;
 }
 /**
  * 桌面图标

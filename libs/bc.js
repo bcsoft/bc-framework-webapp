@@ -498,8 +498,40 @@ bc.page = {
 				var $dom = $(html);
 				if($dom.size() > 1){
 					//logger.error("error page. try set theme='simple' for struts2 tag");
-					alert("error page dom. try set theme='simple' for struts2 tag: size=" + $dom.size());
-					$dom = $($dom[0]);
+					$dom.remove();
+					
+					//alert("喔唷，出错啦！");
+					//显示漂亮的错误提示窗口
+					var errorDom = [
+					      '<div style="text-align: center;"><table class="error" cellspacing="0" cellpadding="0">'
+					      ,'<tr>'
+					      ,'<td class="icon" style="width:52px;" title="'+option.url+'"><div class="icon"></div></td>'
+					      ,'<td class="label">喔唷，出错啦！</td>'
+					      ,'</tr>'
+					      ,'<tr>'
+					      ,'<td class="detail" colspan="2">显示此页面时出现了错误，请重新尝试或联系管理员。</td>'
+					      ,'</tr>'
+					      ,'<tr>'
+					      ,'<td class="detail" colspan="2" style="width:52px;text-align: center;"><span class="more">了解详情</span></td>'
+					      ,'</tr>'
+					      ,'</table></div>'
+					].join('');
+					var $error = $(errorDom).dialog({width:380,height:150,modal:true,dialogClass:"bc-ui-dialog ui-widget-header"});
+					$error.bind("dialogclose",function(event,ui){
+						$error.unbind().remove();
+					});
+					$error.find("span.more").click(function(){
+						var errorWin=window.open('', 'bcErrorShow');
+						var errorDoc = errorWin.document;
+						errorDoc.open();
+						errorDoc.write(html);
+						errorDoc.close();
+						errorWin.focus();
+					});
+					
+					//删除任务栏对应的dom元素
+					$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+					return;
 				}
 				function _init(){
 					//从dom构建并显示桌面组件
