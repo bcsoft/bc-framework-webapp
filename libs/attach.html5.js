@@ -72,7 +72,7 @@ bc.attach.html5={
 	    	var key = batchNo + i;
 			//上传进度显示
 			var fileName = f.fileName;
-			var extend = fileName.substr(fileName.lastIndexOf(".")+1);
+			var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
 			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.fileSize),extend,fileName);
 			$(attach).attr("data-xhr",key).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
 	    }

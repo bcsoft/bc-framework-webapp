@@ -54,7 +54,7 @@ body {
 /**修改对话框*/
 .bc-ui-dialog {padding: 0 6px 6px 6px;}
 .bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
-.bc-ui-dialog .ui-widget-header {border-width: 0;background: none;}
+.bc-ui-dialog .ui-dialog-titlebar.ui-widget-header {border-width: 0;background: none;}
 .bc-ui-dialog .ui-widget-header.ui-corner-all {
 	border-top-right-radius: 0;border-top-left-radius: 0;
 	border-bottom-right-radius: 0;border-bottom-left-radius: 0;

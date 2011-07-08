@@ -54,7 +54,7 @@ body {
 /**修改对话框*/
 .bc-ui-dialog {padding: 0 6px 6px 6px;}
 .bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
-.bc-ui-dialog .ui-widget-header {border-width: 0;background: none;}
+.bc-ui-dialog .ui-dialog-titlebar.ui-widget-header {border-width: 0;background: none;}
 .bc-ui-dialog .ui-widget-header.ui-corner-all {
 	border-top-right-radius: 0;border-top-left-radius: 0;
 	border-bottom-right-radius: 0;border-bottom-left-radius: 0;
@@ -926,6 +926,7 @@ div.bc-editor{
 	text-decoration: underline;
 	color: #2A5DB0;
 }
+
 .attachs .header td {
 	vertical-align: middle;
 }
@@ -937,7 +938,7 @@ div.bc-editor{
 	top: 0;
 	width: 5em;
 	height: 1.5em;
-	filter: alpha(opacity =     10);
+	filter: alpha(opacity =         10);
 	opacity: 0;
 	cursor: pointer;
 	-moz-margin-start: -165px; /*Firefox的input:file宽度无法控制的处理*/
@@ -984,6 +985,9 @@ div.bc-editor{
 	width: 15em;
 	height: 1em;
 	margin-left: 6px;
+}
+.attachs .attach .progressbar .ui-progressbar-value{
+	border:0;
 }
 
 /**
@@ -1038,18 +1042,23 @@ span.file-icon.pptx {
 span.file-icon.bat {
 	background-position: 0 -32px;
 }
+
 span.file-icon.rar {
 	background-position: -32px -32px;
 }
+
 span.file-icon.zip {
 	background-position: -64px -32px;
 }
+
 span.file-icon.7z {
 	background-position: -96px -32px;
 }
+
 span.file-icon.gz {
 	background-position: -128px -32px;
 }
+
 span.file-icon.tar {
 	background-position: -160px -32px;
 }

@@ -2235,7 +2235,7 @@ bc.attach.html5={
 	    if(_extensions && _extensions.length > 0){
 	    	for(var i=0;i<files.length;i++){
 	    		fileName = files[i].fileName;
-	    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1)) == -1){
+	    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
 		    		alert("只能上传扩展名为\"" + _extensions.replace(/,/g,"、") + "\"的文件！");
 			    	bc.attach.clearFileSelect($atm);
 		    		return;
@@ -2251,7 +2251,7 @@ bc.attach.html5={
 	    	var key = batchNo + i;
 			//上传进度显示
 			var fileName = f.fileName;
-			var extend = fileName.substr(fileName.lastIndexOf(".")+1);
+			var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
 			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.fileSize),extend,fileName);
 			$(attach).attr("data-xhr",key).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
 	    }
@@ -2531,7 +2531,7 @@ bc.attach.flash.handlers={
 			    	for(var i=0;i<fileNames.length;i++){
 			    		fileName = fileNames[i];
 			    		logger.info("fileName=" + fileName);
-			    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1)) == -1){
+			    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
 				    		alert("只能上传扩展名为\"" + _extensions.replace(/,/g,"、") + "\"的文件！");
 					    	this.cancelUpload();
 				    		return false;
@@ -2547,7 +2547,7 @@ bc.attach.flash.handlers={
 					//上传进度显示
 					fileName = f.name;
 				    logger.info("fileName=" + fileName);
-					var extend = fileName.substr(fileName.lastIndexOf(".")+1);
+					var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
 					var attach = bc.attach.tabelTpl.format(f.size,bc.attach.getSizeInfo(f.size),extend,fileName);
 					$(attach).attr("data-flash", f.id).insertAfter($atm.find(".header"))
 					.find(".progressbar").progressbar();

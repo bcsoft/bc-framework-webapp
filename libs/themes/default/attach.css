@@ -25,6 +25,7 @@
 	text-decoration: underline;
 	color: #2A5DB0;
 }
+
 .attachs .header td {
 	vertical-align: middle;
 }
@@ -36,7 +37,7 @@
 	top: 0;
 	width: 5em;
 	height: 1.5em;
-	filter: alpha(opacity =     10);
+	filter: alpha(opacity =         10);
 	opacity: 0;
 	cursor: pointer;
 	-moz-margin-start: -165px; /*Firefox的input:file宽度无法控制的处理*/
@@ -83,6 +84,9 @@
 	width: 15em;
 	height: 1em;
 	margin-left: 6px;
+}
+.attachs .attach .progressbar .ui-progressbar-value{
+	border:0;
 }
 
 /**
@@ -137,18 +141,23 @@ span.file-icon.pptx {
 span.file-icon.bat {
 	background-position: 0 -32px;
 }
+
 span.file-icon.rar {
 	background-position: -32px -32px;
 }
+
 span.file-icon.zip {
 	background-position: -64px -32px;
 }
+
 span.file-icon.7z {
 	background-position: -96px -32px;
 }
+
 span.file-icon.gz {
 	background-position: -128px -32px;
 }
+
 span.file-icon.tar {
 	background-position: -160px -32px;
 }

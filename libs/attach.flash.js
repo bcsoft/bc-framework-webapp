@@ -177,7 +177,7 @@ bc.attach.flash.handlers={
 					//上传进度显示
 					fileName = f.name;
 				    logger.info("fileName=" + fileName);
-					var extend = fileName.substr(fileName.lastIndexOf(".")+1);
+					var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
 					var attach = bc.attach.tabelTpl.format(f.size,bc.attach.getSizeInfo(f.size),extend,fileName);
 					$(attach).attr("data-flash", f.id).insertAfter($atm.find(".header"))
 					.find(".progressbar").progressbar();
