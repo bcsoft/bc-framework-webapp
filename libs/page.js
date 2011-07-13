@@ -52,32 +52,7 @@ bc.page = {
 					
 					//alert("喔唷，出错啦！");
 					//显示漂亮的错误提示窗口
-					var errorDom = [
-					      '<div style="text-align: center;"><table class="error" cellspacing="0" cellpadding="0">'
-					      ,'<tr>'
-					      ,'<td class="icon" style="width:52px;" title="'+option.url+'"><div class="icon"></div></td>'
-					      ,'<td class="label">喔唷，出错啦！</td>'
-					      ,'</tr>'
-					      ,'<tr>'
-					      ,'<td class="detail" colspan="2">显示此页面时出现了错误，请重新尝试或联系管理员。</td>'
-					      ,'</tr>'
-					      ,'<tr>'
-					      ,'<td class="detail" colspan="2" style="width:52px;text-align: center;"><span class="more">了解详情</span></td>'
-					      ,'</tr>'
-					      ,'</table></div>'
-					].join('');
-					var $error = $(errorDom).dialog({width:380,height:150,modal:true,dialogClass:"bc-ui-dialog ui-widget-header"});
-					$error.bind("dialogclose",function(event,ui){
-						$error.unbind().remove();
-					});
-					$error.find("span.more").click(function(){
-						var errorWin=window.open('', 'bcErrorShow');
-						var errorDoc = errorWin.document;
-						errorDoc.open();
-						errorDoc.write(html);
-						errorDoc.close();
-						errorWin.focus();
-					});
+					bc.page.showError({url:option.url, more:html,from:"bc.page.newWin->bc.ajax.success->$dom.size()>1"});
 					
 					//删除任务栏对应的dom元素
 					$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
@@ -168,13 +143,49 @@ bc.page = {
 				}
 			},
 			error: function(request, textStatus, errorThrown) {
-				var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
-				logger.error(msg);
-				alert(msg);
+				//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
+				//alert("喔唷，出错啦！");
+				//显示漂亮的错误提示窗口
+				bc.page.showError({url:option.url, more:request.responseText || request.responseHTML,from:"bc.page.newWin->bc.ajax.error"});
+				
+				//删除任务栏对应的dom元素
+				$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
 				
 				//出错后通知任务栏模块加载完毕，避免长期显示加载动画
-				bc.page.quickbar.loaded(option.mid);
+				//bc.page.quickbar.loaded(option.mid);
 			}
+		});
+	},
+	/**
+	 * 显示请求错误的提示窗口
+	 */
+	showError: function(option){
+		//alert("喔唷，出错啦！");
+		//显示漂亮的错误提示窗口
+		var errorDom = [
+		      '<div style="text-align: center;"><table class="error" cellspacing="0" cellpadding="0" data-from="'+option.from+'" style="width:300px;">'
+		      ,'<tr>'
+		      ,'<td class="icon" style="width:52px;" title="url:'+option.url+',from:'+option.from+'"><div class="icon"></div></td>'
+		      ,'<td class="label">喔唷，出错啦！</td>'
+		      ,'</tr>'
+		      ,'<tr><td class="detail" colspan="2">处理过程出现了错误，请重新尝试或联系管理员。</td></tr>'
+		];
+		if(option.more)
+			errorDom.push('<tr><td class="detail" colspan="2" style="width:52px;text-align: center;"><span class="more">了解详情</span></td></tr>');
+		errorDom.push('</table></div>');
+		errorDom = errorDom.join("");
+		
+		var $error = $(errorDom).dialog({width:380,height:150,modal:true,dialogClass:"bc-ui-dialog ui-widget-header"});
+		$error.bind("dialogclose",function(event,ui){
+			$error.unbind().remove();
+		});
+		$error.find("span.more").click(function(){
+			var errorWin=window.open('', 'bcErrorShow');
+			var errorDoc = errorWin.document;
+			errorDoc.open();
+			errorDoc.write(option.more);
+			errorDoc.close();
+			errorWin.focus();
 		});
 	},
 	/**

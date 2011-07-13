@@ -5,14 +5,17 @@
  * @date 2011-04-24
  */
 bc.ajax = function(option){
-	option = option || {};
-	$.extend(option,{
+	option = $.extend({
 		type: "POST",
 		error: function(request, textStatus, errorThrown) {
-			var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
-			logger.error(msg);
-			alert(msg);
+			if(bc.page.showError){
+				//显示漂亮的错误提示窗口
+				bc.page.showError({url:option.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
+			}else{
+				var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
+				alert(request.responseText || request.responseHTML);
+			}
 		}
-	});
+	},option);
 	jQuery.ajax(option);
 };
