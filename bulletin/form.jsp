@@ -50,7 +50,6 @@
 			</s:else>
 		</div>
 		<s:property value="%{attachsUI}" escapeHtml="false"/>
-		<s:hidden name="e.inner" />
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
 		<s:hidden name="e.author.id" />
@@ -61,5 +60,8 @@
 		<s:hidden name="e.issueDate" />
 		<s:hidden name="e.issuer.id" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
+		<s:hidden name="e.modifierId" />
+		<s:hidden name="e.modifierName" />
+		<input type="hidden" name="e.modifiedDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.modifiedDate" />'/>
 	</s:form>
 </div>
