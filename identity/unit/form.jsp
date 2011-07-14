@@ -3,7 +3,7 @@
 <div title='<s:text name="unit.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/unit/save" />'
 	data-js='<s:url value="/bc/identity/unit/form.js" />,<s:url value="/bc/identity/identity.js" />'
-	data-initMethod='bc..init'
+	data-initMethod='bc.unitForm.init'
 	data-option='{
 		"buttons":[{"text":"<s:text name="label.save"/>","click":"bc.unitForm.save"}],
 		"width":618,"minWidth":250,"minHeight":250,"modal":false
