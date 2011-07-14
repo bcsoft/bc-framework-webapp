@@ -41,7 +41,7 @@
 				<tr>
 					<td class="label">* <s:text name="user.workDate"/>:</td>
 					<td class="value"><input type="text" name="e.detail.workDate" data-validate="required" 
-						class="bc-date" title='%{getText("title.click2selectDate")}'
+						class="bc-date" title='<s:text name="title.click2selectDate"/>'
 						value='<s:date format="yyyy-MM-dd" name="e.detail.workDate" />'/></td>
 					<td class="label"><s:text name="user.gender"/>:</td>
 					<td class="value"><s:radio name="e.detail.sex" list="#{'1':'男','2':'女','0':'不设置'}" 
