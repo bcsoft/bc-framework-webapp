@@ -11,7 +11,7 @@ bc.resourceForm = {
 			if(myId && myId.length > 0)
 				data.exclude = myId;
 			
-			bc.identity.selectModule({
+			bc.identity.selectResource({
 				data: data,
 				onOk: function(resource){
 					if(myId != resource.id){
