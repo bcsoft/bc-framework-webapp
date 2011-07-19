@@ -37,7 +37,7 @@ bc.validator = {
 				if(!/^\{/.test(validate)){//不是以字符{开头
 					validate = '{"required":true,"type":"' + validate + '"}';//默认必填
 				}
-				validate = jQuery.parseJSON(validate);
+				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
 				var method = bc.validator.methods[validate.type];
 				if(method){
 					var value = $(this).val();
