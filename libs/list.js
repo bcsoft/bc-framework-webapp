@@ -161,6 +161,13 @@ bc.grid = {
 		
 		var data = option.data || {};
 		
+		//附加固定的额外参数
+		var extras = $page.attr("data-extras");
+		if(extras && extras.length > 0){
+			extras = eval("(" + extras + ")");
+			data = $(data, extras);
+		}
+		
 		//附加排序参数
 		var $sortColumn = $page.find(".bc-grid .header .table td.sortable.asc,.bc-grid .header .table td.sortable.desc");
 		if($sortColumn.size()){
