@@ -42,9 +42,46 @@ bc.validator = {
 				if(method){
 					var value = $(this).val();
 					if(validate.required || (value && value.length > 0)){//必填或有值时
-						ok = method.call(validate, this, $form);
+						ok = method.call(validate, this, $form);//类型验证
 						if(!ok){//验证不通过，增加界面的提示
 							bc.validator.remind(this,validate.type);
+						}else{
+							//再验证其他细化的参数
+							if(validate.type == "number"){//数字
+								//最小值验证
+								if(validate.min || validate.min === 0 ){
+									ok = bc.validator.methods.min.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "min", [validate.min+""]);
+										return false;
+									}
+								}
+								//最大值验证
+								if(validate.max || validate.max === 0 ){
+									ok = bc.validator.methods.max.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "max", [validate.max+""]);
+										return false;
+									}
+								}
+							}else if(validate.type == "required" || validate.type == "string"){//字符串
+								//最小长度验证
+								if(validate.minLen || validate.minLen === 0 ){
+									ok = bc.validator.methods.minLen.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "minLen", [validate.minLen+""]);
+										return false;
+									}
+								}
+								//最大长度验证
+								if(validate.maxLen || validate.maxLen === 0 ){
+									ok = bc.validator.methods.maxLen.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "maxLen", [validate.maxLen+""]);
+										return false;
+									}
+								}
+							}
 						}
 					}
 					return ok;
@@ -72,6 +109,10 @@ bc.validator = {
 				return $.trim($(element).val()).length > 0;
 			}
 		},
+		/**字符串*/
+		string: function() {
+			return bc.validator.methods.required.apply(this,arguments);
+		},
 		/**数字*/
 		number: function(element) {
 			return /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(element.value);
@@ -96,11 +137,11 @@ bc.validator = {
 		},
 		/**最小值*/
 		min: function(element) {
-			return element.value >= this.minValue;
+			return parseFloat(element.value) >= this.min;
 		},
 		/**最大值*/
 		max: function(element) {
-			return element.value <= this.maxValue;
+			return parseFloat(element.value) <= this.max;
 		},
 		/**email*/
 		email: function(element) {
@@ -112,8 +153,11 @@ bc.validator = {
 	 * @element 验证不通过的dom元素
 	 * @validateType 验证的类型
 	 */
-	remind: function(element,validateType){
-		bc.boxPointer.show({of:element,content:bc.validator.messages[validateType]});
+	remind: function(element,validateType,args){
+		var msg = bc.validator.messages[validateType];
+		if($.isArray(args))
+			msg = msg.format.apply(msg,args);
+		bc.boxPointer.show({of:element, content:msg});
 	},
 	messages:{
 		required:"这里必须填写哦！",
@@ -125,9 +169,9 @@ bc.validator = {
 		date: "请输入正确格式的日期！<br>如 2011-01-01。",
 		datetime: "请输入正确格式的日期时间！<br>如 2011-01-01 13:30。",
 		time: "请输入正确格式的时间！<br>如 13:30。",
-		maxLen: "这里至少需要输入 {0}个字符！",
-		minLen: "这里最多只能输入 {0}个字符！",
-		max: "这个值不能小于 {0}！",
-		min: "这个值不能大于 {0}！"
+		minLen: "这里至少需要输入 {0}个字符！",
+		maxLen: "这里最多只能输入 {0}个字符！",
+		max: "这个值不能大于 {0}！",
+		min: "这个值不能小于 {0}！"
 	}
 };

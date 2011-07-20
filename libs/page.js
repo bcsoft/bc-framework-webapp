@@ -65,7 +65,18 @@ bc.page = {
 					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 					if(!$dom.attr("title"))
 						cfg.title=option.name;
-					$dom.dialog(bc.page._rebuildWinOption(cfg));
+					$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
+						open: function(event, ui) {
+							var dataType = $dom.attr("data-type");
+							if(dataType == "list"){//视图
+								//视图聚焦到搜索框
+								$dom.find("#searchText").focus();
+							}else if(dataType == "form"){//表单
+								//聚焦到表单的第一个可输入元素
+								$dom.find(":text:eq(0)").focus();
+							}
+						}
+					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
 						var status = $dom.data("data-status");
 						//调用回调函数
