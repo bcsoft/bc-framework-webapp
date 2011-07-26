@@ -11,7 +11,7 @@ bc.validator = {
 	 * type的值控制各种不同的验证方式：
 	 * 1) undefined或required 最简单的必填域验证，值不为空即可
 	 * 2) number 数字(正数、负数、小数)
-	 * 3) digits 整数
+	 * 3) digits 整数(非小数的数字类型)
 	 * 4) email 电子邮件 TODO
 	 * 5) url 网址 TODO
 	 * 6) date 日期 TODO
@@ -47,7 +47,7 @@ bc.validator = {
 							bc.validator.remind(this,validate.type);
 						}else{
 							//再验证其他细化的参数
-							if(validate.type == "number"){//数字
+							if(validate.type == "number" || validate.type == "digits"){//数字或整数
 								//最小值验证
 								if(validate.min || validate.min === 0 ){
 									ok = bc.validator.methods.min.call(validate,this);
@@ -123,7 +123,7 @@ bc.validator = {
 		phone: function(element) {
 			return /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/.test(element.value);
 		},
-		/**正数*/
+		/**整数*/
 		digits: function(element) {
 			return /^\d+$/.test(element.value);
 		},
