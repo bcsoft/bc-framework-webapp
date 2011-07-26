@@ -348,7 +348,8 @@ bc.page = {
 	},
 	/**编辑*/
 	edit: function(readOnly){
-		var $this = $(this);
+		var $tr = $(this);
+		var $this = $tr.parents(".ui-dialog-content");
 		var url = $this.attr("data-editUrl");
 		var $tds = $this.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
