@@ -171,15 +171,18 @@ bc.formatNumber = function(num, pattern) {
  * @date 2011-04-24
  */
 bc.ajax = function(option){
-	option = option || {};
-	$.extend(option,{
+	option = $.extend({
 		type: "POST",
 		error: function(request, textStatus, errorThrown) {
-			var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
-			logger.error(msg);
-			alert(msg);
+			if(bc.page.showError){
+				//显示漂亮的错误提示窗口
+				bc.page.showError({url:option.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
+			}else{
+				var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
+				alert(request.responseText || request.responseHTML);
+			}
 		}
-	});
+	},option);
 	jQuery.ajax(option);
 };
 /**
@@ -328,7 +331,7 @@ bc.validator = {
 	 * type的值控制各种不同的验证方式：
 	 * 1) undefined或required 最简单的必填域验证，值不为空即可
 	 * 2) number 数字(正数、负数、小数)
-	 * 3) digits 整数
+	 * 3) digits 整数(非小数的数字类型)
 	 * 4) email 电子邮件 TODO
 	 * 5) url 网址 TODO
 	 * 6) date 日期 TODO
@@ -354,14 +357,51 @@ bc.validator = {
 				if(!/^\{/.test(validate)){//不是以字符{开头
 					validate = '{"required":true,"type":"' + validate + '"}';//默认必填
 				}
-				validate = jQuery.parseJSON(validate);
+				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
 				var method = bc.validator.methods[validate.type];
 				if(method){
 					var value = $(this).val();
 					if(validate.required || (value && value.length > 0)){//必填或有值时
-						ok = method.call(validate, this, $form);
+						ok = method.call(validate, this, $form);//类型验证
 						if(!ok){//验证不通过，增加界面的提示
 							bc.validator.remind(this,validate.type);
+						}else{
+							//再验证其他细化的参数
+							if(validate.type == "number" || validate.type == "digits"){//数字或整数
+								//最小值验证
+								if(validate.min || validate.min === 0 ){
+									ok = bc.validator.methods.min.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "min", [validate.min+""]);
+										return false;
+									}
+								}
+								//最大值验证
+								if(validate.max || validate.max === 0 ){
+									ok = bc.validator.methods.max.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "max", [validate.max+""]);
+										return false;
+									}
+								}
+							}else if(validate.type == "required" || validate.type == "string"){//字符串
+								//最小长度验证
+								if(validate.minLen || validate.minLen === 0 ){
+									ok = bc.validator.methods.minLen.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "minLen", [validate.minLen+""]);
+										return false;
+									}
+								}
+								//最大长度验证
+								if(validate.maxLen || validate.maxLen === 0 ){
+									ok = bc.validator.methods.maxLen.call(validate,this);
+									if(!ok){
+										bc.validator.remind(this, "maxLen", [validate.maxLen+""]);
+										return false;
+									}
+								}
+							}
 						}
 					}
 					return ok;
@@ -389,6 +429,10 @@ bc.validator = {
 				return $.trim($(element).val()).length > 0;
 			}
 		},
+		/**字符串*/
+		string: function() {
+			return bc.validator.methods.required.apply(this,arguments);
+		},
 		/**数字*/
 		number: function(element) {
 			return /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(element.value);
@@ -399,7 +443,7 @@ bc.validator = {
 		phone: function(element) {
 			return /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/.test(element.value);
 		},
-		/**正数*/
+		/**整数*/
 		digits: function(element) {
 			return /^\d+$/.test(element.value);
 		},
@@ -413,11 +457,11 @@ bc.validator = {
 		},
 		/**最小值*/
 		min: function(element) {
-			return element.value >= this.minValue;
+			return parseFloat(element.value) >= this.min;
 		},
 		/**最大值*/
 		max: function(element) {
-			return element.value <= this.maxValue;
+			return parseFloat(element.value) <= this.max;
 		},
 		/**email*/
 		email: function(element) {
@@ -429,8 +473,11 @@ bc.validator = {
 	 * @element 验证不通过的dom元素
 	 * @validateType 验证的类型
 	 */
-	remind: function(element,validateType){
-		bc.boxPointer.show({of:element,content:bc.validator.messages[validateType]});
+	remind: function(element,validateType,args){
+		var msg = bc.validator.messages[validateType];
+		if($.isArray(args))
+			msg = msg.format.apply(msg,args);
+		bc.boxPointer.show({of:element, content:msg});
 	},
 	messages:{
 		required:"这里必须填写哦！",
@@ -442,10 +489,10 @@ bc.validator = {
 		date: "请输入正确格式的日期！<br>如 2011-01-01。",
 		datetime: "请输入正确格式的日期时间！<br>如 2011-01-01 13:30。",
 		time: "请输入正确格式的时间！<br>如 13:30。",
-		maxLen: "这里至少需要输入 {0}个字符！",
-		minLen: "这里最多只能输入 {0}个字符！",
-		max: "这个值不能小于 {0}！",
-		min: "这个值不能大于 {0}！"
+		minLen: "这里至少需要输入 {0}个字符！",
+		maxLen: "这里最多只能输入 {0}个字符！",
+		max: "这个值不能大于 {0}！",
+		min: "这个值不能小于 {0}！"
 	}
 };
 /**
@@ -502,32 +549,7 @@ bc.page = {
 					
 					//alert("喔唷，出错啦！");
 					//显示漂亮的错误提示窗口
-					var errorDom = [
-					      '<div style="text-align: center;"><table class="error" cellspacing="0" cellpadding="0">'
-					      ,'<tr>'
-					      ,'<td class="icon" style="width:52px;" title="'+option.url+'"><div class="icon"></div></td>'
-					      ,'<td class="label">喔唷，出错啦！</td>'
-					      ,'</tr>'
-					      ,'<tr>'
-					      ,'<td class="detail" colspan="2">显示此页面时出现了错误，请重新尝试或联系管理员。</td>'
-					      ,'</tr>'
-					      ,'<tr>'
-					      ,'<td class="detail" colspan="2" style="width:52px;text-align: center;"><span class="more">了解详情</span></td>'
-					      ,'</tr>'
-					      ,'</table></div>'
-					].join('');
-					var $error = $(errorDom).dialog({width:380,height:150,modal:true,dialogClass:"bc-ui-dialog ui-widget-header"});
-					$error.bind("dialogclose",function(event,ui){
-						$error.unbind().remove();
-					});
-					$error.find("span.more").click(function(){
-						var errorWin=window.open('', 'bcErrorShow');
-						var errorDoc = errorWin.document;
-						errorDoc.open();
-						errorDoc.write(html);
-						errorDoc.close();
-						errorWin.focus();
-					});
+					bc.page.showError({url:option.url, more:html,from:"bc.page.newWin->bc.ajax.success->$dom.size()>1"});
 					
 					//删除任务栏对应的dom元素
 					$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
@@ -540,7 +562,18 @@ bc.page = {
 					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 					if(!$dom.attr("title"))
 						cfg.title=option.name;
-					$dom.dialog(bc.page._rebuildWinOption(cfg));
+					$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
+						open: function(event, ui) {
+							var dataType = $dom.attr("data-type");
+							if(dataType == "list"){//视图
+								//视图聚焦到搜索框
+								$dom.find("#searchText").focus();
+							}else if(dataType == "form"){//表单
+								//聚焦到表单的第一个可输入元素
+								$dom.find(":text:eq(0)").focus();
+							}
+						}
+					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
 						var status = $dom.data("data-status");
 						//调用回调函数
@@ -618,13 +651,49 @@ bc.page = {
 				}
 			},
 			error: function(request, textStatus, errorThrown) {
-				var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
-				logger.error(msg);
-				alert(msg);
+				//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
+				//alert("喔唷，出错啦！");
+				//显示漂亮的错误提示窗口
+				bc.page.showError({url:option.url, more:request.responseText || request.responseHTML,from:"bc.page.newWin->bc.ajax.error"});
+				
+				//删除任务栏对应的dom元素
+				$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
 				
 				//出错后通知任务栏模块加载完毕，避免长期显示加载动画
-				bc.page.quickbar.loaded(option.mid);
+				//bc.page.quickbar.loaded(option.mid);
 			}
+		});
+	},
+	/**
+	 * 显示请求错误的提示窗口
+	 */
+	showError: function(option){
+		//alert("喔唷，出错啦！");
+		//显示漂亮的错误提示窗口
+		var errorDom = [
+		      '<div style="text-align: center;"><table class="error" cellspacing="0" cellpadding="0" data-from="'+option.from+'" style="width:300px;">'
+		      ,'<tr>'
+		      ,'<td class="icon" style="width:52px;" title="url:'+option.url+',from:'+option.from+'"><div class="icon"></div></td>'
+		      ,'<td class="label">喔唷，出错啦！</td>'
+		      ,'</tr>'
+		      ,'<tr><td class="detail" colspan="2">处理过程出现了错误，请重新尝试或联系管理员。</td></tr>'
+		];
+		if(option.more)
+			errorDom.push('<tr><td class="detail" colspan="2" style="width:52px;text-align: center;"><span class="more">了解详情</span></td></tr>');
+		errorDom.push('</table></div>');
+		errorDom = errorDom.join("");
+		
+		var $error = $(errorDom).dialog({width:380,height:150,modal:true,dialogClass:"bc-ui-dialog ui-widget-header"});
+		$error.bind("dialogclose",function(event,ui){
+			$error.unbind().remove();
+		});
+		$error.find("span.more").click(function(){
+			var errorWin=window.open('', 'bcErrorShow');
+			var errorDoc = errorWin.document;
+			errorDoc.open();
+			errorDoc.write(option.more);
+			errorDoc.close();
+			errorWin.focus();
 		});
 	},
 	/**
@@ -776,7 +845,8 @@ bc.page = {
 	},
 	/**编辑*/
 	edit: function(readOnly){
-		var $this = $(this);
+		var $tr = $(this);
+		var $this = $tr.parents(".ui-dialog-content");
 		var url = $this.attr("data-editUrl");
 		var $tds = $this.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
@@ -1117,6 +1187,13 @@ bc.grid = {
 		
 		var data = option.data || {};
 		
+		//附加固定的额外参数
+		var extras = $page.attr("data-extras");
+		if(extras && extras.length > 0){
+			extras = eval("(" + extras + ")");
+			data = $(data, extras);
+		}
+		
 		//附加排序参数
 		var $sortColumn = $page.find(".bc-grid .header .table td.sortable.asc,.bc-grid .header .table td.sortable.desc");
 		if($sortColumn.size()){
@@ -1302,9 +1379,19 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
 	$row.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
 
-	var $content = $this.parents(".ui-dialog-content");
-	//alert($content.html());
-	bc.page.edit.call($content);
+	var $page = $this.parents(".ui-dialog-content");
+	var $grid = $this.parents(".bc-grid");
+	
+	var dblClickRowFnStr = $grid.attr("data-dblclickrow");
+	if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
+		var dblClickRowFn = bc.getNested(dblClickRowFnStr);
+		if(!dblClickRowFn){
+			alert("函数'" + dblClickRowFnStr + "'没有定义！");
+		}else{
+			//上下文为tr
+			dblClickRowFn.call(this);
+		}
+	}
 });
 
 //全选与反选

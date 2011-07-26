@@ -353,9 +353,19 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
 	$row.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
 
-	var $content = $this.parents(".ui-dialog-content");
-	//alert($content.html());
-	bc.page.edit.call($content);
+	var $page = $this.parents(".ui-dialog-content");
+	var $grid = $this.parents(".bc-grid");
+	
+	var dblClickRowFnStr = $grid.attr("data-dblclickrow");
+	if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
+		var dblClickRowFn = bc.getNested(dblClickRowFnStr);
+		if(!dblClickRowFn){
+			alert("函数'" + dblClickRowFnStr + "'没有定义！");
+		}else{
+			//上下文为tr
+			dblClickRowFn.call(this);
+		}
+	}
 });
 
 //全选与反选
