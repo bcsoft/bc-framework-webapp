@@ -50,28 +50,33 @@ $(".bc-toolbar .bc-button").live("mouseover", function() {
 	var callback = $this.attr("data-callback");//回调函数
 	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
 	var pageEl = $this.parents(".bc-page")[0];
+	
+	//上下文统一为页面，第一个参数为配置
 	switch (action){
 	case "create"://新建--视图中
-		bc.page.create.call(pageEl,callback);
+		bc.page.create.call(pageEl,{callback:callback});
 		break;
-	case "edit"://编辑----视图
-		bc.page.edit.call(pageEl,callback);
+	case "edit"://编辑----视图中
+		bc.page.edit.call(pageEl,{callback:callback});
+		break;
+	case "open"://查看----视图中
+		bc.page.open.call(pageEl,{callback:callback});
 		break;
 	case "delete"://删除----视图
-		bc.page.delete_.call(pageEl,callback);
+		bc.page.delete_.call(pageEl,{callback:callback});
 		break;
 	case "save"://保存----表单
-		bc.page.save.call(pageEl,callback);
+		bc.page.save.call(pageEl,{callback:callback});
 		break;
 	case "cancel"://关闭对话框
-		bc.page.cancel.call(pageEl,callback);
+		bc.page.cancel.call(pageEl,{callback:callback});
 		break;
 	default ://调用自定义的函数
 		var click = $this.attr("data-click");
 		if(typeof click == "string")
 			click = bc.getNested(click);//将函数名称转换为函数
 		if(typeof click == "function")
-			click.call(pageEl,callback);
+			click.call(pageEl,{callback:callback});
 		break;
 	}
 });
