@@ -243,16 +243,17 @@ bc.page = {
 		}
 		return _option;
 	},
-	/**保存表单数据，上下文为dialog的原始dom元素*/
-	save: function(callback) {
-		$this = $(this);
-		var url=$this.attr("data-saveUrl");
+	/**保存表单数据，上下文为页面对象*/
+	save: function(option) {
+		option = option || {};
+		var $page = $(this);
+		var url=$page.attr("data-saveUrl");
 		if(!url || url.length == 0){
 			alert("Error:页面没有定义属性data-saveUrl的值");
 			return;
 		}
 		logger.info("saveUrl=" + url);
-		var $form = $("form",this);
+		var $form = $("form",$page);
 		
 		//表单验证
 		if(!bc.validator.validate($form))
@@ -268,42 +269,44 @@ bc.page = {
 					$form.find("input[name='e.id']").val(json.id);
 				}
 				//记录已保存状态
-				$this.attr("data-status","saved").data("data-status","saved");
+				$page.attr("data-status","saved").data("data-status","saved");
 				
 				//调用回调函数
 				var showMsg = true;
-				if(typeof callback == "function"){
+				if(typeof option.callback == "function"){
 					//返回false将禁止保存提示信息的显示
-					if(callback.call($this[0],json) === false)
-						showMsg = false;;
+					if(option.callback.call($page[0],json) === false)
+						showMsg = false;
 				}
 				if(showMsg)
 					bc.msg.slide(json.msg);
 			}
 		});
 	},
-	/**提交表单保存数据后自动关闭表单对话框，上下文为dialog的原始dom元素*/
-	submit: function(callback) {
-		$this = $(this);
-		bc.page.save.call(this,function(json){
-			if(typeof callback == "function"){
+	/**提交表单保存数据后自动关闭表单对话框，上下文为页面对象*/
+	submit: function(option) {
+		option = option || {};
+		var $page = $(this);
+		bc.page.save.call(this,{callback:function(json){
+			if(typeof option.callback == "function"){
 				//返回false将禁止提示信息的显示
-				if(callback.call($this[0],json) === false)
+				if(option.callback.call($page[0],json) === false)
 					return false;;
 			}else{
 				bc.msg.slide("提交成功！");
-				$this.data("data-status",true);
-				$this.dialog("close");
+				$page.data("data-status",true);
+				$page.dialog("close");
 				return false;
 			}
-		})
+		}});
 	},
 	/**删除*/
-	delete_: function() {
-		var $this = $(this);
-		var url=$this.attr("data-deleteUrl");
+	delete_: function(option) {
+		option = option || {};
+		var $page = $(this);
+		var url=$page.attr("data-deleteUrl");
 		var data=null;
-		var $tds = $this.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
 			data = "id=" + $tds.attr("data-id");
 		}else if($tds.length > 1){
@@ -322,9 +325,18 @@ bc.page = {
 				url: url, data: data, dataType: "json",
 				success: function(json) {
 					if(logger.debugEnabled)logger.debug("delete success.json=" + jQuery.param(json));
-					bc.msg.slide(json.msg);
+					//调用回调函数
+					var showMsg = true;
+					if(typeof option.callback == "function"){
+						//返回false将禁止保存提示信息的显示
+						if(option.callback.call($page[0],json) === false)
+							showMsg = false;
+					}
+					if(showMsg)
+						bc.msg.slide(json.msg);
+					
 					//重新加载列表
-					bc.grid.reloadData($this);
+					bc.grid.reloadData($page);
 				}
 			});
 		});
@@ -334,44 +346,72 @@ bc.page = {
 		$(this).dialog("destroy").remove();
 	},
 	/**新建表单*/
-	create: function(callback){
-		var $this = $(this);
+	create: function(option){
+		option = option || {};
+		var $page = $(this);
 		bc.page.newWin({
-			url: $this.attr("data-createUrl"),
-			mid: $this.attr("data-mid") + ".0",
-			name: "新建" + ($this.attr("data-name") || "未定义"),
+			url: $page.attr("data-createUrl"),
+			mid: $page.attr("data-mid") + ".0",
+			name: "新建" + ($page.attr("data-name") || "未定义"),
 			afterClose: function(status){
-				if(status)bc.grid.reloadData($this);
+				if(status)bc.grid.reloadData($page);
 			},
-			afterOpen: callback
+			afterOpen: option.callback
 		});
 	},
 	/**编辑*/
-	edit: function(readOnly){
-		var $tr = $(this);
-		var $this = $tr.parents(".ui-dialog-content");
-		var url = $this.attr("data-editUrl");
-		var $tds = $this.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+	edit: function(option){
+		option = option || {};
+		var $page = $(this);
+		var url = $page.attr("data-editUrl");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
 			var data = "id=" + $tds.attr("data-id");
 			bc.page.newWin({
 				url:url, data: data || null,
-				mid: $this.attr("data-mid") + "." + $tds.attr("data-id"),
+				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
 				afterClose: function(status){
 					if(status == "saved")
-						bc.grid.reloadData($this);
-				}
+						bc.grid.reloadData($page);
+				},
+				afterOpen: option.callback
 			});
 		}else if($tds.length > 1){
-			bc.msg.slide(!readOnly ? "一次只可以编辑一条信息，请确认您只选择了一条信息！" : "一次只可以查看一条信息，请确认您只选择了一条信息！");
+			bc.msg.slide("一次只可以编辑一条信息，请确认您只选择了一条信息！");
 			return;
 		}else{
-			bc.msg.slide(!readOnly ? "请先选择要编辑的信息！" : "请先选择要查看的信息！");
+			bc.msg.slide("请先选择要编辑的信息！");
 			return;
 		}
 	},
-	/**预览xheditor的内容*/
+	/**查看*/
+	open: function(option){
+		option = option || {};
+		var $page = $(this);
+		var url = $page.attr("data-openUrl");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		if($tds.length == 1){
+			var data = "id=" + $tds.attr("data-id");
+			bc.page.newWin({
+				url:url, data: data || null,
+				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
+				name: $tds.attr("data-name") || "未定义",
+				afterClose: function(status){
+					if(status == "saved")
+						bc.grid.reloadData($page);
+				},
+				afterOpen: option.callback
+			});
+		}else if($tds.length > 1){
+			bc.msg.slide("一次只可以查看一条信息，请确认您只选择了一条信息！");
+			return;
+		}else{
+			bc.msg.slide("请先选择要查看的信息！");
+			return;
+		}
+	},
+	/**预览xheditor的内容，上下文为dialog对象*/
 	preview: function(){
 		$(this).find(".bc-editor").xheditor({tools:'mini'}).exec("Preview");
 	}

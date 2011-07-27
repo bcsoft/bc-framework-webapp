@@ -362,8 +362,8 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 		if(!dblClickRowFn){
 			alert("函数'" + dblClickRowFnStr + "'没有定义！");
 		}else{
-			//上下文为tr
-			dblClickRowFn.call(this);
+			//上下文为页面
+			dblClickRowFn.call($page[0]);
 		}
 	}
 });
