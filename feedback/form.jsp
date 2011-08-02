@@ -23,10 +23,10 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.author.id" />
 		<s:hidden name="e.author.name" />
-		<s:hidden name="e.departId" />
-		<s:hidden name="e.departName" />
-		<s:hidden name="e.unitId" />
-		<s:hidden name="e.unitName" />
+		<s:hidden name="e.authorDepartId" />
+		<s:hidden name="e.authorDepartName" />
+		<s:hidden name="e.authorUnitId" />
+		<s:hidden name="e.authorUnitName" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		<s:hidden name="e.modifierId" />
 		<s:hidden name="e.modifierName" />

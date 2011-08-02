@@ -8,7 +8,7 @@
 	<s:form name="bulletinForm" theme="simple">
 		<div class="formTopInfo">
 			<s:if test="%{e.issuerName == null}">
-				<s:property value="e.authorName" />(<s:property value="e.departName" />) 创建于  <s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>
+				<s:property value="e.authorName" />(<s:property value="e.authorDepartName" />) 创建于  <s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>
 			</s:if>
 			<s:else>
 				<s:property value="e.issuerName" /> 发布于  <s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>
@@ -22,7 +22,7 @@
 					<td class="value"><s:radio name="e.scope" list="#{'0':'本单位','1':'全系统'}" 
 						value="e.scope" cssStyle="width:auto;"/></td>
 					<td class="label"><s:text name="bulletin.unitName"/>:</td>
-					<td class="value" colspan="3"><s:textfield name="e.unitName" readonly="true" cssClass="ui-state-disabled"/></td>
+					<td class="value" colspan="3"><s:textfield name="e.authorUnitName" readonly="true" cssClass="ui-state-disabled"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="bulletin.status"/>:</td>
@@ -54,9 +54,9 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.author.id" />
 		<s:hidden name="e.author.name" />
-		<s:hidden name="e.departId" />
-		<s:hidden name="e.departName" />
-		<s:hidden name="e.unitId" />
+		<s:hidden name="e.authorDepartId" />
+		<s:hidden name="e.authorDepartName" />
+		<s:hidden name="e.authorUnitId" />
 		<s:hidden name="e.issueDate" />
 		<s:hidden name="e.issuer.id" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
