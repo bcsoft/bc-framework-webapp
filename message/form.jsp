@@ -26,8 +26,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="label"><s:text name="message.sender.name" />:</td>
-					<td class="value"><s:textfield name="e.sender.name"
+					<td class="label"><s:text name="message.receiver.name" />:</td>
+					<td class="value"><s:textfield name="e.receiver.name"
 							readonly="true" />
 					</td>
 				</tr>

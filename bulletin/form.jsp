@@ -7,11 +7,11 @@
 	data-option='<s:property value="%{formPageOption}"/>' style="overflow-y:auto;">
 	<s:form name="bulletinForm" theme="simple">
 		<div class="formTopInfo">
-			<s:if test="%{e.issuerName == null}">
-				<s:property value="e.authorName" />(<s:property value="e.authorDepartName" />) 创建于  <s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>
+			<s:if test="%{e.issuer.name == null}">
+				<s:property value="e.author.name" />(<s:property value="e.author.upperName" />) 创建于  <s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>
 			</s:if>
 			<s:else>
-				<s:property value="e.issuerName" /> 发布于  <s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>
+				<s:property value="e.issuer.name" /> 发布于  <s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>
 			</s:else>
 		</div>
 		<div class="formFields ui-widget-content">
@@ -22,7 +22,7 @@
 					<td class="value"><s:radio name="e.scope" list="#{'0':'本单位','1':'全系统'}" 
 						value="e.scope" cssStyle="width:auto;"/></td>
 					<td class="label"><s:text name="bulletin.unitName"/>:</td>
-					<td class="value" colspan="3"><s:textfield name="e.authorUnitName" readonly="true" cssClass="ui-state-disabled"/></td>
+					<td class="value" colspan="3"><s:textfield name="e.unit.name" readonly="true" cssClass="ui-state-disabled"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="bulletin.status"/>:</td>
@@ -52,16 +52,12 @@
 		<s:property value="%{attachsUI}" escapeHtml="false"/>
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
+		<s:hidden name="e.unit.id" />
 		<s:hidden name="e.author.id" />
-		<s:hidden name="e.author.name" />
-		<s:hidden name="e.authorDepartId" />
-		<s:hidden name="e.authorDepartName" />
-		<s:hidden name="e.authorUnitId" />
 		<s:hidden name="e.issueDate" />
 		<s:hidden name="e.issuer.id" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
-		<s:hidden name="e.modifierId" />
-		<s:hidden name="e.modifierName" />
+		<s:hidden name="e.modifier.id" />
 		<input type="hidden" name="e.modifiedDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.modifiedDate" />'/>
 	</s:form>
 </div>

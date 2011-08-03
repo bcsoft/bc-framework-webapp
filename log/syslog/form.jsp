@@ -7,22 +7,22 @@
 			<tbody>
 				<tr>
 					<td class="label"><s:text name="syslog.userName"/>:</td>
-					<td class="value w200"><s:textfield name="e.userName" readonly="true" cssClass="ui-state-disabled"/></td>
+					<td class="value w200"><s:textfield name="e.author.name" readonly="true" cssClass="ui-state-disabled"/></td>
 					<td class="label"><s:text name="syslog.type"/>:</td>
-					<td class="value"><s:radio name="e.type" list="#{'0':'登录','1':'主动注销','2':'超时注销'}" 
+					<td class="value"><s:radio name="e.type" list="#{'0':'登录','1':'注销','2':'超时'}" 
 						value="e.type" cssStyle="width:auto;" disabled="true"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="syslog.departName"/>:</td>
-					<td class="value"><s:textfield name="e.departName" readonly="true" cssClass="ui-state-disabled"/></td>
+					<td class="value"><s:textfield name="e.author.upperName" readonly="true" cssClass="ui-state-disabled"/></td>
 					<td class="label"><s:text name="syslog.createDate"/>:</td>
-					<td class="value"><input type="text" name="e.createDate" 
-						value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.createDate" />' 
+					<td class="value"><input type="text" name="e.fileDate" 
+						value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />' 
 						readonly="readonly" class="ui-state-disabled"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="syslog.unitName"/>:</td>
-					<td class="value" colspan="3"><s:textfield name="e.unitName" readonly="true" cssClass="ui-state-disabled"/></td>
+					<td class="value" colspan="3"><s:textfield name="e.author.unitName" readonly="true" cssClass="ui-state-disabled"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="syslog.clientIp"/>:</td>
@@ -58,9 +58,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<s:hidden name="e.status" />
-		<s:hidden name="e.inner" />
-		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
 	</s:form>
 </div>
