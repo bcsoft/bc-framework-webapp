@@ -55,10 +55,11 @@ body {
 .bc-ui-dialog {padding: 0 6px 6px 6px;}
 .bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
 .bc-ui-dialog .ui-dialog-titlebar.ui-widget-header {border-width: 0;background: none;}
+/*
 .bc-ui-dialog .ui-widget-header.ui-corner-all {
 	border-top-right-radius: 0;border-top-left-radius: 0;
 	border-bottom-right-radius: 0;border-bottom-left-radius: 0;
-}
+}*/
 .bc-ui-dialog .ui-dialog-content {
 	padding: 0;
 	/*margin: 0 8px 8px 8px;*/
@@ -67,6 +68,10 @@ body {
 	border-top:0;border-left:0;border-right:0;
 }
 .bc-ui-dialog .ui-dialog-buttonpane{margin:0;}
+
+
+/**jquery-ui tabs */
+.formTabs.ui-tabs .ui-tabs-panel {padding:0;}
 
 .bc-slide {
 	position: absolute;
@@ -139,6 +144,11 @@ body {
 .w400{width: 400px;}
 .w500{width: 500px;}
 .w600{width: 600px;}
+.w650{width: 650px;}
+.w700{width: 700px;}
+.w750{width: 750px;}
+.w800{width: 800px;}
+.w820{width: 820px;}
 .m4{margin: 4px;}
 .m6{margin: 6px;}
 .m8{margin: 8px;}

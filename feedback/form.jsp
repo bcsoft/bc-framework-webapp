@@ -7,7 +7,7 @@
 	data-option='<s:property value="%{formPageOption}"/>' style="overflow-y:auto;">
 	<s:form name="feedbackForm" theme="simple">
 		<div class="formTopInfo">
-			<s:property value="e.authorName" />(<s:property value="e.departName" />) 创建于  <s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>
+			<s:property value="e.author.name" />(<s:property value="e.author.upperName" />) 创建于  <s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>
 		</div>
 		<div class="formFields">
 			<s:textfield name="e.subject" data-validate="required" style="width:99%"/>
@@ -22,14 +22,8 @@
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
 		<s:hidden name="e.author.id" />
-		<s:hidden name="e.author.name" />
-		<s:hidden name="e.departId" />
-		<s:hidden name="e.departName" />
-		<s:hidden name="e.unitId" />
-		<s:hidden name="e.unitName" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
-		<s:hidden name="e.modifierId" />
-		<s:hidden name="e.modifierName" />
+		<s:hidden name="e.modifier.id" />
 		<input type="hidden" name="e.modifiedDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.modifiedDate" />'/>
 	</s:form>
 </div>

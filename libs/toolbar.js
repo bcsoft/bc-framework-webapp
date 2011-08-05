@@ -49,7 +49,7 @@ $(".bc-toolbar .bc-button").live("mouseover", function() {
 	var action = $this.attr("data-action");//内定的操作
 	var callback = $this.attr("data-callback");//回调函数
 	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
-	var pageEl = $this.parents(".bc-page")[0];
+	var pageEl = $this.closest(".bc-page")[0];
 	
 	//上下文统一为页面，第一个参数为配置
 	switch (action){

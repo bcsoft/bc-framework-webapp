@@ -18,11 +18,11 @@
 			<tbody>
 				<tr>
 					<td class="label"><s:text name="duty.name"/>：</td>
-					<td class="value"><s:textfield name="e.name" data-validate="{required:true,type:'number',min:10,max:20}"/></td>
+					<td class="value"><s:textfield name="e.name" data-validate="required"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="duty.code"/>：</td>
-					<td class="value"><s:textfield name="e.code" data-validate="{required:true,type:'string',minLen:2}"/></td>
+					<td class="value"><s:textfield name="e.code" data-validate="required"/></td>
 				</tr>
 			</tbody>
 		</table>

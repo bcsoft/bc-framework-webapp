@@ -33,7 +33,7 @@
 		</span>
 	</div>
 	<!-- 表格 -->
-	<div class="bc-grid multipleSelect">
+	<div class="bc-grid multipleSelect" data-dblclickrow="bc.page.edit">
 		<!-- 表格头 -->
 		<div class="ui-state-default header">
 			<!-- 表格头：id -->
