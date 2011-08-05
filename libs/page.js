@@ -249,8 +249,13 @@ bc.page = {
 		var $page = $(this);
 		var url=$page.attr("data-saveUrl");
 		if(!url || url.length == 0){
-			alert("Error:页面没有定义属性data-saveUrl的值");
-			return;
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-saveUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/save";
+			}
 		}
 		logger.info("saveUrl=" + url);
 		var $form = $("form",$page);
@@ -305,6 +310,15 @@ bc.page = {
 		option = option || {};
 		var $page = $(this);
 		var url=$page.attr("data-deleteUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-deleteUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/delete";
+			}
+		}
 		var data=null;
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
@@ -349,8 +363,18 @@ bc.page = {
 	create: function(option){
 		option = option || {};
 		var $page = $(this);
+		var url=$page.attr("data-createUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-createUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/create";
+			}
+		}
 		bc.page.newWin({
-			url: $page.attr("data-createUrl"),
+			url: url,
 			mid: $page.attr("data-mid") + ".0",
 			name: "新建" + ($page.attr("data-name") || "未定义"),
 			afterClose: function(status){
@@ -364,6 +388,15 @@ bc.page = {
 		option = option || {};
 		var $page = $(this);
 		var url = $page.attr("data-editUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-editUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/edit";
+			}
+		}
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
 			var data = "id=" + $tds.attr("data-id");
@@ -390,6 +423,15 @@ bc.page = {
 		option = option || {};
 		var $page = $(this);
 		var url = $page.attr("data-openUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-openUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/open";
+			}
+		}
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
 			var data = "id=" + $tds.attr("data-id");

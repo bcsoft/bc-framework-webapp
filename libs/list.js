@@ -237,7 +237,7 @@ $("ul li.pagerIcon").live("click", function() {
 	var action = $this.attr("data-action");//内定的操作
 	var callback = $this.attr("data-callback");//回调函数
 	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
-	var $page = $this.parents(".bc-page");
+	var $page = $this.closest(".bc-page");
 	switch (action){
 	case "refresh"://刷新视图
 		//重新加载列表数据
@@ -247,10 +247,10 @@ $("ul li.pagerIcon").live("click", function() {
 		$this.toggleClass("ui-state-active");
 		if($this.hasClass("ui-state-active")){
 			$this.attr("title",$this.attr("title4clickToLocalSort"));
-			$this.parents(".bc-grid").attr("remoteSort","true");
+			$this.closest(".bc-grid").attr("remoteSort","true");
 		}else{
 			$this.attr("title",$this.attr("title4clickToRemoteSort"));
-			$this.parents(".bc-grid").attr("remoteSort","false");
+			$this.closest(".bc-grid").attr("remoteSort","false");
 		}
 		break;
 	case "print"://打印视图
@@ -313,7 +313,7 @@ $("ul li.pagerIconGroup.seek>.pagerIcon").live("click", function() {
 	logger.info("reload=" + reload + ",id=" + this.id + ",curPageNo=" + curPageNo + ",curPageCount=" + curPageCount);
 	
 	//重新加载列表数据
-	if(reload) bc.grid.reloadData($seek.parents(".bc-page"));
+	if(reload) bc.grid.reloadData($seek.closest(".bc-page"));
 	
 	return false;
 });
@@ -325,10 +325,10 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 	$this.addClass("ui-state-active").siblings().removeClass("ui-state-active");
 	
 	//重设置为第一页
-	$this.parents("ul.pager").find("#pageNo").text(1);
+	$this.closest("ul.pager").find("#pageNo").text(1);
 
 	//重新加载列表数据
-	bc.grid.reloadData($this.parents(".bc-page"));
+	bc.grid.reloadData($this.closest(".bc-page"));
 	
 	return false;
 });
@@ -337,7 +337,7 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 $(".bc-grid>.data>.right tr.row").live("click",function(){
 	var $this = $(this);
 	var index = $this.toggleClass("ui-state-default  ui-state-focus").index();
-	$this.parents(".right").prev()
+	$this.closest(".right").prev()
 		.find("tr.row:eq("+index+")").toggleClass("ui-state-default  ui-state-focus")
 		.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
 });
@@ -346,15 +346,15 @@ $(".bc-grid>.data>.right tr.row").live("click",function(){
 $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 	var $this = $(this);
 	var index = $this.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false).index();
-	var $row = $this.parents(".right").prev()
+	var $row = $this.closest(".right").prev()
 		.find("tr.row:eq("+index+")").add(this);
 	$row.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false)
 		.siblings().removeClass("ui-state-focus").toggleClass("ui-state-default",true)
 		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
 	$row.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
 
-	var $page = $this.parents(".ui-dialog-content");
-	var $grid = $this.parents(".bc-grid");
+	var $page = $this.closest(".bc-page");
+	var $grid = $this.closest(".bc-grid");
 	
 	var dblClickRowFnStr = $grid.attr("data-dblclickrow");
 	if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
@@ -372,7 +372,7 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 	var $this = $(this).toggleClass("ui-icon-notice ui-icon-check");
 	var check = $this.hasClass("ui-icon-check");
-	$this.parents(".header").next().find("tr.row")
+	$this.closest(".header").next().find("tr.row")
 	.toggleClass("ui-state-focus",check)
 	.find("td.id>span.ui-icon").toggleClass("ui-icon-check",check);
 });
@@ -405,12 +405,12 @@ $(".bc-grid>.header>.right tr.row>td.sortable").live("click",function(){
 	}
 
 	//排序列表中的行
-	var $grid = $this.parents(".bc-grid");
+	var $grid = $this.closest(".bc-grid");
 	var tdIndex = this.cellIndex;//要排序的列索引
 	var remoteSort = $grid.attr("remoteSort") === "true";//是否远程排序，默认本地排序
 	if(remoteSort){//远程排序
 		logger.profile("do remote sort:");
-		bc.grid.reloadData($grid.parents(".bc-page"),{
+		bc.grid.reloadData($grid.closest(".bc-page"),{
 			callback:function(){
 				logger.profile("do remote sort:");
 			}
