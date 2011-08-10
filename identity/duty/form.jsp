@@ -26,7 +26,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<s:hidden name="e.status" />
 		<s:hidden name="e.id" />
 	</s:form>
 </div>
