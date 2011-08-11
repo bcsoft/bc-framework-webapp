@@ -45,6 +45,7 @@ bc.validator = {
 						ok = method.call(validate, this, $form);//类型验证
 						if(!ok){//验证不通过，增加界面的提示
 							bc.validator.remind(this,validate.type);
+							return false;
 						}else{
 							//再验证其他细化的参数
 							if(validate.type == "number" || validate.type == "digits"){//数字或整数
