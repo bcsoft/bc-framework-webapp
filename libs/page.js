@@ -373,6 +373,15 @@ bc.page = {
 				url += "/create";
 			}
 		}
+		
+		//附加固定的额外参数
+		var data = option.data || {};
+		var extras = $page.attr("data-extras");
+		if(extras && extras.length > 0){
+			extras = eval("(" + extras + ")");
+			data = $.extend(data, extras);
+		}
+		
 		bc.page.newWin({
 			url: url,
 			mid: $page.attr("data-mid") + ".0",
@@ -380,7 +389,8 @@ bc.page = {
 			afterClose: function(status){
 				if(status)bc.grid.reloadData($page);
 			},
-			afterOpen: option.callback
+			afterOpen: option.callback,
+			data: data
 		});
 	},
 	/**编辑*/
@@ -399,7 +409,15 @@ bc.page = {
 		}
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
-			var data = "id=" + $tds.attr("data-id");
+			var data = {id: $tds.attr("data-id")};
+			
+			//附加固定的额外参数
+			var extras = $page.attr("data-extras");
+			if(extras && extras.length > 0){
+				extras = eval("(" + extras + ")");
+				data = $.extend(data, extras);
+			}
+			
 			bc.page.newWin({
 				url:url, data: data || null,
 				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
@@ -434,7 +452,15 @@ bc.page = {
 		}
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
-			var data = "id=" + $tds.attr("data-id");
+			var data = {id: $tds.attr("data-id")};
+			
+			//附加固定的额外参数
+			var extras = $page.attr("data-extras");
+			if(extras && extras.length > 0){
+				extras = eval("(" + extras + ")");
+				data = $.extend(data, extras);
+			}
+			
 			bc.page.newWin({
 				url:url, data: data || null,
 				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
