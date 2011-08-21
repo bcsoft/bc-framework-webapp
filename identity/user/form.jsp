@@ -51,7 +51,7 @@
 					<td class="label"><s:text name="user.comment"/>:</td>
 					<td class="value"><s:textfield name="e.detail.comment"/></td>
 					<td class="label"><s:text name="label.status"/>:</td>
-					<td class="value"><s:radio name="e.status" list="#{'1':'启用','0':'禁用','2':'已删除'}" 
+					<td class="value"><s:radio name="e.status" list="#{'0':'启用','1':'禁用','2':'已删除'}" 
 						value="e.status" cssStyle="width:auto;"/></td>
 				</tr>
 			</tbody>
