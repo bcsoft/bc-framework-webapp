@@ -7,17 +7,18 @@ bc.roleForm = {
 			'<span class="click2remove verticalMiddle ui-icon ui-icon-close" title={2}></span></li>';
 		var ulTpl = '<ul class="horizontal"></ul>';
 		var title = $form.find("#assignResources").attr("data-removeTitle");
-		//绑定添加模块的按钮事件处理
+		//绑定添加资源的按钮事件处理
 		$form.find("#addResources").click(function(){
-			var data = "multiple=true";//可多选
-			data += "&types=1&types=2&types=3&types=4";//可选择模块和连接
 			var $ul = $form.find("#assignResources ul");
 			var $lis = $ul.find("li");
-			$lis.each(function(){
-				data += "&selected=" + $(this).attr("data-id");//已选择的id
+			var selecteds = "";
+			$lis.each(function(i){
+				selecteds += (i > 0 ? "," : "") + $(this).attr("data-id");//已选择的id
 			});
 			bc.identity.selectResource({
-				data: data,
+				multiple: true,
+				selecteds: selecteds,
+				types: "1,2,3,4",
 				onOk: function(resources){
 					//添加当前没有分派的模块
 					$.each(resources,function(i,resource){

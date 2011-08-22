@@ -3,18 +3,13 @@ bc.resourceForm = {
 		var $form = $(this);
 		//绑定选择隶属模块的按钮事件处理
 		$form.find("#selectBelong,:input[name='e.belong.name']").click(function(){
-			var data = {};
-			var selected = $form.find(":input[name='e.belong.id']").val();
-			var myId = $form.find(":input[name='e.id']").val();
-			if(selected && selected.length > 0)
-				data.selected = selected;
-			if(myId && myId.length > 0)
-				data.exclude = myId;
-			
+			var selecteds = $form.find(":input[name='e.belong.id']").val();
+			var excludes = $form.find(":input[name='e.id']").val();
 			bc.identity.selectResource({
-				data: data,
+				selecteds: selecteds,
+				excludes: excludes,
 				onOk: function(resource){
-					if(myId != resource.id){
+					if(excludes != resource.id){
 						$form.find(":input[name='e.belong.name']").val(resource.name);
 						$form.find(":input[name='e.belong.id']").val(resource.id);
 					}else{

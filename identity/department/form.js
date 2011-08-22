@@ -3,16 +3,15 @@ bc.departmentForm = {
 		var $form = $(this);
 		//绑定选择上级的按钮事件处理
 		$form.find("#selectBelong,:input[name='belong.name']").click(function(){
-			var data = {};
-			var selected = $form.find(":input[name='belong.id']").val();
+			var selecteds = $form.find(":input[name='belong.id']").val();
 			var myId = $form.find(":input[name='e.id']").val();
-			if(selected && selected.length > 0)
-				data.selected = selected;//当前选择的
+			var excludes = null;
 			if(myId && myId.length > 0)
-				data.exclude = myId;//排除选择自己
+				excludes = myId;//排除选择自己
 			
 			bc.identity.selectUnitOrDepartment({
-				data: data,
+				selecteds: selecteds,
+				excludes: excludes,
 				onOk: function(actor){
 					if(myId != actor.id){
 						$form.find(":input[name='belong.name']").val(actor.name);
@@ -31,14 +30,15 @@ bc.departmentForm = {
 		var title = $form.find("#assignRoles").attr("data-removeTitle");
 		//绑定添加角色的按钮事件处理
 		$form.find("#addRoles").click(function(){
-			var data = "multiple=true";//可多选
 			var $ul = $form.find("#assignRoles ul");
 			var $lis = $ul.find("li");
-			$lis.each(function(){
-				data += "&selected=" + $(this).attr("data-id");//已选择的岗位id
+			var selecteds = "";
+			$lis.each(function(i){
+				selecteds += (i > 0 ? "," : "") + $(this).attr("data-id");//已选择的id
 			});
 			bc.identity.selectRole({
-				data: data,
+				multiple: true,
+				selecteds: selecteds,
 				onOk: function(roles){
 					//添加当前没有分派的岗位
 					$.each(roles,function(i,role){
