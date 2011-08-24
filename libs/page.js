@@ -397,7 +397,7 @@ bc.page = {
 	edit: function(option){
 		option = option || {};
 		var $page = $(this);
-		var url = $page.attr("data-editUrl");
+		var url = option.url || $page.attr("data-editUrl");
 		if(!url || url.length == 0){
 			url=$page.attr("data-namespace");
 			if(!url || url.length == 0){
