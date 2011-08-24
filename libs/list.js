@@ -165,7 +165,7 @@ bc.grid = {
 		var extras = $page.attr("data-extras");
 		if(extras && extras.length > 0){
 			extras = eval("(" + extras + ")");
-			data = $(data, extras);
+			data = $.extend(data, extras);
 		}
 		
 		//附加排序参数
