@@ -6,57 +6,39 @@ bc.cropImage = {
 		$page = $(this);
 		var preWidth = option.preWidth;// 预览区的宽度
 		var preHeight = option.preHeight;// 预览区的高度
-		var jcrop_api;
-		var boundWidth, boundHeight;
 		var ratio = false;
+		var jcrop_api;
 
 		// Jcrop初始化
 		var jcropOption = {
 			onChange : doUpdate,
 			onSelect : doUpdate,
 			boxWidth : 400,
-			boxHeight : 350
+			boxHeight : 350,
+			minSize: [16,16]
 		};
 		if (option.preWidth && option.preHeight) {
 			// 设置裁剪区的长宽比例
 			ratio = option.preWidth / option.preHeight;
 			jcropOption.aspectRatio = ratio;
 		}
-		$page.find('#source').Jcrop(
-				jcropOption,
-				function() {
-					jcrop_api = this;
-					$page.data("jcrop_api", this);// 保存为页面数据
-					// 获取img图片的css尺寸并记录
-					var bounds = this.getBounds();
-					boundWidth = bounds[0];
-					boundHeight = bounds[1];
-					logger.info("bound:w=" + bounds[0] + ",h=" + bounds[1]);
+		$page.find('#source').Jcrop(jcropOption, function() {
+			jcrop_api = this;
+			$page.data("jcrop_api", this);// 保存为页面数据
+			// 获取img图片的css尺寸并记录
+			var bounds = this.getBounds();
+			//var widgetSize = jcrop_api.getWidgetSize();
+			$page.find("#zoomInfo").html(Math.round(bounds[0]) + "x" + Math.round(bounds[1]));// + " --> " + widgetSize[0] + "x" + widgetSize[1] + ")");
 
-					// 预设置预览区为接近整张图片
-					var w = boundWidth;
-					var h = Math.round(boundWidth / ratio);
-					if (h > boundHeight) {
-						h = boundHeight;
-						w = Math.round(boundHeight * ratio);
-					}
-					logger.info("w=" + w + ",h=" + h);
-//					updatePreview({
-//						w : w,
-//						h : h,
-//						x : 0,
-//						y : 0
-//					}, boundWidth, boundHeight, preWidth, preHeight);
-					
-//					 jcrop_api.animateTo([option.boundWidth/4,
-//					 					 option.boundHeight/4,option.boundWidth/2,
-//					 					 option.boundHeight/2]);
-				});
+			//setSelect | animateTo
+			jcrop_api.animateTo(bc.cropImage.getRandomArea.call($page[0]));
+		});
 
 		// 根据裁剪区的参数更新预览区的图片
 		function doUpdate(crop) {
 			$page.find("#ignore").val("false");
-			updatePreview(crop, boundWidth, boundHeight, preWidth, preHeight);
+			var bounds = jcrop_api.getBounds();
+			updatePreview(crop, bounds[0], bounds[1], preWidth, preHeight);
 		}
 
 		/**
@@ -73,11 +55,11 @@ bc.cropImage = {
 		 * @param preHeight
 		 *            裁剪预览区的高度
 		 */
-		function updatePreview(crop, boundWidth, boundHeight, preWidth,
-				preHeight) {
+		function updatePreview(crop, boundWidth, boundHeight, preWidth, preHeight) {
 			if (parseInt(crop.w) > 0) {
-				logger.info("crop:w=" + crop.w + ",h=" + crop.h + ",x="
-						+ crop.x + ",y=" + crop.y);
+				logger.info("bound:w=" + boundWidth + ",h=" + boundHeight);
+				logger.info("pre:w=" + preWidth + ",h=" + preHeight);
+				logger.info("crop:w=" + crop.w + ",h=" + crop.h + ",x=" + crop.x + ",y=" + crop.y);
 				var rx = preWidth / crop.w;
 				var ry = preHeight / crop.h;
 				$page.find('#preview').css({
@@ -136,7 +118,6 @@ bc.cropImage = {
 				logger.info("success:" + $.param(json));
 				jcrop_api.destroy();
 				$page.data("data-status",json);
-				$page.find("img").remove();
 				$page.removeData("jcrop_api");
 				$page.dialog("close");
 			}
@@ -155,5 +136,78 @@ bc.cropImage = {
 		}
 
 		return [ oImg.width, oImg.height ];
+	},
+	
+	/** 获取靠近中间的区域 */
+	getRandomArea : function(jcrop_api) {
+		//return [0,0,110,140];
+		var $page = $(this);
+		var jcrop_api = $page.data("jcrop_api");
+		var preWidth = parseInt($page.find("input:hidden[name='preWidth']").val());
+		var preHeight = parseInt($page.find("input:hidden[name='preHeight']").val());
+		var ratio = preWidth / preHeight;// 裁剪区的长宽比例
+		var bounds = jcrop_api.getBounds();//原图尺寸
+		var widgetSize = jcrop_api.getWidgetSize();//crop区的尺寸
+		logger.info("-bound:w=" + bounds[0] + ",h=" + bounds[1]);
+		logger.info("-widget:w=" + widgetSize[0] + ",h=" + widgetSize[1]);
+		logger.info("-pre:w=" + preWidth + ",h=" + preHeight);
+		
+		var w,h,x,y;
+		if(bounds[0] > preWidth){
+			if(bounds[1] > preHeight){
+				w = preWidth;
+				h = preHeight;
+				x = Math.round((bounds[0] - w)/2);
+				y = Math.round((bounds[1] - h)/2);
+			}else{
+				h = Math.round(bounds[1]);
+				w = Math.round(h * ratio);
+				x = Math.round((bounds[0] - w)/2);
+				y = 0;
+			}
+		}else{
+			if(bounds[1] > preHeight){
+				w = Math.round(bounds[0]);
+				h = Math.round(w / ratio);
+				x = 0;
+				y = Math.round((bounds[1] - h)/2);
+			}else{
+				w = Math.round(bounds[0]);
+				h = Math.round(bounds[1]);
+				x = 0;
+				y = 0;
+			}
+		}
+		logger.info("-random:w=" + w + ",h=" + h + ",x=" + x + ",y=" + y + ",x2=" + (x+w) + ",y2=" + (y+h));
+
+		// [x,y,x2,y2]
+		return [x,y,x+w,y+h];
+	},
+	
+	/** 文件上传完毕后的回调函数 */
+	finishUpload: function(json,text){
+		//alert(text);
+		var $page = $(this);
+		
+		var newImgUrl = bc.root + '/bc/image/download?id=' + json.msg.id;
+		
+		//更改图片的地址
+		var srcImg = $page.find("#source,#preview").attr("src",newImgUrl);//.filter("#source").show()[0];
+		var jcrop_api = $page.data("jcrop_api");
+		jcrop_api.setImage(newImgUrl,function(){
+			var b = this.getBounds();
+			//logger.info("b:w=" + b[0] + ",h=" + b[1]);
+			
+			// 自动选中靠近中间的区域
+			this.animateTo(bc.cropImage.getRandomArea.call($page[0]));
+			
+			//界面显示新图片的尺寸
+			$page.find("#zoomInfo").html(b[0] + "x" + b[1]);
+		});
+		
+		//记录新的附件id
+		$page.find("input:hidden[name='id']").val(json.msg.id);
+		
+		$page.find("#ignore").val("false");
 	}
 };
