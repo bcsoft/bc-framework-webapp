@@ -98,12 +98,14 @@ bc.cropImage = {
 			cx:crop.x,
 			cy:crop.y,
 			preWidth:$page.find("input:hidden[name='preWidth']").val(),
-			preHeight:$page.find("input:hidden[name='preHeight']").val()
+			preHeight:$page.find("input:hidden[name='preHeight']").val(),
+			puid:$page.find("input:hidden[name='puid']").val(),
+			ptype:$page.find("input:hidden[name='ptype']").val()
 		};
 		var id = $page.find("input:hidden[name='id']").val();
 		if(id && id.length > 0){// 编辑现有附件
 			data.id = id;
-		}else{//
+		}else{//编辑空的模板文件
 			var empty = $page.find("input:hidden[name='empty']").val();
 			if(empty && empty.length > 0)
 				data.empty = empty;

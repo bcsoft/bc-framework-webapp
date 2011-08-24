@@ -18,20 +18,30 @@
 				<td rowspan="2" style="text-align: center; vertical-align: middle;width:400px;height: 350px; overflow:hidden;border-right: 1px solid #ccc;padding:8px;">
 					<div style="margin: auto;display: inline-block;">
 						<s:if test="%{id != null}">
-							<img src='<s:url value="/bc/image/download"><s:param name='id' value='id'/><s:param name='ts' value='ts'/></s:url>' id="source" />
+							<img src='<s:url value="/bc/image/download">
+								<s:param name='id' value='id'/>
+								<s:param name='ts' value='ts'/>
+							</s:url>' id="source" />
 						</s:if>
 						<s:else>
-							<img src='<s:url value="/bc/docs/image/empty.jpg"></s:url>' id="source" />
+							<img src='<s:url value="%{empty}">
+								<s:param name='ts' value='ts'/>
+							</s:url>' id="source" />
 						</s:else>
 					</div>
 				</td>
 				<td style="text-align: center; vertical-align: top;padding:8px;">
 					<div style='width: <s:property value="preWidth"/>px; height: <s:property value="preHeight"/>px; overflow: hidden;border: 1px solid #ccc;margin:0px;'>
 						<s:if test="%{id != null}">
-							<img src='<s:url value="/bc/image/download"><s:param name='id' value='id'/><s:param name='ts' value='ts'/></s:url>' id="preview" />
+							<img src='<s:url value="/bc/image/download">
+								<s:param name='id' value='id'/>
+								<s:param name='ts' value='ts'/>
+							</s:url>' id="preview" />
 						</s:if>
 						<s:else>
-							<img src='<s:url value="/bc/docs/image/empty.jpg"/>' id="preview" />
+							<img src='<s:url value="%{empty}">
+								<s:param name='ts' value='ts'/>
+							</s:url>' id="preview" />
 						</s:else>
 					</div>
 				</td>
@@ -54,6 +64,8 @@
 		<s:hidden name="empty"/>
 		<s:hidden name="preWidth"/>
 		<s:hidden name="preHeight"/>
+		<s:hidden name="puid"/>
+		<s:hidden name="ptype"/>
 		<s:hidden id="ignore" value="true"/>
 	</s:form>
 </div>
