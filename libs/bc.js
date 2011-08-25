@@ -65,13 +65,18 @@ bc.nextId=function(prefix){return (prefix ? prefix : "bc") + (bc.id++)};
 /** 获取使用符号"."连接的嵌套对象,如a.b.c返回window[a][b][c]或eval(a.b.c) */
 bc.getNested=function(nestedName){
 	try{
-		var names = nestedName.split(".");
-		var result = window[names[0]];
-		for(var i=1;i<names.length;i++)
-			result = result[names[i]];
-		return result;
+		if(nestedName){
+			var names = nestedName.split(".");
+			var result = window[names[0]];
+			for(var i=1;i<names.length;i++)
+				result = result[names[i]];
+			return result;
+		}else{
+			return null;
+		}
 	}catch(e){
 		logger.error("error get:" + nestedName + ";e=" + e);
+		return null;
 	}
 };
 /** 得到字符串的真实长度（双字节换算为两个单字节）*/
@@ -365,6 +370,7 @@ bc.validator = {
 						ok = method.call(validate, this, $form);//类型验证
 						if(!ok){//验证不通过，增加界面的提示
 							bc.validator.remind(this,validate.type);
+							return false;
 						}else{
 							//再验证其他细化的参数
 							if(validate.type == "number" || validate.type == "digits"){//数字或整数
@@ -746,8 +752,13 @@ bc.page = {
 		var $page = $(this);
 		var url=$page.attr("data-saveUrl");
 		if(!url || url.length == 0){
-			alert("Error:页面没有定义属性data-saveUrl的值");
-			return;
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-saveUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/save";
+			}
 		}
 		logger.info("saveUrl=" + url);
 		var $form = $("form",$page);
@@ -802,6 +813,15 @@ bc.page = {
 		option = option || {};
 		var $page = $(this);
 		var url=$page.attr("data-deleteUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-deleteUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/delete";
+			}
+		}
 		var data=null;
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
@@ -846,24 +866,61 @@ bc.page = {
 	create: function(option){
 		option = option || {};
 		var $page = $(this);
+		var url=$page.attr("data-createUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-createUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/create";
+			}
+		}
+		
+		//附加固定的额外参数
+		var data = option.data || {};
+		var extras = $page.attr("data-extras");
+		if(extras && extras.length > 0){
+			extras = eval("(" + extras + ")");
+			data = $.extend(data, extras);
+		}
+		
 		bc.page.newWin({
-			url: $page.attr("data-createUrl"),
+			url: url,
 			mid: $page.attr("data-mid") + ".0",
 			name: "新建" + ($page.attr("data-name") || "未定义"),
 			afterClose: function(status){
 				if(status)bc.grid.reloadData($page);
 			},
-			afterOpen: option.callback
+			afterOpen: option.callback,
+			data: data
 		});
 	},
 	/**编辑*/
 	edit: function(option){
 		option = option || {};
 		var $page = $(this);
-		var url = $page.attr("data-editUrl");
+		var url = option.url || $page.attr("data-editUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-editUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/edit";
+			}
+		}
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
-			var data = "id=" + $tds.attr("data-id");
+			var data = {id: $tds.attr("data-id")};
+			
+			//附加固定的额外参数
+			var extras = $page.attr("data-extras");
+			if(extras && extras.length > 0){
+				extras = eval("(" + extras + ")");
+				data = $.extend(data, extras);
+			}
+			
 			bc.page.newWin({
 				url:url, data: data || null,
 				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
@@ -887,9 +944,26 @@ bc.page = {
 		option = option || {};
 		var $page = $(this);
 		var url = $page.attr("data-openUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-openUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/open";
+			}
+		}
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
 		if($tds.length == 1){
-			var data = "id=" + $tds.attr("data-id");
+			var data = {id: $tds.attr("data-id")};
+			
+			//附加固定的额外参数
+			var extras = $page.attr("data-extras");
+			if(extras && extras.length > 0){
+				extras = eval("(" + extras + ")");
+				data = $.extend(data, extras);
+			}
+			
 			bc.page.newWin({
 				url:url, data: data || null,
 				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
@@ -1009,7 +1083,7 @@ $(".bc-toolbar .bc-button").live("mouseover", function() {
 	var action = $this.attr("data-action");//内定的操作
 	var callback = $this.attr("data-callback");//回调函数
 	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
-	var pageEl = $this.parents(".bc-page")[0];
+	var pageEl = $this.closest(".bc-page")[0];
 	
 	//上下文统一为页面，第一个参数为配置
 	switch (action){
@@ -1236,7 +1310,7 @@ bc.grid = {
 		var extras = $page.attr("data-extras");
 		if(extras && extras.length > 0){
 			extras = eval("(" + extras + ")");
-			data = $(data, extras);
+			data = $.extend(data, extras);
 		}
 		
 		//附加排序参数
@@ -1308,7 +1382,7 @@ $("ul li.pagerIcon").live("click", function() {
 	var action = $this.attr("data-action");//内定的操作
 	var callback = $this.attr("data-callback");//回调函数
 	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
-	var $page = $this.parents(".bc-page");
+	var $page = $this.closest(".bc-page");
 	switch (action){
 	case "refresh"://刷新视图
 		//重新加载列表数据
@@ -1318,10 +1392,10 @@ $("ul li.pagerIcon").live("click", function() {
 		$this.toggleClass("ui-state-active");
 		if($this.hasClass("ui-state-active")){
 			$this.attr("title",$this.attr("title4clickToLocalSort"));
-			$this.parents(".bc-grid").attr("remoteSort","true");
+			$this.closest(".bc-grid").attr("remoteSort","true");
 		}else{
 			$this.attr("title",$this.attr("title4clickToRemoteSort"));
-			$this.parents(".bc-grid").attr("remoteSort","false");
+			$this.closest(".bc-grid").attr("remoteSort","false");
 		}
 		break;
 	case "print"://打印视图
@@ -1384,7 +1458,7 @@ $("ul li.pagerIconGroup.seek>.pagerIcon").live("click", function() {
 	logger.info("reload=" + reload + ",id=" + this.id + ",curPageNo=" + curPageNo + ",curPageCount=" + curPageCount);
 	
 	//重新加载列表数据
-	if(reload) bc.grid.reloadData($seek.parents(".bc-page"));
+	if(reload) bc.grid.reloadData($seek.closest(".bc-page"));
 	
 	return false;
 });
@@ -1396,10 +1470,10 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 	$this.addClass("ui-state-active").siblings().removeClass("ui-state-active");
 	
 	//重设置为第一页
-	$this.parents("ul.pager").find("#pageNo").text(1);
+	$this.closest("ul.pager").find("#pageNo").text(1);
 
 	//重新加载列表数据
-	bc.grid.reloadData($this.parents(".bc-page"));
+	bc.grid.reloadData($this.closest(".bc-page"));
 	
 	return false;
 });
@@ -1408,7 +1482,7 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 $(".bc-grid>.data>.right tr.row").live("click",function(){
 	var $this = $(this);
 	var index = $this.toggleClass("ui-state-default  ui-state-focus").index();
-	$this.parents(".right").prev()
+	$this.closest(".right").prev()
 		.find("tr.row:eq("+index+")").toggleClass("ui-state-default  ui-state-focus")
 		.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
 });
@@ -1417,15 +1491,15 @@ $(".bc-grid>.data>.right tr.row").live("click",function(){
 $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 	var $this = $(this);
 	var index = $this.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false).index();
-	var $row = $this.parents(".right").prev()
+	var $row = $this.closest(".right").prev()
 		.find("tr.row:eq("+index+")").add(this);
 	$row.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false)
 		.siblings().removeClass("ui-state-focus").toggleClass("ui-state-default",true)
 		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
 	$row.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
 
-	var $page = $this.parents(".ui-dialog-content");
-	var $grid = $this.parents(".bc-grid");
+	var $page = $this.closest(".bc-page");
+	var $grid = $this.closest(".bc-grid");
 	
 	var dblClickRowFnStr = $grid.attr("data-dblclickrow");
 	if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
@@ -1443,7 +1517,7 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 	var $this = $(this).toggleClass("ui-icon-notice ui-icon-check");
 	var check = $this.hasClass("ui-icon-check");
-	$this.parents(".header").next().find("tr.row")
+	$this.closest(".header").next().find("tr.row")
 	.toggleClass("ui-state-focus",check)
 	.find("td.id>span.ui-icon").toggleClass("ui-icon-check",check);
 });
@@ -1476,12 +1550,12 @@ $(".bc-grid>.header>.right tr.row>td.sortable").live("click",function(){
 	}
 
 	//排序列表中的行
-	var $grid = $this.parents(".bc-grid");
+	var $grid = $this.closest(".bc-grid");
 	var tdIndex = this.cellIndex;//要排序的列索引
 	var remoteSort = $grid.attr("remoteSort") === "true";//是否远程排序，默认本地排序
 	if(remoteSort){//远程排序
 		logger.profile("do remote sort:");
-		bc.grid.reloadData($grid.parents(".bc-page"),{
+		bc.grid.reloadData($grid.closest(".bc-page"),{
 			callback:function(){
 				logger.profile("do remote sort:");
 			}
@@ -2273,7 +2347,7 @@ bc.attach={
 
 //初始化文件控件的选择事件
 if(bc.attach.isHtml5Upload()){
-	$(":file.uploadFile").live("change",function(e){
+	$(".attachs :file.uploadFile").live("change",function(e){
 		var $atm = $(this).parents(".attachs");
 		if(bc.attach.isHtml5Upload()){
 			logger.info("uploadFile with html5");
@@ -2818,6 +2892,91 @@ bc.attach.flash.handlers={
 };
 
 (function($){
+
+})(jQuery);
+/**
+ * 图像上传、裁剪处理
+ * 
+ * @author rongjihuang@gmail.com
+ * @date 2011-08-22
+ */
+bc.image = {
+	/** 
+	 * 打开图像的裁剪上传对话框
+	 * @param [Object] option
+	 * @option [String] puid 所关联文档的UID
+	 * @option [String] ptype 所关联文档的分类
+	 * @option [String] extensions 图片扩展名的限制，用逗号连接多个，为空则使用系统app.attachs.images的配置
+	 * @option [String] empty 空白图片的路径
+	 * @option [Function] onOk 点击确认按钮后的回调函数，参数为图片处理后的数据
+	 * @option [Number] ratio 限制图片裁剪的长宽比例，不设置则不限制
+	 * @option [Number] width 处理后图片的宽度
+	 * @option [Number] height 处理后图片的高度
+	 */
+	edit: function(option) {
+		logger.debug("bc.image.crop");
+		
+		//将相关参数转换到data参数
+		option.data = jQuery.extend({},option.data || {});
+		if(option.puid)
+			option.data.puid = option.puid;
+		if(option.ptype)
+			option.data.ptype = option.ptype;
+		if(option.empty)
+			option.data.empty = option.empty;
+		if(option.preWidth)
+			option.data.preWidth = option.preWidth;
+		if(option.preHeight)
+			option.data.preHeight = option.preHeight;
+		
+		var _this = this;
+		bc.page.newWin(jQuery.extend({
+			url: bc.root + "/bc/image/showCrop",
+			name: "图片处理",
+			mid: "cropImage",
+			afterClose: function(status){
+				if(status && typeof(option.onOk) == "function"){
+					option.onOk.call(_this,status);
+				}
+			}
+		},option));
+	}
+};
+
+(function($){
+
+// 自动绑定图片处理
+$(".bc-imageEditor").live("click",function(e){
+	var $this = $(this);
+	
+	//参数检验及处理
+	var dataCfg = $this.attr("data-cfg");
+	if(!dataCfg){
+		alert("必须配置data-cfg属性的值");
+		return false;
+	}
+	
+	dataCfg = eval("(" + dataCfg + ")");
+	if(!dataCfg.puid || dataCfg.puid.length == 0){
+		alert("data-cfg属性中没有配置puid");
+		return false;
+	}
+	var callback;
+	if(dataCfg.onOk && dataCfg.onOk.length > 0){
+		callback = bc.getNested(dataCfg.onOk);
+		if(typeof callback != "function"){
+			alert("data-cfg属性中配置的onOk值“" + dataCfg.onOk + "”对应的函数没有定义");
+			return false;
+		}
+		dataCfg.onOk = callback;
+	}else{
+		alert("data-cfg属性中没有配置onOk");
+		return false;
+	}
+	
+	//打开图片编辑器
+	bc.image.edit.call(this,dataCfg);
+});
 
 })(jQuery);
 /**

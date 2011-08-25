@@ -73,6 +73,9 @@
 				<include name="attach.flash.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
+				<include name="image.js" />
+			</fileset>
+			<fileset dir="${bclibs.dir}">
 				<include name="desktop.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
