@@ -18,6 +18,7 @@ bc.showCrop = {
 			}
 			
 			if(bc.showCrop.isHtml5Upload()){
+				//alert("isHtml5Upload:" + this.value);
 				logger.info("uploadFile with html5");
 				bc.showCrop.upload4html5.call($bcImage.closest(".bc-page")[0],{
 					file: e.target.files[0],

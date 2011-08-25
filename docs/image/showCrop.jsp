@@ -3,8 +3,7 @@
 <div title='<s:text name="showCrop.title"/>' data-type='form'
 	class="bc-page" data-js='<s:url value="/ui-libs/jcrop/0.9.9/themes/default/jquery.Jcrop.css?ts=0" />,<s:url value="/ui-libs/jcrop/0.9.9/jquery.Jcrop.min.js?ts=0" />,<s:url value="/bc/docs/image/showCrop.js" />'
 	data-initMethod='bc.showCrop.init'
-	data-option='<s:property value="pageOption" escapeHtml="false"/>'
-	style="overflow-y: auto;">
+	data-option='<s:property value="pageOption" escapeHtml="false"/>'>
 	<s:form name="showCropForm" theme="simple" style="height:100%;width:100%;">
 		<table class="table" cellspacing="0" cellpadding="0" style="height:100%;">
 			<tr style="line-height:1px;height:1px;font-size: 1px;">
@@ -41,7 +40,7 @@
 			<tr>
 				<td style="text-align: center; vertical-align: bottom;padding:8px;">
 					<div style="min-width:110px;text-align: center;">
-						<div style='margin:auto;width: <s:property value="preWidth"/>px; height: <s:property value="preHeight"/>px; overflow: hidden;border: 1px solid #ccc;'>
+						<div style='background-color: black; margin:auto;width: <s:property value="preWidth"/>px; height: <s:property value="preHeight"/>px; overflow: hidden;border: 1px solid #ccc;'>
 							<s:if test="%{id != null}">
 								<img src='<s:url value="/bc/image/download"><s:param name='id' value='id'/><s:param name='ts' value='ts'/></s:url>' id="preview" />
 							</s:if>

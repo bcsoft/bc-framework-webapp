@@ -33,13 +33,14 @@ bc.image = {
 		if(option.preHeight)
 			option.data.preHeight = option.preHeight;
 		
+		var _this = this;
 		bc.page.newWin(jQuery.extend({
 			url: bc.root + "/bc/image/showCrop",
 			name: "图片处理",
 			mid: "cropImage",
 			afterClose: function(status){
 				if(status && typeof(option.onOk) == "function"){
-					option.onOk(status);
+					option.onOk.call(_this,status);
 				}
 			}
 		},option));
@@ -78,7 +79,7 @@ $(".bc-imageEditor").live("click",function(e){
 	}
 	
 	//打开图片编辑器
-	bc.image.edit(dataCfg);
+	bc.image.edit.call(this,dataCfg);
 });
 
 })(jQuery);
