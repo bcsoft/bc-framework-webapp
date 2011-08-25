@@ -65,13 +65,18 @@ bc.nextId=function(prefix){return (prefix ? prefix : "bc") + (bc.id++)};
 /** 获取使用符号"."连接的嵌套对象,如a.b.c返回window[a][b][c]或eval(a.b.c) */
 bc.getNested=function(nestedName){
 	try{
-		var names = nestedName.split(".");
-		var result = window[names[0]];
-		for(var i=1;i<names.length;i++)
-			result = result[names[i]];
-		return result;
+		if(nestedName){
+			var names = nestedName.split(".");
+			var result = window[names[0]];
+			for(var i=1;i<names.length;i++)
+				result = result[names[i]];
+			return result;
+		}else{
+			return null;
+		}
 	}catch(e){
 		logger.error("error get:" + nestedName + ";e=" + e);
+		return null;
 	}
 };
 /** 得到字符串的真实长度（双字节换算为两个单字节）*/

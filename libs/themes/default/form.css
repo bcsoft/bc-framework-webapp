@@ -95,6 +95,10 @@ td.value{
 td.value input,td.value textarea{
 	width: 98%;
 }
+
+td.value select{
+	width: 99.5%;
+}
 td.value .ui-icon{
 	float: left;
 	margin-top: 4px;

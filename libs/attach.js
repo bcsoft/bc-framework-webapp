@@ -157,7 +157,7 @@ bc.attach={
 
 //初始化文件控件的选择事件
 if(bc.attach.isHtml5Upload()){
-	$(":file.uploadFile").live("change",function(e){
+	$(".attachs :file.uploadFile").live("change",function(e){
 		var $atm = $(this).parents(".attachs");
 		if(bc.attach.isHtml5Upload()){
 			logger.info("uploadFile with html5");

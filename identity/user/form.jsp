@@ -6,17 +6,21 @@
 	data-initMethod='bc.userForm.init'
 	data-option='{
 		"buttons":[{"text":"<s:text name="label.save"/>","click":"bc.userForm.save"}],
-		"width":618,"minWidth":250,"minHeight":250,"modal":false
+		"width":665,"minWidth":250,"minHeight":250,"modal":false
 	}'>
 	<s:form name="userForm" theme="simple">
-		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
+		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0" style="width:650px;">
 			<tbody>
 				<tr>
 					<td class="label">* <s:text name="user.name"/>:</td>
 					<td class="value w200"><s:textfield name="e.name" data-validate="required"/></td>
 					<td class="label">* <s:text name="actor.belong"/>:</td>
-					<td class="value"><s:textfield name="belong.name" data-validate="required"
+					<td class="value w200"><s:textfield name="belong.name" data-validate="required"
 						readonly="true" title='%{getText("user.title.click2selectBelong")}'/></td>
+					<td rowspan="6" class="label" style="text-align: center;vertical-align: top;">
+						<img id="portrait" style="width:110px;height:140px;cursor: pointer;" title='<s:text name="image.click2change"/>'
+							src='<s:url value="/bc/image/download"><s:param name='puid' value='e.uid'/><s:param name='ptype' value='%{"portrait"}'/><s:param name='ts' value='ts'/></s:url>'/>
+					</td>
 				</tr>
 				<tr>
 					<td class="label">* <s:text name="user.code"/>:</td>
@@ -57,7 +61,7 @@
 			</tbody>
 		</table>
 		<!-- 已分派的岗位信息 -->
-		<div id="assignGroups" class="formTable2 ui-widget-content" 
+		<div id="assignGroups" class="formTable2 ui-widget-content"  style="width:650px;"
 			data-removeTitle='<s:text name="title.click2remove"/>'>
 			<div class="ui-state-active title" style="position:relative;">
 				<span class="text"><s:text name="actor.headerLabel.assignGroups"/>：
@@ -77,7 +81,7 @@
 			</s:if>	
 		</div>
 		<!-- 已分配的角色信息 -->
-		<div id="assignRoles" class="formTable2 ui-widget-content" 
+		<div id="assignRoles" class="formTable2 ui-widget-content"  style="width:650px;"
 			data-removeTitle='<s:text name="title.click2remove"/>'>
 			<div class="ui-state-active title" style="position:relative;">
 				<span class="text"><s:text name="actor.headerLabel.assignRoles"/>：
@@ -97,7 +101,7 @@
 			</s:if>	
 		</div>
 		<!-- 从上级组织继承的角色信息 -->
-		<div id="inheritRolesFromOU" class="formTable2 ui-widget-content" >
+		<div id="inheritRolesFromOU" class="formTable2 ui-widget-content"  style="width:650px;">
 			<div class="ui-state-active title" style="position:relative;">
 				<span class="text"><s:text name="actor.headerLabel.inheritRolesFromOU"/>：
 					<s:if test="%{inheritRolesFromOU == null || inheritRolesFromOU.isEmpty()}"><s:text name="label.empty"/></s:if>
@@ -114,7 +118,7 @@
 			</s:if>	
 		</div>
 		<!-- 从已分派岗位间接获取的角色 -->
-		<div id="inheritRolesFromGroup" class="formTable2 ui-widget-content" >
+		<div id="inheritRolesFromGroup" class="formTable2 ui-widget-content"  style="width:650px;">
 			<div class="ui-state-active title" style="position:relative;">
 				<span class="text"><s:text name="actor.headerLabel.inheritRolesFromGroup"/>：
 					<s:if test="%{inheritRolesFromGroup == null || inheritRolesFromGroup.isEmpty()}"><s:text name="label.empty"/></s:if>
