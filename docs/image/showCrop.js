@@ -1,9 +1,43 @@
-bc.cropImage = {
-	/** jcrop原始图片区的宽度 */
-	FIX_WIDTH : 400,
+bc.showCrop = {
 	/** 初始化 */
 	init : function(option) {
 		$page = $(this);
+		//初始化上传图片文件控件的选择事件
+		$page.find(".bc-image :file.uploadImage").bind("change",function(e){
+			logger.info("uploadImage");
+			var $bcImage = $(this).closest(".bc-image");
+			
+			var ptype = $bcImage.attr("data-ptype");
+			var puid = $bcImage.attr("data-puid");
+			var extensions = $bcImage.attr("data-extensions");
+			var callback = $bcImage.attr("data-callback");
+			var _callback = bc.getNested(callback);
+			if(typeof _callback != "function"){
+				alert("data-callback值“" + callback + "”对应的函数没有定义");
+				return false;
+			}
+			
+			if(bc.showCrop.isHtml5Upload()){
+				logger.info("uploadFile with html5");
+				bc.showCrop.upload4html5.call($bcImage.closest(".bc-page")[0],{
+					file: e.target.files[0],
+					ptype: ptype,
+					puid: puid,
+					extensions: extensions,
+					callback: _callback
+				});
+			}else{
+				alert("todo:" + this.value);
+			}
+		});
+
+		//上传按钮的鼠标样式控制
+		$page.find(".bc-image").bind("mouseover", function() {
+			$(this).addClass("ui-state-hover");
+		}).bind("mouseout", function() {
+			$(this).removeClass("ui-state-hover");
+		})
+		
 		var preWidth = option.preWidth;// 预览区的宽度
 		var preHeight = option.preHeight;// 预览区的高度
 		var ratio = false;
@@ -31,7 +65,9 @@ bc.cropImage = {
 			$page.find("#zoomInfo").html(Math.round(bounds[0]) + "x" + Math.round(bounds[1]));// + " --> " + widgetSize[0] + "x" + widgetSize[1] + ")");
 
 			//setSelect | animateTo
-			jcrop_api.animateTo(bc.cropImage.getRandomArea.call($page[0]));
+			jcrop_api.animateTo(bc.showCrop.getRandomArea.call($page[0]),function(){
+				$page.find("#ignore").val("true");
+			});
 		});
 
 		// 根据裁剪区的参数更新预览区的图片
@@ -85,7 +121,7 @@ bc.cropImage = {
 		var jcrop_api = $page.data("jcrop_api");
 		var bounds = jcrop_api.getBounds();
 		var crop = jcrop_api.tellSelect();
-		var imgRealSize = bc.cropImage.getImageRealSize(document
+		var imgRealSize = bc.showCrop.getImageRealSize(document
 				.getElementById("source"));
 		logger.info("real:w=" + imgRealSize[0] + ",h=" + imgRealSize[1]);
 		logger.info("bound:w=" + bounds[0] + ",h=" + bounds[1]);
@@ -129,10 +165,10 @@ bc.cropImage = {
 	originImage : null,
 	/** 获取图片原始尺寸的大小 */
 	getImageRealSize : function(img) {
-		if (bc.cropImage.originImage == null)
-			bc.cropImage.originImage = new Image();
+		if (bc.showCrop.originImage == null)
+			bc.showCrop.originImage = new Image();
 
-		var oImg = bc.cropImage.originImage;
+		var oImg = bc.showCrop.originImage;
 		if (oImg.src != img.src) {
 			oImg.src = img.src;
 		}
@@ -191,25 +227,119 @@ bc.cropImage = {
 		//alert(text);
 		var $page = $(this);
 		
+		// 更改图片
 		var newImgUrl = bc.root + '/bc/image/download?id=' + json.msg.id;
-		
-		//更改图片的地址
-		var srcImg = $page.find("#source,#preview").attr("src",newImgUrl);//.filter("#source").show()[0];
+		var srcImg = $page.find("#source,#preview").attr("src",newImgUrl);
 		var jcrop_api = $page.data("jcrop_api");
 		jcrop_api.setImage(newImgUrl,function(){
+			// 图片加载完毕后的处理
 			var b = this.getBounds();
 			//logger.info("b:w=" + b[0] + ",h=" + b[1]);
 			
 			// 自动选中靠近中间的区域
-			this.animateTo(bc.cropImage.getRandomArea.call($page[0]));
+			this.animateTo(bc.showCrop.getRandomArea.call($page[0]),function(){
+				$page.find("#ignore").val("false");
+			});
 			
 			//界面显示新图片的尺寸
-			$page.find("#zoomInfo").html(b[0] + "x" + b[1]);
+			$page.find("#zoomInfo").html(Math.round(b[0]) + "x" + Math.round(b[1]));
+			
+			//记录新的附件id
+			$page.find("input:hidden[name='id']").val(json.msg.id);
 		});
+	},
+	
+    /**判断浏览器是否可使用html5上传文件*/
+	isHtml5Upload: function(){
+		return $.browser.safari || $.browser.mozilla;//Chrome12、Safari5、Firefox4
+	},
+	
+    /**上传图片的url*/
+	uploadUrl: bc.root + "/upload/?a=1",
+	
+	/**
+	 * 基于html5的文件上传处理
+	 * <p>函数上下文为附件控件的容器dom</p>
+	 * @param {Object} option 配置参数
+	 * @option {Object} file 要上传的文件 
+	 * @option {String} ptype 
+	 * @option {String} puid 
+	 * @option {String} extensions 扩展名限制，多个用逗号连接 
+	 * @option {Function} callback 回调函数，第一个参数为服务器返回的json对象，上下文为页面对象
+	 * @option {Element} progressbar 进度条对象
+	 * @option {String} url 
+	 */
+	upload4html5:function(option){
+		var _this = this;
+	    //将参数附加到上传文件的url后
+	    var url = option.url || bc.showCrop.uploadUrl;
+	    if(option.ptype) url+="&ptype=" + option.ptype;
+	    if(option.puid) url+="&puid=" + option.puid;
+	    
+	    //检测文件类型的限制
+	    var fileName = option.file.fileName;
+	    if(option.extensions && option.extensions.length > 0){
+	    	var extensions = option.extensions.toLowerCase();
+    		if(extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
+	    		alert("只能上传扩展名为\"" + extensions.replace(/,/g,"、") + "\"的文件！");
+	    		
+	    		//清空file控件:file.outerHTML=file.outerHTML; 
+	    		
+	    		return false;
+    		}
+	    }
 		
-		//记录新的附件id
-		$page.find("input:hidden[name='id']").val(json.msg.id);
+    	var xhr = new XMLHttpRequest();
+    	
+    	//上传进度处理
+    	if(option.progressbar){
+    	    //初始化进度条
+    	    var $progressbar = $(option.progressbar).show().progressbar();
+			if($.browser.safari){//Chrome12、Safari5
+				xhr.upload.onprogress=function(e){
+					var progressbarValue = Math.round((e.loaded / e.total) * 100);
+					logger.info(":upload.onprogress:" + progressbarValue + "%");
+					$progressbar.progressbar("option","value",progressbarValue);
+				};
+			}else if($.browser.mozilla){//Firefox4
+				xhr.onuploadprogress=function(e){
+					var progressbarValue = Math.round((e.loaded / e.total) * 100);
+					logger.info(i + ":upload.onprogress:" + progressbarValue + "%");
+					$progressbar.progressbar("option","value",progressbarValue);
+				};
+			}
+    	}
 		
-		$page.find("#ignore").val("false");
+		//上传完毕的处理
+		xhr.onreadystatechange=function(){
+			if(xhr.readyState != 4){
+				logger.error(":uploadError:readyState=" + xhr.readyState);
+				return;
+			}
+			
+			logger.info("responseText=" + xhr.responseText);
+			var json = eval("(" + xhr.responseText + ")");
+			
+			//删除进度条钮（延时1秒后执行）
+			if(option.progressbar){
+				setTimeout(function(){
+					$progressbar.hide();
+				},1000);
+			}
+			
+			//调用回调函数
+			if(typeof option.callback == "function")
+				option.callback.call(_this, json,xhr.responseText);
+		};
+		
+		// 执行上传文件的操作
+		xhr.open("POST", url);
+		xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+		//对文件名进行URI编码避免后台中文乱码（后台需URI解码）
+		xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="'+encodeURIComponent(fileName)+'"');
+		if(xhr.sendAsBinary)//Firefox4
+			xhr.sendAsBinary(option.file.getAsBinary());
+		else //Chrome12
+			xhr.send(option.file);
 	}
 };
