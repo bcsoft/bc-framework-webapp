@@ -41,6 +41,10 @@ bc.scheduleJobList = {
 	},
 	/** 查看调度日志 */
 	showLog: function(){
-		
+		bc.page.newWin({
+			url: bc.root + "/bc/schedule/log/paging",
+			mid: "scheduleLog.paging",
+			name: "定时任务调度日志"
+		});
 	}
 };

@@ -30,7 +30,7 @@
 	font-size: 0.75em;
 	text-align: left;
 }
-.formComment a{
+a.link{
 	color: blue;
 }
 /** 表单元素容器*/
