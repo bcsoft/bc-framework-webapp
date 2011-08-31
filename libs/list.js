@@ -222,6 +222,23 @@ bc.grid = {
 					option.callback.call($page[0]);
 			}
 		});
+	},
+	/** 获取grid中选中行的id信息
+	 * @param $grid grid的jquery对象
+	 */
+	getSelected: function($grid,option){
+		var $tds = $grid.find(">.data>.left tr.ui-state-focus>td.id");
+		if($tds.length == 1){
+			return [$tds.attr("data-id")];
+		}else if($tds.length > 1){
+			var r = [];
+			$tds.each(function(i){
+				r.push($(this).attr("data-id"));
+			});
+			return r;
+		}else{
+			return [];
+		}
 	}
 };
 

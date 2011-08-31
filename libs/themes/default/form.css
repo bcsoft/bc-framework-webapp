@@ -30,6 +30,9 @@
 	font-size: 0.75em;
 	text-align: left;
 }
+.formComment a{
+	color: blue;
+}
 /** 表单元素容器*/
 div.formFields {
 	margin: 8px;
