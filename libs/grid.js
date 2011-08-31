@@ -352,11 +352,33 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 
 //单击行切换样式
 $(".bc-grid>.data>.right tr.row").live("click",function(){
+	//处理选中行的样式
 	var $this = $(this);
-	var index = $this.toggleClass("ui-state-default  ui-state-focus").index();
-	$this.closest(".right").prev()
-		.find("tr.row:eq("+index+")").toggleClass("ui-state-default  ui-state-focus")
-		.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
+	var $row = $this.closest(".right").prev().find("tr.row:eq("+index+")");
+	$row.toggleClass("ui-state-default ui-state-focus").find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+	
+	//处理单选：其他已选中行样式的恢复
+	var $grid = $this.closest(".bc-grid");
+	if($grid.hasClass("singleSelect")){
+		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
+			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
+	}
+});
+$(".bc-grid>.data>.left tr.row").live("click",function(){
+	//处理选中行的样式
+	var $this = $(this);
+	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
+	var $row = $this.closest(".left").next().find("tr.row:eq("+index+")");
+	$row.toggleClass("ui-state-default ui-state-focus");
+	$this.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+	
+	//处理单选：其他已选中行样式的恢复
+	var $grid = $this.closest(".bc-grid");
+	if($grid.hasClass("singleSelect")){
+		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
+			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
+	}
 });
 
 //双击行执行编辑
@@ -387,7 +409,14 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 
 //全选与反选
 $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
-	var $this = $(this).toggleClass("ui-icon-notice ui-icon-check");
+	var $this = $(this);
+	var $grid = $this.closest(".bc-grid");
+	if($grid.hasClass("singleSelect")){
+		//单选就不作处理
+		return;
+	}
+	
+	$this.toggleClass("ui-icon-notice ui-icon-check");
 	var check = $this.hasClass("ui-icon-check");
 	$this.closest(".header").next().find("tr.row")
 	.toggleClass("ui-state-focus",check)
