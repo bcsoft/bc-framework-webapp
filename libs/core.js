@@ -9,6 +9,25 @@
 if(!window['bc'])window['bc']={};
 
 /**
+ * 创建指定名称的命名空间,多个命名空间间以参数的形式用逗号隔开
+ * @param {String} namespace1
+ * @param {String} namespace2
+ * @param {String} etc
+ */
+bc.namespace = function(){
+    var a=arguments, o=null, i, j, d, rt;
+    for (i=0; i<a.length; ++i) {
+        d=a[i].split(".");
+        rt = d[0];
+        eval('if (typeof ' + rt + ' == "undefined"){' + rt + ' = {};} o = ' + rt + ';');
+        for (j=1; j<d.length; ++j) {
+            o[d[j]]=o[d[j]] || {};
+            o=o[d[j]];
+        }
+    }
+};
+
+/**
  * 字符串格式化处理函数
  * 使用方式：
  * 1) var t="({0}),FF{1}".format("value0","value1") -->t=(value0),FFvalue1
