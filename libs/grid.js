@@ -161,8 +161,17 @@ bc.grid = {
 		
 		var data = option.data || {};
 		
-		//附加固定的额外参数
+		//==附加的额外的请求参数
+		//  从page取
 		var extras = $page.attr("data-extras");
+		logger.info("page extras=" + extras);
+		if(extras && extras.length > 0){
+			extras = eval("(" + extras + ")");
+			data = $.extend(data, extras);
+		}
+		//  从grid取
+		extras = $page.find(".bc-grid").attr("data-extras");
+		logger.info("grid extras=" + extras);
 		if(extras && extras.length > 0){
 			extras = eval("(" + extras + ")");
 			data = $.extend(data, extras);
