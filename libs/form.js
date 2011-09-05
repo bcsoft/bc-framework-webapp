@@ -13,7 +13,7 @@ bc.form = {
 		logger.info("bc.form.init");
 		
 		//绑定日期选择
-		$form.find('.bc-date[readonly!="readonly"]').each(function(){
+		$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]').each(function(){
 			var $this = $(this);
 			var cfg = $this.attr("data-cfg");
 			if(cfg && cfg.length > 0){
@@ -29,14 +29,21 @@ bc.form = {
 				}
 				cfg.onSelect = fn;
 			}
-			$this.datepicker(jQuery.extend({
+			cfg = jQuery.extend({
 				//showWeek: true,//显示第几周
 				//showButtonPanel: true,//显示今天按钮、
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				firstDay: 7,
 				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
-			},cfg));
+			},cfg);
+			
+			if($this.hasClass('bc-date'))
+				$this.datepicker(cfg);
+			else if($this.hasClass('bc-datetime'))
+				$this.datetimepicker(cfg);
+			else
+				$this.timepicker(cfg);
 		});
 		
 		//绑定富文本编辑器
