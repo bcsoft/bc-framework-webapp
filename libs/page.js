@@ -225,6 +225,8 @@ bc.page = {
 					btn.click = bc.page.delete_;
 				}else if(btn.action == "edit"){//编辑
 					btn.click = bc.page.edit;
+				}else if(btn.action == "open"){//打开
+					btn.click = bc.page.open;
 				}else if(btn.action == "preview"){//预览xheditor的内容
 					btn.click = bc.page.preview;
 				}else if(btn.fn){//调用自定义函数

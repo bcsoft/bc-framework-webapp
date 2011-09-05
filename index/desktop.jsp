@@ -16,7 +16,7 @@
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/core.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/desktop.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/shortcuts.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/list.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/form.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/boxPointer.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/attach.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
@@ -143,6 +143,7 @@
 	</div>
 	</s:if>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.5.1/jquery.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json-2.2.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.8.13/ui/minified/i18n/jquery-ui-i18n.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.8.13/ui/minified/jquery-ui.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
@@ -169,8 +170,8 @@
 		<script type="text/javascript" src="<s:url value='/bc/libs/validate.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/page.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-		<script type="text/javascript" src="<s:url value='/bc/libs/list.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-		<script type="text/javascript" src="<s:url value='/bc/libs/list.export.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+		<script type="text/javascript" src="<s:url value='/bc/libs/grid.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+		<script type="text/javascript" src="<s:url value='/bc/libs/grid.export.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/form.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/boxPointer.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/loader.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>

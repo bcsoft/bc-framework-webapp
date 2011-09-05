@@ -46,10 +46,10 @@
 				<include name="toolbar.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
-				<include name="list.js" />
+				<include name="grid.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
-				<include name="list.export.js" />
+				<include name="grid.export.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
 				<include name="form.js" />
@@ -71,6 +71,9 @@
 			</fileset>
 			<fileset dir="${bclibs.dir}">
 				<include name="attach.flash.js" />
+			</fileset>
+			<fileset dir="${bclibs.dir}">
+				<include name="image.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
 				<include name="desktop.js" />
@@ -97,7 +100,7 @@
 					<include name="shortcuts.css" />
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
-					<include name="list.css" />
+					<include name="grid.css" />
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="form.css" />

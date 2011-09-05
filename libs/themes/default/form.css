@@ -30,6 +30,9 @@
 	font-size: 0.75em;
 	text-align: left;
 }
+a.link{
+	color: blue;
+}
 /** 表单元素容器*/
 div.formFields {
 	margin: 8px;
