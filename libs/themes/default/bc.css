@@ -626,7 +626,7 @@ a.shortcut .i0908 {background-position: -416px -468px;}
 a.shortcut .i0909 {background-position: -468px -468px;}
 
 /**
- * 列表视图样式
+ * grid样式
  *
  * @author rongjihuang@gmail.com
  * @date 2011-04-24
@@ -841,6 +841,9 @@ table.table{
 	color: #888;
 	font-size: 0.75em;
 	text-align: left;
+}
+a.link{
+	color: blue;
 }
 /** 表单元素容器*/
 div.formFields {

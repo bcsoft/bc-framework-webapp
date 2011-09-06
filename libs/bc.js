@@ -9,6 +9,25 @@
 if(!window['bc'])window['bc']={};
 
 /**
+ * 创建指定名称的命名空间,多个命名空间间以参数的形式用逗号隔开
+ * @param {String} namespace1
+ * @param {String} namespace2
+ * @param {String} etc
+ */
+bc.namespace = function(){
+    var a=arguments, o=null, i, j, d, rt;
+    for (i=0; i<a.length; ++i) {
+        d=a[i].split(".");
+        rt = d[0];
+        eval('if (typeof ' + rt + ' == "undefined"){' + rt + ' = {};} o = ' + rt + ';');
+        for (j=1; j<d.length; ++j) {
+            o[d[j]]=o[d[j]] || {};
+            o=o[d[j]];
+        }
+    }
+};
+
+/**
  * 字符串格式化处理函数
  * 使用方式：
  * 1) var t="({0}),FF{1}".format("value0","value1") -->t=(value0),FFvalue1
@@ -728,6 +747,8 @@ bc.page = {
 					btn.click = bc.page.delete_;
 				}else if(btn.action == "edit"){//编辑
 					btn.click = bc.page.edit;
+				}else if(btn.action == "open"){//打开
+					btn.click = bc.page.open;
 				}else if(btn.action == "preview"){//预览xheditor的内容
 					btn.click = bc.page.preview;
 				}else if(btn.fn){//调用自定义函数
@@ -1306,8 +1327,17 @@ bc.grid = {
 		
 		var data = option.data || {};
 		
-		//附加固定的额外参数
+		//==附加的额外的请求参数
+		//  从page取
 		var extras = $page.attr("data-extras");
+		logger.info("page extras=" + extras);
+		if(extras && extras.length > 0){
+			extras = eval("(" + extras + ")");
+			data = $.extend(data, extras);
+		}
+		//  从grid取
+		extras = $page.find(".bc-grid").attr("data-extras");
+		logger.info("grid extras=" + extras);
 		if(extras && extras.length > 0){
 			extras = eval("(" + extras + ")");
 			data = $.extend(data, extras);
@@ -1367,6 +1397,23 @@ bc.grid = {
 					option.callback.call($page[0]);
 			}
 		});
+	},
+	/** 获取grid中选中行的id信息
+	 * @param $grid grid的jquery对象
+	 */
+	getSelected: function($grid,option){
+		var $tds = $grid.find(">.data>.left tr.ui-state-focus>td.id");
+		if($tds.length == 1){
+			return [$tds.attr("data-id")];
+		}else if($tds.length > 1){
+			var r = [];
+			$tds.each(function(i){
+				r.push($(this).attr("data-id"));
+			});
+			return r;
+		}else{
+			return [];
+		}
 	}
 };
 
@@ -1480,11 +1527,33 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 
 //单击行切换样式
 $(".bc-grid>.data>.right tr.row").live("click",function(){
+	//处理选中行的样式
 	var $this = $(this);
-	var index = $this.toggleClass("ui-state-default  ui-state-focus").index();
-	$this.closest(".right").prev()
-		.find("tr.row:eq("+index+")").toggleClass("ui-state-default  ui-state-focus")
-		.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
+	var $row = $this.closest(".right").prev().find("tr.row:eq("+index+")");
+	$row.toggleClass("ui-state-default ui-state-focus").find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+	
+	//处理单选：其他已选中行样式的恢复
+	var $grid = $this.closest(".bc-grid");
+	if($grid.hasClass("singleSelect")){
+		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
+			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
+	}
+});
+$(".bc-grid>.data>.left tr.row").live("click",function(){
+	//处理选中行的样式
+	var $this = $(this);
+	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
+	var $row = $this.closest(".left").next().find("tr.row:eq("+index+")");
+	$row.toggleClass("ui-state-default ui-state-focus");
+	$this.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+	
+	//处理单选：其他已选中行样式的恢复
+	var $grid = $this.closest(".bc-grid");
+	if($grid.hasClass("singleSelect")){
+		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
+			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
+	}
 });
 
 //双击行执行编辑
@@ -1515,7 +1584,14 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 
 //全选与反选
 $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
-	var $this = $(this).toggleClass("ui-icon-notice ui-icon-check");
+	var $this = $(this);
+	var $grid = $this.closest(".bc-grid");
+	if($grid.hasClass("singleSelect")){
+		//单选就不作处理
+		return;
+	}
+	
+	$this.toggleClass("ui-icon-notice ui-icon-check");
 	var check = $this.hasClass("ui-icon-check");
 	$this.closest(".header").next().find("tr.row")
 	.toggleClass("ui-state-focus",check)
@@ -1732,11 +1808,37 @@ bc.form = {
 		logger.info("bc.form.init");
 		
 		//绑定日期选择
-		$form.find('.bc-date[readonly!="readonly"]').datepicker({
-			//showWeek: true,
-			//showButtonPanel: true,//现时今天按钮
-			firstDay: 7,
-			dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
+		$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]').each(function(){
+			var $this = $(this);
+			var cfg = $this.attr("data-cfg");
+			if(cfg && cfg.length > 0){
+				cfg = eval("(" + cfg + ")");
+			}else{
+				cfg = {};
+			}
+			if(typeof cfg.onSelect == "string"){
+				var fn = bc.getNested(cfg.onSelect);
+				if(typeof fn != "function"){
+					alert('函数“' + cfg.onSelect + '”没有定义！');
+					return false;
+				}
+				cfg.onSelect = fn;
+			}
+			cfg = jQuery.extend({
+				//showWeek: true,//显示第几周
+				//showButtonPanel: true,//显示今天按钮、
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				firstDay: 7,
+				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
+			},cfg);
+			
+			if($this.hasClass('bc-date'))
+				$this.datepicker(cfg);
+			else if($this.hasClass('bc-datetime'))
+				$this.datetimepicker(cfg);
+			else
+				$this.timepicker(cfg);
 		});
 		
 		//绑定富文本编辑器
@@ -3096,7 +3198,9 @@ bc.desktop = {
 		$("#indexCalendar").datepicker({
 			showWeek: true,
 			//showButtonPanel: true,//现时今天按钮
-			firstDay: 7
+			firstDay: 7,
+			showOtherMonths: true,
+			selectOtherMonths: true
 		});
 		
 		bc.desktop.doResize();
