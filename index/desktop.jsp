@@ -143,13 +143,13 @@
 		</form>
 	</div>
 	</s:if>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.6.3/jquery.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.8.16/ui/minified/jquery-ui.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.8.16/ui/minified/i18n/jquery.ui.datepicker-zh-CN.min.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/i18n/jquery-ui-timepicker-zh-CN.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.6.3/jquery.min.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.8.16/ui/minified/jquery-ui.min.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.8.16/ui/minified/i18n/jquery.ui.datepicker-zh-CN.min.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/i18n/jquery-ui-timepicker-zh-CN.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.js' />"></script>
 	<script type="text/javascript">
 		bc={};
 		bc.root = "<%=request.getContextPath()%>";
