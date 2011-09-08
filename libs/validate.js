@@ -12,11 +12,11 @@ bc.validator = {
 	 * 1) undefined或required 最简单的必填域验证，值不为空即可
 	 * 2) number 数字(正数、负数、小数)
 	 * 3) digits 整数(非小数的数字类型)
-	 * 4) email 电子邮件 TODO
+	 * 4) email 电子邮件 xx@xx.com
 	 * 5) url 网址 TODO
-	 * 6) date 日期 TODO
-	 * 7) datetime 日期时间 TODO
-	 * 8) time 时间 TODO
+	 * 6) date 日期 yyyy-MM-dd
+	 * 7) datetime 日期时间 yyyy-MM-dd HH:mm[:ss]
+	 * 8) time 时间 HH:mm[:ss]
 	 * 9) phone 电话号码
 	 * min的值控制数字的最小值
 	 * max的值控制数字的最大值
@@ -147,6 +147,18 @@ bc.validator = {
 		/**email*/
 		email: function(element) {
 			return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(element.value);
+		},
+		/**yyyy-MM-dd格式的日期*/
+		date: function(element) {
+			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1]))$/.test(element.value);
+		},
+		/**yyyy-MM-dd HH:mm[:ss]格式的日期和时间*/
+		datetime: function(element) {
+			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1])) \d{1,2}:(\d{1,2}|(d{1,2}:\d{1,2}))$/.test(element.value);
+		},
+		/**HH:mm[:ss]格式的时间*/
+		time: function(element) {
+			return /^\d{1,2}:(\d{1,2}|(d{1,2}:\d{1,2}))$/.test(element.value);
 		}
 	},
 	/**
