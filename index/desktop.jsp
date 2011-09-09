@@ -13,6 +13,7 @@
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.8.16/themes/%{personalConfig.theme}/jquery-ui.css' />" />
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.css' />" />
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.css' />" />
+<link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.0.2/jquery.pnotify.default.css' />" />
 <s:if test='%{"true" == getText("app.debug")}'>
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/core.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/desktop.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
@@ -150,6 +151,7 @@
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.js' />"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/i18n/jquery-ui-timepicker-zh-CN.js' />"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.0.2/jquery.pnotify.min.js' />"></script>
 	<script type="text/javascript">
 		bc={};
 		bc.root = "<%=request.getContextPath()%>";

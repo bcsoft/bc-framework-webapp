@@ -163,3 +163,24 @@ span.ui-icon.verticalMiddle{position:absolute;top:50%;margin-top:-8px;width:16px
 
 /*普通的标题*/
 .title{border-width:0 0 1px 0 !important;padding:0.25em;}
+
+
+/* Alternate stack initial positioning. */
+.ui-pnotify.stack-topleft {
+	top: 15px;
+	left: 15px;
+	right: auto;
+}
+.ui-pnotify.stack-bottomleft {
+	bottom: 15px;
+	left: 15px;
+	top: auto;
+	right: auto;
+}
+/* This one is done through code, to show how it is done. Look down
+   at the stack_bottomright variable in the JavaScript below. */
+.ui-pnotify.stack-bottomright {
+	/* These are just CSS default values to reset the pnotify CSS. */
+	right: auto;
+	top: auto;
+}

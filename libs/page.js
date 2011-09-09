@@ -285,8 +285,9 @@ bc.page = {
 					if(option.callback.call($page[0],json) === false)
 						showMsg = false;
 				}
-				if(showMsg)
+				if(showMsg){
 					bc.msg.slide(json.msg);
+				}
 			}
 		});
 	},
