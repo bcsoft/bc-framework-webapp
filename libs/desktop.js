@@ -115,7 +115,9 @@ bc.desktop = {
 		$("#indexCalendar").datepicker({
 			showWeek: true,
 			//showButtonPanel: true,//现时今天按钮
-			firstDay: 7
+			firstDay: 7,
+			showOtherMonths: true,
+			selectOtherMonths: true
 		});
 		
 		bc.desktop.doResize();
