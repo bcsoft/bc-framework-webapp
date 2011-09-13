@@ -184,3 +184,9 @@ span.ui-icon.verticalMiddle{position:absolute;top:50%;margin-top:-8px;width:16px
 	right: auto;
 	top: auto;
 }
+
+/*jQueryUI Tabs 在表单中的样式修改*/
+.formTabs.ui-tabs { border: 0; background: none;}
+.formTabs.ui-tabs .ui-tabs-nav { border: 0; background: none;}
+.formTabs.ui-tabs .ui-tabs-panel {border-width: 1px;background-color: transparent;}
+.formTabs.ui-tabs .ui-tabs-nav li { margin-bottom: 0;}
