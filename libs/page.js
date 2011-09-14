@@ -532,3 +532,53 @@ bc.page.quickbar={
 		$item.toggleClass("ui-state-active",true).siblings().toggleClass("ui-state-active",false);
 	}
 };
+
+/**  
+ * 初始化表单中的页签页面
+ * 上下文及参数同tabs的事件参数一致
+ */
+bc.page.initTabPageLoad = function (event, ui){
+	if($.data(ui.tab, "bcInit.tabs")) return;
+	
+	var $tabPanel = $(ui.panel);
+	var $page = $tabPanel.find(">.bc-page");
+	logger.info("bc-page.size:" + $page.size());
+	if(!$page.size()) return;
+	
+	$page.height($tabPanel.height());
+	//logger.info("show:" + $page.attr("class"));
+	
+	//对视图和表单执行额外的初始化
+	var dataType = $page.attr("data-type");
+	if(dataType == "list"){//视图
+		if($page.find(".bc-grid").size()){//表格的额外处理
+			bc.grid.init($page);
+			$page.removeAttr("title");
+		}
+	}else if(dataType == "form"){//表单
+		bc.form.init($page);//如绑定日期选择事件等
+		$page.removeAttr("title");
+	}
+	
+	//标记已经初始化过
+	$.data(ui.tab, "bcInit.tabs",true);
+};
+
+/**  
+ * 表单中的页签创建事件的通用处理函数
+ * 上下文及参数同tabs的事件参数一致
+ */
+bc.page.initTabPageCreate = function (event, ui){
+	//统一设置页签内容区的高度，而不是默认的自动高度，并设置内容区内容溢出时显示滚动条
+	var $tabs = $(this);
+	var $tabPanels = $tabs.children(".ui-tabs-panel");
+	//logger.info("create tabs:" + $tabs.attr("class"));
+	var $nav = $tabs.children(".ui-tabs-nav");
+	var ch = $tabs.height() - $nav.outerHeight(true) - ($tabPanels.outerHeight(true) - $tabPanels.height());
+	$tabPanels.addClass("bc-autoScroll").height(ch);
+};
+bc.page.defaultTabOption = {
+	cache: true, 
+	create: bc.page.initTabPageCreate,
+	load: bc.page.initTabPageLoad
+};
