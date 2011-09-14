@@ -105,6 +105,9 @@ body {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
+.bc-noScroll{
+	overflow: hidden;
+}
 
 .bc-toolbar{
 	position:relative;

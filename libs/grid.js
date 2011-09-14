@@ -52,6 +52,8 @@ bc.grid = {
 				sw = $grid.outerWidth()-$grid.width() + ($data_left.outerWidth()-$data_left.width());
 				sh = $grid.outerHeight()-$grid.height();
 			}
+			logger.info("grid's sh:" + sh);
+			logger.info("grid's sw:" + sw);
 			
 			//设置右容器的宽度
 			$data_right.width(container.width()-$data_left.width()-sw);
@@ -72,8 +74,9 @@ bc.grid = {
 			var otherHeight = 0;
 			$grid.siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
-				logger.info(i + ":" + $(this).outerHeight(true));
+				logger.info("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});
+			logger.info("grid's siblings.outerHeight:" + otherHeight);
 			
 			//重设表格的高度
 			$grid.height(container.height()-otherHeight-sh);
@@ -82,6 +85,7 @@ bc.grid = {
 			$data_right.parent().siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
 			});
+			logger.info("grid's data.otherHeight:" + otherHeight);
 			
 			//data右容器高度
 			$data_right.height(container.height()-otherHeight - sh);
@@ -100,10 +104,11 @@ bc.grid = {
 			//$header_right.find(".table").width(newTableWidth);
 			
 			//data左容器高度(要考虑data右容器水平滚动条高度)
+			//logger.info("grid's data.clientHeight:" + $data_right[0].clientHeight);
 			$grid.find(".data .left").height($data_right[0].clientHeight);
 			
-			logger.info(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
-			logger.info("width2:" + $data_table.width());
+			//logger.info(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
+			//logger.info("width2:" + $data_table.width());
 		}
 	},
 	/**
@@ -113,6 +118,7 @@ bc.grid = {
 	 * @param dir 排序的方向：1--正向，-1--反向
 	 */
 	sortTable: function($tbody,tdIndex,dir){
+		if(!$tbody.size()) return;
 		var tbody = $tbody[0];
 		var rows = tbody.rows;
 		var trs = new Array(rows.length);
@@ -477,6 +483,7 @@ $(".bc-grid>.header>.right tr.row>td.sortable").live("click",function(){
 		
 		//根据上述排序结果对id所在table进行排序
 		var $tbody = $grid.find(">.data>.left>table.table>tbody");
+		if(!$tbody.size()) return;
 		var rows = $tbody[0].rows;
 		var trs = new Array(rows.length);
 		for(var i=0;i<trs.length;i++){
