@@ -109,17 +109,25 @@ bc.msg = {
     },
     /** 自动提醒框的slide简化使用版:滑出滑入效果 */
     slide: function(msg,timeout,width,height){
-    	//构造容器
-    	var me = $('<div class="bc-slide ui-widget ui-state-highlight ui-corner-all"><div class="content"></div></div>');
-    	me.find(".content").append(msg || 'undefined message!');
-    	//显示
-    	me.hide().appendTo("body").slideDown("fast",function(){
-			//自动隐藏
-			setTimeout(function(){
-		    	me.slideUp("slow",function(){
-		    		me.unbind().remove();
-				});
-			},timeout || 2000);
+//    	//构造容器
+//    	var me = $('<div class="bc-slide ui-widget ui-state-highlight ui-corner-all"><div class="content"></div></div>');
+//    	me.find(".content").append(msg || 'undefined message!');
+//    	//显示
+//    	me.hide().appendTo("body").slideDown("fast",function(){
+//			//自动隐藏
+//			setTimeout(function(){
+//		    	me.slideUp("slow",function(){
+//		    		me.unbind().remove();
+//				});
+//			},timeout || 2000);
+//		});
+    	
+		$.pnotify({
+			//pnotify_title: '系统提示',
+			pnotify_text: msg,
+			pnotify_animation: 'slide'//show,bounce,fade,slide,fade
+			,pnotify_addclass: "stack-bottomright"
+			,pnotify_stack: {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15}
 		});
     },
     /** 自动提醒框的fade简化使用版：渐渐显示消失效果 */
@@ -131,3 +139,5 @@ bc.msg = {
     	alert("TODO");
     }
 };
+$.pnotify.defaults.pnotify_delay = 2000;
+$.pnotify.defaults.pnotify_history=false;
