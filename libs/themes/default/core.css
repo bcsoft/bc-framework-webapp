@@ -50,8 +50,8 @@ body {
  * @date 2011-04-13
  */
 /**修改字体*/
-.ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
+.bc .ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
+.bc .ui-widget input, .bc .ui-widget select, .bc .ui-widget textarea, .bc .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
 /**修改对话框*/
 .bc-ui-dialog {padding: 0 6px 6px 6px;}
 .bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
