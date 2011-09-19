@@ -61,14 +61,13 @@ div.bc-tabs.layout-top div.tabsContainer a.prev span.ui-icon,div.bc-tabs.layout-
 	/*zoom:2;*/
 }
 
+/** 页签 */
 div.bc-tabs.layout-top div.slideContainer {
 	position: relative !important;
 }
-
 div.bc-tabs.layout-top div.tabsContainer.sliding div.slideContainer {
 	margin: 0 20px;
 }
-
 div.bc-tabs.layout-top ul.tabs {
 	border: 0;
 	width: 10000px;
@@ -77,11 +76,9 @@ div.bc-tabs.layout-top ul.tabs {
 	margin: 0;
 	padding: 0;
 }
-
 div.bc-tabs.layout-top ul.tabs li {
 	float: left;
 }
-
 div.bc-tabs.layout-top ul.tabs li a {
 	display: block;
 	line-height: 18px;
@@ -95,31 +92,29 @@ div.bc-tabs.layout-top ul.tabs li a {
 div.bc-tabs.layout-top ul.tabs li a.ui-state-active{
 	cursor: default;
 }
-
 div.bc-tabs.layout-top ul.tabs li.tab {
 	border-left-width: 0;
 }
-
 div.bc-tabs.layout-top ul.tabs li.tab.first {
 	border-left-width: 1px;
 }
-
 div.bc-tabs.layout-top ul.tabs li.tab.active {
 	border-bottom: 0;
 	padding-bottom: 1px;
 }
 
+/** 内容 */
 div.bc-tabs.layout-top div.contentContainer {
 	position: relative;
 	z-index: 5;
 	min-height: 80px;
-	overflow: auto;
+	overflow: hidden;
 	/*height: 277px;*/
 }
 div.bc-tabs.layout-top div.contentContainer div.content{
-	position: relative;
+	position: absolute;
 	display:none;
-	height:100%;
+	height:auto;
 	width:100%;
 }
 div.bc-tabs.layout-top div.contentContainer div.content.active{
