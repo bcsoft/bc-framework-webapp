@@ -110,13 +110,25 @@ div.bc-tabs.layout-top div.contentContainer {
 	min-height: 80px;
 	overflow: hidden;
 	/*height: 277px;*/
+	padding: 0;
 }
 div.bc-tabs.layout-top div.contentContainer div.content{
-	position: absolute;
+	position: relative;
 	display:none;
-	height:auto;
 	width:100%;
+	height:100%;
+	overflow: auto;
+	margin:0;
+	padding:0;
+	border:0;
 }
-div.bc-tabs.layout-top div.contentContainer div.content.active{
+div.bc-tabs.layout-top div.contentContainer div.content div.loading{
+	height:31px;
+	line-height:31px;
+	background: url(images/loader/loader02_32x32.gif) no-repeat;
+	text-indent: 40px;
+	margin:10px;
+}
+div.bc-tabs.layout-top div.contentContainer div.content.active,div.bc-tabs.layout-top div.contentContainer div.content.loading{
 	display:block;
 }

@@ -20,24 +20,23 @@
 			contentAnimateMethod:"slideH",//内容的动画显示方法
 			contentAnimateDuration:600,//内容的动画显示时间
 			contentAnimateEasing:"easeInOutExpo",//内容的动画擦除方法
-			tabsAnimateDuration:150,//页签的的动画显示时间
+			tabsAnimateDuration:150,//页签的动画显示时间
 			tabsAnimateEasing:"",//页签的动画擦除方法
-			autoHeight: true,
-			autoHeightAnimateDuration: 200,
-			totalHeight: 0// tabs的总高度，默认根据内容的高度自动扩展
+			heightAnimateDuration:150,//内容区高度变化的动画显示时间
+			heightAnimateEasing:"easeInOutExpo",//内容区高度变化的动画擦除方法
+			minHeight: 80,//内容区的最小高度
+			height: 'auto',// tabs的总高度，默认根据内容的高度自动扩展
+			loadingText:"正在加载 ......"
 		},
 
 		_create : function() {
 			var _this = this;
 			
-			//内容容器高度设置
-			if(!this.options.autoHeight && this.options.totalHeight > 0){
-				var h = this.options.totalHeight - this.element.find(">.tabsContainer").outerHeight(true);
-				var $contentContainer = this.element.find(">.contentContainer");
-				h = h - ($contentContainer.outerHeight(true) - $contentContainer.height());
-				h = Math.max(h,80);
-				$contentContainer.height(h);
-			}
+			//获取基于dom的配置
+			var cfg = this.element.attr("data-cfg");
+			if(cfg && cfg.length > 0)
+				cfg = eval("(" + cfg + ")");
+			jQuery.extend(this.options,cfg);
 			
 			//标记水平垂直的参数
 			if (this.options.direction == 'horizontal') {
@@ -80,6 +79,15 @@
 			if(!$activeTab.size())
 				this.load(0,true);
 			
+			//内容容器高度设置
+			if(!(this.options.height == "auto")){
+				var h = this.options.height - this.element.find(">.tabsContainer").outerHeight(true);
+				var $contentContainer = this.element.find(">.contentContainer");
+				h = h - ($contentContainer.outerHeight(true) - $contentContainer.height());
+				h = Math.max(h,this.options.minHeight);
+				$contentContainer.height(h);
+			}
+			
 			//处理鼠标的滚轮事件
 			if (this.element.find("div.tabsContainer.sliding").size() && this.options.tabsScroll == true && $.fn.mousewheel) {
 				this.element.find("ul.tabs").mousewheel(function(event, delta) {
@@ -106,8 +114,30 @@
 		
 		/** 初始化前后按钮的显示 */
 		_initPrevNext : function() {
-			logger.info("tabs:_initPrevNext");
+			logger.info("tabs._initPrevNext");
 			var $tabs = this.element.find("ul.tabs");
+			var $lastElem = $tabs.children('li:last');
+			var $slidElem = $tabs.parent();
+			var usePrevNext = ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)) > ($slidElem.width() - this.options.offsetNext);
+			
+			//自动创建前后按钮
+			logger.info("tabs._initPrevNext:usePrevNext=" + usePrevNext);
+			$tabs.children('li').each(function(i){
+				logger.info("tabs._initPrevNext:-" + i + "=" + $(this).position().left);
+			});
+				
+			logger.info("tabs._initPrevNext:0=" + ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)));
+			logger.info("tabs._initPrevNext:1=" + ($slidElem.width() - this.options.offsetNext));
+			if(usePrevNext && $slidElem.siblings().size() == 0){
+				$slidElem.parent().append(''+
+					'<div class="prev ui-widget-content">'+
+						'<a href="#" class="prev ui-state-default ui-state-disabled"><span class="ui-icon ui-icon-triangle-1-w"></span></a>'+
+					'</div>'+
+					'<div class="next ui-widget-content">'+
+						'<a href="#" class="next ui-state-default"><span class="ui-icon ui-icon-triangle-1-e"></span></a>'+
+					'</div>')
+				.toggleClass("sliding",true);
+			}
 			
 			//prev
 			if ($tabs.children('li:first').position()[this.options.val.lt] == (0 + this.options.offsetPrev)) {
@@ -117,9 +147,7 @@
 			}
 
 			//next
-			var $lastElem = $tabs.children('li:last');
-			var $slidElem = $tabs.parent();
-			if (($lastElem.position()[this.options.val.tl] + $lastElem[this.options.val.wh](true)) <= ($slidElem.width() - this.options.offsetNext)) {
+			if (!usePrevNext) {
 				this._disableNext();
 			} else {
 				this._enableNext();
@@ -128,20 +156,26 @@
 		
 		/** 启用向后按钮 */
 		_enableNext : function() {
-			this.element.find("div.next>a.next").toggleClass("ui-state-disabled",false);
+			this.element.find("div.next>a.next").toggleClass("ui-state-disabled",false)
+			.hover(function(){$(this).addClass("ui-state-hover");},
+					function(){$(this).removeClass("ui-state-hover");});
 		},
 		/** 禁用向后按钮 */
 		_disableNext : function() {
-			this.element.find("div.next>a.next").toggleClass("ui-state-disabled",true);
+			this.element.find("div.next>a.next").toggleClass("ui-state-disabled",true)
+			.unbind();
 		},
 		/** 启用向前按钮 */
 		_enablePrev : function() {
 			logger.info("_enablePrev");
-			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",false);
+			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",false)
+			.hover(function(){$(this).addClass("ui-state-hover");},
+					function(){$(this).removeClass("ui-state-hover");});
 		},
 		/** 禁用向前按钮 */
 		_disablePrev : function() {
-			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",true);
+			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",true)
+			.unbind();
 		},
 		
 		/** 显示tab */
@@ -177,24 +211,27 @@
 		
 		/** 水平方向动画显示内容 */
 		_slideH : function($tab,$content) {
+			var _this = this;
 			logger.info("tabs._slideH");
 			var w = $content.width();
-			var newHeight = $content.outerHeight(true);
-			logger.info("tabs._slideH:newHeight=" + newHeight);
 			//上一内容
 			$oldContent = this.element.find(">.contentContainer>.content.active");
-			//var oldHeight = $oldContent.outerHeight(true);
+			var $contentContainer = $oldContent.parent();
 			
 			//高度动画
-//			if(this.options.autoHeight){
-//				$content.parent().animate({
-//					height: newHeight
-//				}, this.options.contentAnimateDuration, this.options.contentAnimateEasing);
-//			}
+			if(this.options.height == "auto"){
+				var oldHeight = $oldContent.outerHeight(true);
+				var newHeight = $content.outerHeight(true);
+				logger.info("tabs._slideH:oldHeight=" + oldHeight + ",newHeight=" + newHeight);
+				$contentContainer.stop().css({height: oldHeight})
+				.animate({height: newHeight}, this.options.heightAnimateDuration, this.options.heightAnimateEasing);
+			}
 			
+			$contentContainer.children(".content").stop();
 			//水平动画
 			var rightToLleft = ($tab.index() > $tab.data("preTabIndex"));
 			$oldContent.css({
+				position: "absolute",
 				left: "0px"
 			}).animate({
 				left: rightToLleft ? -w : w
@@ -202,10 +239,16 @@
 				$oldContent.toggleClass('active', false);
 			});
 			$content.css({
+				position: "absolute",
 				left: rightToLleft ? w : -w
 			}).toggleClass('active', true).animate({
 				left: "0px"
-			}, this.options.contentAnimateDuration, this.options.contentAnimateEasing);
+			}, this.options.contentAnimateDuration, this.options.contentAnimateEasing,function(){
+				$oldContent.add($content).css({position: "relative"});
+				if(_this.options.height == "auto")
+					$contentContainer.css({height:"auto"});
+				logger.info("tabs._slideH:newHeight=" + $content.height());
+			});
 		},
 		
 		/** 加载tab */
@@ -234,13 +277,16 @@
 			
 			//创建内容div，并显示加载动画
 			var $contentContainer = this.element.find(">div.contentContainer");
-			var $content = $('<div id="'+id+'" class="content">loading...</div>').appendTo($contentContainer);
+			//$contentContainer.children(".active").toggleClass("active",false);
+			var $content = $('<div id="'+id+'" class="content"><div class="loading">'+this.options.loadingText+'</div></div>')
+				.appendTo($contentContainer);
+			this._showTab($tab,$content);
 			
 			var _this = this;
 			//通过ajax加载页签的内容
 			$.get(url,function(html){
 				$content.empty().append(html);
-				_this._showTab($tab,$content);
+				//_this._showTab($tab,$content);
 			});
 			
 			return this;

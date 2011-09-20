@@ -1,11 +1,11 @@
 /**
- * 对$.ajax的通用封装
+ * 对$.ajax的通用封装:全局ajax设置
  * 
  * @author rongjihuang@gmail.com
  * @date 2011-04-24
  */
-bc.ajax = function(option){
-	option = $.extend({
+jQuery(function($){
+	var defaultAjaxOption = {
 		type: "POST",
 		error: function(request, textStatus, errorThrown) {
 			if(bc.page.showError){
@@ -16,6 +16,10 @@ bc.ajax = function(option){
 				alert(request.responseText || request.responseHTML);
 			}
 		}
-	},option);
-	jQuery.ajax(option);
-};
+	};
+	$.ajaxSetup(defaultAjaxOption);
+	bc.ajax = function(option){
+		option = $.extend(defaultAjaxOption,option);
+		jQuery.ajax(option);
+	};
+});
