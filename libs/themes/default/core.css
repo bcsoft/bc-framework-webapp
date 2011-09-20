@@ -92,6 +92,10 @@ body {
 }
 
 
+.bc-page{
+	width: 100%;
+	height: 100%;
+}
 .bc-page,.bc-page.ui-dialog-content{
 	overflow: hidden;
 }

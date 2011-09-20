@@ -102,9 +102,6 @@
 			this.element.undelegate().unbind();
 		},
 
-		_setOption : function(key, value) {
-		},
-
 	    _getIndex: function( index ) {
 			if ( typeof index == "string" ) {
 				index = this.element.find(".tabs>tab>a[href$=" + index + "]" ).parent().index();
@@ -207,6 +204,9 @@
 			}else{
 				$content.add($content.siblings(".active")).toggleClass("active");
 			}
+			
+			//抛出show事件
+			this._trigger("show",null,{content:$content,tab:$tab});
 		},
 		
 		/** 水平方向动画显示内容 */
@@ -286,6 +286,8 @@
 			//通过ajax加载页签的内容
 			$.get(url,function(html){
 				$content.empty().append(html);
+				//抛出加载完毕事件
+				_this._trigger("load",null,{content:$content,tab:$tab});
 				//_this._showTab($tab,$content);
 			});
 			
