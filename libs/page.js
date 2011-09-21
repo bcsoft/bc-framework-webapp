@@ -577,8 +577,39 @@ bc.page.initTabPageCreate = function (event, ui){
 	var ch = $tabs.height() - $nav.outerHeight(true) - ($tabPanels.outerHeight(true) - $tabPanels.height());
 	$tabPanels.addClass("bc-autoScroll").height(ch);
 };
-bc.page.defaultTabOption = {
+bc.page.defaultTabsOption = {
 	cache: true, 
 	create: bc.page.initTabPageCreate,
 	load: bc.page.initTabPageLoad
+};
+
+/**  
+ * 表单中的bctabs页签的默认配置
+ * 上下文及参数同bctabs的事件参数一致
+ */
+bc.page.defaultBcTabsOption = {
+	load:function(event,ui){
+		logger.info("load:" +  $(this).attr("class"));
+		var $page = ui.content.children(".bc-page");
+		logger.info("tabs.load:bc-page.size=" + $page.size());
+		if(!$page.size()) return;
+		
+		//$page.height($tabPanel.height());
+		
+		//对视图和表单执行额外的初始化
+		var dataType = $page.attr("data-type");
+		logger.info("tabs.load:dataType=" + dataType);
+		if(dataType == "list"){//视图
+			if($page.find(".bc-grid").size()){//表格的额外处理
+				bc.grid.init($page);
+				$page.removeAttr("title");
+			}
+		}else if(dataType == "form"){//表单
+			bc.form.init($page);//如绑定日期选择事件等
+			$page.removeAttr("title");
+		}
+	},
+	show:function(event,ui){
+		logger.info("show:" + ui.content.attr("class"));
+	}
 };

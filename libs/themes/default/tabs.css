@@ -1,0 +1,134 @@
+/**
+ * tabs组件水平布局的样式设置
+ *
+ * @author rongjihuang@gmail.com
+ * @date 2011-09-18
+ */
+div.bc-tabs.layout-top {
+	position: relative;
+	clear: both;
+	width: 775px;
+	color: #616161
+}
+
+div.bc-tabs.layout-top div.tabsContainer{
+	position: relative;
+	z-index: 100;
+	width: 100% !important;
+	height: 40px;
+	margin-bottom: -1px;
+	overflow: hidden
+}
+
+/** 前后按钮 */
+div.bc-tabs.layout-top div.tabsContainer div.prev,div.bc-tabs.layout-top div.tabsContainer div.next {
+	position: absolute;
+	z-index: 110;
+	top:0;
+	height: 38px;
+	width: 19px;
+	outline: none;
+	display: none;
+}
+div.bc-tabs.layout-top div.tabsContainer.sliding div.prev,div.bc-tabs.layout-top div.tabsContainer.sliding div.next {
+	display: block;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev,div.bc-tabs.layout-top div.tabsContainer a.next {
+	display:block;
+	height: 100%;
+	width: 100%;
+	border: 0;
+	cursor: pointer;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev.ui-state-disabled,div.bc-tabs.layout-top div.tabsContainer a.next.ui-state-disabled {
+	cursor: default;
+}
+div.bc-tabs.layout-top div.tabsContainer div.prev {
+	left: 0;
+}
+div.bc-tabs.layout-top div.tabsContainer div.next {
+	right: 0;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev.ui-state-active,div.bc-tabs.layout-top div.tabsContainer a.next.ui-state-active{
+	cursor: pointer;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev span.ui-icon,div.bc-tabs.layout-top div.tabsContainer a.next span.ui-icon{
+	position: absolute;
+	top:50%;
+	margin-top:-8px;
+	left:50%;
+	margin-left:-8px;
+	/*zoom:2;*/
+}
+
+/** 页签 */
+div.bc-tabs.layout-top div.slideContainer {
+	position: relative !important;
+}
+div.bc-tabs.layout-top div.tabsContainer.sliding div.slideContainer {
+	margin: 0 20px;
+}
+div.bc-tabs.layout-top ul.tabs {
+	border: 0;
+	width: 10000px;
+	height: 40px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+div.bc-tabs.layout-top ul.tabs li {
+	float: left;
+}
+div.bc-tabs.layout-top ul.tabs li a {
+	display: block;
+	line-height: 18px;
+	text-decoration: none;
+	outline: none;
+	border:0;
+	margin: 0;
+	padding: 10px 20px;
+	cursor: pointer;
+}
+div.bc-tabs.layout-top ul.tabs li a.ui-state-active{
+	cursor: default;
+}
+div.bc-tabs.layout-top ul.tabs li.tab {
+	border-left-width: 0;
+}
+div.bc-tabs.layout-top ul.tabs li.tab.first {
+	border-left-width: 1px;
+}
+div.bc-tabs.layout-top ul.tabs li.tab.active {
+	border-bottom: 0;
+	padding-bottom: 1px;
+}
+
+/** 内容 */
+div.bc-tabs.layout-top div.contentContainer {
+	position: relative;
+	z-index: 5;
+	min-height: 80px;
+	overflow: hidden;
+	/*height: 277px;*/
+	padding: 0;
+}
+div.bc-tabs.layout-top div.contentContainer div.content{
+	position: relative;
+	display:none;
+	width:100%;
+	height:100%;
+	overflow: auto;
+	margin:0;
+	padding:0;
+	border:0;
+}
+div.bc-tabs.layout-top div.contentContainer div.content div.loading{
+	height:31px;
+	line-height:31px;
+	background: url(images/loader/loader02_32x32.gif) no-repeat;
+	text-indent: 40px;
+	margin:10px;
+}
+div.bc-tabs.layout-top div.contentContainer div.content.active,div.bc-tabs.layout-top div.contentContainer div.content.loading{
+	display:block;
+}

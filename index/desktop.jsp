@@ -16,6 +16,7 @@
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.0.2/jquery.pnotify.default.css' />" />
 <s:if test='%{"true" == getText("app.debug")}'>
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/core.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/tabs.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/desktop.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/shortcuts.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
@@ -152,6 +153,8 @@
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/i18n/jquery-ui-timepicker-zh-CN.js' />"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.js' />"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.0.2/jquery.pnotify.min.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/easing/1.3/jquery.easing.js' />"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.4/jquery.mousewheel.min.js' />"></script>
 	<script type="text/javascript">
 		bc={};
 		bc.root = "<%=request.getContextPath()%>";
@@ -190,6 +193,7 @@
 		<script type="text/javascript" src="<s:url value='/bc/libs/logger.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/debug.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 		<script type="text/javascript" src="<s:url value='/bc/libs/browser.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+		<script type="text/javascript" src="<s:url value='/bc/libs/tabs.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 	</s:if>
 	<s:else>
 		<script type="text/javascript" src="<s:url value='/bc/libs/bc.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
