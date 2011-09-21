@@ -6,9 +6,9 @@
 	<s:form name="browserForm" theme="simple">
 		<div class="browsersTitle">支持Html5的浏览器：</div>
 		<ul class="browsers ui-widget-content">
-			<li class="browser ui-corner-all ui-state-default" data-puid="chrome12.0.742.112" title="点击下载">
+			<li class="browser ui-corner-all ui-state-default" data-puid="chrome14.0.835.186" title="点击下载">
 				<span class="browser-icon chrome12"></span>
-				<span class="text">(22MB) 谷歌浏览器Chrome12.0</span>
+				<span class="text">(23MB) 谷歌浏览器Chrome14.0</span>
 			</li>
 			<li class="browser ui-corner-all ui-state-default" data-puid="firefox5.0" title="点击下载">
 				<span class="browser-icon firefox5"></span>

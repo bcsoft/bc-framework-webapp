@@ -36,7 +36,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<div id="msg"></div>
+	<div id="msg" data-auth='${bcauth}'></div>
 	<script type="text/javascript">
 		var bc={};
 		bc.root = "<%=request.getContextPath()%>";
