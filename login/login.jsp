@@ -14,6 +14,7 @@
 	href="<s:url value='/bc/libs/themes/default/login.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 </head>
 <body>
+	<div id="systemInfo"><s:text name="app.title"/>&nbsp;<span>v<s:text name="app.version"/></span></div>
 	<table id="main" cellpadding="0" cellspacing="0" border="0">
 		<tbody>
 			<tr>
@@ -44,6 +45,7 @@
 	</script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.6.3/jquery.min.js'/>"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jshash/2.2/md5-min.js'/>"></script>
+<%-- 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/browser/browser.js'/>"></script> --%>
 	<script type="text/javascript" src="<s:url value='/bc/login/login.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 </body>
 </html>
