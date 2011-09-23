@@ -32,7 +32,7 @@
 						</div>
 					</div></td>
 				<td id="btnTd">
-					<button type="button" id="loginBtn">登录</button></td>
+					<button type="button" id="loginBtn">登&nbsp;录</button></td>
 			</tr>
 		</tbody>
 	</table>
