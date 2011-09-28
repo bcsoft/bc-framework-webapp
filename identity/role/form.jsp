@@ -4,10 +4,7 @@
 	data-saveUrl='<s:url value="/bc/role/save" />'
 	data-js='<s:url value="/bc/identity/identity.js" />,<s:url value="/bc/identity/role/form.js" />'
 	data-initMethod='bc.roleForm.init'
-	data-option='{
-		"buttons":[{"text":"<s:text name="label.save"/>","click":"bc.roleForm.save"}],
-		"width":618,"minWidth":250,"minHeight":250,"modal":false
-	}'>
+	data-option='<s:property value="%{formPageOption}"/>'>
 	<s:form name="roleForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 			<tbody>

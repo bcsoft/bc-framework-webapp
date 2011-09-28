@@ -4,10 +4,7 @@
 	data-saveUrl='<s:url value="/bc/user/save" />'
 	data-js='<s:url value="/bc/identity/identity.js" />,<s:url value="/bc/identity/user/form.js" />'
 	data-initMethod='bc.userForm.init'
-	data-option='{
-		"buttons":[{"text":"<s:text name="label.save"/>","click":"bc.userForm.save"}],
-		"width":665,"minWidth":250,"minHeight":250,"modal":false
-	}'>
+	data-option='<s:property value="%{formPageOption}"/>'>
 	<s:form name="userForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0" style="width:650px;">
 			<tbody>

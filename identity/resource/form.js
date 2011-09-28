@@ -1,5 +1,7 @@
 bc.resourceForm = {
-	init : function() {
+	init : function(option,readonly) {
+		if(readonly) return;
+		
 		var $form = $(this);
 		//绑定选择隶属模块的按钮事件处理
 		$form.find("#selectBelong,:input[name='e.belong.name']").click(function(){

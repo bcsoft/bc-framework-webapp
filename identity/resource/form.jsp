@@ -4,10 +4,7 @@
 	data-saveUrl='<s:url value="/bc/resource/save" />'
 	data-js='<s:url value="/bc/identity/resource/form.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.resourceForm.init'
-	data-option='{
-		"buttons":[{"text":"<s:text name="label.save"/>","action":"save"}],
-		"width":618,"minWidth":250,"minHeight":250,"modal":false
-	}'>
+	data-option='<s:property value="%{formPageOption}"/>'>
 	<s:form name="resourceForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 			<tbody>
