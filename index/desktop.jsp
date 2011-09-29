@@ -35,7 +35,7 @@
 	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
 </style>
 </head>
-<body style='font-size:<s:property value="personalConfig.font" />px;'>
+<body style='font-size:<s:property value="personalConfig.font" />px;' class="bc">
 	<noscript>
 		<div>请设置浏览器开启 JavaScript功能，然后重试。</div>
 	</noscript>
