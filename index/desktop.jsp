@@ -5,9 +5,9 @@
 <head>
 <title><s:text name="app.title" /></title>
 <script type="text/javascript">var ts = "<s:text name="app.ts" />";</script>
-<link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.9m6/themes/base/jquery-ui.css' />" />	
+<link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.9pre/themes/base/jquery-ui.css' />" />	
+<link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.8.16/themes/%{personalConfig.theme}/jquery-ui.css' />" />	
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.css' />" />
-<link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.css' />" />
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.0.2/jquery.pnotify.default.css' />" />
 <s:if test='%{"true" == getText("app.debug")}'>
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/core.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
@@ -28,32 +28,19 @@
 <div id="desktop" class="bc-desktop">
 	<!-- 系统菜单条 -->
 	<div id="top" class="ui-widget-header">
-		<ul id="sysmenu" class="menubar">
-			<li>
-				<a href="#File">File</a>
-				<ul>
-					<li><a href="#Open...">Open...</a></li>
-					<li class="ui-state-disabled">Open recent...</li>
-					<li><a href="#Save">Save</a></li>
-					<li><a href="#Save as...">Save as...</a></li>
-					<li><a href="#Close">Close</a></li>
-					<li><a href="#Quit">Quit</a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="#Edit">Edit</a>
-				<ul>
-					<li><a href="#Copy">Copy</a></li>
-					<li><a href="#Cut">Cut</a></li>
-					<li class="ui-state-disabled">Paste</li>
-				</ul>
-			</li>
-		</ul>
+		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />">
+		<s:property value="startMenu" escapeHtml="false"/>
+		<table class="rightTopIcons" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td class="rightTopIcon" id="quickLogout" title="点击注销并退出系统"><a>&nbsp;</a></td>
+				<td class="rightTopIcon" id="quickShowHide" title="显示桌面"><a class="ui-widget-header">&nbsp;</a></td>
+			</tr>
+		</table>
 	</div>
 	
-	<div id="middle">
+	<div id="middle" class="ui-widget-content">
 		<!-- 桌面区域 -->
-		<div id="center" class="ui-widget-content bc-shortcuts">
+		<div id="center" class="bc-shortcuts">
 			<s:iterator value="shortcuts" status="stuts">
 			<s:if test="resource == null">
 				<a class="shortcut" data-m="false"
@@ -89,24 +76,37 @@
 		</div>
 		
 		<!-- 右边栏 -->
-		<div id="right" class="ui-widget-content ui-state-highlight">
-	
+		<div id="right">
+			<div class="item" id="indexCalendar"></div>
+			<div class="item" id="bulletinBoard"></div>
 		</div>
 	</div>
 	
 	<!-- 任务条 -->
 	<div id="bottom" class="ui-widget-header">
-
+		<table id="quickbar" cellpadding="0" cellspacing="0" border="0">
+			<tbody >
+			<tr>
+				<td id="quickButtons">&nbsp;</td>
+			</tr>
+			</tbody>
+		</table>
 	</div>
+</div>
+<!-- 空白框架，通常用于下载附件 -->
+<iframe id="blank" name="blank" style="width:0; height:0; display:hidden;" src="about:blank" scrolling="no" frameborder="0"></iframe>
+<div id="copyrightBar"><a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright" /></a></div>
+<div id="loginInfo">
+<s:property value="context.user.name" />(<s:property value="context.belong.name" />) 登录于  <s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>
+<br/><s:text name="app.title"/> v<s:text name="app.version"/>
 </div>
 
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.6.3/jquery.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' />"></script>
-<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9m6/ui/jquery-ui.js' />"></script>
-<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9m6/ui/i18n/jquery.ui.datepicker-zh-CN.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/i18n/jquery.ui.datepicker-zh-CN.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/i18n/jquery-ui-timepicker-zh-CN.js' />"></script>
-<script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/menu/3.0/fg.menu.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.0.2/jquery.pnotify.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/easing/1.3/jquery.easing.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.4/jquery.mousewheel.min.js' />"></script>
@@ -117,7 +117,7 @@
 	if (bc.debug) {
 		bc.ts = new Date().getTime();//首次打开主页的时间
 		jQuery(function() {
-			logger.toggle();
+			//logger.toggle();
 			//logger.enable("debug");
 		});
 	}else{

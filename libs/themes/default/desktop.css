@@ -59,6 +59,7 @@ div.bc-desktop>#middle>#center {
 	bottom: 0;
 	overflow: auto;
 	border-width: 0;
+	display: none;
 }
 
 div.bc-desktop>#middle>#right {
@@ -70,6 +71,60 @@ div.bc-desktop>#middle>#right {
 	overflow: auto;
 	bottom: 0;
 	border-width: 0;
+	text-align: center;
+}
+
+/* 右侧面板内的容器 */
+div.bc-desktop>#middle>#right .item {
+	margin: 4px;
+	float: right;
+}
+
+/** 系统图标 */
+img.sysIcon {
+	margin: 2px;
+}
+
+/** 系统菜单 */
+ul.bc-menubar {
+	border-width: 0;
+	font-size: 15px;
+	position: absolute;
+	width: auto;
+	display: none;
+	top: 0;
+	left: 52px;
+}
+
+ul.bc-menubar,ul.bc-menubar>li.ui-menubar-item,ul.bc-menubar>li.ui-menubar-item>a
+	{
+	height: 100%;
+}
+
+ul.bc-menubar>li.ui-menubar-item>a.ui-menubar-link>span.ui-button-text {
+	padding-left: 0.4em;
+	padding-right: 0.4em;
+}
+
+/**右上角图标*/
+div.bc-desktop>#top>table.rightTopIcons {
+	border: 0;
+	position: absolute;
+	width: auto;
+	height: 100%;
+	top: 0;
+	right: 0;
+}
+
+div.bc-desktop>#top>table.rightTopIcons td.rightTopIcon {
+	width: 40px;
+	vertical-align: middle;
+}
+
+div.bc-desktop>#top>table.rightTopIcons #quickShowHide.rightTopIcon {
+	width: 12px;
+	vertical-align: top;
+	height: 100%;
 }
 
 /**桌面快捷方式*/
@@ -89,6 +144,8 @@ a.shortcut {
 
 a.shortcut:HOVER {
 	border-color: green;
+	/*background: -webkit-radial-gradient(10% 30%, white, black);
+	background:-moz-radial-gradient(10% 30%, white, black);*/
 }
 
 a.shortcut .icon {
@@ -111,4 +168,170 @@ a.shortcut .text {
 	cursor: default;
 	text-align: center;
 	padding: 2px;
+}
+
+/**快速任务栏*/
+#quickbar {
+	position: absolute;
+	z-index: 10000;
+	height: 40px; /*这个不设置的话会导致元素高度全部计算诡异*/
+	top: 0;
+	/*background-color: #9EB1A3;
+	overflow: hidden;
+	background: url(images/bg_quickbar1.png) repeat-x top left;*/
+	width: 100%;
+	z-index: 10 !important;
+	border-width: 0 0 1px 0;
+	table-layout: fixed;
+	margin: 0;
+	padding: 0;
+}
+
+#quickbar>tbody,#quickbar>tr {
+	margin: 0;
+	padding: 0;
+}
+
+#quickShowHide {
+	width: 12px;
+	vertical-align: top;
+	height: 100%;
+}
+
+#quickShowHide a {
+	/*background: url(images/showHide.png) repeat-y 0 0;*/
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-decoration: none;
+	border-width: 0 0 0 1px;
+}
+
+#quickShowHide a:HOVER {
+	background-position: -24px 0;
+}
+
+#quickLogout {
+	width: 40px;
+	vertical-align: middle;
+	height: 100%;
+}
+
+#quickLogout a {
+	background: url(images/logout.png) repeat-y 0 0;
+	display: block;
+	width: 32px;
+	height: 32px;
+	text-decoration: none;
+	margin: auto;
+}
+
+#quickButtons {
+	height: 100%;
+	vertical-align: middle;
+}
+
+#quickButtons .quickButton {
+	float: left;
+	margin: 2px 0px 2px 2px;
+	padding: 8px;
+	border: 1px solid black;
+	text-decoration: none;
+	cursor: default;
+	position: relative;
+}
+
+#quickButtons .quickButton .ui-icon {
+	position: absolute;
+	display: block;
+	width: 16px;
+	height: 16px;
+	top: 50%;
+	margin-top: -8px;
+	padding: 0;
+	border: 0;
+}
+
+#quickButtons .quickButton .text {
+	padding-left: 20px;
+	padding-right: 2px;
+}
+
+#quickButtons .quickButton .loading {
+	background: url(images/loader/loader01_16x16.gif) no-repeat 0 0;
+}
+
+/*版权相关*/
+#copyrightBar {
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	overflow: hidden;
+	overflow: hidden;
+	text-align: center;
+	z-index: 10;
+}
+
+#copyrightBar a { /*display:block;
+	width:100%;height:100%;*/
+	font-size: 0.75em;
+	color: #888;
+	text-decoration: none;
+	cursor: pointer;
+	margin: auto;
+}
+
+/* 登录信息 */
+#loginInfo {
+	position: absolute;
+	bottom: 40px;
+	left: 0;
+	/*height: 30px;
+	line-height: 30px;*/
+	font-size: 0.75em;
+	color: #888;
+	padding: 4px;
+	z-index: 11;
+}
+
+/*异常页面*/
+table.error {
+	table-layout: fixed;
+	padding: 0;
+	margin: 0;
+	margin: 10px auto;
+	min-width: 300px;
+}
+
+table.error td {
+	text-align: left;
+	vertical-align: middle;
+}
+
+table.error td.icon {
+	width: 52px;
+	overflow: hidden;
+}
+
+table.error td.icon div.icon {
+	background: url(images/shortcuts/shortcuts.png) no-repeat -468px -312px;
+	width: 52px;
+	height: 52px;
+}
+
+table.error td.label {
+	font-size: 32px;
+}
+
+table.error .detail {
+	font-size: 12px;
+	color: #888;
+}
+
+table.error .detail span.more {
+	text-decoration: underline;
+	cursor: pointer;
 }
