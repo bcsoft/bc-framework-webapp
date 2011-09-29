@@ -4,10 +4,7 @@
 	data-saveUrl='<s:url value="/bc/unit/save" />'
 	data-js='<s:url value="/bc/identity/unit/form.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.unitForm.init'
-	data-option='{
-		"buttons":[{"text":"<s:text name="label.save"/>","click":"bc.unitForm.save"}],
-		"width":618,"minWidth":250,"minHeight":250,"modal":false
-	}'>
+	data-option='<s:property value="%{formPageOption}"/>'>
 	<s:form name="unitForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 			<tbody>
@@ -76,6 +73,7 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="belong.id" />
 		<s:hidden name="assignRoleIds" />
+		<s:hidden name="readonly" />
 		<p class="formComment"><s:text name="unit.form.comment"/></p>
 	</s:form>
 </div>

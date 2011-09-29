@@ -60,7 +60,14 @@ bc.page = {
 				}
 				function _init(){
 					//从dom构建并显示桌面组件
-					var cfg = jQuery.parseJSON($dom.attr("data-option"));
+					var cfg = $dom.attr("data-option");
+					//logger.info("cfg=" + cfg);
+					if(cfg && /^\{/.test($.trim(cfg))){
+						//对json格式进行解释
+						cfg = eval("(" + cfg + ")");
+					}else{
+						cfg = {};
+					}
 					cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
 					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 					if(!$dom.attr("title"))
@@ -112,10 +119,10 @@ bc.page = {
 					var dataType = $dom.attr("data-type");
 					if(dataType == "list"){//视图
 						if($dom.find(".bc-grid").size()){//表格的额外处理
-							bc.grid.init($dom);
+							bc.grid.init($dom,cfg,cfg.readonly);
 						}
 					}else if(dataType == "form"){//表单
-						bc.form.init($dom);//如绑定日期选择事件等
+						bc.form.init($dom,cfg,cfg.readonly);//如绑定日期选择事件等
 					}
 					
 					//插入最大化|还原按钮、最小化按钮
@@ -129,7 +136,7 @@ bc.page = {
 					if(method){
 						method = bc.getNested(method);
 						if(typeof method == "function"){
-							method.call($dom, cfg);
+							method.call($dom, cfg,cfg.readonly);
 						}else{
 							alert("undefined function: " + $dom.attr("data-initMethod"));
 						}

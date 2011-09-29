@@ -1,5 +1,7 @@
 bc.roleForm = {
-	init : function() {
+	init : function(option,readonly) {
+		if(readonly) return;
+		
 		var $form = $(this);
 		
 		var liTpl = '<li class="horizontal ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}">'+

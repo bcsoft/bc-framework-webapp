@@ -1,5 +1,7 @@
 bc.userForm = {
-	init : function() {
+	init : function(option,readonly) {
+		if(readonly) return;
+		
 		var $form = $(this);
 		//绑定选择上级的按钮事件处理
 		$form.find("#selectBelong,:input[name='belong.name']").click(function(){
