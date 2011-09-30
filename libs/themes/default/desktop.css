@@ -272,7 +272,8 @@ a.shortcut .text {
 	overflow: hidden;
 	overflow: hidden;
 	text-align: center;
-	z-index: 10;
+	z-index: 3;
+	cursor:pointer;
 }
 
 #copyrightBar a { /*display:block;
