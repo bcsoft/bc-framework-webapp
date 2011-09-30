@@ -19,6 +19,7 @@ body {
 	font-family: "微软雅黑", "宋体", sans-serif;
 	/*font-size: 62.5%;使1em=12px,浏览器默认为1em=16px,ie:_font-size: 63%;*/
 	font-size: 14px;/*调整为默认14px | 0.87em*/
+	background-color:#f5f5f5;
 }
 
 .hide{display:none;}
@@ -49,10 +50,15 @@ body {
  * @date 2011-04-13
  */
 /**修改字体*/
-.ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
+.bc .ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
+.bc .ui-widget input, .bc .ui-widget select, .bc .ui-widget textarea, .bc .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
 /**修改对话框*/
-.bc-ui-dialog {padding: 0 6px 6px 6px;}
+.bc-ui-dialog {
+	padding: 0 6px 6px 6px;
+	box-shadow:1px 1px 10px #000;	
+	/**fix ie:记得将ie-css3.htc文件放在网站的根目录下哦，用相对路径是不行的！<--拖动对话框会见到大块的黑色背景，还是没法使用
+	behavior: url(ie-css3.htc);*/
+}
 .bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
 .bc-ui-dialog .ui-dialog-titlebar.ui-widget-header {border-width: 0;background: none;}
 /*
@@ -91,6 +97,10 @@ body {
 }
 
 
+.bc-page{
+	width: 100%;
+	height: 100%;
+}
 .bc-page,.bc-page.ui-dialog-content{
 	overflow: hidden;
 }
@@ -104,6 +114,9 @@ body {
 .bc-autoScroll-y{
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+.bc-noScroll{
+	overflow: hidden;
 }
 
 .bc-toolbar{
@@ -164,6 +177,169 @@ span.ui-icon.verticalMiddle{position:absolute;top:50%;margin-top:-8px;width:16px
 /*普通的标题*/
 .title{border-width:0 0 1px 0 !important;padding:0.25em;}
 
+
+/* Alternate stack initial positioning. */
+.ui-pnotify.stack-topleft {
+	top: 15px;
+	left: 15px;
+	right: auto;
+}
+.ui-pnotify.stack-bottomleft {
+	bottom: 15px;
+	left: 15px;
+	top: auto;
+	right: auto;
+}
+/* This one is done through code, to show how it is done. Look down
+   at the stack_bottomright variable in the JavaScript below. */
+.ui-pnotify.stack-bottomright {
+	/* These are just CSS default values to reset the pnotify CSS. */
+	right: auto;
+	top: auto;
+}
+
+/*jQueryUI Tabs 在表单中的样式修改*/
+.formTabs.ui-tabs { border: 0; background: none;}
+.formTabs.ui-tabs .ui-tabs-nav { border: 0; background: none;}
+.formTabs.ui-tabs .ui-tabs-panel {border-width: 1px;background-color: transparent;}
+.formTabs.ui-tabs .ui-tabs-nav li { margin-bottom: 0;}
+
+/**
+ * tabs组件水平布局的样式设置
+ *
+ * @author rongjihuang@gmail.com
+ * @date 2011-09-18
+ */
+div.bc-tabs.layout-top {
+	position: relative;
+	clear: both;
+	width: 775px;
+	color: #616161
+}
+
+div.bc-tabs.layout-top div.tabsContainer{
+	position: relative;
+	z-index: 100;
+	width: 100% !important;
+	height: 34px;
+	margin-bottom: -1px;
+	overflow: hidden
+}
+
+/** 前后按钮 */
+div.bc-tabs.layout-top div.tabsContainer div.prev,div.bc-tabs.layout-top div.tabsContainer div.next {
+	position: absolute;
+	z-index: 110;
+	top:0;
+	height: 32px;
+	width: 19px;
+	outline: none;
+	display: none;
+}
+div.bc-tabs.layout-top div.tabsContainer.sliding div.prev,div.bc-tabs.layout-top div.tabsContainer.sliding div.next {
+	display: block;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev,div.bc-tabs.layout-top div.tabsContainer a.next {
+	display:block;
+	height: 100%;
+	width: 100%;
+	border: 0;
+	cursor: pointer;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev.ui-state-disabled,div.bc-tabs.layout-top div.tabsContainer a.next.ui-state-disabled {
+	cursor: default;
+}
+div.bc-tabs.layout-top div.tabsContainer div.prev {
+	left: 0;
+}
+div.bc-tabs.layout-top div.tabsContainer div.next {
+	right: 0;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev.ui-state-active,div.bc-tabs.layout-top div.tabsContainer a.next.ui-state-active{
+	cursor: pointer;
+}
+div.bc-tabs.layout-top div.tabsContainer a.prev span.ui-icon,div.bc-tabs.layout-top div.tabsContainer a.next span.ui-icon{
+	position: absolute;
+	top:50%;
+	margin-top:-8px;
+	left:50%;
+	margin-left:-8px;
+	/*zoom:2;*/
+}
+
+/** 页签 */
+div.bc-tabs.layout-top div.slideContainer {
+	position: relative !important;
+}
+div.bc-tabs.layout-top div.tabsContainer.sliding div.slideContainer {
+	margin: 0 20px;
+}
+div.bc-tabs.layout-top ul.tabs {
+	border: 0;
+	width: 10000px;
+	height: 34px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+div.bc-tabs.layout-top ul.tabs li {
+	float: left;
+	height: 32px;
+}
+div.bc-tabs.layout-top ul.tabs li a {
+	display: block;
+	height: 100%;
+	line-height: 32px;
+	text-decoration: none;
+	outline: none;
+	border:0;
+	margin: 0;
+	padding: 0px 10px;
+	cursor: pointer;
+}
+div.bc-tabs.layout-top ul.tabs li a.ui-state-active{
+	cursor: default;
+}
+div.bc-tabs.layout-top ul.tabs li.tab {
+	border-left-width: 0;
+}
+div.bc-tabs.layout-top ul.tabs li.tab.first {
+	border-left-width: 1px;
+}
+div.bc-tabs.layout-top ul.tabs li.tab.active {
+	border-bottom: 0;
+	padding-bottom: 1px;
+}
+
+/** 内容 */
+div.bc-tabs.layout-top div.contentContainer {
+	position: relative;
+	z-index: 5;
+	min-height: 80px;
+	overflow: hidden;
+	/*height: 277px;*/
+	padding: 0;
+}
+div.bc-tabs.layout-top div.contentContainer div.content{
+	position: relative;
+	display:none;
+	width:100%;
+	height:100%;
+	overflow: auto;
+	margin:0;
+	padding:0;
+	border:0;
+}
+div.bc-tabs.layout-top div.contentContainer div.content div.loading{
+	height:31px;
+	line-height:31px;
+	background: url(images/loader/loader02_32x32.gif) no-repeat;
+	text-indent: 40px;
+	margin:10px;
+}
+div.bc-tabs.layout-top div.contentContainer div.content.active,div.bc-tabs.layout-top div.contentContainer div.content.loading{
+	display:block;
+}
 /**
  * 桌面主题样式
  *
@@ -176,63 +352,122 @@ html,body {
 	width: 100%;
 }
 
-body { /*background: url(images/bg_page.png) repeat top left;
-	background-color: #FAFAFA;*/
-	background-color: #CCD9C8;
+body { /*background: url(images/bg_page.png) repeat top left;*/
+	background-color: #f5f5f5;
 }
 
-body.ui-widget-content {
+/** 桌面布局 -- 上-中(中-右)-下 */
+div.bc-desktop {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+div.bc-desktop>#top {
+	z-index: 2;
+	position: absolute;
+	height: 34px;
+	width: 100%;
+	overflow: visible;
+	border-width: 0 0 1px 0;
+}
+
+div.bc-desktop>#bottom {
+	z-index: 3;
+	position: absolute;
+	height: 39px;
+	width: 100%;
+	bottom: 0;
+	overflow: visible;
+	border-width: 1px 0 0 0;
+}
+
+div.bc-desktop>#middle {
+	z-index: 1;
+	position: absolute;
+	width: 100%;
+	top: 35px;
+	bottom: 40px;
+	overflow: auto;
 	border-width: 0;
 }
 
-body .ui-widget-overlay {
-	opacity: .40;
-	filter: Alpha(Opacity =     40);
-}
-/*加载动画*/
-#loader {
-	height: 32px;
-	width: auto;
-	overflow: hidden;
-	border: 0;
+div.bc-desktop>#middle>#center {
 	position: absolute;
-	margin: 10px;
-	font-size: 24px;
-	background-image: url(images/loader/loader01_32x32.gif);
-	background-repeat: no-repeat;
-	height: 32px;
-	text-indent: 34px;
-	display: none;
-	line-height: 32px;
-	z-index: 10000;
-}
-
-/*测试用*/
-#heavyControl {
-	position: absolute;
-	border: 1px solid #ccc;
-	right: 10px;
-	bottom: 60px;
-	width: 300px;
-	padding: 4px;
-}
-
-/*整体布局*/
-#layout {
-	height: 100%;
-	width: 100%;
-	overflow: hidden;
-	border: 0;
-	position: absolute;
-	z-index: 0;
-}
-
-/*桌面区域*/
-#desktop {
-	position: absolute;
-	/*width: 100%;*/
-	top: 40px;
+	right: 240px;
+	top: 0;
+	bottom: 0;
 	overflow: auto;
+	border-width: 0;
+	display: none;
+}
+
+div.bc-desktop>#middle>#right {
+	position: absolute;
+	width: 240px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	overflow: auto;
+	bottom: 0;
+	border-width: 0;
+	text-align: center;
+}
+
+/* 右侧面板内的容器 */
+div.bc-desktop>#middle>#right .item {
+	margin: 4px;
+	float: right;
+}
+
+/** 系统图标 */
+img.sysIcon {
+	margin: 2px;
+}
+
+/** 系统菜单 */
+ul.bc-menubar {
+	border-width: 0;
+	font-size: 15px;
+	position: absolute;
+	width: auto;
+	display: none;
+	top: 0;
+	left: 52px;
+	z-index: 1000000;
+}
+
+ul.bc-menubar,ul.bc-menubar>li.ui-menubar-item,ul.bc-menubar>li.ui-menubar-item>a
+	{
+	height: 100%;
+}
+
+ul.bc-menubar>li.ui-menubar-item>a.ui-menubar-link>span.ui-button-text {
+	padding-left: 0.4em;
+	padding-right: 0.4em;
+}
+
+/**右上角图标*/
+div.bc-desktop>#top>table.rightTopIcons {
+	border: 0;
+	position: absolute;
+	width: auto;
+	height: 100%;
+	top: 0;
+	right: 0;
+}
+
+div.bc-desktop>#top>table.rightTopIcons td.rightTopIcon {
+	width: 40px;
+	vertical-align: middle;
+}
+
+div.bc-desktop>#top>table.rightTopIcons #quickShowHide.rightTopIcon {
+	width: 12px;
+	vertical-align: top;
+	height: 100%;
 }
 
 /**桌面快捷方式*/
@@ -252,6 +487,8 @@ a.shortcut {
 
 a.shortcut:HOVER {
 	border-color: green;
+	/*background: -webkit-radial-gradient(10% 30%, white, black);
+	background:-moz-radial-gradient(10% 30%, white, black);*/
 }
 
 a.shortcut .icon {
@@ -293,27 +530,9 @@ a.shortcut .text {
 	padding: 0;
 }
 
-#quickbar>tbody,#quickbar>tbody>tr {
+#quickbar>tbody,#quickbar>tr {
 	margin: 0;
 	padding: 0;
-}
-
-#quickStart {
-	width: 40px;
-	vertical-align: middle;
-}
-
-#quickStart a {
-	cursor: pointer;
-	height: 32px;
-	width: 32px;
-	background: url(images/browser/chrome32.png) no-repeat;
-	text-decoration: none;
-	display: block;
-}
-
-#quickStart.ui-state-active {
-	border: 0;
 }
 
 #quickShowHide {
@@ -385,22 +604,6 @@ a.shortcut .text {
 	background: url(images/loader/loader01_16x16.gif) no-repeat 0 0;
 }
 
-/*设置字体大小*/
-#setting {
-	position: fixed;
-	_position: absolute;
-	top: 40px;
-	right: 20px;
-	overflow: visible;
-	z-index: 100;
-	*width: 150px; /*ie6,ie7*/
-	display: none;
-}
-
-#fontSliderContainer {
-	margin-bottom: 10px;
-}
-
 /*版权相关*/
 #copyrightBar {
 	position: absolute;
@@ -412,6 +615,8 @@ a.shortcut .text {
 	overflow: hidden;
 	overflow: hidden;
 	text-align: center;
+	z-index: 3;
+	cursor:pointer;
 }
 
 #copyrightBar a { /*display:block;
@@ -423,63 +628,26 @@ a.shortcut .text {
 	margin: auto;
 }
 
-#poweredBy {
-	margin: 5px;
-	float: right;
-}
-
-.bc-slide,.bc-slide.ui-state-high {
-	border: 2px solid red;
-}
-
-#poweredBy span {
-	display: block;
-	width: 83px;
-	height: 34px;
-	background: url(images/poweredBy.png) 0 0 no-repeat;
-}
-
-#rightPanel {
-	position: absolute;
-	right: 0;
-	top: 50px;
-}
-
-#rightPanel .item {
-	margin: 4px;
-}
-
-.imgtest {
-	display: block;
-	background: url(images/shortcuts/shortcuts.png) no-repeat -52px 0;
-	width: 52px;
-	height: 52px;
-	zoom: 0.5;
-	width: 52px;
-	height: 52px;
-}
-
-.imgtest:HOVER {
-	zoom: 1;
-}
-
+/* 登录信息 */
 #loginInfo {
 	position: absolute;
-	bottom: 0;
+	bottom: 40px;
 	left: 0;
 	/*height: 30px;
 	line-height: 30px;*/
 	font-size: 0.75em;
 	color: #888;
 	padding: 4px;
+	z-index: 11;
 }
 
 /*异常页面*/
 table.error {
 	table-layout: fixed;
-	padding: 0;margin: 0;
+	padding: 0;
+	margin: 0;
 	margin: 10px auto;
-	min-width:300px;
+	min-width: 300px;
 }
 
 table.error td {
@@ -492,7 +660,7 @@ table.error td.icon {
 	overflow: hidden;
 }
 
-table.error td.icon div.icon{
+table.error td.icon div.icon {
 	background: url(images/shortcuts/shortcuts.png) no-repeat -468px -312px;
 	width: 52px;
 	height: 52px;
@@ -501,11 +669,13 @@ table.error td.icon div.icon{
 table.error td.label {
 	font-size: 32px;
 }
+
 table.error .detail {
 	font-size: 12px;
 	color: #888;
 }
-table.error .detail span.more{
+
+table.error .detail span.more {
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -633,30 +803,31 @@ a.shortcut .i0909 {background-position: -468px -468px;}
  */
 
 /**table重设*/
-table.table{
-	/*width: 100%;
+table.table { /*width: 100%;
 	height: 100%;*/
 	table-layout: fixed;
 	border-spacing: 0;
 	background: none;
-	padding:0;
-	margin:0;
+	padding: 0;
+	margin: 0;
 	cursor: default;
 	overflow: visible;
 }
 
 /**表格的数据加载动画*/
-#bc-grid-loader{
+#bc-grid-loader {
 	position: absolute;
-	width:32px;height:32px;
+	width: 32px;
+	height: 32px;
 	background: url("images/loader/loader01_32x32.gif") no-repeat;
-	padding:0;margin:0;
+	padding: 0;
+	margin: 0;
 }
 
 /**表格*/
-.bc-grid{
-	padding:0;
-	margin:0;
+.bc-grid {
+	padding: 0;
+	margin: 0;
 }
 
 /**表格头*/
@@ -668,102 +839,123 @@ table.table{
 	position: relative;
 	/*height: 100px;*/
 }
-.bc-grid .header td{
+
+.bc-grid .header td {
 	text-align: center;
 }
-.bc-grid .header td .wrapper{
-	position: relative;/*用于sortableIcon的定位*/
+
+.bc-grid .header td .wrapper {
+	position: relative; /*用于sortableIcon的定位*/
 }
-.bc-grid .header td .sortableIcon{
+
+.bc-grid .header td .sortableIcon {
 	position: absolute;
-	right:0;
-	top:50%;
+	right: 0;
+	top: 50%;
 	margin-top: -8px;
 }
 
-.bc-grid tr.row.ui-state-default {background: none;}
-.bc-grid tr.row.even{/*filter: alpha(opacity=50);	opacity: 0.5;*/}
+.bc-grid tr.row.ui-state-default {
+	background: none;
+}
 
-.bc-grid .left{
+.bc-grid tr.row.even { /*filter: alpha(opacity=50);	opacity: 0.5;*/
+	
+}
+
+.bc-grid .left {
 	border-right: 1px solid #aaa;
 }
 
-.bc-grid .left,.bc-grid .left table.table,.bc-grid .left table.table td.id{
+.bc-grid .left,.bc-grid .left table.table,.bc-grid .left table.table td.id
+	{
 	width: 40px;
 	overflow: hidden;
 }
-.bc-grid .left,.bc-grid .right{
+
+.bc-grid .left,.bc-grid .right {
 	float: left;
 }
 
-.bc-grid .data .left{
-	/*height: 83px;*/
+.bc-grid .data .left { /*height: 83px;*/
+	
 }
-.bc-grid .data .right{
+
+.bc-grid .data .right {
 	overflow: auto;
 	/*height: 100px;*/
 	/*width: 200px;*/
 }
-.bc-grid .header .right{
+
+.bc-grid .header .right {
 	overflow: hidden;
 	/*width: 183px;*/
 }
-.bc-grid .header.ui-state-default{
+
+.bc-grid .header.ui-state-default {
 	border: 0;
 }
-.bc-grid .right table.table{
-	/*width: 300px;*/
+
+.bc-grid .right table.table { /*width: 300px;*/
+	
 }
 
-.bc-grid td.first,.bc-grid td.middle,.bc-grid td.last,.bc-grid td.id{
+.bc-grid td.first,.bc-grid td.middle,.bc-grid td.last,.bc-grid td.id {
 	border-bottom: 1px solid #ccc;
 	padding-left: 0.25em;
 	padding-right: 0.25em;
-	
 	/*内容溢出控制*/
-	overflow:hidden;
-	text-overflow:ellipsis;
-	-o-text-overflow:ellipsis;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
 	-icab-text-overflow: ellipsis;
 	-khtml-text-overflow: ellipsis;
 	-moz-text-overflow: ellipsis;
 	-webkit-text-overflow: ellipsis;
-	white-space:nowrap;
+	white-space: nowrap;
 	-moz-binding: url('ellipsis.xml#ellipsis');
 }
 
-.bc-grid .header td.empty{
+.bc-grid .header td.empty {
 	border-bottom: 1px solid #ccc;
 	padding: 0;
 }
-.bc-grid td.middle,.bc-grid td.last{
+
+.bc-grid td.middle,.bc-grid td.last {
 	border-left: 1px solid #ccc;
 }
-.bc-grid tr.row{
-	height:1.8em;
+
+.bc-grid tr.row {
+	height: 1.8em;
 }
-.bc-grid td.id{
-	/*border-right: 1px solid #ccc;*/
+
+.bc-grid td.id { /*border-right: 1px solid #ccc;*/
+	
 }
-.bc-grid td.id span.ui-icon{
-	display:none;
+
+.bc-grid td.id span.ui-icon {
+	display: none;
 }
-.bc-grid td.id span.ui-icon-check,.bc-grid td.id span.ui-icon-notice{
-	display:inline-block;
-	*display:block;/*ie6,ie7*/
-	*float: left;/*ie6,ie7*/
+
+.bc-grid td.id span.ui-icon-check,.bc-grid td.id span.ui-icon-notice {
+	display: inline-block;
+	*display: block; /*ie6,ie7*/
+	*float: left; /*ie6,ie7*/
 }
-.bc-grid .header td.id span.ui-icon{
-	margin:auto;/*现代浏览器居中处理*/
+
+.bc-grid .header td.id span.ui-icon {
+	margin: auto; /*现代浏览器居中处理*/
 }
-.bc-grid .pager{
+
+.bc-grid .pager {
 	clear: both;
 	padding: 0.2em;
 }
-.bc-grid .pager.ui-widget-content{
-	border-left-width:0;
-	border-right-width:0;
-	border-bottom-width:0;
+
+.bc-grid .pager.ui-widget-content {
+	border-left-width: 0;
+	border-right-width: 0;
+	border-bottom-width: 0;
 }
 
 .bc-grid .pager {
@@ -772,6 +964,7 @@ table.table{
 	padding: 0;
 	clear: both;
 }
+
 .bc-grid .pager li {
 	position: relative;
 	margin: 2px;
@@ -780,36 +973,47 @@ table.table{
 	float: left;
 	list-style: none;
 }
+
 .bc-grid .pager li span.ui-icon {
 	float: left;
 	margin: 0 4px;
 }
-.bc-grid .pager .pagerIconGroup{
+
+.bc-grid .pager .pagerIconGroup {
 	padding: 2px 2px;
 }
-.bc-grid .pager .pagerIconGroup a.pagerIcon{
+
+.bc-grid .pager .pagerIconGroup a.pagerIcon {
 	margin: 0;
 	border: 0;
 }
-.bc-grid .pager .pagerIconGroup span.ui-icon{
+
+.bc-grid .pager .pagerIconGroup span.ui-icon {
 	margin: 2px;
 }
+
 .bc-grid .pager li span.pageNo,.bc-grid .pager li span.pageSize {
 	float: left;
 	height: 16px;
 	font-size: 12px;
 }
+
 .bc-grid .pager li span.pageNo {
 	margin: 2px 4px;
 }
+
 .bc-grid .pager li span.pageSize {
 	margin: 2px 4px;
 }
+
 .bc-grid .pager li a {
 	float: left;
 	display: block;
 }
 
+.bc-grid>.data>.right tr.row a.bc-link {
+	text-decoration: underline;
+}
 /**
  * 表单样式
  *

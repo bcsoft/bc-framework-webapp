@@ -189,13 +189,13 @@ bc.formatNumber = function(num, pattern) {
 	return retstr.replace(/^,+/, '').replace(/\.$/, '');
 }
 /**
- * 对$.ajax的通用封装
+ * 对$.ajax的通用封装:全局ajax设置
  * 
  * @author rongjihuang@gmail.com
  * @date 2011-04-24
  */
-bc.ajax = function(option){
-	option = $.extend({
+jQuery(function($){
+	var defaultAjaxOption = {
 		type: "POST",
 		error: function(request, textStatus, errorThrown) {
 			if(bc.page.showError){
@@ -206,9 +206,13 @@ bc.ajax = function(option){
 				alert(request.responseText || request.responseHTML);
 			}
 		}
-	},option);
-	jQuery.ajax(option);
-};
+	};
+	$.ajaxSetup(defaultAjaxOption);
+	bc.ajax = function(option){
+		option = $.extend(defaultAjaxOption,option);
+		jQuery.ajax(option);
+	};
+});
 /**
  * 消息框控件
  *
@@ -320,17 +324,25 @@ bc.msg = {
     },
     /** 自动提醒框的slide简化使用版:滑出滑入效果 */
     slide: function(msg,timeout,width,height){
-    	//构造容器
-    	var me = $('<div class="bc-slide ui-widget ui-state-highlight ui-corner-all"><div class="content"></div></div>');
-    	me.find(".content").append(msg || 'undefined message!');
-    	//显示
-    	me.hide().appendTo("body").slideDown("fast",function(){
-			//自动隐藏
-			setTimeout(function(){
-		    	me.slideUp("slow",function(){
-		    		me.unbind().remove();
-				});
-			},timeout || 2000);
+//    	//构造容器
+//    	var me = $('<div class="bc-slide ui-widget ui-state-highlight ui-corner-all"><div class="content"></div></div>');
+//    	me.find(".content").append(msg || 'undefined message!');
+//    	//显示
+//    	me.hide().appendTo("body").slideDown("fast",function(){
+//			//自动隐藏
+//			setTimeout(function(){
+//		    	me.slideUp("slow",function(){
+//		    		me.unbind().remove();
+//				});
+//			},timeout || 2000);
+//		});
+    	
+		$.pnotify({
+			//pnotify_title: '系统提示',
+			pnotify_text: msg,
+			pnotify_animation: 'slide'//show,bounce,fade,slide,fade
+			,pnotify_addclass: "stack-bottomright"
+			,pnotify_stack: {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15}
 		});
     },
     /** 自动提醒框的fade简化使用版：渐渐显示消失效果 */
@@ -342,6 +354,8 @@ bc.msg = {
     	alert("TODO");
     }
 };
+$.pnotify.defaults.pnotify_delay = 2000;
+$.pnotify.defaults.pnotify_history=false;
 /**
  * 表单验证常用函数
  * 
@@ -356,11 +370,11 @@ bc.validator = {
 	 * 1) undefined或required 最简单的必填域验证，值不为空即可
 	 * 2) number 数字(正数、负数、小数)
 	 * 3) digits 整数(非小数的数字类型)
-	 * 4) email 电子邮件 TODO
+	 * 4) email 电子邮件 xx@xx.com
 	 * 5) url 网址 TODO
-	 * 6) date 日期 TODO
-	 * 7) datetime 日期时间 TODO
-	 * 8) time 时间 TODO
+	 * 6) date 日期 yyyy-MM-dd
+	 * 7) datetime 日期时间 yyyy-MM-dd HH:mm[:ss]
+	 * 8) time 时间 HH:mm[:ss]
 	 * 9) phone 电话号码
 	 * min的值控制数字的最小值
 	 * max的值控制数字的最大值
@@ -491,6 +505,18 @@ bc.validator = {
 		/**email*/
 		email: function(element) {
 			return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(element.value);
+		},
+		/**yyyy-MM-dd格式的日期*/
+		date: function(element) {
+			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1]))$/.test(element.value);
+		},
+		/**yyyy-MM-dd HH:mm[:ss]格式的日期和时间*/
+		datetime: function(element) {
+			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1])) \d{1,2}:(\d{1,2}|(d{1,2}:\d{1,2}))$/.test(element.value);
+		},
+		/**HH:mm[:ss]格式的时间*/
+		time: function(element) {
+			return /^\d{1,2}:(\d{1,2}|(d{1,2}:\d{1,2}))$/.test(element.value);
 		}
 	},
 	/**
@@ -582,7 +608,14 @@ bc.page = {
 				}
 				function _init(){
 					//从dom构建并显示桌面组件
-					var cfg = jQuery.parseJSON($dom.attr("data-option"));
+					var cfg = $dom.attr("data-option");
+					//logger.info("cfg=" + cfg);
+					if(cfg && /^\{/.test($.trim(cfg))){
+						//对json格式进行解释
+						cfg = eval("(" + cfg + ")");
+					}else{
+						cfg = {};
+					}
 					cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
 					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 					if(!$dom.attr("title"))
@@ -634,10 +667,10 @@ bc.page = {
 					var dataType = $dom.attr("data-type");
 					if(dataType == "list"){//视图
 						if($dom.find(".bc-grid").size()){//表格的额外处理
-							bc.grid.init($dom);
+							bc.grid.init($dom,cfg,cfg.readonly);
 						}
 					}else if(dataType == "form"){//表单
-						bc.form.init($dom);//如绑定日期选择事件等
+						bc.form.init($dom,cfg,cfg.readonly);//如绑定日期选择事件等
 					}
 					
 					//插入最大化|还原按钮、最小化按钮
@@ -651,7 +684,7 @@ bc.page = {
 					if(method){
 						method = bc.getNested(method);
 						if(typeof method == "function"){
-							method.call($dom, cfg);
+							method.call($dom, cfg,cfg.readonly);
 						}else{
 							alert("undefined function: " + $dom.attr("data-initMethod"));
 						}
@@ -807,8 +840,9 @@ bc.page = {
 					if(option.callback.call($page[0],json) === false)
 						showMsg = false;
 				}
-				if(showMsg)
+				if(showMsg){
 					bc.msg.slide(json.msg);
+				}
 			}
 		});
 	},
@@ -1053,6 +1087,88 @@ bc.page.quickbar={
 		$item.toggleClass("ui-state-active",true).siblings().toggleClass("ui-state-active",false);
 	}
 };
+
+/**  
+ * 初始化表单中的页签页面
+ * 上下文及参数同tabs的事件参数一致
+ */
+bc.page.initTabPageLoad = function (event, ui){
+	if($.data(ui.tab, "bcInit.tabs")) return;
+	
+	var $tabPanel = $(ui.panel);
+	var $page = $tabPanel.find(">.bc-page");
+	logger.info("bc-page.size:" + $page.size());
+	if(!$page.size()) return;
+	
+	$page.height($tabPanel.height());
+	//logger.info("show:" + $page.attr("class"));
+	
+	//对视图和表单执行额外的初始化
+	var dataType = $page.attr("data-type");
+	if(dataType == "list"){//视图
+		if($page.find(".bc-grid").size()){//表格的额外处理
+			bc.grid.init($page);
+			$page.removeAttr("title");
+		}
+	}else if(dataType == "form"){//表单
+		bc.form.init($page);//如绑定日期选择事件等
+		$page.removeAttr("title");
+	}
+	
+	//标记已经初始化过
+	$.data(ui.tab, "bcInit.tabs",true);
+};
+
+/**  
+ * 表单中的页签创建事件的通用处理函数
+ * 上下文及参数同tabs的事件参数一致
+ */
+bc.page.initTabPageCreate = function (event, ui){
+	//统一设置页签内容区的高度，而不是默认的自动高度，并设置内容区内容溢出时显示滚动条
+	var $tabs = $(this);
+	var $tabPanels = $tabs.children(".ui-tabs-panel");
+	//logger.info("create tabs:" + $tabs.attr("class"));
+	var $nav = $tabs.children(".ui-tabs-nav");
+	var ch = $tabs.height() - $nav.outerHeight(true) - ($tabPanels.outerHeight(true) - $tabPanels.height());
+	$tabPanels.addClass("bc-autoScroll").height(ch);
+};
+bc.page.defaultTabsOption = {
+	cache: true, 
+	create: bc.page.initTabPageCreate,
+	load: bc.page.initTabPageLoad
+};
+
+/**  
+ * 表单中的bctabs页签的默认配置
+ * 上下文及参数同bctabs的事件参数一致
+ */
+bc.page.defaultBcTabsOption = {
+	load:function(event,ui){
+		logger.info("load:" +  $(this).attr("class"));
+		var $page = ui.content.children(".bc-page");
+		logger.info("tabs.load:bc-page.size=" + $page.size());
+		if(!$page.size()) return;
+		
+		//$page.height($tabPanel.height());
+		
+		//对视图和表单执行额外的初始化
+		var dataType = $page.attr("data-type");
+		logger.info("tabs.load:dataType=" + dataType);
+		if(dataType == "list"){//视图
+			if($page.find(".bc-grid").size()){//表格的额外处理
+				bc.grid.init($page);
+				$page.removeAttr("title");
+			}
+		}else if(dataType == "form"){//表单
+			bc.form.init($page);//如绑定日期选择事件等
+			$page.removeAttr("title");
+		}
+	},
+	show:function(event,ui){
+		logger.info("show:" + ui.content.attr("class"));
+	}
+};
+
 /**
  * 工具条的全局处理
  * 
@@ -1218,6 +1334,8 @@ bc.grid = {
 				sw = $grid.outerWidth()-$grid.width() + ($data_left.outerWidth()-$data_left.width());
 				sh = $grid.outerHeight()-$grid.height();
 			}
+			logger.info("grid's sh:" + sh);
+			logger.info("grid's sw:" + sw);
 			
 			//设置右容器的宽度
 			$data_right.width(container.width()-$data_left.width()-sw);
@@ -1238,8 +1356,9 @@ bc.grid = {
 			var otherHeight = 0;
 			$grid.siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
-				logger.info(i + ":" + $(this).outerHeight(true));
+				logger.info("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});
+			logger.info("grid's siblings.outerHeight:" + otherHeight);
 			
 			//重设表格的高度
 			$grid.height(container.height()-otherHeight-sh);
@@ -1248,6 +1367,7 @@ bc.grid = {
 			$data_right.parent().siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
 			});
+			logger.info("grid's data.otherHeight:" + otherHeight);
 			
 			//data右容器高度
 			$data_right.height(container.height()-otherHeight - sh);
@@ -1266,10 +1386,11 @@ bc.grid = {
 			//$header_right.find(".table").width(newTableWidth);
 			
 			//data左容器高度(要考虑data右容器水平滚动条高度)
+			//logger.info("grid's data.clientHeight:" + $data_right[0].clientHeight);
 			$grid.find(".data .left").height($data_right[0].clientHeight);
 			
-			logger.info(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
-			logger.info("width2:" + $data_table.width());
+			//logger.info(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
+			//logger.info("width2:" + $data_table.width());
 		}
 	},
 	/**
@@ -1279,6 +1400,7 @@ bc.grid = {
 	 * @param dir 排序的方向：1--正向，-1--反向
 	 */
 	sortTable: function($tbody,tdIndex,dir){
+		if(!$tbody.size()) return;
 		var tbody = $tbody[0];
 		var rows = tbody.rows;
 		var trs = new Array(rows.length);
@@ -1582,6 +1704,25 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 	}
 });
 
+//超链接的点击处理
+$(".bc-grid>.data>.right tr.row .bc-link").live("click",function(event){
+	var $this = $(this);
+	var url = $this.attr("href");
+	//var mtype = $this.attr("data-mtype");
+	if(url && url.length >= 0){
+		bc.page.newWin({
+			url:url,
+			mid: $this.attr("data-mid") || url,
+			name: $this.attr("data-title") || $this.text() || "未定义"
+		});
+	}else{
+		alert("超链接的 href 为空！");
+	}
+	
+	event.preventDefault();
+	return false;
+});
+
 //全选与反选
 $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 	var $this = $(this);
@@ -1643,6 +1784,7 @@ $(".bc-grid>.header>.right tr.row>td.sortable").live("click",function(){
 		
 		//根据上述排序结果对id所在table进行排序
 		var $tbody = $grid.find(">.data>.left>table.table>tbody");
+		if(!$tbody.size()) return;
 		var rows = $tbody[0].rows;
 		var trs = new Array(rows.length);
 		for(var i=0;i<trs.length;i++){
@@ -1804,42 +1946,8 @@ bc.form = {
 	 * 在表单加载后由系统自动调用进行绑定，
 	 * 函数的第一参数为表单元素的容器对象
 	 */
-	init : function($form) {
-		logger.info("bc.form.init");
-		
-		//绑定日期选择
-		$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]').each(function(){
-			var $this = $(this);
-			var cfg = $this.attr("data-cfg");
-			if(cfg && cfg.length > 0){
-				cfg = eval("(" + cfg + ")");
-			}else{
-				cfg = {};
-			}
-			if(typeof cfg.onSelect == "string"){
-				var fn = bc.getNested(cfg.onSelect);
-				if(typeof fn != "function"){
-					alert('函数“' + cfg.onSelect + '”没有定义！');
-					return false;
-				}
-				cfg.onSelect = fn;
-			}
-			cfg = jQuery.extend({
-				//showWeek: true,//显示第几周
-				//showButtonPanel: true,//显示今天按钮、
-				showOtherMonths: true,
-				selectOtherMonths: true,
-				firstDay: 7,
-				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
-			},cfg);
-			
-			if($this.hasClass('bc-date'))
-				$this.datepicker(cfg);
-			else if($this.hasClass('bc-datetime'))
-				$this.datetimepicker(cfg);
-			else
-				$this.timepicker(cfg);
-		});
+	init : function($form,option,readonly) {
+		logger.info("bc.form.init:readonly=" + readonly);
 		
 		//绑定富文本编辑器
 		$form.find("textarea.bc-editor").each(function(){
@@ -1852,10 +1960,52 @@ bc.form = {
 			}));
 		});
 		
-		//绑定flash上传附件
-		$form.find(".attachs.flashUpload").has(":file.uploadFile").each(function(){
-			bc.attach.flash.init.call(this);
-		});
+		if(!readonly){
+			//绑定日期选择
+			$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]').each(function(){
+				var $this = $(this);
+				var cfg = $this.attr("data-cfg");
+				if(cfg && cfg.length > 0){
+					cfg = eval("(" + cfg + ")");
+				}else{
+					cfg = {};
+				}
+				if(typeof cfg.onSelect == "string"){
+					var fn = bc.getNested(cfg.onSelect);
+					if(typeof fn != "function"){
+						alert('函数“' + cfg.onSelect + '”没有定义！');
+						return false;
+					}
+					cfg.onSelect = fn;
+				}
+				cfg = jQuery.extend({
+					//showWeek: true,//显示第几周
+					//showButtonPanel: true,//显示今天按钮、
+					showOtherMonths: true,
+					selectOtherMonths: true,
+					firstDay: 7,
+					dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
+				},cfg);
+				
+				if($this.hasClass('bc-date'))
+					$this.datepicker(cfg);
+				else if($this.hasClass('bc-datetime'))
+					$this.datetimepicker(cfg);
+				else
+					$this.timepicker(cfg);
+			});
+			
+			//绑定flash上传附件
+			$form.find(".attachs.flashUpload").has(":file.uploadFile").each(function(){
+				bc.attach.flash.init.call(this);
+			});
+		}else{
+			//只读表单的处理
+			$form.find(":input:visible").each(function(){
+				logger.debug("disabled:" + this.name);
+				this.disabled=true;
+			});
+		}
 	}
 };
 /**
@@ -3082,195 +3232,156 @@ $(".bc-imageEditor").live("click",function(e){
 
 })(jQuery);
 /**
- * desktop桌面
+ * desktop
  * 
  * @author rongjihuang@gmail.com
- * @date 2011-04-11
- * @ref ext桌面 http://dev.sencha.com/deploy/ext-4.0-beta1/examples/sandbox/sandbox.html,http://web2.qq.com/
- * @ref jquery桌面 http://desktop.sonspring.com/
+ * @date 2011-09-29
  */
+(function($, undefined) {
 
-if (!window['bc'])
-	window['bc'] = {};
-bc.desktop = {
-	/**桌面布局的初始化*/
-	init : function(option) {
-		// 执行桌面布局
-		$(window).resize(function() {
-			bc.desktop.doResize();
-		});
-		
-		//开始菜单
-		var positionOpts = jQuery.extend({
-			posX: 'left', 
-			posY: 'bottom',
-			offsetX: 0,
-			offsetY: 0,
-			directionH: 'right',
-			directionV: 'down', 
-			detectH: true, // do horizontal collision detection  
-			detectV: true, // do vertical collision detection
-			linkToFront: false
-		},{directionH: 'left'});
-		$('#quickStart').menu({ 
-			content: $('#quickStartMenu').html(), 
-			flyOut: true,
-			positionOpts:positionOpts,
-			clickMenuItem:function(name, href){
-				logger.info("click:" + $(this).text() + ";name=" + name + ";href=" + href);
-				$this = $(this);
-				$parent = $this.parent();
-				var option = $parent.attr("data-option");
-				if(!option || option.length == 0) option="{}";
-				option = eval("("+option+")");
-				option.mid=$parent.attr("data-mid");
-				option.name=$this.text();
-				option.type=$parent.attr("data-type");
-				option.url=$this.attr("href");
-				if(option.url && option.url.length>0 && option.url.indexOf("#")!=0)
-					bc.page.newWin(option);
-			}
-		});
-		
-		//对ie，所有没有定义href属性的a，自动设置该属性为"#"，避免css中的:hover等没有效果
-		if(true || $.browser.msie){
-			$("a[href=''],a:not([href])").each(function(){
-				this.setAttribute("href","#");
+	$.widget("ui.bcdesktop", {
+		version : "1.0",
+		options : {
+			loadingText : "正在加载 ......"
+		},
+
+		_create : function() {
+			var self = this;
+
+			// 初始化顶部的系统菜单
+			var $top = this.element.find(">#top");
+			$top.find(">#sysmenu").show().menubar({
+				position : {
+					within : $(window)
+				},
+				select : function(event, ui) {
+					$li = ui.item;
+					$a = $li.children("a");
+					if(logger.infoEnabled)
+						logger.info("click:name=" + $li.text() + ";href=" + $a.attr("href"));
+					var option = $li.attr("data-option");
+					if(!option || option.length == 0) option="{}";
+					option = eval("("+option+")");
+					option.mid=$li.attr("data-mid");
+					option.name=$a.text();
+					option.type=$li.attr("data-type");
+					option.url=$a.attr("href");
+					if(option.url && option.url.length>0 && option.url.indexOf("#")!=0)
+						bc.page.newWin(option);
+
+					//避免a的#跳转
+					event.preventDefault();
+				}
 			});
-		}
+			
+			// 双击打开桌面快捷方式
+			var $middle = this.element.find(">#middle");
+			var $center = $middle.find(">#center");
+			var $shortcuts = $center.find(">a.shortcut");
+			
+			//对ie，所有没有定义href属性的a，自动设置该属性为"#"，避免css中的:hover等没有效果
+			if($.browser.msie){
+				this.element.find("a[href=''],a:not([href])").each(function(){
+					this.setAttribute("href","#");
+				});
+			}
+			this.element.delegate("a.shortcut","dblclick",this.openModule);
+			
+			// 禁用桌面快捷方式的默认链接打开功能
+			this.element.delegate("a.shortcut","click",function(){return false;});
+			
+			//允许图标拖动
+			$shortcuts.draggable({containment: '#center'});
+			//$shortcuts.draggable({containment: '#desktop',grid: [20, 20]});
+			//$("#shortcuts" ).selectable();
 
-		// 双击打开桌面快捷方式
-		var shortcuts = $("#desktop > a.shortcut");
-		shortcuts.live("dblclick",bc.desktop.openModule);
-		
-		// 禁用桌面快捷方式的默认链接打开功能
-		shortcuts.live("click",function(){logger.debug("a:click");return false;});
-		
-		//允许图标拖动
-		$("a.shortcut").draggable({containment: '#desktop'});
-		//$("a.shortcut").draggable({containment: '#desktop',grid: [20, 20]});
-		//$("#shortcuts" ).selectable();
+			// 快速工具条中条目的鼠标控制
+			var $bottom = this.element.find(">#bottom");
+			this.element.delegate(".quickButton","mouseover", function() {
+				$(this).addClass("ui-state-hover");
+			});
+			this.element.delegate(".quickButton","mouseout", function() {
+				$(this).removeClass("ui-state-hover");
+			});
+			this.element.delegate(".quickButton","click", function() {
+				$this = $(this);
+				var mid = $this.attr("data-mid");
+				var $dialogContainer = $("body>.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
+				if ($this.hasClass("ui-state-active")) {
+					$this.removeClass("ui-state-active")
+					.find(">span.ui-icon").removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
+					$dialogContainer.hide();
+				} else {
+					$this.addClass("ui-state-active")
+					.find(">span.ui-icon").removeClass("ui-icon-folder-collapsed").addClass("ui-icon-folder-open")
+					.end().siblings().toggleClass("ui-state-active",false);
+					$dialogContainer.show().end().dialog("moveToTop");
+				}
+				// $this.toggleClass("ui-state-active")
+				return false;
+			});
 
-		// 快速工具条中条目的鼠标控制
-		$("#quickButtons > .quickButton").live("mouseover", function() {
-			$(this).addClass("ui-state-hover");
-		}).live("mouseout", function() {
-			$(this).removeClass("ui-state-hover");
-		}).live("click", function() {
+			// 显示隐藏桌面的控制
+			$top.find("#quickShowHide").click(function() {
+				var $this = $(this);
+				var $dialogContainer = $("body>.ui-dialog");
+				if ($this.attr("data-hide") == "true") {
+					$this.attr("data-hide","false");
+					$dialogContainer.show();
+				} else {
+					$this.attr("data-hide","true");
+					$dialogContainer.hide();
+				}
+				return false;
+			});
+
+			// 注销的控制
+			$top.find("#quickLogout").click(function() {
+				window.open(bc.root + "/logout","_self");
+				return false;
+			});
+			
+			// 桌面日历
+			var $right = this.element.find(">#middle>#right");
+			$right.find("#indexCalendar").datepicker({
+				showWeek: true,
+				//showButtonPanel: true,//显示今天按钮
+				firstDay: 7,
+				showOtherMonths: true,
+				selectOtherMonths: true
+			});
+			
+			$center.show();
+		},
+
+		_destroy : function() {
+			this.element.undelegate().unbind();
+		},
+		
+		/**双击打开桌面快捷方式*/
+		openModule: function() {
 			$this = $(this);
-			var mid = $this.attr("data-mid");
-			var $dialogContainer = $("body>.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
-			if ($this.hasClass("ui-state-active")) {
-				$this.removeClass("ui-state-active")
-				.find(">span.ui-icon").removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
-				$dialogContainer.hide();
-			} else {
-				$this.addClass("ui-state-active")
-				.find(">span.ui-icon").removeClass("ui-icon-folder-collapsed").addClass("ui-icon-folder-open")
-				.end().siblings().toggleClass("ui-state-active",false);
-				$dialogContainer.show().end().dialog("moveToTop");
-			}
-			// $this.toggleClass("ui-state-active")
-			return false;
-		});
+			logger.info("openModule:" + $this.attr("class"));
+			var type = $this.attr("data-type");
+			var option = $this.attr("data-option");
+			if(!option || option.length == 0) option="{}";
+			option = eval("("+option+")");
+			option.mid=$this.attr("data-mid");
+			option.iconClass=$this.attr("data-iconClass");
+			option.name=$this.attr("data-name");
+			option.order=$this.attr("data-order");
+			option.type=$this.attr("data-type");
+			option.url=$this.attr("data-url");
+			option.standalone=$this.attr("data-standalone")=="true";
+			if(logger.debugEnabled)
+				logger.debug("a:dblclick,type=" + type);
+			bc.page.newWin(option);
+			//if(type == "2"){//打开内部链接
+			//}
+		}
+	});
 
-		// 显示隐藏桌面的控制
-		$("#quickShowHide").click(function() {
-			var $this = $(this);
-			var $dialogContainer = $("body>.ui-dialog");
-			if ($this.attr("data-hide") == "true") {
-				$this.attr("data-hide","false");
-				$dialogContainer.show();
-			} else {
-				$this.attr("data-hide","true");
-				$dialogContainer.hide();
-			}
-			return false;
-		});
-
-		// 注销的控制
-		$("#quickLogout").click(function() {
-			window.open(bc.root + "/logout","_self");
-			return false;
-		});
-		
-		// 桌面日历
-		$("#indexCalendar").datepicker({
-			showWeek: true,
-			//showButtonPanel: true,//现时今天按钮
-			firstDay: 7,
-			showOtherMonths: true,
-			selectOtherMonths: true
-		});
-		
-		bc.desktop.doResize();
-		
-		//默认打开待办事务窗口
-		//$(shortcuts[0]).trigger("dblclick");
-	},
-	/**重新调整桌面的布局*/
-	doResize : function() {
-		$("#desktop").height($("#layout").height() - $("#quickbar").height());
-		
-		// 桌面右侧边栏
-		$("#rightPanel").css("top",$("#quickbar").height());
-		
-		$("#desktop").width($("#layout").width() - $("#rightPanel").width());
-	},
-	/**双击打开桌面快捷方式*/
-	openModule: function(option) {
-		$this = $(this);
-		var type = $this.attr("data-type");
-		var option = $this.attr("data-option");
-		if(!option || option.length == 0) option="{}";
-		option = eval("("+option+")");
-		option.mid=$this.attr("data-mid");
-		option.iconClass=$this.attr("data-iconClass");
-		option.name=$this.attr("data-name");
-		option.order=$this.attr("data-order");
-		option.type=$this.attr("data-type");
-		option.url=$this.attr("data-url");
-		option.standalone=$this.attr("data-standalone")=="true";
-		if(logger.debugEnabled)
-			logger.debug("a:dblclick,type=" + type);
-		bc.page.newWin(option);
-		//if(type == "2"){//打开内部链接
-		//}
-	}
-};
-jQuery(function($) {
-	bc.desktop.init();
-	
-	//字体设置:初始化为14px=0.87em(浏览器默认为1em=16px)
-//	var curSize = $("body").css("fontSize");
-//	curSize= parseInt(curSize.replace("px","")) || 14;
-//	$("#fontSize").html(curSize+"");
-//	//$("body").css("fontSize", 14/16 + 'em');
-//	$( "#fontSlider" ).slider({
-//		value:curSize,min: 12,max: 20,step: 2,
-//		slide: function( event, ui ) {
-//			$("#fontSize").html(ui.value);
-//			$("body").css("fontSize",ui.value + 'px');
-//			logger.info(ui.value);
-//			
-//			//使用ajax保存数据
-//			var data = "font=" + ui.value;
-//			bc.ajax({
-//				url: bc.root + "/bc/desktop/personalConfig/update", data: data, dataType: "json",
-//				success: function(json) {
-//					if(logger.debugEnabled)logger.debug("save success.json=" + jQuery.param(json));
-//					bc.msg.slide(json.msg);
-//				}
-//			});
-//		}
-//	});
-	
-	//主题设置
-	//$('#themeSwitcher').themeswitcher({closeOnSelect:false,height:340,root:bc.root});
-	
-	//显示设置
-	//$("#setting").show();
-});
+})(jQuery);
 /**
  * 系统浏览器支持提示工具
  * 
@@ -3323,5 +3434,402 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 }).live("click", function() {
 	bc.browser.download($(this).attr("data-puid"));
 });
+
+})(jQuery);
+/**
+ * 自动处理溢出的tabs
+ * 
+ * @author rongjihuang@gmail.com
+ * @date 2011-09-17
+ */
+(function($, undefined) {
+
+	$.widget("ui.bctabs", {
+		version : "1.0",
+		options : {
+			offsetNext : 0,
+			offsetPrev : 0,
+			tabsScroll: true,
+			animateMethod : 'slideH',// 动画的方法
+			contentEasing : 'easeInOutExpo',// 动画的擦出方法，参考easing插件可用的方法
+			direction : 'horizontal',// tabs的布局方向
+			tabActiveClass: "ui-state-active",
+			animate:true,//是否使用动画显示页签和其内容
+			contentAnimateMethod:"slideH",//内容的动画显示方法
+			contentAnimateDuration:600,//内容的动画显示时间
+			contentAnimateEasing:"easeInOutExpo",//内容的动画擦除方法
+			tabsAnimateDuration:150,//页签的动画显示时间
+			tabsAnimateEasing:"",//页签的动画擦除方法
+			heightAnimateDuration:150,//内容区高度变化的动画显示时间
+			heightAnimateEasing:"easeInOutExpo",//内容区高度变化的动画擦除方法
+			minHeight: 80,//内容区的最小高度
+			height: 'auto',// tabs的总高度，默认根据内容的高度自动扩展
+			loadingText:"正在加载 ......"
+		},
+
+		_create : function() {
+			var _this = this;
+			
+			//获取基于dom的配置
+			var cfg = this.element.attr("data-cfg");
+			if(cfg && cfg.length > 0)
+				cfg = eval("(" + cfg + ")");
+			jQuery.extend(this.options,cfg);
+			
+			//标记水平垂直的参数
+			if (this.options.direction == 'horizontal') {
+				this.options.val={
+					wh: 'outerWidth',
+					lt: 'left',
+					marginLT: 'marginLeft'
+				};
+			} else {
+				this.options.val={
+					wh: 'outerHeight',
+					lt: 'top',
+					marginLT: 'marginTop'
+				};
+			}
+			
+			//向前向后按钮点击事件
+			this.element.delegate("div.prev,div.next", "click", function() {
+				var $this = $(this);
+				if($this.hasClass("next") && !$this.children("a").hasClass("ui-state-disabled")){
+					_this.next();
+				}else if($this.hasClass("prev") && !$this.children("a").hasClass("ui-state-disabled")){
+					_this.prev();
+				}
+				return false;
+			});
+			
+			//向前向后按钮的显示
+			this._initPrevNext();
+			
+			//页签的点击事件
+			this.element.delegate("ul.tabs>li.tab>a", "click", function() {
+				logger.info("tabs.click:id=" + _this.element.attr("id"));
+				_this.load($(this).parent().index());
+				return false;
+			});
+			
+			//处理当前页签的显示
+			var $activeTab = this.element.find("ul.tabs>li.tab.active");
+			if(!$activeTab.size())
+				this.load(0,true);
+			
+			//内容容器高度设置
+			if(!(this.options.height == "auto")){
+				var h = this.options.height - this.element.find(">.tabsContainer").outerHeight(true);
+				var $contentContainer = this.element.find(">.contentContainer");
+				h = h - ($contentContainer.outerHeight(true) - $contentContainer.height());
+				h = Math.max(h,this.options.minHeight);
+				$contentContainer.height(h);
+			}
+			
+			//处理鼠标的滚轮事件
+			if (this.element.find("div.tabsContainer.sliding").size() && this.options.tabsScroll == true && $.fn.mousewheel) {
+				this.element.find("ul.tabs").mousewheel(function(event, delta) {
+					logger.info("mousewheel:delta=" + delta);
+					(delta > 0) ? _this.prev() : _this.next();
+					return false;
+				});
+			}
+		},
+
+		_destroy : function() {
+			this.element.undelegate().unbind();
+		},
+
+	    _getIndex: function( index ) {
+			if ( typeof index == "string" ) {
+				index = this.element.find(".tabs>tab>a[href$=" + index + "]" ).parent().index();
+			}
+			return index;
+		},
+		
+		/** 初始化前后按钮的显示 */
+		_initPrevNext : function() {
+			logger.info("tabs._initPrevNext");
+			var $tabs = this.element.find("ul.tabs");
+			var $lastElem = $tabs.children('li:last');
+			var $slidElem = $tabs.parent();
+			var usePrevNext = ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)) > ($slidElem.width() - this.options.offsetNext);
+			
+			//自动创建前后按钮
+			logger.info("tabs._initPrevNext:usePrevNext=" + usePrevNext);
+			$tabs.children('li').each(function(i){
+				logger.info("tabs._initPrevNext:-" + i + "=" + $(this).position().left);
+			});
+				
+			logger.info("tabs._initPrevNext:0=" + ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)));
+			logger.info("tabs._initPrevNext:1=" + ($slidElem.width() - this.options.offsetNext));
+			if(usePrevNext && $slidElem.siblings().size() == 0){
+				$slidElem.parent().append(''+
+					'<div class="prev ui-widget-content">'+
+						'<a href="#" class="prev ui-state-default ui-state-disabled"><span class="ui-icon ui-icon-triangle-1-w"></span></a>'+
+					'</div>'+
+					'<div class="next ui-widget-content">'+
+						'<a href="#" class="next ui-state-default"><span class="ui-icon ui-icon-triangle-1-e"></span></a>'+
+					'</div>')
+				.toggleClass("sliding",true);
+			}
+			
+			//prev
+			if ($tabs.children('li:first').position()[this.options.val.lt] == (0 + this.options.offsetPrev)) {
+				this._disablePrev();
+			} else {
+				this._enablePrev();
+			}
+
+			//next
+			if (!usePrevNext) {
+				this._disableNext();
+			} else {
+				this._enableNext();
+			}
+		},
+		
+		/** 启用向后按钮 */
+		_enableNext : function() {
+			this.element.find("div.next>a.next").toggleClass("ui-state-disabled",false)
+			.hover(function(){$(this).addClass("ui-state-hover");},
+					function(){$(this).removeClass("ui-state-hover");});
+		},
+		/** 禁用向后按钮 */
+		_disableNext : function() {
+			this.element.find("div.next>a.next").toggleClass("ui-state-disabled",true)
+			.unbind();
+		},
+		/** 启用向前按钮 */
+		_enablePrev : function() {
+			logger.info("_enablePrev");
+			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",false)
+			.hover(function(){$(this).addClass("ui-state-hover");},
+					function(){$(this).removeClass("ui-state-hover");});
+		},
+		/** 禁用向前按钮 */
+		_disablePrev : function() {
+			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",true)
+			.unbind();
+		},
+		
+		/** 显示tab */
+		_showTab : function($tab,$content) {
+			logger.info("tabs._showTab");
+			//页签
+			var $preActiveTab = $tab.siblings(".active");
+			$tab.data("preTabIndex",$preActiveTab.index()).add($preActiveTab).toggleClass("active").end();
+			$tab.children("a").add($preActiveTab.children("a")).toggleClass("ui-state-active");
+			
+			//定位页签
+			var $tabs = $tab.parent();
+			var lt = $tab.position()[this.options.val.lt];
+			if (lt < 0) {
+				this.prev();
+			}else{
+				var cwh = $tabs.parent()[this.options.val.wh](false);
+				var mlt = parseInt($tabs.css(this.options.val.marginLT));
+				var wh = $tab[this.options.val.wh](true);
+				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if((wh + lt) > (cwh - this.options.offsetNext)){
+					this.next();
+				}
+			}
+			
+			//内容
+			if(this.options.animate){
+				this["_" + this.options.contentAnimateMethod]($tab,$content);
+			}else{
+				$content.add($content.siblings(".active")).toggleClass("active");
+			}
+			
+			//抛出show事件
+			this._trigger("show",null,{content:$content,tab:$tab});
+		},
+		
+		/** 水平方向动画显示内容 */
+		_slideH : function($tab,$content) {
+			var _this = this;
+			logger.info("tabs._slideH");
+			var w = $content.width();
+			//上一内容
+			$oldContent = this.element.find(">.contentContainer>.content.active");
+			var $contentContainer = $oldContent.parent();
+			
+			//高度动画
+			if(this.options.height == "auto"){
+				var oldHeight = $oldContent.outerHeight(true);
+				var newHeight = $content.outerHeight(true);
+				logger.info("tabs._slideH:oldHeight=" + oldHeight + ",newHeight=" + newHeight);
+				$contentContainer.stop().css({height: oldHeight})
+				.animate({height: newHeight}, this.options.heightAnimateDuration, this.options.heightAnimateEasing);
+			}
+			
+			$contentContainer.children(".content").stop();
+			//水平动画
+			var rightToLleft = ($tab.index() > $tab.data("preTabIndex"));
+			$oldContent.css({
+				position: "absolute",
+				left: "0px"
+			}).animate({
+				left: rightToLleft ? -w : w
+			}, this.options.contentAnimateDuration, this.options.contentAnimateEasing, function() {
+				$oldContent.toggleClass('active', false);
+			});
+			$content.css({
+				position: "absolute",
+				left: rightToLleft ? w : -w
+			}).toggleClass('active', true).animate({
+				left: "0px"
+			}, this.options.contentAnimateDuration, this.options.contentAnimateEasing,function(){
+				$oldContent.add($content).css({position: "relative"});
+				if(_this.options.height == "auto")
+					$contentContainer.css({height:"auto"});
+				logger.info("tabs._slideH:newHeight=" + $content.height());
+			});
+		},
+		
+		/** 加载tab */
+		load : function(index,force) {
+			index = this._getIndex(index);
+			if(force !== true && index == this.element.find("ul.tabs>li.active").index()){
+				return this;
+			}
+
+			var $tab = this.element.find("ul.tabs>li:eq(" + index + ")" );
+			var $a = $tab.children("a");
+			
+			var url = $a.attr("href");
+			logger.info("tabs.load:index=" + index + ",href=" + url);
+			if(url.indexOf("#") == 0){
+				var $content = this.element.find(">div.contentContainer>" + url);
+				if(!$content.size())
+					alert("this tab did not config content's div：href=" + url);
+				this._showTab($tab,$content);
+				return this;
+			}
+			
+			var id = new Date().getTime();
+			// 将url作为一个属性记录下来
+			$a.attr("data-src",url).attr("href", "#" + id);
+			
+			//创建内容div，并显示加载动画
+			var $contentContainer = this.element.find(">div.contentContainer");
+			//$contentContainer.children(".active").toggleClass("active",false);
+			var $content = $('<div id="'+id+'" class="content"><div class="loading">'+this.options.loadingText+'</div></div>')
+				.appendTo($contentContainer);
+			this._showTab($tab,$content);
+			
+			var _this = this;
+			//通过ajax加载页签的内容
+			$.get(url,function(html){
+				$content.empty().append(html);
+				//抛出加载完毕事件
+				_this._trigger("load",null,{content:$content,tab:$tab});
+				//_this._showTab($tab,$content);
+			});
+			
+			return this;
+		},
+
+		/** 选中tab */
+		select : function(index) {
+			index = this._getIndex(index);
+			if(index != this.element.find("ul.tabs>li.active").index()){
+				this.load(index);
+			}
+			
+			return this;
+		},
+
+		/** 显示上一个tab */
+		prev : function() {
+			var _this = this;
+			//如果正在动画中就忽略不处理
+			if (_this.element.find(":animated").length) {
+				return false;
+			}
+
+			//显示页签
+			var $tabs = this.element.find("ul.tabs");
+			var $lis = $tabs.children('li');
+			var cwh = $tabs.parent()[_this.options.val.wh](false);
+			var mlt = parseInt($tabs.css(_this.options.val.marginLT));
+			$lis.each(function(index) {
+				$li = $(this);
+				var wh = $li[_this.options.val.wh](true);
+				var lt = $li.position()[_this.options.val.lt];
+				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if ((wh + lt) >= 0) {
+					var newmlt = lt - mlt - _this.options.offsetPrev;
+					logger.info("next:index=" + index + ",newmlt=" + newmlt);
+					
+					//显示这个页签 
+					if(_this.options.animate){
+						var cfg = {};
+						cfg[_this.options.val.marginLT] = -newmlt;
+						$tabs.animate(cfg,_this.options.tabsAnimateDuration,_this.options.tabsAnimateEasing);
+					}else{
+						$tabs.css( _this.options.val.marginLT,-newmlt);
+					}
+					
+					//处理前后按钮的显示
+					_this._enableNext();
+					if(index == 0){
+						_this._disablePrev();
+					}
+					
+					return false;
+				}
+			});
+			
+			return this;
+		},
+
+		/** 显示下一个tab */
+		next : function() {
+			var _this = this;
+			
+			//如果正在动画中就忽略不处理
+			if (_this.element.find(":animated").length) {
+				return false;
+			}
+
+			//显示页签
+			var $tabs = this.element.find("ul.tabs");
+			var $lis = $tabs.children('li');
+			var cwh = $tabs.parent()[_this.options.val.wh](false);
+			var mlt = parseInt($tabs.css(_this.options.val.marginLT));
+			$lis.each(function(index) {
+				$li = $(this);
+				var wh = $li[_this.options.val.wh](true);
+				var lt = $li.position()[_this.options.val.lt];
+				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if ((wh + lt) > (cwh - _this.options.offsetNext)) {
+					var newmlt = wh + lt - mlt + _this.options.offsetNext - cwh;
+					logger.info("next:index=" + index + ",newmlt=" + newmlt);
+					
+					//显示这个页签 
+					if(_this.options.animate){
+						var cfg = {};
+						cfg[_this.options.val.marginLT] = -newmlt;
+						$tabs.animate(cfg,_this.options.tabsAnimateDuration,_this.options.tabsAnimateEasing);
+					}else{
+						$tabs.css( _this.options.val.marginLT,-newmlt);
+					}
+					
+					//处理前后按钮的显示
+					_this._enablePrev();
+					if(index +1 >= $lis.size()){
+						_this._disableNext();
+					}
+					
+					return false;
+				}
+			});
+			
+			return this;
+		}
+	});
 
 })(jQuery);

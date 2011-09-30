@@ -81,6 +81,9 @@
 			<fileset dir="${bclibs.dir}">
 				<include name="browser.js" />
 			</fileset>
+			<fileset dir="${bclibs.dir}">
+				<include name="tabs.js" />
+			</fileset>
 		</concat>
 	</target>
 
@@ -92,6 +95,9 @@
 			<concat destfile="${bclibs.dir}/themes/@{theme}/bc.css" encoding="UTF-8" fixlastline="true" force="true">
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="core.css" />
+				</fileset>
+				<fileset dir="${bclibs.dir}/themes/@{theme}">
+					<include name="tabs.css" />
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="desktop.css" />
