@@ -422,6 +422,25 @@ $(".bc-grid>.data>.right tr.row").live("dblclick",function(){
 	}
 });
 
+//超链接的点击处理
+$(".bc-grid>.data>.right tr.row .bc-link").live("click",function(event){
+	var $this = $(this);
+	var url = $this.attr("href");
+	//var mtype = $this.attr("data-mtype");
+	if(url && url.length >= 0){
+		bc.page.newWin({
+			url:url,
+			mid: $this.attr("data-mid") || url,
+			name: $this.attr("data-title") || $this.text() || "未定义"
+		});
+	}else{
+		alert("超链接的 href 为空！");
+	}
+	
+	event.preventDefault();
+	return false;
+});
+
 //全选与反选
 $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 	var $this = $(this);
