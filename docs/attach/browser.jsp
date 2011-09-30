@@ -10,13 +10,13 @@
 				<span class="browser-icon chrome12"></span>
 				<span class="text">(23MB) 谷歌浏览器Chrome14.0</span>
 			</li>
-			<li class="browser ui-corner-all ui-state-default" data-puid="firefox5.0" title="点击下载">
+			<li class="browser ui-corner-all ui-state-default" data-puid="firefox7.0" title="点击下载">
 				<span class="browser-icon firefox5"></span>
-				<span class="text">(13MB) 火狐浏览器Firefox5.0</span>
+				<span class="text">(13MB) 火狐浏览器Firefox7.0</span>
 			</li>
-			<li class="browser ui-corner-all ui-state-default" data-puid="safari5.0.5" title="点击下载">
+			<li class="browser ui-corner-all ui-state-default" data-puid="safari5.1" title="点击下载">
 				<span class="browser-icon safari5"></span>
-				<span class="text">(34MB) 苹果浏览器Safari5.0.5</span>
+				<span class="text">(36MB) 苹果浏览器Safari5.1</span>
 			</li>
 			<li class="browser ui-corner-all ui-state-default" data-puid="opera11.50" title="点击下载">
 				<span class="browser-icon opera11"></span>
