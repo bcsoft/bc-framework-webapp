@@ -24,7 +24,7 @@ div.bc-desktop {
 }
 
 div.bc-desktop>#top {
-	z-index: 20000;
+	z-index: 2;
 	position: absolute;
 	height: 34px;
 	width: 100%;
