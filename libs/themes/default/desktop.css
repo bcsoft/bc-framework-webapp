@@ -107,7 +107,7 @@ ul.bc-menubar>li.ui-menubar-item>a.ui-menubar-link>span.ui-button-text {
 }
 
 /**右上角图标*/
-div.bc-desktop>#top>table.rightTopIcons {
+div.bc-desktop table.rightIcons {
 	border: 0;
 	position: absolute;
 	width: auto;
@@ -116,12 +116,13 @@ div.bc-desktop>#top>table.rightTopIcons {
 	right: 0;
 }
 
-div.bc-desktop>#top>table.rightTopIcons td.rightTopIcon {
+div.bc-desktop table.rightIcons td.rightIcon {
 	width: 40px;
 	vertical-align: middle;
+	cursor: pointer;
 }
 
-div.bc-desktop>#top>table.rightTopIcons #quickShowHide.rightTopIcon {
+div.bc-desktop> table.rightIcons #quickShowHide.rightIcon {
 	width: 12px;
 	vertical-align: top;
 	height: 100%;

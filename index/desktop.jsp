@@ -30,10 +30,9 @@
 	<div id="top" class="ui-widget-header">
 		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />">
 		<s:property value="startMenu" escapeHtml="false"/>
-		<table class="rightTopIcons" cellpadding="0" cellspacing="0" border="0">
+		<table class="rightIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td class="rightTopIcon" id="quickLogout" title="点击注销并退出系统"><a>&nbsp;</a></td>
-				<td class="rightTopIcon" id="quickShowHide" title="显示桌面"><a class="ui-widget-header">&nbsp;</a></td>
+				<td class="rightIcon" id="quickLogout" title="点击注销并退出系统"><a>&nbsp;</a></td>
 			</tr>
 		</table>
 	</div>
@@ -85,12 +84,11 @@
 	<!-- 任务条 -->
 	<div id="bottom" class="ui-widget-header">
 		<div id="copyrightBar"><a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright" /></a></div>
-		<table id="quickbar" cellpadding="0" cellspacing="0" border="0">
-			<tbody >
+		<table class="rightIcons" id="quickbar" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td id="quickButtons">&nbsp;</td>
+				<td class="rightIcon" id="quickShowHide" title="显示桌面"><a class="ui-widget-header">&nbsp;</a></td>
 			</tr>
-			</tbody>
 		</table>
 	</div>
 </div>

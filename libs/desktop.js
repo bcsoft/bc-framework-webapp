@@ -33,6 +33,7 @@
 					option.name=$a.text();
 					option.type=$li.attr("data-type");
 					option.url=$a.attr("href");
+					option.standalone=$li.attr("data-standalone")=="true";
 					if(option.url && option.url.length>0 && option.url.indexOf("#")!=0)
 						bc.page.newWin(option);
 
@@ -89,7 +90,7 @@
 			});
 
 			// 显示隐藏桌面的控制
-			$top.find("#quickShowHide").click(function() {
+			$bottom.find("#quickShowHide").click(function() {
 				var $this = $(this);
 				var $dialogContainer = $("body>.ui-dialog");
 				if ($this.attr("data-hide") == "true") {
