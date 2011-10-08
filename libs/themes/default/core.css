@@ -34,7 +34,7 @@ body {
 	-moz-text-overflow: ellipsis;
 	-webkit-text-overflow: ellipsis;
 	white-space:nowrap;
-	-moz-binding: url('ellipsis.xml#ellipsis');
+	/*-moz-binding: url('ellipsis.xml#ellipsis'); firefox7已经开始支持ellipsis了*/
 }
 .text-overflow-ellipsis{
 	text-overflow: ellipsis;

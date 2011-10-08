@@ -524,7 +524,7 @@ bc.page.quickbar={
 	loading: function(option){
 		$(bc.page.quickbar.id).append('<a id="quickButton-'+option.mid
 				+'" class="quickButton ui-corner-all ui-state-default" data-mid="'+option.mid
-				+'" data-name="'+option.name+'">'
+				+'" data-name="'+option.name+'" title="'+option.name+'">'
 				+'<span class="ui-icon loading"></span>'
 				+'<span class="text">正在加载：'+option.name+'</span></a>');
 	},

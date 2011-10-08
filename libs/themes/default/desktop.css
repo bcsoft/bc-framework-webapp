@@ -256,6 +256,12 @@ a.shortcut .text {
 #quickButtons .quickButton .text {
 	padding-left: 20px;
 	padding-right: 2px;
+	
+	display: block;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	max-width: 12em;
 }
 
 #quickButtons .quickButton .loading {
