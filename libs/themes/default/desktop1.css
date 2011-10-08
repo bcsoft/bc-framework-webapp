@@ -10,121 +10,63 @@ html,body {
 	width: 100%;
 }
 
-body { /*background: url(images/bg_page.png) repeat top left;*/
-	background-color: #f5f5f5;
+body { /*background: url(images/bg_page.png) repeat top left;
+	background-color: #FAFAFA;*/
+	background-color: #CCD9C8;
 }
 
-/** 桌面布局 -- 上-中(中-右)-下 */
-div.bc-desktop {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}
-
-div.bc-desktop>#top {
-	z-index: 2;
-	position: absolute;
-	height: 34px;
-	width: 100%;
-	overflow: visible;
-	border-width: 0 0 1px 0;
-}
-
-div.bc-desktop>#bottom {
-	z-index: 3;
-	position: absolute;
-	height: 39px;
-	width: 100%;
-	bottom: 0;
-	overflow: visible;
-	border-width: 1px 0 0 0;
-}
-
-div.bc-desktop>#middle {
-	z-index: 1;
-	position: absolute;
-	width: 100%;
-	top: 35px;
-	bottom: 40px;
-	overflow: auto;
+body.ui-widget-content {
 	border-width: 0;
 }
 
-div.bc-desktop>#middle>#center {
-	position: absolute;
-	right: 240px;
-	top: 0;
-	bottom: 0;
-	overflow: auto;
-	border-width: 0;
-	display: none;
+body .ui-widget-overlay {
+	opacity: .40;
+	filter: Alpha(Opacity =     40);
 }
-
-div.bc-desktop>#middle>#right {
-	position: absolute;
-	width: 240px;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	overflow: auto;
-	bottom: 0;
-	border-width: 0;
-	text-align: center;
-}
-
-/* 右侧面板内的容器 */
-div.bc-desktop>#middle>#right .item {
-	margin: 4px;
-	float: right;
-}
-
-/** 系统图标 */
-img.sysIcon {
-	margin: 2px;
-}
-
-/** 系统菜单 */
-ul.bc-menubar {
-	border-width: 0;
-	font-size: 15px;
-	position: absolute;
+/*加载动画*/
+#loader {
+	height: 32px;
 	width: auto;
-	display: none;
-	top: 0;
-	left: 52px;
-}
-
-ul.bc-menubar,ul.bc-menubar>li.ui-menubar-item,ul.bc-menubar>li.ui-menubar-item>a
-	{
-	height: 100%;
-}
-
-ul.bc-menubar>li.ui-menubar-item>a.ui-menubar-link>span.ui-button-text {
-	padding-left: 0.4em;
-	padding-right: 0.4em;
-}
-
-/**右上角图标*/
-div.bc-desktop>#top>table.rightTopIcons {
+	overflow: hidden;
 	border: 0;
 	position: absolute;
-	width: auto;
-	height: 100%;
-	top: 0;
-	right: 0;
+	margin: 10px;
+	font-size: 24px;
+	background-image: url(images/loader/loader01_32x32.gif);
+	background-repeat: no-repeat;
+	height: 32px;
+	text-indent: 34px;
+	display: none;
+	line-height: 32px;
+	z-index: 10000;
 }
 
-div.bc-desktop>#top>table.rightTopIcons td.rightTopIcon {
-	width: 40px;
-	vertical-align: middle;
+/*测试用*/
+#heavyControl {
+	position: absolute;
+	border: 1px solid #ccc;
+	right: 10px;
+	bottom: 60px;
+	width: 300px;
+	padding: 4px;
 }
 
-div.bc-desktop>#top>table.rightTopIcons #quickShowHide.rightTopIcon {
-	width: 12px;
-	vertical-align: top;
+/*整体布局*/
+#layout {
 	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	border: 0;
+	position: absolute;
+	z-index: 0;
+}
+
+/*桌面区域*/
+#desktop {
+	position: absolute;
+	/*width: 100%;*/
+	top: 40px;
+	overflow: auto;
 }
 
 /**桌面快捷方式*/
@@ -144,8 +86,6 @@ a.shortcut {
 
 a.shortcut:HOVER {
 	border-color: green;
-	/*background: -webkit-radial-gradient(10% 30%, white, black);
-	background:-moz-radial-gradient(10% 30%, white, black);*/
 }
 
 a.shortcut .icon {
@@ -187,9 +127,27 @@ a.shortcut .text {
 	padding: 0;
 }
 
-#quickbar>tbody,#quickbar>tr {
+#quickbar>tbody,#quickbar>tbody>tr {
 	margin: 0;
 	padding: 0;
+}
+
+#quickStart {
+	width: 40px;
+	vertical-align: middle;
+}
+
+#quickStart a {
+	cursor: pointer;
+	height: 32px;
+	width: 32px;
+	background: url(images/browser/chrome32.png) no-repeat;
+	text-decoration: none;
+	display: block;
+}
+
+#quickStart.ui-state-active {
+	border: 0;
 }
 
 #quickShowHide {
@@ -261,6 +219,22 @@ a.shortcut .text {
 	background: url(images/loader/loader01_16x16.gif) no-repeat 0 0;
 }
 
+/*设置字体大小*/
+#setting {
+	position: fixed;
+	_position: absolute;
+	top: 40px;
+	right: 20px;
+	overflow: visible;
+	z-index: 100;
+	*width: 150px; /*ie6,ie7*/
+	display: none;
+}
+
+#fontSliderContainer {
+	margin-bottom: 10px;
+}
+
 /*版权相关*/
 #copyrightBar {
 	position: absolute;
@@ -272,8 +246,6 @@ a.shortcut .text {
 	overflow: hidden;
 	overflow: hidden;
 	text-align: center;
-	z-index: 3;
-	cursor:pointer;
 }
 
 #copyrightBar a { /*display:block;
@@ -285,26 +257,63 @@ a.shortcut .text {
 	margin: auto;
 }
 
-/* 登录信息 */
+#poweredBy {
+	margin: 5px;
+	float: right;
+}
+
+.bc-slide,.bc-slide.ui-state-high {
+	border: 2px solid red;
+}
+
+#poweredBy span {
+	display: block;
+	width: 83px;
+	height: 34px;
+	background: url(images/poweredBy.png) 0 0 no-repeat;
+}
+
+#rightPanel {
+	position: absolute;
+	right: 0;
+	top: 50px;
+}
+
+#rightPanel .item {
+	margin: 4px;
+}
+
+.imgtest {
+	display: block;
+	background: url(images/shortcuts/shortcuts.png) no-repeat -52px 0;
+	width: 52px;
+	height: 52px;
+	zoom: 0.5;
+	width: 52px;
+	height: 52px;
+}
+
+.imgtest:HOVER {
+	zoom: 1;
+}
+
 #loginInfo {
 	position: absolute;
-	bottom: 40px;
+	bottom: 0;
 	left: 0;
 	/*height: 30px;
 	line-height: 30px;*/
 	font-size: 0.75em;
 	color: #888;
 	padding: 4px;
-	z-index: 11;
 }
 
 /*异常页面*/
 table.error {
 	table-layout: fixed;
-	padding: 0;
-	margin: 0;
+	padding: 0;margin: 0;
 	margin: 10px auto;
-	min-width: 300px;
+	min-width:300px;
 }
 
 table.error td {
@@ -317,7 +326,7 @@ table.error td.icon {
 	overflow: hidden;
 }
 
-table.error td.icon div.icon {
+table.error td.icon div.icon{
 	background: url(images/shortcuts/shortcuts.png) no-repeat -468px -312px;
 	width: 52px;
 	height: 52px;
@@ -326,13 +335,11 @@ table.error td.icon div.icon {
 table.error td.label {
 	font-size: 32px;
 }
-
 table.error .detail {
 	font-size: 12px;
 	color: #888;
 }
-
-table.error .detail span.more {
+table.error .detail span.more{
 	text-decoration: underline;
 	cursor: pointer;
 }
