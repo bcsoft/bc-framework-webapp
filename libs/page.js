@@ -179,6 +179,7 @@ bc.page = {
 	 * 显示请求错误的提示窗口
 	 */
 	showError: function(option){
+		//alert(option.url + ";" + option.more);
 		//alert("喔唷，出错啦！");
 		//显示漂亮的错误提示窗口
 		var errorDom = [
@@ -199,6 +200,7 @@ bc.page = {
 			$error.unbind().remove();
 		});
 		$error.find("span.more").click(function(){
+			logger.info("span.more");
 			var errorWin=window.open('', 'bcErrorShow');
 			var errorDoc = errorWin.document;
 			errorDoc.open();

@@ -10,7 +10,7 @@ jQuery(function($){
 		error: function(request, textStatus, errorThrown) {
 			if(bc.page.showError){
 				//显示漂亮的错误提示窗口
-				bc.page.showError({url:option.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
+				bc.page.showError({url:this.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
 			}else{
 				var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
 				alert(request.responseText || request.responseHTML);

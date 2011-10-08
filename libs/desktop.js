@@ -17,7 +17,8 @@
 
 			// 初始化顶部的系统菜单
 			var $top = this.element.find(">#top");
-			$top.find(">#sysmenu").show().menubar({
+			var $sysmenu = $top.find(">#sysmenu");
+			$sysmenu.show().menubar({
 				position : {
 					within : $(window)
 				},
@@ -58,10 +59,64 @@
 			// 禁用桌面快捷方式的默认链接打开功能
 			this.element.delegate("a.shortcut","click",function(){return false;});
 			
-			//允许图标拖动
+			// 允许拖动桌面快捷方式
 			$shortcuts.draggable({containment: '#center'});
 			//$shortcuts.draggable({containment: '#desktop',grid: [20, 20]});
 			//$("#shortcuts" ).selectable();
+			
+			// 允许拖动菜单项到桌面添加快捷方式的处理
+			$sysmenu.find('li.ui-menu-item[data-type!=1]').draggable({
+				containment: '#center',
+				cursor: "move",
+				helper: function(){
+					var $this = $(this);
+					var tpl = '<a class="shortcut ui-state-highlight"';
+					tpl += '<a class="shortcut"';
+					tpl += ' data-mid="' + $this.attr("data-mid") + '"';
+					tpl += ' data-type="' + $this.attr("data-type") + '"';
+					tpl += ' data-standalone="' + $this.attr("data-standalone") + '"';
+					tpl += ' data-order="' + $this.attr("data-order") + '"';
+					tpl += ' data-iconClass="' + $this.attr("data-iconClass") + '"';
+					tpl += ' data-name="' + $this.attr("data-name") + '"';
+					tpl += ' data-url="' + $this.attr("data-url") + '"';
+					if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
+					tpl += '><span class="icon ' + $this.attr("data-iconClass") + '">';
+					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span></a>';
+					tpl += '</a>';
+					return $(tpl).appendTo("#top");
+				}
+			});
+			$center.droppable({
+				accept: 'li.ui-menu-item[data-type!=1]',
+				activeClass: "ui-state-highlight",
+				drop: function( event, ui ) {
+					//$(this).addClass( "ui-state-highlight" );
+					var $cur = $center.find("a.shortcut[data-mid='" + ui.helper.attr('data-mid') + "']");
+					logger.info("$cur.size()=" + $cur.size());
+					if($cur.size() == 0){
+						var $shortcut = ui.helper.clone().css("top",(ui.helper.position().top - $middle.position().top) + "px")
+						.removeClass("ui-state-highlight").hide().appendTo($center)
+						.fadeIn().draggable({containment: '#center'});
+						
+						//通过ajax保存该快捷方式
+						bc.ajax({
+							url: bc.root + "/bc/shortcut/save4drag", 
+							data: {mid:$shortcut.attr("data-mid")}, 
+							dataType: "json",
+							success:function(json){
+								bc.msg.slide(json.msg);
+							}
+						});
+					}else{
+						//以动画显示已经存在的快捷方式
+						$cur.addClass("hoverShortcut").fadeOut(function(){
+							$cur.fadeIn(function(){
+								$cur.removeClass("hoverShortcut");
+							});
+						});
+					}
+				}
+			});
 
 			// 快速工具条中条目的鼠标控制
 			var $bottom = this.element.find(">#bottom");

@@ -148,7 +148,7 @@ a.shortcut {
 	width: 5.5em;
 }
 
-a.shortcut:HOVER {
+a.shortcut:HOVER,a.shortcut.hoverShortcut {
 	border-color: green;
 	/*background: -webkit-radial-gradient(10% 30%, white, black);
 	background:-moz-radial-gradient(10% 30%, white, black);*/
