@@ -65,13 +65,13 @@
 
 			// 快速工具条中条目的鼠标控制
 			var $bottom = this.element.find(">#bottom");
-			this.element.delegate(".quickButton","mouseover", function() {
+			$bottom.delegate(".quickButton","mouseover", function() {
 				$(this).addClass("ui-state-hover");
 			});
-			this.element.delegate(".quickButton","mouseout", function() {
+			$bottom.delegate(".quickButton","mouseout", function() {
 				$(this).removeClass("ui-state-hover");
 			});
-			this.element.delegate(".quickButton","click", function() {
+			$bottom.delegate(".quickButton","click", function() {
 				$this = $(this);
 				var mid = $this.attr("data-mid");
 				var $dialogContainer = $("body>.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();

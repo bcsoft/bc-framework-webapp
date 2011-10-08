@@ -82,7 +82,8 @@ bc.page = {
 								//聚焦到表单的第一个可输入元素
 								$dom.find(":text:eq(0)").focus();
 							}
-						}
+						},
+						containment:"#middle"
 					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
 						var status = $dom.data("data-status");
