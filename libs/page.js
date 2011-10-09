@@ -82,7 +82,8 @@ bc.page = {
 								//聚焦到表单的第一个可输入元素
 								$dom.find(":text:eq(0)").focus();
 							}
-						}
+						},
+						containment:"#middle"
 					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
 						var status = $dom.data("data-status");
@@ -178,6 +179,7 @@ bc.page = {
 	 * 显示请求错误的提示窗口
 	 */
 	showError: function(option){
+		//alert(option.url + ";" + option.more);
 		//alert("喔唷，出错啦！");
 		//显示漂亮的错误提示窗口
 		var errorDom = [
@@ -198,6 +200,7 @@ bc.page = {
 			$error.unbind().remove();
 		});
 		$error.find("span.more").click(function(){
+			logger.info("span.more");
 			var errorWin=window.open('', 'bcErrorShow');
 			var errorDoc = errorWin.document;
 			errorDoc.open();
@@ -524,7 +527,7 @@ bc.page.quickbar={
 	loading: function(option){
 		$(bc.page.quickbar.id).append('<a id="quickButton-'+option.mid
 				+'" class="quickButton ui-corner-all ui-state-default" data-mid="'+option.mid
-				+'" data-name="'+option.name+'">'
+				+'" data-name="'+option.name+'" title="'+option.name+'">'
 				+'<span class="ui-icon loading"></span>'
 				+'<span class="text">正在加载：'+option.name+'</span></a>');
 	},

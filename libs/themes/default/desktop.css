@@ -94,6 +94,11 @@ ul.bc-menubar {
 	display: none;
 	top: 0;
 	left: 52px;
+	z-index: 10000;
+}
+
+ul.bc-menubar>li ul{
+	z-index: 10000;
 }
 
 ul.bc-menubar,ul.bc-menubar>li.ui-menubar-item,ul.bc-menubar>li.ui-menubar-item>a
@@ -107,7 +112,7 @@ ul.bc-menubar>li.ui-menubar-item>a.ui-menubar-link>span.ui-button-text {
 }
 
 /**右上角图标*/
-div.bc-desktop>#top>table.rightTopIcons {
+div.bc-desktop table.rightIcons {
 	border: 0;
 	position: absolute;
 	width: auto;
@@ -116,12 +121,13 @@ div.bc-desktop>#top>table.rightTopIcons {
 	right: 0;
 }
 
-div.bc-desktop>#top>table.rightTopIcons td.rightTopIcon {
+div.bc-desktop table.rightIcons td.rightIcon {
 	width: 40px;
 	vertical-align: middle;
+	cursor: pointer;
 }
 
-div.bc-desktop>#top>table.rightTopIcons #quickShowHide.rightTopIcon {
+div.bc-desktop> table.rightIcons #quickShowHide.rightIcon {
 	width: 12px;
 	vertical-align: top;
 	height: 100%;
@@ -142,7 +148,7 @@ a.shortcut {
 	width: 5.5em;
 }
 
-a.shortcut:HOVER {
+a.shortcut:HOVER,a.shortcut.hoverShortcut {
 	border-color: green;
 	/*background: -webkit-radial-gradient(10% 30%, white, black);
 	background:-moz-radial-gradient(10% 30%, white, black);*/
@@ -171,23 +177,20 @@ a.shortcut .text {
 }
 
 /**快速任务栏*/
-#quickbar {
+#quickButtons {
 	position: absolute;
 	z-index: 10000;
 	height: 40px; /*这个不设置的话会导致元素高度全部计算诡异*/
 	top: 0;
+	left:0px;
+	right:12px;
 	/*background-color: #9EB1A3;
+	width: 100%;
 	overflow: hidden;
 	background: url(images/bg_quickbar1.png) repeat-x top left;*/
-	width: 100%;
 	z-index: 10 !important;
 	border-width: 0 0 1px 0;
 	table-layout: fixed;
-	margin: 0;
-	padding: 0;
-}
-
-#quickbar>tbody,#quickbar>tr {
 	margin: 0;
 	padding: 0;
 }
@@ -235,7 +238,7 @@ a.shortcut .text {
 	float: left;
 	margin: 2px 0px 2px 2px;
 	padding: 8px;
-	border: 1px solid black;
+	/*border: 1px solid black;*/
 	text-decoration: none;
 	cursor: default;
 	position: relative;
@@ -255,6 +258,12 @@ a.shortcut .text {
 #quickButtons .quickButton .text {
 	padding-left: 20px;
 	padding-right: 2px;
+	
+	display: block;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	max-width: 12em;
 }
 
 #quickButtons .quickButton .loading {
@@ -266,9 +275,10 @@ a.shortcut .text {
 	position: absolute;
 	bottom: 0px;
 	left: 0;
-	width: 100%;
-	height: 30px;
-	line-height: 30px;
+	right:12px;
+	top: 0;
+	bottom: 0;
+	line-height: 40px;
 	overflow: hidden;
 	overflow: hidden;
 	text-align: center;

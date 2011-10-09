@@ -13,7 +13,7 @@ div.bc-tabs.layout-top {
 
 div.bc-tabs.layout-top div.tabsContainer{
 	position: relative;
-	z-index: 100;
+	z-index: 1;
 	width: 100% !important;
 	height: 34px;
 	margin-bottom: -1px;
@@ -23,7 +23,7 @@ div.bc-tabs.layout-top div.tabsContainer{
 /** 前后按钮 */
 div.bc-tabs.layout-top div.tabsContainer div.prev,div.bc-tabs.layout-top div.tabsContainer div.next {
 	position: absolute;
-	z-index: 110;
+	z-index: 2;
 	top:0;
 	height: 32px;
 	width: 19px;
