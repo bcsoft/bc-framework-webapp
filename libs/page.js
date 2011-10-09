@@ -593,6 +593,30 @@ bc.page.defaultTabsOption = {
 	load: bc.page.initTabPageLoad
 };
 
+//页签中页面的加载处理
+function _initBcTabsLoad(){
+	var $page = this;
+	//执行组件指定的额外初始化方法，上下文为$dom
+	var method = $page.attr("data-initMethod");
+	logger.debug("bctabs:initMethod="+method);
+	if(method){
+		method = bc.getNested(method);
+		if(typeof method == "function"){
+			var cfg = $page.attr("data-option");
+			//logger.info("cfg=" + cfg);
+			if(cfg && /^\{/.test($.trim(cfg))){
+				//对json格式进行解释
+				cfg = eval("(" + cfg + ")");
+			}else{
+				cfg = {};
+			}
+			method.call($page, cfg,cfg.readonly);
+		}else{
+			alert("undefined function: " + $page.attr("data-initMethod"));
+		}
+	}
+}
+
 /**  
  * 表单中的bctabs页签的默认配置
  * 上下文及参数同bctabs的事件参数一致
@@ -604,7 +628,17 @@ bc.page.defaultBcTabsOption = {
 		logger.info("tabs.load:bc-page.size=" + $page.size());
 		if(!$page.size()) return;
 		
-		//$page.height($tabPanel.height());
+		// 加载js、css文件
+		var dataJs = $page.attr("data-js");
+		if(dataJs && dataJs.length > 0){
+			//先加载js文件后执行模块指定的初始化方法
+			dataJs = dataJs.split(",");//逗号分隔多个文件
+			dataJs.push(jQuery.proxy(_initBcTabsLoad,$page));
+			bc.load(dataJs);
+		}else{
+			//执行模块指定的初始化方法
+			_initBcTabsLoad.call($page);
+		}
 		
 		//对视图和表单执行额外的初始化
 		var dataType = $page.attr("data-type");
