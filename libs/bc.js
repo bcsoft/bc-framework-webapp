@@ -200,7 +200,7 @@ jQuery(function($){
 		error: function(request, textStatus, errorThrown) {
 			if(bc.page.showError){
 				//显示漂亮的错误提示窗口
-				bc.page.showError({url:option.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
+				bc.page.showError({url:this.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
 			}else{
 				var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
 				alert(request.responseText || request.responseHTML);
@@ -630,7 +630,8 @@ bc.page = {
 								//聚焦到表单的第一个可输入元素
 								$dom.find(":text:eq(0)").focus();
 							}
-						}
+						},
+						containment:"#middle"
 					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
 						var status = $dom.data("data-status");
@@ -726,6 +727,7 @@ bc.page = {
 	 * 显示请求错误的提示窗口
 	 */
 	showError: function(option){
+		//alert(option.url + ";" + option.more);
 		//alert("喔唷，出错啦！");
 		//显示漂亮的错误提示窗口
 		var errorDom = [
@@ -746,6 +748,7 @@ bc.page = {
 			$error.unbind().remove();
 		});
 		$error.find("span.more").click(function(){
+			logger.info("span.more");
 			var errorWin=window.open('', 'bcErrorShow');
 			var errorDoc = errorWin.document;
 			errorDoc.open();
@@ -1072,7 +1075,7 @@ bc.page.quickbar={
 	loading: function(option){
 		$(bc.page.quickbar.id).append('<a id="quickButton-'+option.mid
 				+'" class="quickButton ui-corner-all ui-state-default" data-mid="'+option.mid
-				+'" data-name="'+option.name+'">'
+				+'" data-name="'+option.name+'" title="'+option.name+'">'
 				+'<span class="ui-icon loading"></span>'
 				+'<span class="text">正在加载：'+option.name+'</span></a>');
 	},
@@ -1138,6 +1141,30 @@ bc.page.defaultTabsOption = {
 	load: bc.page.initTabPageLoad
 };
 
+//页签中页面的加载处理
+function _initBcTabsLoad(){
+	var $page = this;
+	//执行组件指定的额外初始化方法，上下文为$dom
+	var method = $page.attr("data-initMethod");
+	logger.debug("bctabs:initMethod="+method);
+	if(method){
+		method = bc.getNested(method);
+		if(typeof method == "function"){
+			var cfg = $page.attr("data-option");
+			//logger.info("cfg=" + cfg);
+			if(cfg && /^\{/.test($.trim(cfg))){
+				//对json格式进行解释
+				cfg = eval("(" + cfg + ")");
+			}else{
+				cfg = {};
+			}
+			method.call($page, cfg,cfg.readonly);
+		}else{
+			alert("undefined function: " + $page.attr("data-initMethod"));
+		}
+	}
+}
+
 /**  
  * 表单中的bctabs页签的默认配置
  * 上下文及参数同bctabs的事件参数一致
@@ -1149,7 +1176,17 @@ bc.page.defaultBcTabsOption = {
 		logger.info("tabs.load:bc-page.size=" + $page.size());
 		if(!$page.size()) return;
 		
-		//$page.height($tabPanel.height());
+		// 加载js、css文件
+		var dataJs = $page.attr("data-js");
+		if(dataJs && dataJs.length > 0){
+			//先加载js文件后执行模块指定的初始化方法
+			dataJs = dataJs.split(",");//逗号分隔多个文件
+			dataJs.push(jQuery.proxy(_initBcTabsLoad,$page));
+			bc.load(dataJs);
+		}else{
+			//执行模块指定的初始化方法
+			_initBcTabsLoad.call($page);
+		}
 		
 		//对视图和表单执行额外的初始化
 		var dataType = $page.attr("data-type");
@@ -3250,7 +3287,8 @@ $(".bc-imageEditor").live("click",function(e){
 
 			// 初始化顶部的系统菜单
 			var $top = this.element.find(">#top");
-			$top.find(">#sysmenu").show().menubar({
+			var $sysmenu = $top.find(">#sysmenu");
+			$sysmenu.show().menubar({
 				position : {
 					within : $(window)
 				},
@@ -3266,6 +3304,7 @@ $(".bc-imageEditor").live("click",function(e){
 					option.name=$a.text();
 					option.type=$li.attr("data-type");
 					option.url=$a.attr("href");
+					option.standalone=$li.attr("data-standalone")=="true";
 					if(option.url && option.url.length>0 && option.url.indexOf("#")!=0)
 						bc.page.newWin(option);
 
@@ -3290,20 +3329,74 @@ $(".bc-imageEditor").live("click",function(e){
 			// 禁用桌面快捷方式的默认链接打开功能
 			this.element.delegate("a.shortcut","click",function(){return false;});
 			
-			//允许图标拖动
+			// 允许拖动桌面快捷方式
 			$shortcuts.draggable({containment: '#center'});
 			//$shortcuts.draggable({containment: '#desktop',grid: [20, 20]});
 			//$("#shortcuts" ).selectable();
+			
+			// 允许拖动菜单项到桌面添加快捷方式的处理
+			$sysmenu.find('li.ui-menu-item[data-type!=1]').draggable({
+				containment: '#center',
+				cursor: "move",
+				helper: function(){
+					var $this = $(this);
+					var tpl = '<a class="shortcut ui-state-highlight"';
+					tpl += '<a class="shortcut"';
+					tpl += ' data-mid="' + $this.attr("data-mid") + '"';
+					tpl += ' data-type="' + $this.attr("data-type") + '"';
+					tpl += ' data-standalone="' + $this.attr("data-standalone") + '"';
+					tpl += ' data-order="' + $this.attr("data-order") + '"';
+					tpl += ' data-iconClass="' + $this.attr("data-iconClass") + '"';
+					tpl += ' data-name="' + $this.attr("data-name") + '"';
+					tpl += ' data-url="' + $this.attr("data-url") + '"';
+					if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
+					tpl += '><span class="icon ' + $this.attr("data-iconClass") + '">';
+					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span></a>';
+					tpl += '</a>';
+					return $(tpl).appendTo("#top");
+				}
+			});
+			$center.droppable({
+				accept: 'li.ui-menu-item[data-type!=1]',
+				activeClass: "ui-state-highlight",
+				drop: function( event, ui ) {
+					//$(this).addClass( "ui-state-highlight" );
+					var $cur = $center.find("a.shortcut[data-mid='" + ui.helper.attr('data-mid') + "']");
+					logger.info("$cur.size()=" + $cur.size());
+					if($cur.size() == 0){
+						var $shortcut = ui.helper.clone().css("top",(ui.helper.position().top - $middle.position().top) + "px")
+						.removeClass("ui-state-highlight").hide().appendTo($center)
+						.fadeIn().draggable({containment: '#center'});
+						
+						//通过ajax保存该快捷方式
+						bc.ajax({
+							url: bc.root + "/bc/shortcut/save4drag", 
+							data: {mid:$shortcut.attr("data-mid")}, 
+							dataType: "json",
+							success:function(json){
+								bc.msg.slide(json.msg);
+							}
+						});
+					}else{
+						//以动画显示已经存在的快捷方式
+						$cur.addClass("hoverShortcut").fadeOut(function(){
+							$cur.fadeIn(function(){
+								$cur.removeClass("hoverShortcut");
+							});
+						});
+					}
+				}
+			});
 
 			// 快速工具条中条目的鼠标控制
 			var $bottom = this.element.find(">#bottom");
-			this.element.delegate(".quickButton","mouseover", function() {
+			$bottom.delegate(".quickButton","mouseover", function() {
 				$(this).addClass("ui-state-hover");
 			});
-			this.element.delegate(".quickButton","mouseout", function() {
+			$bottom.delegate(".quickButton","mouseout", function() {
 				$(this).removeClass("ui-state-hover");
 			});
-			this.element.delegate(".quickButton","click", function() {
+			$bottom.delegate(".quickButton","click", function() {
 				$this = $(this);
 				var mid = $this.attr("data-mid");
 				var $dialogContainer = $("body>.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
@@ -3322,7 +3415,7 @@ $(".bc-imageEditor").live("click",function(e){
 			});
 
 			// 显示隐藏桌面的控制
-			$top.find("#quickShowHide").click(function() {
+			$bottom.find("#quickShowHide").click(function() {
 				var $this = $(this);
 				var $dialogContainer = $("body>.ui-dialog");
 				if ($this.attr("data-hide") == "true") {
@@ -3833,3 +3926,160 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 	});
 
 })(jQuery);
+/*
+ * jQuery UI Dialog 的扩展:(source:1.9pre Live from Git Thu Sep 29 10:15:03 UTC 2011)
+ * 1)增加containment参数，控制对话框拖动的限制范围
+ */
+(function( $, undefined ) {
+	
+/** copy过来的局部变量 */
+var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
+	sizeRelatedOptions = {
+		buttons: true,
+		height: true,
+		maxHeight: true,
+		maxWidth: true,
+		minHeight: true,
+		minWidth: true,
+		width: true
+	},
+	resizableRelatedOptions = {
+		maxHeight: true,
+		maxWidth: true,
+		minHeight: true,
+		minWidth: true
+	};
+
+$.extend($.ui.dialog.prototype, {
+
+	/** 增加最小化、最大化按钮 */
+	_create: function() {
+		this.originalTitle = this.element.attr( "title" );
+		// #5742 - .attr() might return a DOMElement
+		if ( typeof this.originalTitle !== "string" ) {
+			this.originalTitle = "";
+		}
+
+		this.options.title = this.options.title || this.originalTitle;
+		var self = this,
+			options = self.options,
+
+			title = options.title || "&#160;",
+			titleId = $.ui.dialog.getTitleId( self.element ),
+
+			uiDialog = ( self.uiDialog = $( "<div>" ) )
+				.addClass( uiDialogClasses + options.dialogClass )
+				.css({
+					display: "none",
+					outline: 0, // TODO: move to stylesheet
+					zIndex: options.zIndex
+				})
+				// setting tabIndex makes the div focusable
+				.attr( "tabIndex", -1)
+				.keydown(function( event ) {
+					if ( options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
+							event.keyCode === $.ui.keyCode.ESCAPE ) {
+						self.close( event );
+						event.preventDefault();
+					}
+				})
+				.attr({
+					role: "dialog",
+					"aria-labelledby": titleId
+				})
+				.mousedown(function( event ) {
+					self.moveToTop( false, event );
+				})
+				.appendTo( "body" ),
+
+			uiDialogContent = self.element
+				.show()
+				.removeAttr( "title" )
+				.addClass( "ui-dialog-content ui-widget-content" )
+				.appendTo( uiDialog ),
+
+			uiDialogTitlebar = ( self.uiDialogTitlebar = $( "<div>" ) )
+				.addClass( "ui-dialog-titlebar  ui-widget-header  " +
+					"ui-corner-all  ui-helper-clearfix" )
+				.prependTo( uiDialog ),
+
+			uiDialogTitlebarClose = $( "<a href='#'></a>" )
+				.addClass( "ui-dialog-titlebar-close  ui-corner-all" )
+				.attr( "role", "button" )
+				.click(function( event ) {
+					event.preventDefault();
+					self.close( event );
+				})
+				.appendTo( uiDialogTitlebar ),
+
+			uiDialogTitlebarCloseText = ( self.uiDialogTitlebarCloseText = $( "<span>" ) )
+				.addClass( "ui-icon ui-icon-closethick" )
+				.text( options.closeText )
+				.appendTo( uiDialogTitlebarClose ),
+
+			uiDialogTitle = $( "<span>" )
+				.addClass( "ui-dialog-title" )
+				.attr( "id", titleId )
+				.html( title )
+				.prependTo( uiDialogTitlebar );
+
+		uiDialogTitlebar.find( "*" ).add( uiDialogTitlebar ).disableSelection();
+		this._hoverable( uiDialogTitlebarClose );
+		this._focusable( uiDialogTitlebarClose );
+
+		if ( options.draggable && $.fn.draggable ) {
+			self._makeDraggable();
+		}
+		if ( options.resizable && $.fn.resizable ) {
+			self._makeResizable();
+		}
+
+		self._createButtons( options.buttons );
+		self._isOpen = false;
+
+		if ( $.fn.bgiframe ) {
+			uiDialog.bgiframe();
+		}
+	},
+	
+	/** 增加containment参数，控制对话框拖动的限制范围 */
+	_makeDraggable: function() {
+		var self = this,
+		options = self.options,
+		doc = $( document );
+
+		function filteredUi( ui ) {
+			return {
+				position: ui.position,
+				offset: ui.offset
+			};
+		}
+	
+		self.uiDialog.draggable({
+			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+			handle: ".ui-dialog-titlebar",
+			containment: self.options.containment || "document",//这里是增加的代码
+			start: function( event, ui ) {
+				$( this )
+					.addClass( "ui-dialog-dragging" );
+				self._trigger( "dragStart", event, filteredUi( ui ) );
+			},
+			drag: function( event, ui ) {
+				self._trigger( "drag", event, filteredUi( ui ) );
+			},
+			stop: function( event, ui ) {
+				options.position = [
+					ui.position.left - doc.scrollLeft(),
+					ui.position.top - doc.scrollTop()
+				];
+				$( this )
+					.removeClass( "ui-dialog-dragging" );
+				self._trigger( "dragStop", event, filteredUi( ui ) );
+				$.ui.dialog.overlay.resize();
+			}
+		});
+	}
+});
+
+}(jQuery));
+

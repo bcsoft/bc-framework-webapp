@@ -84,6 +84,9 @@
 			<fileset dir="${bclibs.dir}">
 				<include name="tabs.js" />
 			</fileset>
+			<fileset dir="${bclibs.dir}">
+				<include name="dialog.js" />
+			</fileset>
 		</concat>
 	</target>
 
