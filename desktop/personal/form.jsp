@@ -36,29 +36,29 @@
 							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_smoothness.png" />'>
 							<div>平滑</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="ui-lightness"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/ui-lightness/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="cupertino"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/cupertino/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_ui_light.png" />'>
-							<div>明亮</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_cupertino.png" />'>
+							<div>苹果</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="sunny"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/sunny/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="flick"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/flick/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_sunny.png" />'>
-							<div>晴天</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_flick.png" />'>
+							<div>轻弹</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="overcast"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/overcast/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="pepper-grinder"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/pepper-grinder/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_overcast.png" />'>
-							<div>阴天</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_pepper_grinder.png" />'>
+							<div>胡椒磨</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="redmond"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/redmond/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="south-street"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/south-street/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_windoze.png" />'>
-							<div>微软</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_south_street.png" />'>
+							<div>南路边</div>
 						</td>
 					</tr>
 					<tr>
@@ -74,23 +74,23 @@
 							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_dark_hive.png" />'>
 							<div>黑蜂巢</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="humanity"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/humanity/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="trontastic"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/trontastic/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_humanity.png" />'>
-							<div>仁慈</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_trontastic.png" />'>
+							<div>trontastic</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="start"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/start/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="ui-lightness"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/ui-lightness/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_start_menu.png" />'>
-							<div>起点</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_ui_light.png" />'>
+							<div>明亮</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="cupertino"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/cupertino/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="redmond"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/redmond/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_cupertino.png" />'>
-							<div>苹果</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_windoze.png" />'>
+							<div>微软</div>
 						</td>
 					</tr>
 					<tr>
@@ -106,17 +106,17 @@
 							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_le_frog.png" />'>
 							<div>乐青蛙</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="pepper-grinder"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/pepper-grinder/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="sunny"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/sunny/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_pepper_grinder.png" />'>
-							<div>胡椒磨</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_sunny.png" />'>
+							<div>晴天</div>
 						</td>
-						<td class="theme ui-corner-all" data-theme="south-street"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/south-street/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="overcast"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/overcast/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_south_street.png" />'>
-							<div>南路边</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_overcast.png" />'>
+							<div>阴天</div>
 						</td>
 						<td class="theme ui-corner-all" data-theme="blitzer"
 							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/blitzer/jquery.ui.theme.css" />'>
@@ -126,11 +126,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="theme ui-corner-all" data-theme="flick"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/flick/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="humanity"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/humanity/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_flick.png" />'>
-							<div>轻弹</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_humanity.png" />'>
+							<div>仁慈</div>
 						</td>
 						<td class="theme ui-corner-all" data-theme="mint-choc"
 							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/mint-choc/jquery.ui.theme.css" />'>
@@ -158,11 +158,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="theme ui-corner-all" data-theme="trontastic"
-							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/trontastic/jquery.ui.theme.css" />'>
+						<td class="theme ui-corner-all" data-theme="start"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/start/jquery.ui.theme.css" />'>
 							<img
-							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_trontastic.png" />'>
-							<div>trontastic</div>
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_start_menu.png" />'>
+							<div>起点</div>
 						</td>
 						<td class="theme ui-corner-all" data-theme="hot-sneaks"
 							data-css='<s:url value="/ui-libs/jquery-ui/1.8.13/themes/hot-sneaks/jquery.ui.theme.css" />'>
