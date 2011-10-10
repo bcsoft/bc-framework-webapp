@@ -46,6 +46,7 @@ div.bc-desktop>#middle {
 	z-index: 1;
 	position: absolute;
 	width: 100%;
+	left: 0;
 	top: 35px;
 	bottom: 40px;
 	overflow: auto;
@@ -57,6 +58,7 @@ div.bc-desktop>#middle>#center {
 	right: 240px;
 	top: 0;
 	bottom: 0;
+	left: 0;
 	overflow: auto;
 	border-width: 0;
 	display: none;
