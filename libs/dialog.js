@@ -127,29 +127,36 @@ $.extend($.ui.dialog.prototype, {
 			};
 		}
 	
-		self.uiDialog.draggable({
-			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
-			handle: ".ui-dialog-titlebar",
-			containment: self.options.containment || "document",//这里是增加的代码
-			start: function( event, ui ) {
-				$( this )
-					.addClass( "ui-dialog-dragging" );
-				self._trigger( "dragStart", event, filteredUi( ui ) );
-			},
-			drag: function( event, ui ) {
-				self._trigger( "drag", event, filteredUi( ui ) );
-			},
-			stop: function( event, ui ) {
-				options.position = [
-					ui.position.left - doc.scrollLeft(),
-					ui.position.top - doc.scrollTop()
-				];
-				$( this )
-					.removeClass( "ui-dialog-dragging" );
-				self._trigger( "dragStop", event, filteredUi( ui ) );
-				$.ui.dialog.overlay.resize();
-			}
-		});
+		if(self.options.containment){
+			self.uiDialog.draggable({
+				cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+				handle: ".ui-dialog-titlebar",
+				containment: self.options.containment,//这里是增加的代码
+				start: function( event, ui ) {
+					$( this )
+						.addClass( "ui-dialog-dragging" );
+					self._trigger( "dragStart", event, filteredUi( ui ) );
+				},
+				drag: function( event, ui ) {
+					self._trigger( "drag", event, filteredUi( ui ) );
+				},
+				stop: function( event, ui ) {
+					options.position = [
+						ui.position.left - doc.scrollLeft(),
+						ui.position.top - doc.scrollTop()
+					];
+					$( this )
+						.removeClass( "ui-dialog-dragging" );
+					self._trigger( "dragStop", event, filteredUi( ui ) );
+					$.ui.dialog.overlay.resize();
+				}
+			});
+		}else{
+			self.uiDialog.draggable({
+				containment: false,
+			    handle: '.ui-dialog-titlebar'
+			});
+		}
 	}
 });
 
