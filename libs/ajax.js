@@ -19,7 +19,7 @@ jQuery(function($){
 	};
 	$.ajaxSetup(defaultAjaxOption);
 	bc.ajax = function(option){
-		option = $.extend(defaultAjaxOption,option);
+		option = $.extend({},defaultAjaxOption,option);
 		jQuery.ajax(option);
 	};
 });
