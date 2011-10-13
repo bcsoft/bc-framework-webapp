@@ -22,6 +22,11 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 		minWidth: true
 	};
 
+$.extend($.ui.dialog.prototype.options, {
+	appendTo: "body",
+	dragLimit: [0,80,30,20]//上,右,下,左
+});
+
 $.extend($.ui.dialog.prototype, {
 
 	/** 增加最小化、最大化按钮 */
@@ -62,7 +67,7 @@ $.extend($.ui.dialog.prototype, {
 				.mousedown(function( event ) {
 					self.moveToTop( false, event );
 				})
-				.appendTo( self.options.appendTo || "body" ),
+				.appendTo( self.options.appendTo),
 
 			uiDialogContent = self.element
 				.show()
@@ -114,7 +119,10 @@ $.extend($.ui.dialog.prototype, {
 		}
 	},
 	
-	/** 增加containment参数，控制对话框拖动的限制范围 */
+	/** 
+	 * 1)增加containment参数，控制对话框拖动的限制范围；
+	 * 2)增加dragLimit参数，控制对话框拖出容器的范围；
+	 */
 	_makeDraggable: function() {
 		var self = this,
 		options = self.options,
@@ -127,36 +135,53 @@ $.extend($.ui.dialog.prototype, {
 			};
 		}
 	
-		if(self.options.containment){
-			self.uiDialog.draggable({
-				cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
-				handle: ".ui-dialog-titlebar",
-				containment: self.options.containment,//这里是增加的代码
-				start: function( event, ui ) {
-					$( this )
-						.addClass( "ui-dialog-dragging" );
-					self._trigger( "dragStart", event, filteredUi( ui ) );
-				},
-				drag: function( event, ui ) {
-					self._trigger( "drag", event, filteredUi( ui ) );
-				},
-				stop: function( event, ui ) {
-					options.position = [
-						ui.position.left - doc.scrollLeft(),
-						ui.position.top - doc.scrollTop()
-					];
-					$( this )
-						.removeClass( "ui-dialog-dragging" );
-					self._trigger( "dragStop", event, filteredUi( ui ) );
-					$.ui.dialog.overlay.resize();
+		self.uiDialog.draggable({
+			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+			handle: ".ui-dialog-titlebar",
+			containment: self.options.containment,//这里是修改的代码
+			start: function( event, ui ) {
+				$( this )
+					.addClass( "ui-dialog-dragging" );
+				self._trigger( "dragStart", event, filteredUi( ui ) );
+			},
+			drag: function( event, ui ) {
+				if(options.dragLimit){
+					var parent =  $(options.appendTo);
+					var minTop = options.dragLimit[0];
+					var maxTop = parent.height() - options.dragLimit[2];
+					var minLeft = options.dragLimit[3] - self.uiDialog.width();
+					var maxLeft = parent.width() - options.dragLimit[1];
+					//logger.info("parent:" + $.toJSON(parent.position()) + ",w" + parent.width() + ",h" + parent.height());
+					//logger.info("position:" + $.toJSON(ui.position));
+					
+					//控制top
+					if(ui.position.top > maxTop){
+						ui.position.top = maxTop;
+					}else if(ui.position.top < minTop){
+						ui.position.top = minTop;
+					}
+					
+					//控制left
+					if(ui.position.left > maxLeft){
+						logger.info("maxLeft:" + maxLeft);
+						ui.position.left = maxLeft;
+					}else if(ui.position.left < minLeft){
+						ui.position.left = minLeft;
+					}
 				}
-			});
-		}else{
-			self.uiDialog.draggable({
-				containment: false,
-			    handle: '.ui-dialog-titlebar'
-			});
-		}
+				self._trigger( "drag", event, filteredUi( ui ) );
+			},
+			stop: function( event, ui ) {
+				options.position = [
+					ui.position.left - doc.scrollLeft(),
+					ui.position.top - doc.scrollTop()
+				];
+				$( this )
+					.removeClass( "ui-dialog-dragging" );
+				self._trigger( "dragStop", event, filteredUi( ui ) );
+				$.ui.dialog.overlay.resize();
+			}
+		});
 	}
 });
 

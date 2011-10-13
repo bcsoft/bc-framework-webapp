@@ -130,7 +130,7 @@
 			$bottom.delegate(".quickButton","click", function() {
 				$this = $(this);
 				var mid = $this.attr("data-mid");
-				var $dialogContainer = $("body>.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
+				var $dialogContainer = $middle.find(">.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
 				if ($this.hasClass("ui-state-active")) {
 					$this.removeClass("ui-state-active")
 					.find(">span.ui-icon").removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
@@ -148,7 +148,7 @@
 			// 显示隐藏桌面的控制
 			$bottom.find("#quickShowHide").click(function() {
 				var $this = $(this);
-				var $dialogContainer = $("body>.ui-dialog");
+				var $dialogContainer = $middle.find(">.ui-dialog");
 				if ($this.attr("data-hide") == "true") {
 					$this.attr("data-hide","false");
 					$dialogContainer.show();
