@@ -60,13 +60,14 @@
 			this.element.delegate("a.shortcut","click",function(){return false;});
 			
 			// 允许拖动桌面快捷方式
-			$shortcuts.draggable({containment: '#center'});
+			$shortcuts.draggable({containment: '#center',distance: 20});
 			//$shortcuts.draggable({containment: '#desktop',grid: [20, 20]});
 			//$("#shortcuts" ).selectable();
 			
 			// 允许拖动菜单项到桌面添加快捷方式的处理
 			$sysmenu.find('li.ui-menu-item[data-type!=1]').draggable({
 				containment: '#center',
+				distance: 20,
 				cursor: "move",
 				helper: function(){
 					var $this = $(this);
