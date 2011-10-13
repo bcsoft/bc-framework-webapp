@@ -62,7 +62,7 @@ $.extend($.ui.dialog.prototype, {
 				.mousedown(function( event ) {
 					self.moveToTop( false, event );
 				})
-				.appendTo( "body" ),
+				.appendTo( self.options.appendTo || "body" ),
 
 			uiDialogContent = self.element
 				.show()

@@ -83,6 +83,8 @@ bc.page = {
 								$dom.find(":text:eq(0)").focus();
 							}
 						},
+						appendTo:"#middle",
+						scroll:false,
 						containment:false//"#middle"
 					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
