@@ -145,7 +145,7 @@ $.extend($.ui.dialog.prototype, {
 				self._trigger( "dragStart", event, filteredUi( ui ) );
 			},
 			drag: function( event, ui ) {
-				if(options.dragLimit){
+				if(!self.options.containment && options.dragLimit){
 					var parent =  $(options.appendTo);
 					var minTop = options.dragLimit[0];
 					var maxTop = parent.height() - options.dragLimit[2];
