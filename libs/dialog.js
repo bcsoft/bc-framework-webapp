@@ -22,6 +22,11 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 		minWidth: true
 	};
 
+$.extend($.ui.dialog.prototype.options, {
+	appendTo: "body",
+	dragLimit: [0,80,30,20]//上,右,下,左
+});
+
 $.extend($.ui.dialog.prototype, {
 
 	/** 增加最小化、最大化按钮 */
@@ -62,7 +67,7 @@ $.extend($.ui.dialog.prototype, {
 				.mousedown(function( event ) {
 					self.moveToTop( false, event );
 				})
-				.appendTo( "body" ),
+				.appendTo( self.options.appendTo),
 
 			uiDialogContent = self.element
 				.show()
@@ -114,7 +119,10 @@ $.extend($.ui.dialog.prototype, {
 		}
 	},
 	
-	/** 增加containment参数，控制对话框拖动的限制范围 */
+	/** 
+	 * 1)增加containment参数，控制对话框拖动的限制范围；
+	 * 2)增加dragLimit参数，控制对话框拖出容器的范围；
+	 */
 	_makeDraggable: function() {
 		var self = this,
 		options = self.options,
@@ -130,13 +138,37 @@ $.extend($.ui.dialog.prototype, {
 		self.uiDialog.draggable({
 			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
 			handle: ".ui-dialog-titlebar",
-			containment: self.options.containment || "document",//这里是增加的代码
+			containment: self.options.containment,//这里是修改的代码
 			start: function( event, ui ) {
 				$( this )
 					.addClass( "ui-dialog-dragging" );
 				self._trigger( "dragStart", event, filteredUi( ui ) );
 			},
 			drag: function( event, ui ) {
+				if(!self.options.containment && options.dragLimit){
+					var parent =  $(options.appendTo);
+					var minTop = options.dragLimit[0];
+					var maxTop = parent.height() - options.dragLimit[2];
+					var minLeft = options.dragLimit[3] - self.uiDialog.width();
+					var maxLeft = parent.width() - options.dragLimit[1];
+					//logger.info("parent:" + $.toJSON(parent.position()) + ",w" + parent.width() + ",h" + parent.height());
+					//logger.info("position:" + $.toJSON(ui.position));
+					
+					//控制top
+					if(ui.position.top > maxTop){
+						ui.position.top = maxTop;
+					}else if(ui.position.top < minTop){
+						ui.position.top = minTop;
+					}
+					
+					//控制left
+					if(ui.position.left > maxLeft){
+						logger.info("maxLeft:" + maxLeft);
+						ui.position.left = maxLeft;
+					}else if(ui.position.left < minLeft){
+						ui.position.left = minLeft;
+					}
+				}
 				self._trigger( "drag", event, filteredUi( ui ) );
 			},
 			stop: function( event, ui ) {
@@ -150,6 +182,56 @@ $.extend($.ui.dialog.prototype, {
 				$.ui.dialog.overlay.resize();
 			}
 		});
+	}
+});
+
+//遮罩的扩展
+$.extend( $.ui.dialog.overlay, {
+	create: function( dialog ) {
+		if ( this.instances.length === 0 ) {
+			// prevent use of anchors and inputs
+			// we use a setTimeout in case the overlay is created from an
+			// event that we're going to be cancelling (see #2804)
+			setTimeout(function() {
+				// handle $(el).dialog().dialog('close') (see #4065)
+				if ( $.ui.dialog.overlay.instances.length ) {
+					$( document ).bind( $.ui.dialog.overlay.events, function( event ) {
+						// stop events if the z-index of the target is < the z-index of the overlay
+						// we cannot return true when we don't want to cancel the event (#3523)
+						if ( $( event.target ).zIndex() < $.ui.dialog.overlay.maxZ ) {
+							return false;
+						}
+					});
+				}
+			}, 1 );
+
+			// allow closing by pressing the escape key
+			$( document ).bind( "keydown.dialog-overlay", function( event ) {
+				if ( dialog.options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
+					event.keyCode === $.ui.keyCode.ESCAPE ) {
+					
+					dialog.close( event );
+					event.preventDefault();
+				}
+			});
+
+			// handle window resize
+			$( window ).bind( "resize.dialog-overlay", $.ui.dialog.overlay.resize );
+		}
+
+		var $el = ( this.oldInstances.pop() || $( "<div>" ).addClass( "ui-widget-overlay" ) )
+			.appendTo( dialog.options.appendTo || document.body )//修改的代码
+			.css({
+				width: this.width(),
+				height: this.height()
+			});
+
+		if ( $.fn.bgiframe ) {
+			$el.bgiframe();
+		}
+
+		this.instances.push( $el );
+		return $el;
 	}
 });
 

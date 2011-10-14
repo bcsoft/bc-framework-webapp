@@ -60,13 +60,14 @@
 			this.element.delegate("a.shortcut","click",function(){return false;});
 			
 			// 允许拖动桌面快捷方式
-			$shortcuts.draggable({containment: '#center'});
+			$shortcuts.draggable({containment: '#center',distance: 20});
 			//$shortcuts.draggable({containment: '#desktop',grid: [20, 20]});
 			//$("#shortcuts" ).selectable();
 			
 			// 允许拖动菜单项到桌面添加快捷方式的处理
 			$sysmenu.find('li.ui-menu-item[data-type!=1]').draggable({
 				containment: '#center',
+				distance: 20,
 				cursor: "move",
 				helper: function(){
 					var $this = $(this);
@@ -129,7 +130,7 @@
 			$bottom.delegate(".quickButton","click", function() {
 				$this = $(this);
 				var mid = $this.attr("data-mid");
-				var $dialogContainer = $("body>.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
+				var $dialogContainer = $middle.find(">.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
 				if ($this.hasClass("ui-state-active")) {
 					$this.removeClass("ui-state-active")
 					.find(">span.ui-icon").removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
@@ -147,7 +148,7 @@
 			// 显示隐藏桌面的控制
 			$bottom.find("#quickShowHide").click(function() {
 				var $this = $(this);
-				var $dialogContainer = $("body>.ui-dialog");
+				var $dialogContainer = $middle.find(">.ui-dialog");
 				if ($this.attr("data-hide") == "true") {
 					$this.attr("data-hide","false");
 					$dialogContainer.show();

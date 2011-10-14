@@ -49,7 +49,7 @@ div.bc-desktop>#middle {
 	left: 0;
 	top: 35px;
 	bottom: 40px;
-	overflow: auto;
+	overflow: hidden;
 	border-width: 0;
 }
 

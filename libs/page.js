@@ -83,18 +83,20 @@ bc.page = {
 								$dom.find(":text:eq(0)").focus();
 							}
 						},
-						containment:"#middle"
+						appendTo:"#middle",
+						scroll:false,
+						containment:false//"#middle"
 					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
 						var status = $dom.data("data-status");
 						//调用回调函数
 						if(option.beforeClose) 
-							return option.beforeClose(status);
+							return option.beforeClose.call($dom[0],status);
 					}).bind("dialogclose",function(event,ui){
 						var $this = $(this);
 						var status = $dom.data("data-status");
 						//调用回调函数
-						if(option.afterClose) option.afterClose(status);
+						if(option.afterClose) option.afterClose.call($dom[0],status);
 						
 						//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
 						//ie8试过没问题
@@ -147,7 +149,7 @@ bc.page = {
 					bc.page.quickbar.loaded(option.mid);
 					
 					//调用回调函数
-					if(option.afterOpen) option.afterOpen();
+					if(option.afterOpen) option.afterOpen.call($dom[0]);
 				}
 				//alert(html);
 				var dataJs = $dom.attr("data-js");
