@@ -71,6 +71,8 @@
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
+		<s:hidden name="e.pcode" />
+		<s:hidden name="e.pname" />
 		<s:hidden name="belong.id" />
 		<s:hidden name="assignRoleIds" />
 		<p class="formComment"><s:text name="department.form.comment"/></p>

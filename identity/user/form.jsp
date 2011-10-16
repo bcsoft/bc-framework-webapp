@@ -136,6 +136,8 @@
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
+		<s:hidden name="e.pcode" />
+		<s:hidden name="e.pname" />
 		<s:hidden name="e.detail.id" />
 		<s:hidden name="belong.id" />
 		<input type="hidden" name="e.detail.createDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.detail.createDate" />'/>
