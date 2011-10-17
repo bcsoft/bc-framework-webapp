@@ -4,13 +4,13 @@ bc.groupForm = {
 		
 		var $form = $(this);
 		//绑定选择上级的按钮事件处理
-		$form.find("#selectBelong,:input[name='belong.name']").click(function(){
-			var selecteds = $form.find(":input[name='belong.id']").val();
+		$form.find("#selectBelong,:input[name='belongNames']").click(function(){
+			var selecteds = $form.find(":input[name='belongIds']").val();
 			bc.identity.selectUnitOrDepartment({
 				selecteds: selecteds,
 				onOk: function(actor){
-					$form.find(":input[name='belong.name']").val(actor.name);
-					$form.find(":input[name='belong.id']").val(actor.id);
+					$form.find(":input[name='belongNames']").val(actor.name);
+					$form.find(":input[name='belongIds']").val(actor.id);
 				}
 			});
 		});

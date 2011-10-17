@@ -95,7 +95,7 @@
 <!-- 空白框架，通常用于下载附件 -->
 <iframe id="blank" name="blank" style="width:0; height:0; display:hidden;" src="about:blank" scrolling="no" frameborder="0"></iframe>
 <div id="loginInfo">
-<s:property value="context.user.name" />(<s:property value="context.belong.name" />) 登录于  <s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>
+<s:property value="context.user.name" />(<s:property value="context.user.pname" />) 登录于  <s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>
 <br/><s:text name="app.title"/> v<s:text name="app.version"/>
 </div>
 
