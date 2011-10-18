@@ -12,7 +12,7 @@
 					<td class="label">* <s:text name="user.name"/>:</td>
 					<td class="value w200"><s:textfield name="e.name" data-validate="required"/></td>
 					<td class="label">* <s:text name="actor.belong"/>:</td>
-					<td class="value w200"><s:textfield name="belong.name" data-validate="required"
+					<td class="value w200"><s:textfield name="belongNames" data-validate="required"
 						readonly="true" title='%{getText("user.title.click2selectBelong")}'/></td>
 					<td rowspan="6" class="label" style="text-align: center;vertical-align: top;">
 						<img id="portrait" style="width:110px;height:140px;cursor: pointer;" title='<s:text name="image.click2change"/>'
@@ -136,8 +136,10 @@
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
+		<s:hidden name="e.pcode" />
+		<s:hidden name="e.pname" />
 		<s:hidden name="e.detail.id" />
-		<s:hidden name="belong.id" />
+		<s:hidden name="belongIds" />
 		<input type="hidden" name="e.detail.createDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.detail.createDate" />'/>
 		<s:hidden name="assignGroupIds" />
 		<s:hidden name="assignRoleIds" />

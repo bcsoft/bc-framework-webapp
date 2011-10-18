@@ -49,34 +49,45 @@ $(".bc-toolbar .bc-button").live("mouseover", function() {
 	var action = $this.attr("data-action");//内定的操作
 	var callback = $this.attr("data-callback");//回调函数
 	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
-	var pageEl = $this.closest(".bc-page")[0];
+	var $page = $this.closest(".bc-page");
+	var pageEl = $page[0];
+	
+	//==附加的额外的请求参数
+	//  从page取
+	var extras = $page.attr("data-extras");
+	logger.info("page extras=" + extras);
+	if(extras && extras.length > 0){
+		extras = eval("(" + extras + ")");
+	}else{
+		extras = {};
+	}
 	
 	//上下文统一为页面，第一个参数为配置
 	switch (action){
 	case "create"://新建--视图中
-		bc.page.create.call(pageEl,{callback:callback});
+		bc.page.create.call(pageEl,{callback:callback,extras:extras});
 		break;
 	case "edit"://编辑----视图中
-		bc.page.edit.call(pageEl,{callback:callback});
+		bc.page.edit.call(pageEl,{callback:callback,extras:extras});
 		break;
 	case "open"://查看----视图中
-		bc.page.open.call(pageEl,{callback:callback});
+		bc.page.open.call(pageEl,{callback:callback,extras:extras});
 		break;
 	case "delete"://删除----视图
-		bc.page.delete_.call(pageEl,{callback:callback});
+		bc.page.delete_.call(pageEl,{callback:callback,extras:extras});
 		break;
 	case "save"://保存----表单
-		bc.page.save.call(pageEl,{callback:callback});
+		bc.page.save.call(pageEl,{callback:callback,extras:extras});
 		break;
 	case "cancel"://关闭对话框
-		bc.page.cancel.call(pageEl,{callback:callback});
+		bc.page.cancel.call(pageEl,{callback:callback,extras:extras});
 		break;
 	default ://调用自定义的函数
 		var click = $this.attr("data-click");
 		if(typeof click == "string")
 			click = bc.getNested(click);//将函数名称转换为函数
 		if(typeof click == "function")
-			click.call(pageEl,{callback:callback});
+			click.call(pageEl,{callback:callback,extras:extras});
 		break;
 	}
 });

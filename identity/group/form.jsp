@@ -12,7 +12,7 @@
 					<td class="label">* <s:text name="label.name"/>:</td>
 					<td class="value w200"><s:textfield name="e.name" data-validate="required"/></td>
 					<td class="label">* <s:text name="actor.belong"/>:</td>
-					<td class="value"><s:textfield name="belong.name" data-validate="required"
+					<td class="value"><s:textfield name="belongNames" data-validate="required"
 						readonly="true" title='%{getText("user.title.click2selectBelong")}'/></td>
 				</tr>
 				<tr>
@@ -91,7 +91,9 @@
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
-		<s:hidden name="belong.id" />
+		<s:hidden name="e.pcode" />
+		<s:hidden name="e.pname" />
+		<s:hidden name="belongIds" />
 		<s:hidden name="assignUserIds" />
 		<s:hidden name="assignRoleIds" />
 		<p class="formComment"><s:text name="group.form.comment"/></p>

@@ -4,8 +4,8 @@ bc.unitForm = {
 		
 		var $form = $(this);
 		//绑定选择上级的按钮事件处理
-		$form.find("#selectBelong,:input[name='belong.name']").click(function(){
-			var selecteds = $form.find(":input[name='belong.id']").val();
+		$form.find("#selectBelong,:input[name='belongNames']").click(function(){
+			var selecteds = $form.find(":input[name='belongIds']").val();
 			var myId = $form.find(":input[name='e.id']").val();
 			var excludes = null;
 			if(myId && myId.length > 0)
@@ -16,8 +16,8 @@ bc.unitForm = {
 				excludes: excludes,
 				onOk: function(actor){
 					if(myId != actor.id){
-						$form.find(":input[name='belong.name']").val(actor.name);
-						$form.find(":input[name='belong.id']").val(actor.id);
+						$form.find(":input[name='belongNames']").val(actor.name);
+						$form.find(":input[name='belongIds']").val(actor.id);
 					}else{
 						alert("不能选择自己作为自己的上级！");
 					}

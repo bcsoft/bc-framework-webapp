@@ -4,13 +4,24 @@ bc.userForm = {
 		
 		var $form = $(this);
 		//绑定选择上级的按钮事件处理
-		$form.find("#selectBelong,:input[name='belong.name']").click(function(){
-			var selecteds = $form.find(":input[name='belong.id']").val();
+		$form.find("#selectBelong,:input[name='belongNames']").click(function(){
+			var selecteds = $form.find(":input[name='belongIds']").val();
 			bc.identity.selectUnitOrDepartment({
 				selecteds: selecteds,
-				onOk: function(actor){
-					$form.find(":input[name='belong.name']").val(actor.name);
-					$form.find(":input[name='belong.id']").val(actor.id);
+				multiple:true,
+				onOk: function(actors){
+					//单选
+					//$form.find(":input[name='belongNames']").val(actor.name);
+					//$form.find(":input[name='belongIds']").val(actor.id);
+					
+					//多选
+					var ids = [],names=[];
+					for(var i=0;i<actors.length;i++){
+						ids.push(actors[i].id);
+						names.push(actors[i].name);
+					}
+					$form.find(":input[name='belongNames']").val(names.join(","));
+					$form.find(":input[name='belongIds']").val(ids.join(","));
 				}
 			});
 		});
