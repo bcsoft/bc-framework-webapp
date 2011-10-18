@@ -60,7 +60,13 @@
 			this.element.delegate("a.shortcut","click",function(){return false;});
 			
 			// 允许拖动桌面快捷方式
-			$shortcuts.draggable({containment: '#center',distance: 20});
+			var draggableOption = {containment: '#center',distance: 20,revert: function(droped){
+				if(droped){
+					var my = this.attr('data-aid') == userId;
+					return !my;
+				}
+			}};
+			$shortcuts.draggable(draggableOption);
 			//$shortcuts.draggable({containment: '#desktop',grid: [20, 20]});
 			//$("#shortcuts" ).selectable();
 			
@@ -72,8 +78,8 @@
 				helper: function(){
 					var $this = $(this);
 					var tpl = '<a class="shortcut ui-state-highlight"';
-					tpl += '<a class="shortcut"';
 					tpl += ' data-mid="' + $this.attr("data-mid") + '"';
+					tpl += ' data-aid="' + userId + '"';
 					tpl += ' data-type="' + $this.attr("data-type") + '"';
 					tpl += ' data-standalone="' + $this.attr("data-standalone") + '"';
 					tpl += ' data-order="' + $this.attr("data-order") + '"';
@@ -97,7 +103,7 @@
 					if($cur.size() == 0){
 						var $shortcut = ui.helper.clone().css("top",(ui.helper.position().top - $middle.position().top) + "px")
 						.removeClass("ui-state-highlight").hide().appendTo($center)
-						.fadeIn().draggable({containment: '#center'});
+						.fadeIn().draggable(draggableOption);
 						
 						//通过ajax保存该快捷方式
 						bc.ajax({
@@ -105,6 +111,8 @@
 							data: {mid:$shortcut.attr("data-mid")}, 
 							dataType: "json",
 							success:function(json){
+								logger.info("data-id=" + json.id);
+								$shortcut.attr("data-id",json.id);
 								bc.msg.slide(json.msg);
 							}
 						});
@@ -115,6 +123,33 @@
 								$cur.removeClass("hoverShortcut");
 							});
 						});
+					}
+				}
+			});
+			
+			$recyle = $center.children("a.recycle").droppable({
+				accept: 'a.shortcut',
+				hoverClass: "ui-state-highlight",
+				activeClass: "ui-state-active",
+				drop: function( event, ui ) {
+					//通过ajax删除该快捷方式:只能删除自己的快捷方式
+					if(ui.draggable.attr('data-aid') == userId){
+						var id = ui.draggable.attr('data-id');
+						bc.ajax({
+							url: bc.root + "/bc/shortcut/delete?id=" + id, 
+							dataType: "json",
+							success:function(json){
+								//修改回收站的图标
+								$recyle.attr("data-iconClass","i0505").children("span.icon").addClass("i0505");
+								
+								//删除dom元素
+								ui.draggable.remove();
+								//显示提示信息
+								bc.msg.slide("快捷方式“" + ui.draggable.attr('data-name') + "”已删除！");
+							}
+						});
+					}else{
+						bc.msg.slide("此为系统级通用快捷方式，不允许删除！");
 					}
 				}
 			});

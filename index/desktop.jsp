@@ -40,9 +40,25 @@
 	<div id="middle" class="ui-widget-content">
 		<!-- 桌面区域 -->
 		<div id="center" class="bc-shortcuts">
+			<!-- 回收站 -->
+			<a class="recycle" data-m="true" title='<s:text name="shortcut.title.drag2recyle" />'
+				data-id='recycle'
+				data-standalone='false'
+				data-type='2' 
+ 				data-mid='recycle'
+				data-option='' 
+				data-order='9999'
+				data-iconClass='i0504'
+				data-name='回收站'
+				data-url='<s:url value="/bc/recycle" />'>
+				<span class='icon i0504'></span>
+				<span class="text">回收站</span>
+			</a>
+			
+			<!-- 桌面图标 -->
 			<s:iterator value="shortcuts" status="stuts">
 			<s:if test="resource == null">
-				<a class="shortcut" data-m="false"
+				<a class="shortcut" data-m="false" data-aid='<s:property value="actor.id" />'
 					data-id='<s:property value="id" />'
 					data-standalone='<s:property value="standalone" />'
 					data-type='0' 
@@ -57,7 +73,7 @@
 				</a>
 	           </s:if>
 	           <s:else>
-				<a class="shortcut" data-m="true"
+				<a class="shortcut" data-m="true" data-aid='<s:property value="actor.id" />'
 					data-id='<s:property value="id" />'
 					data-standalone='<s:property value="standalone" />'
 					data-type='<s:property value="resource.type" />' 
@@ -121,6 +137,7 @@
 	}else{
 		bc.ts = "<s:text name="app.ts" />";//系统编译发布的时间
 	}
+	var userId = '<s:property value="context.user.id" />';
 	var userCode = '<s:property value="context.user.code" />';
 	var userName = '<s:property value="context.user.name" />';
 </script>
