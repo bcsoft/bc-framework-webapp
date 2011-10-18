@@ -33,12 +33,16 @@ bc.page = {
 			bc.page.quickbar.loading(option);
 		}
 		
+		logger.profile("newWin.ajax." + option.mid);
+		
 		//内部处理
 		logger.info("newWin:loading html from url=" + option.url);
 		bc.ajax({
 			url : option.url, data: option.data || null,
 			dataType : "html",
 			success : function(html) {
+				logger.profile("newWin.ajax." + option.mid);
+				logger.profile("newWin.init." + option.mid);
 				logger.info("success loaded html");
 				//var tc = document.getElementById("tempContainer");
 				//if(!tc){
@@ -162,6 +166,7 @@ bc.page = {
 					//执行模块指定的初始化方法
 					_init();
 				}
+				logger.profile("newWin.init." + option.mid);
 			},
 			error: function(request, textStatus, errorThrown) {
 				//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
