@@ -8,7 +8,7 @@
 		"width":300,"height":320,"modal":true
 	}'>
 	<div style="margin:4px;">
-	<s:select list="es" listKey="id" listValue="name" theme="simple"
+	<s:select list="es" listKey="id" listValue="name + ' <--' + pname" theme="simple"
 		size="10" cssStyle="width:100%;height:100%;" value="selected"
 		multiple="%{multiple}" name="es"></s:select>
 	</div>

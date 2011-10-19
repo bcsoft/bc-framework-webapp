@@ -19,11 +19,13 @@ bc.selectGroup = {
 			// 循环选定的每一个项目，将该项添加到列表中
 			for (var i = 0; i < select.length; i++){
 				if (select.options[i].selected){
-					item.push({id: select.options[i].value,name: select.options[i].text});
+					var txt = select.options[i].text.split(" <--");
+					item.push({id: select.options[i].value,name: txt[0],pname: txt[1]});
 				}
 			}
 		}else{
-			item={id: select.value,name: select.options[select.selectedIndex].text};
+			var txt = select.options[select.selectedIndex].text.split(" <--");
+			item={id: select.value,name: txt[0],pname: txt[1]};
 		}
 		$page.data("data-status",item);
 		$page.dialog("close");
