@@ -136,7 +136,7 @@ div.bc-desktop> table.rightIcons #quickShowHide.rightIcon {
 }
 
 /**桌面快捷方式*/
-a.shortcut {
+a.shortcut,a.recycle {
 	float: left;
 	/*clear: left; 设置这个就默认竖排了*/
 	margin: 10px 5px 5px 10px;
@@ -150,13 +150,13 @@ a.shortcut {
 	width: 5.5em;
 }
 
-a.shortcut:HOVER,a.shortcut.hoverShortcut {
+a.shortcut:HOVER,a.shortcut.hoverShortcut,a.recycle:HOVER{
 	border-color: green;
 	/*background: -webkit-radial-gradient(10% 30%, white, black);
 	background:-moz-radial-gradient(10% 30%, white, black);*/
 }
 
-a.shortcut .icon {
+a.shortcut .icon,a.recycle .icon {
 	display: block;
 	width: 52px;
 	height: 52px;
@@ -166,7 +166,7 @@ a.shortcut .icon {
 	margin-top: 2px;
 }
 
-a.shortcut .text {
+a.shortcut .text,a.recycle .text {
 	margin: auto;
 	display: block;
 	width: 5em;
@@ -176,6 +176,13 @@ a.shortcut .text {
 	cursor: default;
 	text-align: center;
 	padding: 2px;
+}
+
+a.recycle {
+	clear:both;
+	position: absolute;
+	left:0px;
+	bottom:0px;
 }
 
 /**快速任务栏*/
@@ -301,7 +308,7 @@ a.shortcut .text {
 #loginInfo {
 	position: absolute;
 	bottom: 40px;
-	left: 0;
+	right: 0;
 	/*height: 30px;
 	line-height: 30px;*/
 	font-size: 0.75em;
