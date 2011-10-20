@@ -262,7 +262,10 @@ bc.page = {
 		}
 		return _option;
 	},
-	/**保存表单数据，上下文为页面对象*/
+	/**保存表单数据，上下文为页面对象
+	 * @param {Object} option
+	 * @option {Function} callback 保存成功后的回调函数，上下文为当前页面，第一个参数为服务器返回的json对象
+	 */
 	save: function(option) {
 		option = option || {};
 		var $page = $(this);
