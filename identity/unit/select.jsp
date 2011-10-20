@@ -7,9 +7,10 @@
 		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.selectUnit.clickOk"}],
 		"width":300,"modal":true
 	}'>
-	<div style="margin:4px;">
-	<s:select name="es" list="es" listKey="id" listValue="name + ' <--' + pname" theme="simple"
-		size="10" cssStyle="width:100%;height:100%;" value="selected"
-		multiple="%{multiple}"></s:select>
+	<div style="margin: 4px;">
+		<s:select name="es" list="es" listKey="id + ',' + name + ',' + pname"
+			listValue="pname == '' ? name : pname + '/' + name"
+			theme="simple" size="10" cssStyle="width:100%;height:100%;"
+			value="selected" multiple="%{multiple}"></s:select>
 	</div>
 </div>

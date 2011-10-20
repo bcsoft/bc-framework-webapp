@@ -20,7 +20,7 @@ bc.roleForm = {
 			bc.identity.selectResource({
 				multiple: true,
 				selecteds: selecteds,
-				types: "1,2,3,4",
+				//types: "2,3,4",
 				onOk: function(resources){
 					//添加当前没有分派的模块
 					$.each(resources,function(i,resource){
