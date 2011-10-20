@@ -7,7 +7,9 @@
 		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.selectRole.clickOk"}],
 		"width":300,"height":320,"modal":true
 	}'>
-	<s:select list="es" listKey="id" listValue="name" theme="simple"
-		size="10" cssStyle="width:100%;height:100%;" value="selected"
-		multiple="%{multiple}" name="es"></s:select>
+	<div style="margin: 4px;">
+		<s:select list="es" listKey="id" listValue="name" theme="simple"
+			size="10" cssStyle="width:100%;height:100%;" value="selected"
+			multiple="%{multiple}" name="es"></s:select>
+	</div>
 </div>
