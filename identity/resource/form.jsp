@@ -39,6 +39,7 @@
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
+		<s:hidden name="e.pname" />
 		<s:hidden name="e.belong.id" />
 		<p class="formComment"><s:text name="resource.form.comment"/></p>
 	</s:form>

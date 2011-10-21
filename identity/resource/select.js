@@ -19,11 +19,13 @@ bc.selectResource = {
 			// 循环选定的每一个项目，将该项添加到列表中
 			for (var i = 0; i < select.length; i++){
 				if (select.options[i].selected){
-					item.push({id: select.options[i].value,name: select.options[i].text});
+					var value = select.options[i].value.split(",");
+					item.push({id: value[0],name: value[1],fname: select.options[i].text});
 				}
 			}
 		}else{
-			item={id: select.value,name: select.options[select.selectedIndex].text};
+			var value = select.value.split(",");
+			item={id: value[0],name: value[1],fname: select.options[select.selectedIndex].text};
 		}
 		$page.data("data-status",item);
 		$page.dialog("close");

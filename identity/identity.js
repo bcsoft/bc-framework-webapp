@@ -144,12 +144,13 @@ bc.identity = {
 	 * @option {String} selecteds 已选择的id列表，多个值用逗号连接
 	 * @option {String} excludes 要排除显示的项的值，多个值用逗号连接
 	 * @option {Boolean} multiple 是否允许多选，默认false
-	 * @option {String} types 选择的资源类型，多个值用逗号连接，为空代表选择所有类型
+	 * @option {String} types 选择的资源类型，多个值用逗号连接，为空代表选择所有类型，默认为非分类资源
 	 * @option {Function} onOk 选择完毕后的回调函数，函数第一个参数为选中的角色信息(数组)
 	 */
 	selectResource : function(option) {
 		option.data = jQuery.extend({
-			multiple: false
+			multiple: false,
+			types: "2,3,4"
 		},option.data);
 		if(option.selecteds)
 			option.data.selecteds = option.selecteds;
