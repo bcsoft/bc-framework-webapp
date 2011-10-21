@@ -80,7 +80,7 @@ bc.personal={
 	save:function(){
 		bc.page.save.call(this,function(json){
 			logger.info("json.id=" + json.id);
-			//$(this).find("input[name='e.actor.id']").val(json.id);
+			//$(this).find("input[name='e.actorId']").val(json.id);
 		});
 	},
 	/**弹出修改密码对话框*/
