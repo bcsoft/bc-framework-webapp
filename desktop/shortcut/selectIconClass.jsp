@@ -8,7 +8,7 @@
 		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.selectIconClass.clickOk"}],
 		"width":450,"height":350
 	}'>
-<s:iterator begin="0" end="6" id="row">
+<s:iterator begin="0" end="8" id="row">
 	<s:iterator begin="0" end="9" id="column">
 		<a class="shortcut" title='i0<s:property value="#row" />0<s:property value="#column" />'>
 			<span class='icon i0<s:property value="#row" />0<s:property value="#column" />'></span>
