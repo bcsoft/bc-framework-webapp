@@ -1,6 +1,7 @@
 /*
  * jQuery UI Dialog 的扩展:(source:1.9pre Live from Git Thu Sep 29 10:15:03 UTC 2011)
  * 1)增加containment参数，控制对话框拖动的限制范围
+ * 2)增加dragLimit参数，控制对话框拖动的范围
  */
 (function( $, undefined ) {
 	
@@ -25,6 +26,19 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 $.extend($.ui.dialog.prototype.options, {
 	appendTo: "body",
 	dragLimit: [0,80,30,20]//上,右,下,左
+});
+$.extend($.ui.dialog.prototype.options.position, {
+	// 修改为避免对话框顶部超出容器的top或left
+	using: function( pos ) {
+		//logger.info("pos=" + $.toJSON(pos));
+		if ( pos.top < 0 ) {
+			pos.top = 10;
+		}
+		if ( pos.left < 0 ) {
+			pos.left = 10;
+		}
+		$( this ).css( pos );
+	}
 });
 
 $.extend($.ui.dialog.prototype, {
