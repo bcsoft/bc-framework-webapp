@@ -44,7 +44,7 @@
 	<s:hidden name="e.inner" />
 	<s:hidden name="e.uid" />
 	<s:hidden name="e.id" />
-	<s:hidden name="e.actor.id" />
+	<s:hidden name="e.actorId" />
 	<p class="formComment"><s:text name="shortcut.form.comment"/></p>
 </s:form>
 </div>

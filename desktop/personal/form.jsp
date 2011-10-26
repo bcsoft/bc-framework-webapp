@@ -192,6 +192,6 @@
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.font" />
 		<s:hidden name="e.theme" />
-		<s:hidden name="e.actor.id" />
+		<s:hidden name="e.actorId" />
 	</s:form>
 </div>

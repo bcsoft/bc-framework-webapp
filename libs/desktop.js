@@ -86,7 +86,7 @@
 					tpl += ' data-iconClass="' + $this.attr("data-iconClass") + '"';
 					tpl += ' data-name="' + $this.attr("data-name") + '"';
 					tpl += ' data-url="' + $this.attr("data-url") + '"';
-					if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
+					//if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
 					tpl += '><span class="icon ' + $this.attr("data-iconClass") + '">';
 					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span></a>';
 					tpl += '</a>';
@@ -221,7 +221,7 @@
 		openModule: function() {
 			$this = $(this);
 			logger.info("openModule:" + $this.attr("class"));
-			var type = $this.attr("data-type");
+			//var type = $this.attr("data-type");
 			var option = $this.attr("data-option");
 			if(!option || option.length == 0) option="{}";
 			option = eval("("+option+")");
@@ -229,14 +229,12 @@
 			option.iconClass=$this.attr("data-iconClass");
 			option.name=$this.attr("data-name");
 			option.order=$this.attr("data-order");
-			option.type=$this.attr("data-type");
+			//option.type=$this.attr("data-type");
 			option.url=$this.attr("data-url");
 			option.standalone=$this.attr("data-standalone")=="true";
 			if(logger.debugEnabled)
 				logger.debug("a:dblclick,type=" + type);
 			bc.page.newWin(option);
-			//if(type == "2"){//打开内部链接
-			//}
 		}
 	});
 
