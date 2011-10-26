@@ -118,4 +118,82 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 	return false;
 });
 
+// 工具条的单选按钮组
+$document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
+	mouseover: function() {
+		$(this).addClass("ui-state-hover");
+	},
+	mouseout: function() {
+		$(this).removeClass("ui-state-hover");
+	},
+	click: function() {
+		var $this = $(this);
+		var $siblings = $this.siblings();
+		
+		// 判断是否值改变了
+		var pre = $siblings.filter(".ui-state-active");
+		logger.info("TODO1=" + pre.size());
+		logger.info("TODO2=" + $this.hasClass(".ui-state-active"));
+		if(!pre.size() && $this.hasClass(".ui-state-active")){
+			//没有改变过任何值，不作处理直接返回
+			return;
+		}
+		
+		// 获取当前选项的值
+		var data = {
+			value: $this.attr("data-value"),
+			text: $this.children(".ui-button-text").text()
+		};
+		
+		// 获取前一个选项的值
+		if(pre.size()){
+			data.prev={
+				value: pre.attr("data-value"),
+				text: pre.children(".ui-button-text").text()
+			};
+		}
+		
+		// 处理样式
+		$this.addClass("ui-state-active");
+		$siblings.removeClass("ui-state-active");
+		
+		// 处理回调函数：上下文统一为页面，第一个参数为配置
+		var $parent = $this.parent();
+		var action = $parent.attr("data-action");//内定的操作
+		var callback = $parent.attr("data-callback");//回调函数
+		callback = callback ? bc.getNested(callback) : undefined;//转换为函数
+		var $page = $this.closest(".bc-page");
+		var option = $.extend({callback:callback},data);
+		switch (action){
+			case "reloadGrid"://重新加载grid的数据--视图中
+				logger.info("TODO: reloadGrid");
+				//参数名称
+				var key = $parent.attr("data-key");
+				
+				//将参数的值设置到页面的data-extras
+				var extras = $page.data("extras");
+				if(!extras){
+					extras = {};
+					extras[key] = data.value;
+					$page.data("extras",extras);
+				}else{
+					extras[key] = data.value;
+				}
+				bc.grid.reloadData($page);
+				break;
+			default ://调用自定义的函数
+				var change = $parent.attr("data-change");
+				if(change){
+					change = bc.getNested(change);//将函数名称转换为函数
+					if(typeof change == "function"){
+						change.call($page[0],option);
+					}else{
+						alert("undefined function: " + $parent.attr("data-change"));
+					}
+				}
+		}
+		return false;
+	}
+});
+
 })(jQuery);
