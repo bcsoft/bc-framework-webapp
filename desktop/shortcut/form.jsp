@@ -45,6 +45,7 @@
 	<s:hidden name="e.uid" />
 	<s:hidden name="e.id" />
 	<s:hidden name="e.actorId" />
+	<s:hidden name="e.resourceId" />
 	<p class="formComment"><s:text name="shortcut.form.comment"/></p>
 </s:form>
 </div>
