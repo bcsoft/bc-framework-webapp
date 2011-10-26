@@ -54,13 +54,8 @@ $(".bc-toolbar .bc-button").live("mouseover", function() {
 	
 	//==附加的额外的请求参数
 	//  从page取
-	var extras = $page.attr("data-extras");
-	logger.info("page extras=" + extras);
-	if(extras && extras.length > 0){
-		extras = eval("(" + extras + ")");
-	}else{
-		extras = {};
-	}
+	var extras = $page.data("extras");
+	logger.info("page extras=" + $.toJSON(extras));
 	
 	//上下文统一为页面，第一个参数为配置
 	switch (action){
