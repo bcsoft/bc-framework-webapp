@@ -18,32 +18,32 @@ bc.page = {
 		
 		//在单独的浏览器窗口中打开
 		if(option.standalone){
-			logger.info("newWin:option.standalone=" + option.standalone);
+			logger.debug("newWin:option.standalone=" + option.standalone);
 			window.open(option.url,"_blank");
 			return;
 		}
 		
 		// 任务栏显示正在加载的信息
 		if(bc.page.quickbar.has(option.mid)){
-			logger.info("newWin:active=" + option.mid);
+			logger.debug("newWin:active=" + option.mid);
 			bc.page.quickbar.active(option.mid);//仅显示现有的窗口
 			return;
 		}else{
-			logger.info("newWin:create=" + option.mid);
+			logger.debug("newWin:create=" + option.mid);
 			bc.page.quickbar.loading(option);
 		}
 		
 		logger.profile("newWin.ajax." + option.mid);
 		
 		//内部处理
-		logger.info("newWin:loading html from url=" + option.url);
+		logger.debug("newWin:loading html from url=" + option.url);
 		bc.ajax({
 			url : option.url, data: option.data || null,
 			dataType : "html",
 			success : function(html) {
 				logger.profile("newWin.ajax." + option.mid);
 				logger.profile("newWin.init." + option.mid);
-				logger.info("success loaded html");
+				logger.debug("success loaded html");
 				//var tc = document.getElementById("tempContainer");
 				//if(!tc){
 				//	tc=$('<div id="tempContainer"></div>').appendTo("body")[0];

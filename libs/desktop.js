@@ -220,8 +220,7 @@
 		/**双击打开桌面快捷方式*/
 		openModule: function() {
 			$this = $(this);
-			logger.info("openModule:" + $this.attr("class"));
-			//var type = $this.attr("data-type");
+			logger.debug("openModule:" + $this.attr("class"));
 			var option = $this.attr("data-option");
 			if(!option || option.length == 0) option="{}";
 			option = eval("("+option+")");
@@ -229,11 +228,8 @@
 			option.iconClass=$this.attr("data-iconClass");
 			option.name=$this.attr("data-name");
 			option.order=$this.attr("data-order");
-			//option.type=$this.attr("data-type");
 			option.url=$this.attr("data-url");
 			option.standalone=$this.attr("data-standalone")=="true";
-			if(logger.debugEnabled)
-				logger.debug("a:dblclick,type=" + type);
 			bc.page.newWin(option);
 		}
 	});

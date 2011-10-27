@@ -15,7 +15,7 @@ bc.grid = {
 		var $grid = container.find(".bc-grid");
 		//滚动条处理
 		$grid.find(".data .right").scroll(function(){
-			//logger.info("scroll");
+			//logger.debug("scroll");
 			container.find(".header .right").scrollLeft($(this).scrollLeft());
 			container.find(".data .left").scrollTop($(this).scrollTop());
 		});
@@ -23,7 +23,7 @@ bc.grid = {
 		//var $data_table = $grid.find(".data .right .table");
 		//var originWidth = parseInt($data_table.attr("originWidth"));
 		//$data_table.data("originWidth", originWidth);
-		//logger.info("originWidth:" + originWidth);
+		//logger.debug("originWidth:" + originWidth);
 		
 		//绑定并触发一下对话框的resize事件
 		//container.trigger("dialogresize");
@@ -52,8 +52,8 @@ bc.grid = {
 				sw = $grid.outerWidth()-$grid.width() + ($data_left.outerWidth()-$data_left.width());
 				sh = $grid.outerHeight()-$grid.height();
 			}
-			logger.info("grid's sh:" + sh);
-			logger.info("grid's sw:" + sw);
+			logger.debug("grid's sh:" + sh);
+			logger.debug("grid's sw:" + sw);
 			
 			//设置右容器的宽度
 			$data_right.width(container.width()-$data_left.width()-sw);
@@ -67,16 +67,16 @@ bc.grid = {
 			var newTableWidth = Math.max(originWidth, clientWidth);
 			$data_table.width(newTableWidth);
 			$header_table.width(newTableWidth);
-			logger.info("originWidth=" + originWidth);
-			logger.info("newTableWidth=" + newTableWidth);
+			logger.debug("originWidth=" + originWidth);
+			logger.debug("newTableWidth=" + newTableWidth);
 			
 			//累计表格兄弟的高度
 			var otherHeight = 0;
 			$grid.siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
-				logger.info("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
+				logger.debug("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});
-			logger.info("grid's siblings.outerHeight:" + otherHeight);
+			logger.debug("grid's siblings.outerHeight:" + otherHeight);
 			
 			//重设表格的高度
 			$grid.height(container.height()-otherHeight-sh);
@@ -85,7 +85,7 @@ bc.grid = {
 			$data_right.parent().siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
 			});
-			logger.info("grid's data.otherHeight:" + otherHeight);
+			logger.debug("grid's data.otherHeight:" + otherHeight);
 			
 			//data右容器高度
 			$data_right.height(container.height()-otherHeight - sh);
@@ -93,7 +93,7 @@ bc.grid = {
 			//如果设置data右容器高度后导致垂直滚动条切换显示了，须额外处理一下
 			var _clientWidth = $data_right[0].clientWidth;
 			if(_clientWidth != clientWidth){//从无垂直滚动条到出现滚动条的处理
-				//logger.info("clientWidth");
+				//logger.debug("clientWidth");
 				//$data_table.width(_clientWidth);
 				//newTableWidth = _clientWidth;
 				$header_right.width($data_right[0].clientWidth);
@@ -104,11 +104,11 @@ bc.grid = {
 			//$header_right.find(".table").width(newTableWidth);
 			
 			//data左容器高度(要考虑data右容器水平滚动条高度)
-			//logger.info("grid's data.clientHeight:" + $data_right[0].clientHeight);
+			//logger.debug("grid's data.clientHeight:" + $data_right[0].clientHeight);
 			$grid.find(".data .left").height($data_right[0].clientHeight);
 			
-			//logger.info(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
-			//logger.info("width2:" + $data_table.width());
+			//logger.debug(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
+			//logger.debug("width2:" + $data_table.width());
 		}
 	},
 	/**
@@ -163,20 +163,20 @@ bc.grid = {
 		
 		option = option || {};
 		var url=option.url || $page.attr("data-namespace") + "/data";
-		logger.info("reloadWin:loading grid data from url=" + url);
+		logger.debug("reloadWin:loading grid data from url=" + url);
 		
 		var data = option.data || {};
 		
 		//==附加的额外的请求参数
 		//  从page取
 		var extras = $page.data("extras");
-		logger.info("page extras=" + $.toJSON(extras));
+		logger.debug("page extras=" + $.toJSON(extras));
 		if(extras){
 			data = $.extend(data, extras);
 		}else{
 			//  从grid取
 			extras = $page.find(".bc-grid").data("extras");
-			logger.info("grid extras=" + $.toJSON(extras));
+			logger.debug("grid extras=" + $.toJSON(extras));
 			if(extras){
 				data = $.extend(data, extras);
 			}
@@ -225,7 +225,7 @@ bc.grid = {
 					var $pageCount = $page.find("#pageCount");
 					if($pageCount.text() != newPageCount)
 						$pageCount.text(newPageCount);
-					//logger.info(newPageCount + "," + $pageCount.text());
+					//logger.debug(newPageCount + "," + $pageCount.text());
 				}
 				
 				//删除加载动画
@@ -341,7 +341,7 @@ $("ul li.pagerIconGroup.seek>.pagerIcon").live("click", function() {
 	default :
 		//do nothing
 	}
-	logger.info("reload=" + reload + ",id=" + this.id + ",curPageNo=" + curPageNo + ",curPageCount=" + curPageCount);
+	logger.debug("reload=" + reload + ",id=" + this.id + ",curPageNo=" + curPageNo + ",curPageCount=" + curPageCount);
 	
 	//重新加载列表数据
 	if(reload) bc.grid.reloadData($seek.closest(".bc-page"));
@@ -458,7 +458,7 @@ $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 
 //列表的排序
 $(".bc-grid>.header>.right tr.row>td.sortable").live("click",function(){
-	logger.info("sortable");
+	logger.debug("sortable");
 	//标记当前列处于排序状态
 	var $this = $(this).toggleClass("current",true);
 	
