@@ -7,6 +7,7 @@ bc.selectIconClass={
 			$(this).toggleClass("selectedIcon",true);
 		}).dblclick(function(){
 			bc.selectIconClass.clickOk.apply($page[0],arguments);
+			return false;
 		});
 	},
 	clickOk:function(){

@@ -123,12 +123,18 @@ body {
 	position:relative;
 	padding:0.2em;
 }
-.bc-buttonGroup,.bc-separatorButton,.bc-searchButton{
-	display: inline-block;	
+.bc-buttonGroup,.bc-radioGroup,.bc-separatorButton,.bc-searchButton{
+	display: inline-block;
+	margin-left:0.6em;
+	margin-right:0.6em;
 }
 .bc-toolbar .ui-button-text{
 	/*padding-top: 0.2em;
 	padding-bottom: 0.2em;*/
+}
+.bc-radioGroup .ui-button-text{
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }
 .bc-searchButton{
 	position: absolute;

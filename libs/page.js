@@ -399,9 +399,8 @@ bc.page = {
 		
 		//附加固定的额外参数
 		var data = option.data || {};
-		var extras = $page.attr("data-extras");
-		if(extras && extras.length > 0){
-			extras = eval("(" + extras + ")");
+		var extras = option.extras || $page.data("extras");
+		if(extras){
 			data = $.extend(data, extras);
 		}
 		
@@ -435,9 +434,8 @@ bc.page = {
 			var data = {id: $tds.attr("data-id")};
 			
 			//附加固定的额外参数
-			var extras = $page.attr("data-extras");
-			if(extras && extras.length > 0){
-				extras = eval("(" + extras + ")");
+			var extras = option.extras || $page.data("extras");
+			if(extras){
 				data = $.extend(data, extras);
 			}
 			
@@ -478,9 +476,8 @@ bc.page = {
 			var data = {id: $tds.attr("data-id")};
 			
 			//附加固定的额外参数
-			var extras = $page.attr("data-extras");
-			if(extras && extras.length > 0){
-				extras = eval("(" + extras + ")");
+			var extras = option.extras || $page.data("extras");
+			if(extras){
 				data = $.extend(data, extras);
 			}
 			
