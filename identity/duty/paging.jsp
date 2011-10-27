@@ -123,7 +123,7 @@
 			<li id="seek" class="pagerIconGroup seek ui-state-default ui-corner-all">
 				<a id="toFirstPage" class="pagerIcon ui-state-default ui-corner-all"><span class="ui-icon ui-icon-seek-first" title="首页"></span></a>
 				<a id="toPrevPage" class="pagerIcon ui-state-default ui-corner-all"><span class="ui-icon ui-icon-seek-prev" title="上一页"></span></a>
-				<span class="pageNo" title="点击选择页码"><span id="pageNo">${page.pageNo}</span>/<span id="pageCount">${page.pageCount}</span></span>
+				<span class="pageNo" title1="点击选择页码"><span id="pageNo">${page.pageNo}</span>/<span id="pageCount">${page.pageCount}</span>(<span id="totalCount">${page.totalCount}</span>)</span>
 				<a id="toNextPage" class="pagerIcon ui-state-default ui-corner-all"><span class="ui-icon ui-icon-seek-next" title="下一页"></span></a>
 				<a id="toLastPage" class="pagerIcon ui-state-default ui-corner-all"><span class="ui-icon ui-icon-seek-end" title="尾页"></span></a>
 			</li>

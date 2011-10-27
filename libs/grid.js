@@ -229,6 +229,13 @@ bc.grid = {
 					if($pageCount.text() != newPageCount)
 						$pageCount.text(newPageCount);
 				}
+				var newTotalCount = $data.attr("data-totalCount");
+				logger.debug("grid's newTotalCount=" + newTotalCount);
+				if(newTotalCount){
+					var $totalCount = $page.find("#totalCount");
+					if($totalCount.text() != newTotalCount)
+						$totalCount.text(newTotalCount);
+				}
 				
 				//删除加载动画
 				$loader.remove();
