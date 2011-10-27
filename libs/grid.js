@@ -153,6 +153,8 @@ bc.grid = {
 	 * @option callback 请求数据完毕后的处理函数
 	 */
 	reloadData: function($page,option) {
+		var ts = "grid.reloadData." + $page.attr("data-mid");
+		logger.profile(ts);
 		// 显示加载动画
 		var $win = $page.parent();
 		var $loader = $win.append('<div id="bc-grid-loader"></div>').find("#bc-grid-loader");
@@ -216,20 +218,21 @@ bc.grid = {
 			success : function(html) {
 				var $data = $page.find(".bc-grid .data");
 				$data.empty().replaceWith(html);//整个data更换
+				$data = $page.find(".bc-grid .data");//重新获取data对象
 				bc.grid.init($page);
 				
 				//如果总页数变了，就更新一下
-				//var newPageCount = $data.find(".left").attr("data-pageCount");
 				var newPageCount = $data.attr("data-pageCount");
+				logger.debug("grid's newPageCount=" + newPageCount);
 				if(newPageCount){
 					var $pageCount = $page.find("#pageCount");
 					if($pageCount.text() != newPageCount)
 						$pageCount.text(newPageCount);
-					//logger.debug(newPageCount + "," + $pageCount.text());
 				}
 				
 				//删除加载动画
 				$loader.remove();
+				logger.profile(ts);
 				
 				//调用回调函数
 				if(typeof option.callback == "function")
