@@ -75,6 +75,9 @@ $document.delegate(".bc-toolbar .bc-button",{
 		case "delete"://删除----视图
 			bc.page.delete_.call(pageEl,{callback:callback,extras:extras});
 			break;
+		case "disabled"://禁用----视图
+			bc.page.disabled.call(pageEl,{callback:callback,extras:extras});
+			break;
 		case "save"://保存----表单
 			bc.page.save.call(pageEl,{callback:callback,extras:extras});
 			break;

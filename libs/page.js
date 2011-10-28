@@ -378,6 +378,56 @@ bc.page = {
 			});
 		});
 	},
+	/**禁用*/
+	disabled: function(option) {
+		option = option || {};
+		var $page = $(this);
+		var url=$page.attr("data-deleteUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-deleteUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/delete";
+			}
+		}
+		var data=null;
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		if($tds.length == 1){
+			data = "id=" + $tds.attr("data-id");
+		}else if($tds.length > 1){
+			data = "ids=";
+			$tds.each(function(i){
+				data += $(this).attr("data-id") + (i == $tds.length-1 ? "" : ",");
+			});
+		}
+		if(logger.infoEnabled) logger.info("bc.page.delete_: data=" + data);
+		if(data == null){
+			bc.msg.slide("请先选择要禁用的条目！");
+			return;
+		}
+		bc.msg.confirm("确定要禁用选定的 <b>"+$tds.length+"</b> 项吗？",function(){
+			bc.ajax({
+				url: url, data: data, dataType: "json",
+				success: function(json) {
+					if(logger.debugEnabled)logger.debug("disabled success.json=" + jQuery.param(json));
+					//调用回调函数
+					var showMsg = true;
+					if(typeof option.callback == "function"){
+						//返回false将禁止保存提示信息的显示
+						if(option.callback.call($page[0],json) === false)
+							showMsg = false;
+					}
+					if(showMsg)
+						bc.msg.slide(json.msg);
+					
+					//重新加载列表
+					bc.grid.reloadData($page);
+				}
+			});
+		});
+	},
 	/**关闭表单对话框，上下文为dialog的原始dom元素*/
 	cancel: function(option){
 		$(this).dialog("destroy").remove();
