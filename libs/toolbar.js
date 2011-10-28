@@ -75,6 +75,9 @@ $document.delegate(".bc-toolbar .bc-button",{
 		case "delete"://删除----视图
 			bc.page.delete_.call(pageEl,{callback:callback,extras:extras});
 			break;
+		case "disabled"://禁用----视图
+			bc.page.disabled.call(pageEl,{callback:callback,extras:extras});
+			break;
 		case "save"://保存----表单
 			bc.page.save.call(pageEl,{callback:callback,extras:extras});
 			break;
@@ -132,9 +135,9 @@ $document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
 		
 		// 判断是否值改变了
 		var pre = $siblings.filter(".ui-state-active");
-		logger.info("TODO1=" + pre.size());
-		logger.info("TODO2=" + $this.hasClass(".ui-state-active"));
-		if(!pre.size() && $this.hasClass(".ui-state-active")){
+		//logger.info("TODO1=" + pre.size());
+		//logger.info("TODO2=" + $this.hasClass("ui-state-active"));
+		if(pre.size() == 0 || (pre.size() >= 0 && $this.hasClass("ui-state-active"))){
 			//没有改变过任何值，不作处理直接返回
 			return;
 		}
@@ -166,7 +169,6 @@ $document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
 		var option = $.extend({callback:callback},data);
 		switch (action){
 			case "reloadGrid"://重新加载grid的数据--视图中
-				logger.info("TODO: reloadGrid");
 				//参数名称
 				var key = $parent.attr("data-key");
 				

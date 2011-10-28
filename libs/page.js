@@ -18,32 +18,32 @@ bc.page = {
 		
 		//在单独的浏览器窗口中打开
 		if(option.standalone){
-			logger.info("newWin:option.standalone=" + option.standalone);
+			logger.debug("newWin:option.standalone=" + option.standalone);
 			window.open(option.url,"_blank");
 			return;
 		}
 		
 		// 任务栏显示正在加载的信息
 		if(bc.page.quickbar.has(option.mid)){
-			logger.info("newWin:active=" + option.mid);
+			logger.debug("newWin:active=" + option.mid);
 			bc.page.quickbar.active(option.mid);//仅显示现有的窗口
 			return;
 		}else{
-			logger.info("newWin:create=" + option.mid);
+			logger.debug("newWin:create=" + option.mid);
 			bc.page.quickbar.loading(option);
 		}
 		
 		logger.profile("newWin.ajax." + option.mid);
 		
 		//内部处理
-		logger.info("newWin:loading html from url=" + option.url);
+		logger.debug("newWin:loading html from url=" + option.url);
 		bc.ajax({
 			url : option.url, data: option.data || null,
 			dataType : "html",
 			success : function(html) {
 				logger.profile("newWin.ajax." + option.mid);
 				logger.profile("newWin.init." + option.mid);
-				logger.info("success loaded html");
+				logger.debug("success loaded html");
 				//var tc = document.getElementById("tempContainer");
 				//if(!tc){
 				//	tc=$('<div id="tempContainer"></div>').appendTo("body")[0];
@@ -362,6 +362,56 @@ bc.page = {
 				url: url, data: data, dataType: "json",
 				success: function(json) {
 					if(logger.debugEnabled)logger.debug("delete success.json=" + jQuery.param(json));
+					//调用回调函数
+					var showMsg = true;
+					if(typeof option.callback == "function"){
+						//返回false将禁止保存提示信息的显示
+						if(option.callback.call($page[0],json) === false)
+							showMsg = false;
+					}
+					if(showMsg)
+						bc.msg.slide(json.msg);
+					
+					//重新加载列表
+					bc.grid.reloadData($page);
+				}
+			});
+		});
+	},
+	/**禁用*/
+	disabled: function(option) {
+		option = option || {};
+		var $page = $(this);
+		var url=$page.attr("data-deleteUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-deleteUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/delete";
+			}
+		}
+		var data=null;
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		if($tds.length == 1){
+			data = "id=" + $tds.attr("data-id");
+		}else if($tds.length > 1){
+			data = "ids=";
+			$tds.each(function(i){
+				data += $(this).attr("data-id") + (i == $tds.length-1 ? "" : ",");
+			});
+		}
+		if(logger.infoEnabled) logger.info("bc.page.delete_: data=" + data);
+		if(data == null){
+			bc.msg.slide("请先选择要禁用的条目！");
+			return;
+		}
+		bc.msg.confirm("确定要禁用选定的 <b>"+$tds.length+"</b> 项吗？",function(){
+			bc.ajax({
+				url: url, data: data, dataType: "json",
+				success: function(json) {
+					if(logger.debugEnabled)logger.debug("disabled success.json=" + jQuery.param(json));
 					//调用回调函数
 					var showMsg = true;
 					if(typeof option.callback == "function"){

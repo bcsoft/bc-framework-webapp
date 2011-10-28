@@ -93,7 +93,32 @@ bc.grid.export2Excel = function($grid,el) {
 			data["page.pageSize"] = $pager_seek.parent().find("li.size>a.ui-state-active>span.pageSize").text();
 		}
 		
-		//TODO 排序参数
+		//附加页面的data-extras参数
+		//  从page取
+		var extras = $page.data("extras");
+		logger.debug("page extras=" + $.toJSON(extras));
+		if(extras){
+			data = $.extend(data, extras);
+		}else{
+			//  从grid取
+			extras = $page.find(".bc-grid").data("extras");
+			logger.debug("grid extras=" + $.toJSON(extras));
+			if(extras){
+				data = $.extend(data, extras);
+			}
+		}
+		
+		//附加排序参数
+		var $sortColumn = $page.find(".bc-grid .header .table td.sortable.asc,.bc-grid .header .table td.sortable.desc");
+		if($sortColumn.size()){
+			var sort = "";
+			var $t;
+			$sortColumn.each(function(i){
+				$t = $(this);
+				sort += (i == 0 ? "" : ",") + $t.attr("data-id") + ($t.hasClass("asc") ? " asc" : " desc");
+			});
+			data["sort"] = sort;
+		}
 		
 		//将简单的参数附加到url后
 		url += "?" + $.param(data);
