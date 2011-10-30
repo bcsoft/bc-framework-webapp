@@ -209,7 +209,7 @@ jQuery(function($){
 	};
 	$.ajaxSetup(defaultAjaxOption);
 	bc.ajax = function(option){
-		option = $.extend(defaultAjaxOption,option);
+		option = $.extend({},defaultAjaxOption,option);
 		jQuery.ajax(option);
 	};
 });
@@ -566,28 +566,32 @@ bc.page = {
 		
 		//在单独的浏览器窗口中打开
 		if(option.standalone){
-			logger.info("newWin:option.standalone=" + option.standalone);
+			logger.debug("newWin:option.standalone=" + option.standalone);
 			window.open(option.url,"_blank");
 			return;
 		}
 		
 		// 任务栏显示正在加载的信息
 		if(bc.page.quickbar.has(option.mid)){
-			logger.info("newWin:active=" + option.mid);
+			logger.debug("newWin:active=" + option.mid);
 			bc.page.quickbar.active(option.mid);//仅显示现有的窗口
 			return;
 		}else{
-			logger.info("newWin:create=" + option.mid);
+			logger.debug("newWin:create=" + option.mid);
 			bc.page.quickbar.loading(option);
 		}
 		
+		logger.profile("newWin.ajax." + option.mid);
+		
 		//内部处理
-		logger.info("newWin:loading html from url=" + option.url);
+		logger.debug("newWin:loading html from url=" + option.url);
 		bc.ajax({
 			url : option.url, data: option.data || null,
 			dataType : "html",
 			success : function(html) {
-				logger.info("success loaded html");
+				logger.profile("newWin.ajax." + option.mid);
+				logger.profile("newWin.init." + option.mid);
+				logger.debug("success loaded html");
 				//var tc = document.getElementById("tempContainer");
 				//if(!tc){
 				//	tc=$('<div id="tempContainer"></div>').appendTo("body")[0];
@@ -631,18 +635,20 @@ bc.page = {
 								$dom.find(":text:eq(0)").focus();
 							}
 						},
-						containment:"#middle"
+						appendTo:"#middle",
+						scroll:false,
+						containment:false//"#middle"
 					}));
 					$dom.bind("dialogbeforeclose",function(event,ui){
 						var status = $dom.data("data-status");
 						//调用回调函数
 						if(option.beforeClose) 
-							return option.beforeClose(status);
+							return option.beforeClose.call($dom[0],status);
 					}).bind("dialogclose",function(event,ui){
 						var $this = $(this);
 						var status = $dom.data("data-status");
 						//调用回调函数
-						if(option.afterClose) option.afterClose(status);
+						if(option.afterClose) option.afterClose.call($dom[0],status);
 						
 						//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
 						//ie8试过没问题
@@ -695,7 +701,7 @@ bc.page = {
 					bc.page.quickbar.loaded(option.mid);
 					
 					//调用回调函数
-					if(option.afterOpen) option.afterOpen();
+					if(option.afterOpen) option.afterOpen.call($dom[0]);
 				}
 				//alert(html);
 				var dataJs = $dom.attr("data-js");
@@ -708,6 +714,7 @@ bc.page = {
 					//执行模块指定的初始化方法
 					_init();
 				}
+				logger.profile("newWin.init." + option.mid);
 			},
 			error: function(request, textStatus, errorThrown) {
 				//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
@@ -803,7 +810,10 @@ bc.page = {
 		}
 		return _option;
 	},
-	/**保存表单数据，上下文为页面对象*/
+	/**保存表单数据，上下文为页面对象
+	 * @param {Object} option
+	 * @option {Function} callback 保存成功后的回调函数，上下文为当前页面，第一个参数为服务器返回的json对象
+	 */
 	save: function(option) {
 		option = option || {};
 		var $page = $(this);
@@ -916,6 +926,56 @@ bc.page = {
 			});
 		});
 	},
+	/**禁用*/
+	disabled: function(option) {
+		option = option || {};
+		var $page = $(this);
+		var url=$page.attr("data-deleteUrl");
+		if(!url || url.length == 0){
+			url=$page.attr("data-namespace");
+			if(!url || url.length == 0){
+				alert("Error:页面没有定义data-deleteUrl或data-namespace属性的值");
+				return;
+			}else{
+				url += "/delete";
+			}
+		}
+		var data=null;
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		if($tds.length == 1){
+			data = "id=" + $tds.attr("data-id");
+		}else if($tds.length > 1){
+			data = "ids=";
+			$tds.each(function(i){
+				data += $(this).attr("data-id") + (i == $tds.length-1 ? "" : ",");
+			});
+		}
+		if(logger.infoEnabled) logger.info("bc.page.delete_: data=" + data);
+		if(data == null){
+			bc.msg.slide("请先选择要禁用的条目！");
+			return;
+		}
+		bc.msg.confirm("确定要禁用选定的 <b>"+$tds.length+"</b> 项吗？",function(){
+			bc.ajax({
+				url: url, data: data, dataType: "json",
+				success: function(json) {
+					if(logger.debugEnabled)logger.debug("disabled success.json=" + jQuery.param(json));
+					//调用回调函数
+					var showMsg = true;
+					if(typeof option.callback == "function"){
+						//返回false将禁止保存提示信息的显示
+						if(option.callback.call($page[0],json) === false)
+							showMsg = false;
+					}
+					if(showMsg)
+						bc.msg.slide(json.msg);
+					
+					//重新加载列表
+					bc.grid.reloadData($page);
+				}
+			});
+		});
+	},
 	/**关闭表单对话框，上下文为dialog的原始dom元素*/
 	cancel: function(option){
 		$(this).dialog("destroy").remove();
@@ -937,9 +997,8 @@ bc.page = {
 		
 		//附加固定的额外参数
 		var data = option.data || {};
-		var extras = $page.attr("data-extras");
-		if(extras && extras.length > 0){
-			extras = eval("(" + extras + ")");
+		var extras = option.extras || $page.data("extras");
+		if(extras){
 			data = $.extend(data, extras);
 		}
 		
@@ -973,9 +1032,8 @@ bc.page = {
 			var data = {id: $tds.attr("data-id")};
 			
 			//附加固定的额外参数
-			var extras = $page.attr("data-extras");
-			if(extras && extras.length > 0){
-				extras = eval("(" + extras + ")");
+			var extras = option.extras || $page.data("extras");
+			if(extras){
 				data = $.extend(data, extras);
 			}
 			
@@ -1016,9 +1074,8 @@ bc.page = {
 			var data = {id: $tds.attr("data-id")};
 			
 			//附加固定的额外参数
-			var extras = $page.attr("data-extras");
-			if(extras && extras.length > 0){
-				extras = eval("(" + extras + ")");
+			var extras = option.extras || $page.data("extras");
+			if(extras){
 				data = $.extend(data, extras);
 			}
 			
@@ -1247,51 +1304,64 @@ bc.toolbar = {
 	}
 };
 	
+var $document = $(document);
 //顶部工具条按钮控制
-$(".bc-toolbar .bc-button").live("mouseover", function() {
-	$(this).addClass("ui-state-hover");
-}).live("mouseout", function() {
-	$(this).removeClass("ui-state-hover");
-}).live("click", function() {
-	var $this = $(this);
-	var action = $this.attr("data-action");//内定的操作
-	var callback = $this.attr("data-callback");//回调函数
-	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
-	var pageEl = $this.closest(".bc-page")[0];
-	
-	//上下文统一为页面，第一个参数为配置
-	switch (action){
-	case "create"://新建--视图中
-		bc.page.create.call(pageEl,{callback:callback});
-		break;
-	case "edit"://编辑----视图中
-		bc.page.edit.call(pageEl,{callback:callback});
-		break;
-	case "open"://查看----视图中
-		bc.page.open.call(pageEl,{callback:callback});
-		break;
-	case "delete"://删除----视图
-		bc.page.delete_.call(pageEl,{callback:callback});
-		break;
-	case "save"://保存----表单
-		bc.page.save.call(pageEl,{callback:callback});
-		break;
-	case "cancel"://关闭对话框
-		bc.page.cancel.call(pageEl,{callback:callback});
-		break;
-	default ://调用自定义的函数
-		var click = $this.attr("data-click");
-		if(typeof click == "string")
-			click = bc.getNested(click);//将函数名称转换为函数
-		if(typeof click == "function")
-			click.call(pageEl,{callback:callback});
-		break;
+$document.delegate(".bc-toolbar .bc-button",{
+	mouseover: function() {
+		$(this).addClass("ui-state-hover");
+	},
+	mouseout: function() {
+		$(this).removeClass("ui-state-hover");
+	},
+	click: function() {
+		var $this = $(this);
+		var action = $this.attr("data-action");//内定的操作
+		var callback = $this.attr("data-callback");//回调函数
+		callback = callback ? bc.getNested(callback) : undefined;//转换为函数
+		var $page = $this.closest(".bc-page");
+		var pageEl = $page[0];
+		
+		//==附加的额外的请求参数
+		//  从page取
+		var extras = $page.data("extras");
+		logger.info("page extras=" + $.toJSON(extras));
+		
+		//上下文统一为页面，第一个参数为配置
+		switch (action){
+		case "create"://新建--视图中
+			bc.page.create.call(pageEl,{callback:callback,extras:extras});
+			break;
+		case "edit"://编辑----视图中
+			bc.page.edit.call(pageEl,{callback:callback,extras:extras});
+			break;
+		case "open"://查看----视图中
+			bc.page.open.call(pageEl,{callback:callback,extras:extras});
+			break;
+		case "delete"://删除----视图
+			bc.page.delete_.call(pageEl,{callback:callback,extras:extras});
+			break;
+		case "disabled"://禁用----视图
+			bc.page.disabled.call(pageEl,{callback:callback,extras:extras});
+			break;
+		case "save"://保存----表单
+			bc.page.save.call(pageEl,{callback:callback,extras:extras});
+			break;
+		case "cancel"://关闭对话框
+			bc.page.cancel.call(pageEl,{callback:callback,extras:extras});
+			break;
+		default ://调用自定义的函数
+			var click = $this.attr("data-click");
+			if(typeof click == "string")
+				click = bc.getNested(click);//将函数名称转换为函数
+			if(typeof click == "function")
+				click.call(pageEl,{callback:callback,extras:extras});
+			break;
+		}
 	}
 });
 
-
 //右侧的搜索框处理：回车执行搜索（TODO alt+enter执行本地搜索）
-$(".bc-toolbar #searchText").live("keyup", function(e) {
+$document.delegate(".bc-toolbar #searchText","keyup", function(e) {
 	var $this = $(this);
 	if(e.which == 13){//按下回车键
 		var $page = $this.parents(".bc-page");
@@ -1303,7 +1373,7 @@ $(".bc-toolbar #searchText").live("keyup", function(e) {
 		});
 	}
 });
-$(".bc-toolbar #searchBtn").live("click", function(e) {
+$document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 	var $this = $(this);
 	var $page = $this.parents(".bc-page");
 	var $search = $this.parent();
@@ -1314,6 +1384,83 @@ $(".bc-toolbar #searchBtn").live("click", function(e) {
 	});
 	
 	return false;
+});
+
+// 工具条的单选按钮组
+$document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
+	mouseover: function() {
+		$(this).addClass("ui-state-hover");
+	},
+	mouseout: function() {
+		$(this).removeClass("ui-state-hover");
+	},
+	click: function() {
+		var $this = $(this);
+		var $siblings = $this.siblings();
+		
+		// 判断是否值改变了
+		var pre = $siblings.filter(".ui-state-active");
+		//logger.info("TODO1=" + pre.size());
+		//logger.info("TODO2=" + $this.hasClass("ui-state-active"));
+		if(pre.size() == 0 || (pre.size() >= 0 && $this.hasClass("ui-state-active"))){
+			//没有改变过任何值，不作处理直接返回
+			return;
+		}
+		
+		// 获取当前选项的值
+		var data = {
+			value: $this.attr("data-value"),
+			text: $this.children(".ui-button-text").text()
+		};
+		
+		// 获取前一个选项的值
+		if(pre.size()){
+			data.prev={
+				value: pre.attr("data-value"),
+				text: pre.children(".ui-button-text").text()
+			};
+		}
+		
+		// 处理样式
+		$this.addClass("ui-state-active");
+		$siblings.removeClass("ui-state-active");
+		
+		// 处理回调函数：上下文统一为页面，第一个参数为配置
+		var $parent = $this.parent();
+		var action = $parent.attr("data-action");//内定的操作
+		var callback = $parent.attr("data-callback");//回调函数
+		callback = callback ? bc.getNested(callback) : undefined;//转换为函数
+		var $page = $this.closest(".bc-page");
+		var option = $.extend({callback:callback},data);
+		switch (action){
+			case "reloadGrid"://重新加载grid的数据--视图中
+				//参数名称
+				var key = $parent.attr("data-key");
+				
+				//将参数的值设置到页面的data-extras
+				var extras = $page.data("extras");
+				if(!extras){
+					extras = {};
+					extras[key] = data.value;
+					$page.data("extras",extras);
+				}else{
+					extras[key] = data.value;
+				}
+				bc.grid.reloadData($page);
+				break;
+			default ://调用自定义的函数
+				var change = $parent.attr("data-change");
+				if(change){
+					change = bc.getNested(change);//将函数名称转换为函数
+					if(typeof change == "function"){
+						change.call($page[0],option);
+					}else{
+						alert("undefined function: " + $parent.attr("data-change"));
+					}
+				}
+		}
+		return false;
+	}
 });
 
 })(jQuery);
@@ -1334,7 +1481,7 @@ bc.grid = {
 		var $grid = container.find(".bc-grid");
 		//滚动条处理
 		$grid.find(".data .right").scroll(function(){
-			//logger.info("scroll");
+			//logger.debug("scroll");
 			container.find(".header .right").scrollLeft($(this).scrollLeft());
 			container.find(".data .left").scrollTop($(this).scrollTop());
 		});
@@ -1342,7 +1489,7 @@ bc.grid = {
 		//var $data_table = $grid.find(".data .right .table");
 		//var originWidth = parseInt($data_table.attr("originWidth"));
 		//$data_table.data("originWidth", originWidth);
-		//logger.info("originWidth:" + originWidth);
+		//logger.debug("originWidth:" + originWidth);
 		
 		//绑定并触发一下对话框的resize事件
 		//container.trigger("dialogresize");
@@ -1371,8 +1518,8 @@ bc.grid = {
 				sw = $grid.outerWidth()-$grid.width() + ($data_left.outerWidth()-$data_left.width());
 				sh = $grid.outerHeight()-$grid.height();
 			}
-			logger.info("grid's sh:" + sh);
-			logger.info("grid's sw:" + sw);
+			logger.debug("grid's sh:" + sh);
+			logger.debug("grid's sw:" + sw);
 			
 			//设置右容器的宽度
 			$data_right.width(container.width()-$data_left.width()-sw);
@@ -1386,16 +1533,16 @@ bc.grid = {
 			var newTableWidth = Math.max(originWidth, clientWidth);
 			$data_table.width(newTableWidth);
 			$header_table.width(newTableWidth);
-			logger.info("originWidth=" + originWidth);
-			logger.info("newTableWidth=" + newTableWidth);
+			logger.debug("originWidth=" + originWidth);
+			logger.debug("newTableWidth=" + newTableWidth);
 			
 			//累计表格兄弟的高度
 			var otherHeight = 0;
 			$grid.siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
-				logger.info("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
+				logger.debug("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});
-			logger.info("grid's siblings.outerHeight:" + otherHeight);
+			logger.debug("grid's siblings.outerHeight:" + otherHeight);
 			
 			//重设表格的高度
 			$grid.height(container.height()-otherHeight-sh);
@@ -1404,7 +1551,7 @@ bc.grid = {
 			$data_right.parent().siblings().each(function(i){
 				otherHeight += $(this).outerHeight(true);
 			});
-			logger.info("grid's data.otherHeight:" + otherHeight);
+			logger.debug("grid's data.otherHeight:" + otherHeight);
 			
 			//data右容器高度
 			$data_right.height(container.height()-otherHeight - sh);
@@ -1412,7 +1559,7 @@ bc.grid = {
 			//如果设置data右容器高度后导致垂直滚动条切换显示了，须额外处理一下
 			var _clientWidth = $data_right[0].clientWidth;
 			if(_clientWidth != clientWidth){//从无垂直滚动条到出现滚动条的处理
-				//logger.info("clientWidth");
+				//logger.debug("clientWidth");
 				//$data_table.width(_clientWidth);
 				//newTableWidth = _clientWidth;
 				$header_right.width($data_right[0].clientWidth);
@@ -1423,11 +1570,11 @@ bc.grid = {
 			//$header_right.find(".table").width(newTableWidth);
 			
 			//data左容器高度(要考虑data右容器水平滚动条高度)
-			//logger.info("grid's data.clientHeight:" + $data_right[0].clientHeight);
+			//logger.debug("grid's data.clientHeight:" + $data_right[0].clientHeight);
 			$grid.find(".data .left").height($data_right[0].clientHeight);
 			
-			//logger.info(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
-			//logger.info("width2:" + $data_table.width());
+			//logger.debug(":::" + $grid.find(".header").outerHeight(true)  + "," + $grid.find(".header")[0].clientHeight);
+			//logger.debug("width2:" + $data_table.width());
 		}
 	},
 	/**
@@ -1472,6 +1619,8 @@ bc.grid = {
 	 * @option callback 请求数据完毕后的处理函数
 	 */
 	reloadData: function($page,option) {
+		var ts = "grid.reloadData." + $page.attr("data-mid");
+		logger.profile(ts);
 		// 显示加载动画
 		var $win = $page.parent();
 		var $loader = $win.append('<div id="bc-grid-loader"></div>').find("#bc-grid-loader");
@@ -1482,24 +1631,23 @@ bc.grid = {
 		
 		option = option || {};
 		var url=option.url || $page.attr("data-namespace") + "/data";
-		logger.info("reloadWin:loading grid data from url=" + url);
+		logger.debug("reloadWin:loading grid data from url=" + url);
 		
 		var data = option.data || {};
 		
 		//==附加的额外的请求参数
 		//  从page取
-		var extras = $page.attr("data-extras");
-		logger.info("page extras=" + extras);
-		if(extras && extras.length > 0){
-			extras = eval("(" + extras + ")");
+		var extras = $page.data("extras");
+		logger.debug("page extras=" + $.toJSON(extras));
+		if(extras){
 			data = $.extend(data, extras);
-		}
-		//  从grid取
-		extras = $page.find(".bc-grid").attr("data-extras");
-		logger.info("grid extras=" + extras);
-		if(extras && extras.length > 0){
-			extras = eval("(" + extras + ")");
-			data = $.extend(data, extras);
+		}else{
+			//  从grid取
+			extras = $page.find(".bc-grid").data("extras");
+			logger.debug("grid extras=" + $.toJSON(extras));
+			if(extras){
+				data = $.extend(data, extras);
+			}
 		}
 		
 		//附加排序参数
@@ -1536,20 +1684,28 @@ bc.grid = {
 			success : function(html) {
 				var $data = $page.find(".bc-grid .data");
 				$data.empty().replaceWith(html);//整个data更换
+				$data = $page.find(".bc-grid .data");//重新获取data对象
 				bc.grid.init($page);
 				
 				//如果总页数变了，就更新一下
-				//var newPageCount = $data.find(".left").attr("data-pageCount");
 				var newPageCount = $data.attr("data-pageCount");
+				logger.debug("grid's newPageCount=" + newPageCount);
 				if(newPageCount){
 					var $pageCount = $page.find("#pageCount");
 					if($pageCount.text() != newPageCount)
 						$pageCount.text(newPageCount);
-					//logger.info(newPageCount + "," + $pageCount.text());
+				}
+				var newTotalCount = $data.attr("data-totalCount");
+				logger.debug("grid's newTotalCount=" + newTotalCount);
+				if(newTotalCount){
+					var $totalCount = $page.find("#totalCount");
+					if($totalCount.text() != newTotalCount)
+						$totalCount.text(newTotalCount);
 				}
 				
 				//删除加载动画
 				$loader.remove();
+				logger.profile(ts);
 				
 				//调用回调函数
 				if(typeof option.callback == "function")
@@ -1661,7 +1817,7 @@ $("ul li.pagerIconGroup.seek>.pagerIcon").live("click", function() {
 	default :
 		//do nothing
 	}
-	logger.info("reload=" + reload + ",id=" + this.id + ",curPageNo=" + curPageNo + ",curPageCount=" + curPageCount);
+	logger.debug("reload=" + reload + ",id=" + this.id + ",curPageNo=" + curPageNo + ",curPageCount=" + curPageCount);
 	
 	//重新加载列表数据
 	if(reload) bc.grid.reloadData($seek.closest(".bc-page"));
@@ -1778,7 +1934,7 @@ $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 
 //列表的排序
 $(".bc-grid>.header>.right tr.row>td.sortable").live("click",function(){
-	logger.info("sortable");
+	logger.debug("sortable");
 	//标记当前列处于排序状态
 	var $this = $(this).toggleClass("current",true);
 	
@@ -1936,7 +2092,32 @@ bc.grid.export2Excel = function($grid,el) {
 			data["page.pageSize"] = $pager_seek.parent().find("li.size>a.ui-state-active>span.pageSize").text();
 		}
 		
-		//TODO 排序参数
+		//附加页面的data-extras参数
+		//  从page取
+		var extras = $page.data("extras");
+		logger.debug("page extras=" + $.toJSON(extras));
+		if(extras){
+			data = $.extend(data, extras);
+		}else{
+			//  从grid取
+			extras = $page.find(".bc-grid").data("extras");
+			logger.debug("grid extras=" + $.toJSON(extras));
+			if(extras){
+				data = $.extend(data, extras);
+			}
+		}
+		
+		//附加排序参数
+		var $sortColumn = $page.find(".bc-grid .header .table td.sortable.asc,.bc-grid .header .table td.sortable.desc");
+		if($sortColumn.size()){
+			var sort = "";
+			var $t;
+			$sortColumn.each(function(i){
+				$t = $(this);
+				sort += (i == 0 ? "" : ",") + $t.attr("data-id") + ($t.hasClass("asc") ? " asc" : " desc");
+			});
+			data["sort"] = sort;
+		}
 		
 		//将简单的参数附加到url后
 		url += "?" + $.param(data);
@@ -3330,26 +3511,33 @@ $(".bc-imageEditor").live("click",function(e){
 			this.element.delegate("a.shortcut","click",function(){return false;});
 			
 			// 允许拖动桌面快捷方式
-			$shortcuts.draggable({containment: '#center'});
+			var draggableOption = {containment: '#center',distance: 20,revert: function(droped){
+				if(droped){
+					var my = this.attr('data-aid') == userId;
+					return !my;
+				}
+			}};
+			$shortcuts.draggable(draggableOption);
 			//$shortcuts.draggable({containment: '#desktop',grid: [20, 20]});
 			//$("#shortcuts" ).selectable();
 			
 			// 允许拖动菜单项到桌面添加快捷方式的处理
 			$sysmenu.find('li.ui-menu-item[data-type!=1]').draggable({
 				containment: '#center',
+				distance: 20,
 				cursor: "move",
 				helper: function(){
 					var $this = $(this);
 					var tpl = '<a class="shortcut ui-state-highlight"';
-					tpl += '<a class="shortcut"';
 					tpl += ' data-mid="' + $this.attr("data-mid") + '"';
+					tpl += ' data-aid="' + userId + '"';
 					tpl += ' data-type="' + $this.attr("data-type") + '"';
 					tpl += ' data-standalone="' + $this.attr("data-standalone") + '"';
 					tpl += ' data-order="' + $this.attr("data-order") + '"';
 					tpl += ' data-iconClass="' + $this.attr("data-iconClass") + '"';
 					tpl += ' data-name="' + $this.attr("data-name") + '"';
 					tpl += ' data-url="' + $this.attr("data-url") + '"';
-					if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
+					//if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
 					tpl += '><span class="icon ' + $this.attr("data-iconClass") + '">';
 					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span></a>';
 					tpl += '</a>';
@@ -3366,7 +3554,7 @@ $(".bc-imageEditor").live("click",function(e){
 					if($cur.size() == 0){
 						var $shortcut = ui.helper.clone().css("top",(ui.helper.position().top - $middle.position().top) + "px")
 						.removeClass("ui-state-highlight").hide().appendTo($center)
-						.fadeIn().draggable({containment: '#center'});
+						.fadeIn().draggable(draggableOption);
 						
 						//通过ajax保存该快捷方式
 						bc.ajax({
@@ -3374,6 +3562,8 @@ $(".bc-imageEditor").live("click",function(e){
 							data: {mid:$shortcut.attr("data-mid")}, 
 							dataType: "json",
 							success:function(json){
+								logger.info("data-id=" + json.id);
+								$shortcut.attr("data-id",json.id);
 								bc.msg.slide(json.msg);
 							}
 						});
@@ -3384,6 +3574,33 @@ $(".bc-imageEditor").live("click",function(e){
 								$cur.removeClass("hoverShortcut");
 							});
 						});
+					}
+				}
+			});
+			
+			$recyle = $center.children("a.recycle").droppable({
+				accept: 'a.shortcut',
+				hoverClass: "ui-state-highlight",
+				activeClass: "ui-state-active",
+				drop: function( event, ui ) {
+					//通过ajax删除该快捷方式:只能删除自己的快捷方式
+					if(ui.draggable.attr('data-aid') == userId){
+						var id = ui.draggable.attr('data-id');
+						bc.ajax({
+							url: bc.root + "/bc/shortcut/delete?id=" + id, 
+							dataType: "json",
+							success:function(json){
+								//修改回收站的图标
+								$recyle.attr("data-iconClass","i0505").children("span.icon").addClass("i0505");
+								
+								//删除dom元素
+								ui.draggable.remove();
+								//显示提示信息
+								bc.msg.slide("快捷方式“" + ui.draggable.attr('data-name') + "”已删除！");
+							}
+						});
+					}else{
+						bc.msg.slide("此为系统级通用快捷方式，不允许删除！");
 					}
 				}
 			});
@@ -3399,7 +3616,7 @@ $(".bc-imageEditor").live("click",function(e){
 			$bottom.delegate(".quickButton","click", function() {
 				$this = $(this);
 				var mid = $this.attr("data-mid");
-				var $dialogContainer = $("body>.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
+				var $dialogContainer = $middle.find(">.ui-dialog>.ui-dialog-content[data-mid='" + mid + "']").parent();
 				if ($this.hasClass("ui-state-active")) {
 					$this.removeClass("ui-state-active")
 					.find(">span.ui-icon").removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
@@ -3417,7 +3634,7 @@ $(".bc-imageEditor").live("click",function(e){
 			// 显示隐藏桌面的控制
 			$bottom.find("#quickShowHide").click(function() {
 				var $this = $(this);
-				var $dialogContainer = $("body>.ui-dialog");
+				var $dialogContainer = $middle.find(">.ui-dialog");
 				if ($this.attr("data-hide") == "true") {
 					$this.attr("data-hide","false");
 					$dialogContainer.show();
@@ -3454,8 +3671,7 @@ $(".bc-imageEditor").live("click",function(e){
 		/**双击打开桌面快捷方式*/
 		openModule: function() {
 			$this = $(this);
-			logger.info("openModule:" + $this.attr("class"));
-			var type = $this.attr("data-type");
+			logger.debug("openModule:" + $this.attr("class"));
 			var option = $this.attr("data-option");
 			if(!option || option.length == 0) option="{}";
 			option = eval("("+option+")");
@@ -3463,14 +3679,9 @@ $(".bc-imageEditor").live("click",function(e){
 			option.iconClass=$this.attr("data-iconClass");
 			option.name=$this.attr("data-name");
 			option.order=$this.attr("data-order");
-			option.type=$this.attr("data-type");
 			option.url=$this.attr("data-url");
 			option.standalone=$this.attr("data-standalone")=="true";
-			if(logger.debugEnabled)
-				logger.debug("a:dblclick,type=" + type);
 			bc.page.newWin(option);
-			//if(type == "2"){//打开内部链接
-			//}
 		}
 	});
 
@@ -3929,6 +4140,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 /*
  * jQuery UI Dialog 的扩展:(source:1.9pre Live from Git Thu Sep 29 10:15:03 UTC 2011)
  * 1)增加containment参数，控制对话框拖动的限制范围
+ * 2)增加dragLimit参数，控制对话框拖动的范围
  */
 (function( $, undefined ) {
 	
@@ -3949,6 +4161,24 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 		minHeight: true,
 		minWidth: true
 	};
+
+$.extend($.ui.dialog.prototype.options, {
+	appendTo: "body",
+	dragLimit: [0,80,30,20]//上,右,下,左
+});
+$.extend($.ui.dialog.prototype.options.position, {
+	// 修改为避免对话框顶部超出容器的top或left
+	using: function( pos ) {
+		//logger.info("pos=" + $.toJSON(pos));
+		if ( pos.top < 0 ) {
+			pos.top = 10;
+		}
+		if ( pos.left < 0 ) {
+			pos.left = 10;
+		}
+		$( this ).css( pos );
+	}
+});
 
 $.extend($.ui.dialog.prototype, {
 
@@ -3990,7 +4220,7 @@ $.extend($.ui.dialog.prototype, {
 				.mousedown(function( event ) {
 					self.moveToTop( false, event );
 				})
-				.appendTo( "body" ),
+				.appendTo( self.options.appendTo),
 
 			uiDialogContent = self.element
 				.show()
@@ -4042,7 +4272,10 @@ $.extend($.ui.dialog.prototype, {
 		}
 	},
 	
-	/** 增加containment参数，控制对话框拖动的限制范围 */
+	/** 
+	 * 1)增加containment参数，控制对话框拖动的限制范围；
+	 * 2)增加dragLimit参数，控制对话框拖出容器的范围；
+	 */
 	_makeDraggable: function() {
 		var self = this,
 		options = self.options,
@@ -4058,13 +4291,37 @@ $.extend($.ui.dialog.prototype, {
 		self.uiDialog.draggable({
 			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
 			handle: ".ui-dialog-titlebar",
-			containment: self.options.containment || "document",//这里是增加的代码
+			containment: self.options.containment,//这里是修改的代码
 			start: function( event, ui ) {
 				$( this )
 					.addClass( "ui-dialog-dragging" );
 				self._trigger( "dragStart", event, filteredUi( ui ) );
 			},
 			drag: function( event, ui ) {
+				if(!self.options.containment && options.dragLimit){
+					var parent =  $(options.appendTo);
+					var minTop = options.dragLimit[0];
+					var maxTop = parent.height() - options.dragLimit[2];
+					var minLeft = options.dragLimit[3] - self.uiDialog.width();
+					var maxLeft = parent.width() - options.dragLimit[1];
+					//logger.info("parent:" + $.toJSON(parent.position()) + ",w" + parent.width() + ",h" + parent.height());
+					//logger.info("position:" + $.toJSON(ui.position));
+					
+					//控制top
+					if(ui.position.top > maxTop){
+						ui.position.top = maxTop;
+					}else if(ui.position.top < minTop){
+						ui.position.top = minTop;
+					}
+					
+					//控制left
+					if(ui.position.left > maxLeft){
+						logger.info("maxLeft:" + maxLeft);
+						ui.position.left = maxLeft;
+					}else if(ui.position.left < minLeft){
+						ui.position.left = minLeft;
+					}
+				}
 				self._trigger( "drag", event, filteredUi( ui ) );
 			},
 			stop: function( event, ui ) {
@@ -4078,6 +4335,56 @@ $.extend($.ui.dialog.prototype, {
 				$.ui.dialog.overlay.resize();
 			}
 		});
+	}
+});
+
+//遮罩的扩展
+$.extend( $.ui.dialog.overlay, {
+	create: function( dialog ) {
+		if ( this.instances.length === 0 ) {
+			// prevent use of anchors and inputs
+			// we use a setTimeout in case the overlay is created from an
+			// event that we're going to be cancelling (see #2804)
+			setTimeout(function() {
+				// handle $(el).dialog().dialog('close') (see #4065)
+				if ( $.ui.dialog.overlay.instances.length ) {
+					$( document ).bind( $.ui.dialog.overlay.events, function( event ) {
+						// stop events if the z-index of the target is < the z-index of the overlay
+						// we cannot return true when we don't want to cancel the event (#3523)
+						if ( $( event.target ).zIndex() < $.ui.dialog.overlay.maxZ ) {
+							return false;
+						}
+					});
+				}
+			}, 1 );
+
+			// allow closing by pressing the escape key
+			$( document ).bind( "keydown.dialog-overlay", function( event ) {
+				if ( dialog.options.closeOnEscape && !event.isDefaultPrevented() && event.keyCode &&
+					event.keyCode === $.ui.keyCode.ESCAPE ) {
+					
+					dialog.close( event );
+					event.preventDefault();
+				}
+			});
+
+			// handle window resize
+			$( window ).bind( "resize.dialog-overlay", $.ui.dialog.overlay.resize );
+		}
+
+		var $el = ( this.oldInstances.pop() || $( "<div>" ).addClass( "ui-widget-overlay" ) )
+			.appendTo( dialog.options.appendTo || document.body )//修改的代码
+			.css({
+				width: this.width(),
+				height: this.height()
+			});
+
+		if ( $.fn.bgiframe ) {
+			$el.bgiframe();
+		}
+
+		this.instances.push( $el );
+		return $el;
 	}
 });
 
