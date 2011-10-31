@@ -4,7 +4,7 @@ bc.groupForm = {
 		
 		var $form = $(this);
 		//绑定选择上级的按钮事件处理
-		$form.find("#selectBelong,:input[name='belongNames']").click(function(){
+		$form.find("#selectBelong").click(function(){
 			var selecteds = $form.find(":input[name='belongIds']").val();
 			bc.identity.selectUnitOrDepartment({
 				selecteds: selecteds,

@@ -4,30 +4,36 @@
 	data-saveUrl='<s:url value="/bc/department/save" />'
 	data-js='<s:url value="/bc/identity/identity.js" />,<s:url value="/bc/identity/department/form.js" />'
 	data-initMethod='bc.departmentForm.init'
-	data-option='<s:property value="%{formPageOption}"/>'>
+	data-option='<s:property value="%{formPageOption}"/>' style="overflow:auto;">
 	<s:form name="departmentForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
-			<tbody>
-				<tr>
-					<td class="label">* <s:text name="label.name"/>:</td>
-					<td class="value w200"><s:textfield name="e.name" data-validate="required"/></td>
-					<td class="label">* <s:text name="actor.belong"/>:</td>
-					<td class="value"><s:textfield name="belongNames" data-validate="required"
-						readonly="true" title='%{getText("user.title.click2selectBelong")}'/></td>
-				</tr>
-				<tr>
-					<td class="label">* <s:text name="label.code"/>:</td>
-					<td class="value"><s:textfield name="e.code" data-validate="required"/></td>
-					<td class="label"><s:text name="label.phone"/>:</td>
-					<td class="value"><s:textfield name="e.phone" data-validate='{"type":"phone","required":false}'/></td>
-				</tr>
-				<tr>
-					<td class="label">* <s:text name="label.order"/>:</td>
-					<td class="value"><s:textfield name="e.orderNo" data-validate='required'/></td>
-					<td class="label"><s:text name="label.email"/>:</td>
-					<td class="value"><s:textfield name="e.email" data-validate='{"type":"email","required":false}'/></td>
-				</tr>
-			</tbody>
+			<tr class="widthMarker">
+				<td >&nbsp;</td>
+				<td style="width: 200px;">&nbsp;</td>
+				<td style="width: 80px;">&nbsp;</td>
+				<td style="width: 200px;">&nbsp;</td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="label.name"/>:</td>
+				<td class="value"><s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/></td>
+				<td class="label">*<s:text name="actor.belong"/>:</td>
+				<td class="value" style="position:relative;display: block;"><s:textfield name="belongNames" 
+					data-validate="required" cssClass="ui-widget-content" readonly="true"/>
+					<span id="selectBelong" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="label.code"/>:</td>
+				<td class="value"><s:textfield name="e.code" data-validate="required" cssClass="ui-widget-content"/></td>
+				<td class="label"><s:text name="label.phone"/>:</td>
+				<td class="value"><s:textfield name="e.phone" data-validate='{"type":"phone","required":false}' cssClass="ui-widget-content"/></td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="label.order"/>:</td>
+				<td class="value"><s:textfield name="e.orderNo" data-validate='required' cssClass="ui-widget-content"/></td>
+				<td class="label"><s:text name="label.email"/>:</td>
+				<td class="value"><s:textfield name="e.email" data-validate='{"type":"email","required":false}' cssClass="ui-widget-content"/></td>
+			</tr>
 		</table>
 		<!-- 已分配的角色信息 -->
 		<div id="assignRoles" class="formTable2 ui-widget-content" 
