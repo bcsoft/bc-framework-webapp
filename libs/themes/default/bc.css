@@ -123,12 +123,18 @@ body {
 	position:relative;
 	padding:0.2em;
 }
-.bc-buttonGroup,.bc-separatorButton,.bc-searchButton{
-	display: inline-block;	
+.bc-buttonGroup,.bc-radioGroup,.bc-separatorButton,.bc-searchButton{
+	display: inline-block;
+	margin-left:0.6em;
+	margin-right:0.6em;
 }
 .bc-toolbar .ui-button-text{
 	/*padding-top: 0.2em;
 	padding-bottom: 0.2em;*/
+}
+.bc-radioGroup .ui-button-text{
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }
 .bc-searchButton{
 	position: absolute;
@@ -391,7 +397,7 @@ div.bc-desktop>#middle {
 	left: 0;
 	top: 35px;
 	bottom: 40px;
-	overflow: auto;
+	overflow: hidden;
 	border-width: 0;
 }
 
@@ -478,9 +484,7 @@ div.bc-desktop> table.rightIcons #quickShowHide.rightIcon {
 }
 
 /**桌面快捷方式*/
-a.shortcut {
-	float: left;
-	/*clear: left; 设置这个就默认竖排了*/
+a.shortcut,a.recycle {
 	margin: 10px 5px 5px 10px;
 	display: inline-block;
 	/*color: #ffffff;*/
@@ -492,13 +496,13 @@ a.shortcut {
 	width: 5.5em;
 }
 
-a.shortcut:HOVER,a.shortcut.hoverShortcut {
+a.shortcut:HOVER,a.shortcut.hoverShortcut,a.recycle:HOVER{
 	border-color: green;
 	/*background: -webkit-radial-gradient(10% 30%, white, black);
 	background:-moz-radial-gradient(10% 30%, white, black);*/
 }
 
-a.shortcut .icon {
+a.shortcut .icon,a.recycle .icon {
 	display: block;
 	width: 52px;
 	height: 52px;
@@ -508,7 +512,7 @@ a.shortcut .icon {
 	margin-top: 2px;
 }
 
-a.shortcut .text {
+a.shortcut .text,a.recycle .text {
 	margin: auto;
 	display: block;
 	width: 5em;
@@ -518,6 +522,13 @@ a.shortcut .text {
 	cursor: default;
 	text-align: center;
 	padding: 2px;
+}
+
+a.recycle {
+	clear:both;
+	position: absolute;
+	left:0px;
+	bottom:0px;
 }
 
 /**快速任务栏*/
@@ -643,7 +654,7 @@ a.shortcut .text {
 #loginInfo {
 	position: absolute;
 	bottom: 40px;
-	left: 0;
+	right: 0;
 	/*height: 30px;
 	line-height: 30px;*/
 	font-size: 0.75em;
@@ -696,6 +707,8 @@ table.error .detail span.more {
  * @author rongjihuang@gmail.com
  * @date 2011-04-11
  */
+a.recycle .i0504 {background-position: -208px -260px;}
+a.recycle .i0505 {background-position: -260px -260px;}
 a.shortcut .i0000 {background-position: 0 0;}
 a.shortcut .i0001 {background-position: -52px 0;}
 a.shortcut .i0002 {background-position: -104px 0;}
