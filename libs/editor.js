@@ -11,7 +11,7 @@ bc.editor={
 	 * @option {String} ptype 上传附件所属文档的类型，一般是使用类名的小写开头字母
 	 * @option {String} puid 上传附件所属文档的uid
 	 * @option {String} readonly 是否为只读状态
-	 * @option {String} tools full(完全),mfull(多行完全),simple(简单),mini(迷你)
+	 * @option {String} tools full(完全),mfull(多行完全),simple(简单--默认值),mini(迷你)
 	 * 
 	 */
 	getConfig:function(option){
@@ -27,13 +27,13 @@ bc.editor={
 		}
 			
 		if(option.readonly){
-			return {tools:'Print,Fullscreen'};
+			return {tools:'Print,Fullscreen'};//只读状态只显示打印和全屏按钮
 		}else{
 			return jQuery.extend({
 				//参考：http://xheditor.com/manual/2
 				//参数值：full(完全),mfull(多行完全),simple(简单),mini(迷你)
 				//或者自定义字符串，例如：'Paste,Pastetext,|,Source,Fullscreen,About'
-				tools: option.tools || 'mfull'
+				tools: option.tools || 'simple'
 				//图片上传接口地址
 				,upImgUrl: option.upImgUrl || bc.root + "/upload/?a=0&type=img" + urlEx
 				//图片上传前限制的文件扩展名列表，默认为：jpg,jpeg,gif,png
@@ -49,7 +49,7 @@ bc.editor={
 			},option);
 		}
 	},
-	readOnly:{
+	readonly:{
 		tools:''
 	}
 };

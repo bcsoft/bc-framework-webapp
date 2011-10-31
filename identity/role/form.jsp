@@ -4,7 +4,7 @@
 	data-saveUrl='<s:url value="/bc/role/save" />'
 	data-js='<s:url value="/bc/identity/identity.js" />,<s:url value="/bc/identity/role/form.js" />'
 	data-initMethod='bc.roleForm.init'
-	data-option='<s:property value="%{formPageOption}"/>' style="overflow:auto;">
+	data-option='<s:property value="formPageOption"/>' style="overflow:auto;">
 	<s:form name="roleForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 			<tbody>

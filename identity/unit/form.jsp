@@ -4,7 +4,7 @@
 	data-saveUrl='<s:url value="/bc/unit/save" />'
 	data-js='<s:url value="/bc/identity/unit/form.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.unitForm.init'
-	data-option='<s:property value="%{formPageOption}"/>' style="overflow:auto;">
+	data-option='<s:property value="formPageOption"/>' style="overflow:auto;">
 	<s:form name="unitForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 			<tr class="widthMarker">
@@ -18,7 +18,7 @@
 				<td class="value"><s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/></td>
 				<td class="label"><s:text name="unit.belong"/>:</td>
 				<td class="value" style="position:relative;display: block;"><s:textfield name="belongNames" cssClass="ui-widget-content" readonly="true"/>
-					<span id="selectBelong" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+					<span id="selectBelong" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
 				</td>
 			</tr>
 			<tr>

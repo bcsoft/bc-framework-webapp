@@ -1,61 +1,70 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="user.title"/>' data-type='form' class="bc-page"
+<div title='<s:text name="user.title"/>' data-type='form' class="bc-page" style="overflow:auto;"
 	data-saveUrl='<s:url value="/bc/user/save" />'
 	data-js='<s:url value="/bc/identity/identity.js" />,<s:url value="/bc/identity/user/form.js" />'
 	data-initMethod='bc.userForm.init'
-	data-option='<s:property value="%{formPageOption}"/>'>
+	data-option='<s:property value="formPageOption"/>'>
 	<s:form name="userForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0" style="width:650px;">
-			<tbody>
-				<tr>
-					<td class="label">* <s:text name="user.name"/>:</td>
-					<td class="value w200"><s:textfield name="e.name" data-validate="required"/></td>
-					<td class="label">* <s:text name="actor.belong"/>:</td>
-					<td class="value w200"><s:textfield name="belongNames" data-validate="required"
-						readonly="true" title='%{getText("user.title.click2selectBelong")}'/></td>
-					<td rowspan="6" class="label" style="text-align: center;vertical-align: top;">
-						<img id="portrait" style="width:110px;height:140px;cursor: pointer;" title='<s:text name="image.click2change"/>'
-							src='<s:url value="/bc/image/download"><s:param name='puid' value='e.uid'/><s:param name='ptype' value='%{"portrait"}'/><s:param name='ts' value='ts'/></s:url>'/>
+			<tr class="widthMarker">
+				<td >&nbsp;</td>
+				<td style="width: 200px;">&nbsp;</td>
+				<td style="width: 80px;">&nbsp;</td>
+				<td style="width: 200px;">&nbsp;</td>
+				<td style="width: 110px;">&nbsp;</td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="user.name"/>:</td>
+				<td class="value"><s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/></td>
+				<td class="label">*<s:text name="actor.belong"/>:</td>
+				<td class="value" style="position:relative;display: block;"><s:textfield name="belongNames" 
+					data-validate="required" cssClass="ui-widget-content" readonly="true"/>
+					<span id="selectBelong" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
 					</td>
-				</tr>
-				<tr>
-					<td class="label">* <s:text name="user.code"/>:</td>
-					<td class="value"><s:textfield name="e.code" data-validate="required"/></td>
-					<td class="label"><s:text name="user.duty"/>:</td>
-					<td class="value">
-						<s:select name="e.detail.duty.id" list="duties" listKey="id" listValue="name" value="e.detail.duty.id"></s:select>
-					</td>
-				</tr>
-				<tr>
-					<td class="label">* <s:text name="label.order"/>:</td>
-					<td class="value"><s:textfield name="e.orderNo" data-validate='required'/></td>
-					<td class="label"><s:text name="label.phone"/>:</td>
-					<td class="value"><s:textfield name="e.phone" data-validate='{"type":"phone","required":false}'/></td>
-				</tr>
-				<tr>
-					<td class="label">* <s:text name="user.card"/>:</td>
-					<td class="value"><s:textfield name="e.detail.card" data-validate="required"/></td>
-					<td class="label"><s:text name="label.email"/>:</td>
-					<td class="value"><s:textfield name="e.email" data-validate='{"type":"email","required":false}'/></td>
-				</tr>
-				<tr>
-					<td class="label">* <s:text name="user.workDate"/>:</td>
-					<td class="value"><input type="text" name="e.detail.workDate" data-validate="required" 
-						class="bc-date" title='<s:text name="title.click2selectDate"/>'
-						value='<s:date format="yyyy-MM-dd" name="e.detail.workDate" />'/></td>
-					<td class="label"><s:text name="user.gender"/>:</td>
-					<td class="value"><s:radio name="e.detail.sex" list="#{'1':'男','2':'女','0':'不设置'}" 
-						value="e.detail.sex" cssStyle="width:auto;"/></td>
-				</tr>
-				<tr>
-					<td class="label"><s:text name="user.comment"/>:</td>
-					<td class="value"><s:textfield name="e.detail.comment"/></td>
-					<td class="label"><s:text name="label.status"/>:</td>
-					<td class="value"><s:radio name="e.status" list="#{'0':'启用','1':'禁用','2':'已删除'}" 
-						value="e.status" cssStyle="width:auto;"/></td>
-				</tr>
-			</tbody>
+				<td rowspan="6" class="label" style="text-align: center;vertical-align: top;">
+					<img id="portrait" style="width:110px;height:140px;cursor: pointer;" title='<s:text name="image.click2change"/>'
+						src='<s:url value="/bc/image/download"><s:param name='puid' value='e.uid'/><s:param name='ptype' value='%{"portrait"}'/><s:param name='ts' value='ts'/></s:url>'/>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="user.code"/>:</td>
+				<td class="value"><s:textfield name="e.code" data-validate="required" cssClass="ui-widget-content"/></td>
+				<td class="label"><s:text name="user.duty"/>:</td>
+				<td class="value">
+					<s:select name="e.detail.duty.id" list="duties" listKey="id" listValue="name" value="e.detail.duty.id"></s:select>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="label.order"/>:</td>
+				<td class="value"><s:textfield name="e.orderNo" data-validate='required' cssClass="ui-widget-content"/></td>
+				<td class="label"><s:text name="label.phone"/>:</td>
+				<td class="value"><s:textfield name="e.phone" data-validate='{"type":"phone","required":false}' cssClass="ui-widget-content"/></td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="user.card"/>:</td>
+				<td class="value"><s:textfield name="e.detail.card" data-validate="required" cssClass="ui-widget-content"/></td>
+				<td class="label"><s:text name="label.email"/>:</td>
+				<td class="value"><s:textfield name="e.email" data-validate='{"type":"email","required":false}' cssClass="ui-widget-content"/></td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="user.workDate"/>:</td>
+				<td class="value" style="position:relative;display: block;"><input type="text" name="e.detail.workDate" data-validate="date"
+					class="bc-date ui-widget-content" title='<s:text name="title.click2selectDate"/>'
+					value='<s:date format="yyyy-MM-dd" name="e.detail.workDate" />'/>
+					<span class="selectButton verticalMiddle ui-icon ui-icon-calendar"></span>
+				</td>
+				<td class="label"><s:text name="user.gender"/>:</td>
+				<td class="value"><s:radio name="e.detail.sex" list="#{'1':'男','2':'女','0':'不设置'}" 
+					value="e.detail.sex" cssStyle="width:auto;"/></td>
+			</tr>
+			<tr>
+				<td class="label"><s:text name="user.comment"/>:</td>
+				<td class="value"><s:textfield name="e.detail.comment" cssClass="ui-widget-content"/></td>
+				<td class="label"><s:text name="label.status"/>:</td>
+				<td class="value"><s:radio name="e.status" list="#{'0':'启用','1':'禁用','2':'已删除'}" 
+					value="e.status" cssStyle="width:auto;"/></td>
+			</tr>
 		</table>
 		<!-- 已分派的岗位信息 -->
 		<div id="assignGroups" class="formTable2 ui-widget-content"  style="width:650px;"

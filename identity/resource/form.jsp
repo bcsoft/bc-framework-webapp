@@ -4,7 +4,7 @@
 	data-saveUrl='<s:url value="/bc/resource/save" />'
 	data-js='<s:url value="/bc/identity/resource/form.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.resourceForm.init'
-	data-option='<s:property value="%{formPageOption}"/>' style="overflow:auto;">
+	data-option='<s:property value="formPageOption"/>' style="overflow:auto;">
 	<s:form name="resourceForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 			<tr class="widthMarker">
@@ -24,7 +24,7 @@
 				<td data-name="belong" class="label"><s:text name="resource.belong"/>:</td>
 				<td data-name="belong" class="value" style="position:relative;display: block;"><s:textfield name="e.belong.name" 
 					readonly="true" cssClass="ui-widget-content"/>
-					<span id="selectBelong" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+					<span id="selectBelong" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
 				</td>
 			</tr>
 			<tr>
@@ -33,7 +33,7 @@
 				<td data-name="iconClass" class="label"><s:text name="resource.iconClass"/>:</td>
 				<td data-name="iconClass" class="value" style="position:relative;display: block;"><s:textfield name="e.iconClass" 
 					readonly="true" title='%{getText("resource.title.click2selectIconClass")}' cssClass="ui-widget-content"/>
-					<span id="selectIconClass" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+					<span id="selectIconClass" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
 				</td>
 			</tr>
 			<tr>

@@ -68,6 +68,9 @@ bc.form = {
 				logger.debug("disabled:" + this.name);
 				this.disabled=true;
 			});
+			$form.find("span.selectButton").each(function(){
+				$(this).hide();
+			});
 		}
 	}
 };
