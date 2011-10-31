@@ -1,28 +1,33 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="shortcut.form.title"/>' class='bc-page'
+<div title='<s:text name="shortcut.form.title"/>' data-type='form' class='bc-page' style="overflow:auto;"
 	data-js='<s:url value="/bc/desktop/shortcut/form.js" />'
 	data-saveUrl='<s:url value="/bc/shortcut/save" />'
-	data-initMethod='bc.shortcutForm.init' data-type='form'
+	data-initMethod='bc.shortcutForm.init'
 	data-option='{
 		"buttons":[{"text":"<s:text name="label.save"/>","action":"save"}],
 		"width":415,"minWidth":300,"minHeight":200
 	}'>
-<s:form name="shortcutForm" theme="simple" cssClass="bc-form">
-	<table class="ui-widget-content m8 w400" cellspacing="2" cellpadding="0">
-		<tbody>
+	<s:form name="shortcutForm" theme="simple">
+		<table class="formTable ui-widget-content" cellspacing="2" cellpadding="0">
+			<tr class="widthMarker">
+				<td style="width: 80px;">&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
 			<tr>
 				<td class="label">* <s:text name="shortcut.name" />:</td>
-				<td class="value"><s:textfield name="e.name" data-validate="required"/></td>
+				<td class="value"><s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/></td>
 			</tr>
 			<tr>
 				<td class="label">* <s:text name="shortcut.url" />:</td>
-				<td class="value"><s:textfield name="e.url" data-validate="required"/></td>
+				<td class="value"><s:textfield name="e.url" data-validate="required" cssClass="ui-widget-content"/></td>
 			</tr>
 			<tr>
 				<td class="label">* <s:text name="shortcut.iconClass" />:</td>
-				<td class="value"><s:textfield name="e.iconClass" data-validate="required"
-					readonly="true" title='%{getText("shortcut.title.click2selectIconClass")}'/></td>
+				<td class="value" style="position:relative;display: block;"><s:textfield name="e.iconClass" 
+					data-validate="required" cssClass="ui-widget-content" readonly="true"/>
+					<span id="selectIconClass" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+				</td>
 			</tr>
 			<tr>
 				<td class="label"><s:text name="shortcut.standalone" />:</td>
@@ -32,20 +37,15 @@
 			</tr>
 			<tr>
 				<td class="label">* <s:text name="label.order" />:</td>
-				<td class="value"><s:textfield name="e.order" data-validate="required"/></td>
+				<td class="value"><s:textfield name="e.order" data-validate="required" cssClass="ui-widget-content"/></td>
 			</tr>
-			<tr>
-				<td class="label">&nbsp;</td>
-				<td class="value">&nbsp;</td>
-			</tr>
-		</tbody>
-	</table>
-	<s:hidden name="e.status" />
-	<s:hidden name="e.inner" />
-	<s:hidden name="e.uid" />
-	<s:hidden name="e.id" />
-	<s:hidden name="e.actorId" />
-	<s:hidden name="e.resourceId" />
-	<p class="formComment"><s:text name="shortcut.form.comment"/></p>
-</s:form>
+		</table>
+		<s:hidden name="e.status" />
+		<s:hidden name="e.inner" />
+		<s:hidden name="e.uid" />
+		<s:hidden name="e.id" />
+		<s:hidden name="e.actorId" />
+		<s:hidden name="e.resourceId" />
+		<p class="formComment"><s:text name="shortcut.form.comment"/></p>
+	</s:form>
 </div>
