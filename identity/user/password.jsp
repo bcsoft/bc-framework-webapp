@@ -7,7 +7,7 @@
 		"minWidth":270,"minHeight":100,"modal":false
 	}'>
 	<s:form name="userForm" theme="simple">
-		<table class="formTable" cellspacing="2">
+		<table class="formFields" cellspacing="2">
 			<tbody>
 				<tr>
 					<td class="label">输入新密码:</td>
