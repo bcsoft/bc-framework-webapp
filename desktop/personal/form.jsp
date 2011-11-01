@@ -10,7 +10,7 @@
 			,{"text":"<s:text name="label.save"/>","click":"bc.personal.save"}],
 		"minWidth":560,"minHeight":250,"modal":false
 	}'>
-	<s:form name="personalForm" theme="simple">
+	<s:form name="personalForm" theme="simple" style="height:100%;">
 		<div style="margin: 10px;">
 			<div style="margin-bottom: 8px; float: left;">
 				<s:text name="personal.font" />

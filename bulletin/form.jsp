@@ -4,54 +4,50 @@
 	data-saveUrl='<s:url value="/bc/bulletin/save" />'
 	data-js='<s:url value="/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0" />,<s:url value="/bc/bulletin/form.js" />'
 	data-initMethod='bc.bulletinForm.init'
-	data-option='<s:property value="%{formPageOption}"/>' style="overflow-y:auto;">
+	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="bulletinForm" theme="simple">
 		<div class="formTopInfo">
-			<s:if test="%{e.issuer.name == null}">
-				<s:property value="e.author.name" />(<s:property value="e.author.upperName" />) 创建于  <s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>
+			状态：<s:property value="statusDesc"/>,
+			<s:if test="%{e.issuer == null}">
+			创建：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
 			</s:if>
 			<s:else>
-				<s:property value="e.issuer.name" /> 发布于  <s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>
+			发布：<s:property value="e.issuer.name" />(<s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>)
 			</s:else>
 		</div>
-		<div class="formFields ui-widget-content">
-		<table class="formFields" cellspacing="2" cellpadding="0">
-			<tbody>
-				<tr>
-					<td class="label"><s:text name="bulletin.scope"/>:</td>
-					<td class="value"><s:radio name="e.scope" list="#{'0':'本单位','1':'全系统'}" 
-						value="e.scope" cssStyle="width:auto;"/></td>
-					<td class="label"><s:text name="bulletin.unitName"/>:</td>
-					<td class="value" colspan="3"><s:textfield name="e.unit.name" readonly="true" cssClass="ui-state-disabled"/></td>
-				</tr>
-				<tr>
-					<td class="label"><s:text name="bulletin.status"/>:</td>
-					<td class="value"><s:radio name="e.status" list="#{'0':'待发布','1':'已发布','2':'已过期'}" 
-						value="e.status" cssStyle="width:auto;"/></td>
-					<td class="label"><s:text name="bulletin.overdueDate"/>:</td>
-					<td class="value"><input type="text" name="e.overdueDate" data-validate="date"
-						value='<s:date format="yyyy-MM-dd" name="e.overdueDate" />'
-						class="bc-date"/></td>
-				</tr>
-				<tr>
-					<td class="label">* <s:text name="bulletin.subject"/>:</td>
-					<td class="value" colspan="3"><s:textfield name="e.subject" data-validate="required"/></td>
-				</tr>
-			</tbody>
+		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0" style="width:665px;">
+			<tr class="widthMarker">
+				<td >&nbsp;</td>
+				<td style="width: 200px;">&nbsp;</td>
+				<td style="width: 80px;">&nbsp;</td>
+				<td style="width: 200px;">&nbsp;</td>
+			</tr>
+			<tr>
+				<td class="label">*<s:text name="bulletin.subject"/>:</td>
+				<td class="value" colspan="3"><s:textfield name="e.subject" data-validate="required" cssClass="ui-widget-content"/></td>
+			</tr>
+			<tr>
+				<td class="label"><s:text name="bulletin.overdueDate"/>:</td>
+				<td class="value" style="position:relative;display: block;"><input type="text" name="e.overdueDate" 
+					data-validate='{required:false,type:"date"}'
+					value='<s:date format="yyyy-MM-dd" name="e.overdueDate"/>'
+					class="bc-date ui-widget-content"/>
+					<span id="selectOverdueDate" class="selectButton verticalMiddle ui-icon ui-icon-calendar"></span>
+				</td>
+				<td class="label"><s:text name="bulletin.scope"/>:</td>
+				<td class="value"><s:radio name="e.scope" list="#{'1':'全系统','0':'本单位'}" 
+					value="e.scope" cssStyle="width:auto;"/></td>
+			</tr>
 		</table>
-		</div>
 		<div class="formEditor">
-			<s:if test="%{isManager}">
-			<s:textarea name="e.content" cssClass="bc-editor" data-validate="required"
-				 data-ptype="bulletin.editor" data-puid='${e.uid}'></s:textarea>
-			</s:if>
-			<s:else>
-			<div class="bc-editor"><s:property value="e.content" escapeHtml="false"/></div>
-			</s:else>
+			<textarea name="e.content" class="bc-editor" data-validate="required"
+				 data-ptype="bulletin.editor" data-puid='${e.uid}' 
+				 data-readonly='${readonly}' data-tools='simple'>${e.content}</textarea>
 		</div>
-		<s:property value="%{attachsUI}" escapeHtml="false"/>
+		<s:property value="attachsUI" escapeHtml="false"/>
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.id" />
+		<s:hidden name="e.status" />
 		<s:hidden name="e.unit.id" />
 		<s:hidden name="e.author.id" />
 		<s:hidden name="e.issueDate" />

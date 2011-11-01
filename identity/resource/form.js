@@ -3,11 +3,12 @@ bc.resourceForm = {
 		if(readonly) return;
 		
 		var $form = $(this);
-		//绑定选择隶属模块的按钮事件处理
-		$form.find("#selectBelong,:input[name='e.belong.name']").click(function(){
+		//绑定选择所属分类的按钮事件处理
+		$form.find("#selectBelong").click(function(){
 			var selecteds = $form.find(":input[name='e.belong.id']").val();
 			var excludes = $form.find(":input[name='e.id']").val();
 			bc.identity.selectResource({
+				types: '1',
 				selecteds: selecteds,
 				excludes: excludes,
 				onOk: function(resource){
@@ -15,14 +16,14 @@ bc.resourceForm = {
 						$form.find(":input[name='e.belong.name']").val(resource.name);
 						$form.find(":input[name='e.belong.id']").val(resource.id);
 					}else{
-						alert("不能选择自己作为自己的所属资源！");
+						alert("不能选择自己作为自己的所属分类！");
 					}
 				}
 			});
 		});
 		
 		var urlText = $form.find("#urlText").attr("data-text");
-		//绑定模块类型选择变动事件
+		//绑定类型选择变动事件
 		$form.find(":radio").change(function(){
 			var $this = $(this);
 			var type = $this.val()
@@ -37,7 +38,7 @@ bc.resourceForm = {
 				//如果是链接了类型，强制链接为必填域
 				if(type == "2" || type == "3"){
 					$form.find(":input[name='e.url']").attr("data-validate","required");
-					$form.find("#urlText").text("* " + urlText + "：");
+					$form.find("#urlText").text("*" + urlText + "：");
 				}else{
 					$form.find(":input[name='e.url']").removeAttr("data-validate");
 					$form.find("#urlText").text(urlText + "：");
@@ -49,7 +50,7 @@ bc.resourceForm = {
 		$form.find(":input[name='e.name']").focus();
 		
 		//绑定选择图标样式的按钮事件处理
-		$form.find(":input[name='e.iconClass']").click(function(){
+		$form.find("#selectIconClass").click(function(){
 			bc.page.newWin({
 				url: bc.root + "/bc/shortcut/selectIconClass",
 				name: "选择图标样式",
