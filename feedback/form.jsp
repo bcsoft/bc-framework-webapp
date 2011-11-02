@@ -15,7 +15,7 @@
 		<div class="formEditor">
 			<textarea name="e.content" class="bc-editor" data-validate="required"
 				 data-ptype="feedback.editor" data-puid='${e.uid}' 
-				 data-readonly='${!e.new}' data-tools='simple'>${e.content}</textarea>
+				 data-readonly='${e.id != null}' data-tools='simple'>${e.content}</textarea>
 		</div>
 		<s:property value="attachsUI" escapeHtml="false"/>
 		<s:hidden name="e.uid" />
