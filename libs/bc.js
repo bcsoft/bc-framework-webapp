@@ -2223,6 +2223,9 @@ bc.form = {
 				logger.debug("disabled:" + this.name);
 				this.disabled=true;
 			});
+			$form.find("span.selectButton").each(function(){
+				$(this).hide();
+			});
 		}
 	}
 };
@@ -2616,7 +2619,7 @@ bc.editor={
 	 * @option {String} ptype 上传附件所属文档的类型，一般是使用类名的小写开头字母
 	 * @option {String} puid 上传附件所属文档的uid
 	 * @option {String} readonly 是否为只读状态
-	 * @option {String} tools full(完全),mfull(多行完全),simple(简单),mini(迷你)
+	 * @option {String} tools full(完全),mfull(多行完全),simple(简单--默认值),mini(迷你)
 	 * 
 	 */
 	getConfig:function(option){
@@ -2632,13 +2635,13 @@ bc.editor={
 		}
 			
 		if(option.readonly){
-			return {tools:'Print,Fullscreen'};
+			return {tools:'Print,Fullscreen'};//只读状态只显示打印和全屏按钮
 		}else{
 			return jQuery.extend({
 				//参考：http://xheditor.com/manual/2
 				//参数值：full(完全),mfull(多行完全),simple(简单),mini(迷你)
 				//或者自定义字符串，例如：'Paste,Pastetext,|,Source,Fullscreen,About'
-				tools: option.tools || 'mfull'
+				tools: option.tools || 'simple'
 				//图片上传接口地址
 				,upImgUrl: option.upImgUrl || bc.root + "/upload/?a=0&type=img" + urlEx
 				//图片上传前限制的文件扩展名列表，默认为：jpg,jpeg,gif,png
@@ -2654,7 +2657,7 @@ bc.editor={
 			},option);
 		}
 	},
-	readOnly:{
+	readonly:{
 		tools:''
 	}
 };
@@ -2942,7 +2945,7 @@ bc.attach.html5={
 	    var fileName;
 	    if(_extensions && _extensions.length > 0){
 	    	for(var i=0;i<files.length;i++){
-	    		fileName = files[i].fileName;
+	    		fileName = files[i].fileName || files[i].name;
 	    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
 		    		alert("只能上传扩展名为\"" + _extensions.replace(/,/g,"、") + "\"的文件！");
 			    	bc.attach.clearFileSelect($atm);
@@ -2958,7 +2961,7 @@ bc.attach.html5={
 	    	f=files[i];
 	    	var key = batchNo + i;
 			//上传进度显示
-			var fileName = f.fileName;
+			var fileName = f.fileName || f.name;
 			var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
 			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.fileSize),extend,fileName);
 			$(attach).attr("data-xhr",key).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
@@ -3052,10 +3055,10 @@ bc.attach.html5={
 			xhr.open("POST", url);
 			xhr.setRequestHeader('Content-Type', 'application/octet-stream');
 			//对文件名进行URI编码避免后台中文乱码（后台需URI解码）
-			xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="'+encodeURIComponent(f.fileName)+'"');
-			if(xhr.sendAsBinary)//Firefox4
+			xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="'+encodeURIComponent(f.fileName || f.name)+'"');
+			if($.browser == "mozilla" && $.browser.version < 5)//Firefox4
 				xhr.sendAsBinary(f.getAsBinary());
-			else //Chrome12
+			else //Chrome12+,Firefox5+
 				xhr.send(f);
 	    }
 	},

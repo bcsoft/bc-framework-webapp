@@ -55,7 +55,7 @@ bc.attach.html5={
 	    var fileName;
 	    if(_extensions && _extensions.length > 0){
 	    	for(var i=0;i<files.length;i++){
-	    		fileName = files[i].fileName;
+	    		fileName = files[i].fileName || files[i].name;
 	    		if(_extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
 		    		alert("只能上传扩展名为\"" + _extensions.replace(/,/g,"、") + "\"的文件！");
 			    	bc.attach.clearFileSelect($atm);
@@ -71,7 +71,7 @@ bc.attach.html5={
 	    	f=files[i];
 	    	var key = batchNo + i;
 			//上传进度显示
-			var fileName = f.fileName;
+			var fileName = f.fileName || f.name;
 			var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
 			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.fileSize),extend,fileName);
 			$(attach).attr("data-xhr",key).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
@@ -165,10 +165,10 @@ bc.attach.html5={
 			xhr.open("POST", url);
 			xhr.setRequestHeader('Content-Type', 'application/octet-stream');
 			//对文件名进行URI编码避免后台中文乱码（后台需URI解码）
-			xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="'+encodeURIComponent(f.fileName)+'"');
-			if(xhr.sendAsBinary)//Firefox4
+			xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="'+encodeURIComponent(f.fileName || f.name)+'"');
+			if($.browser == "mozilla" && $.browser.version < 5)//Firefox4
 				xhr.sendAsBinary(f.getAsBinary());
-			else //Chrome12
+			else //Chrome12+,Firefox5+
 				xhr.send(f);
 	    }
 	},
