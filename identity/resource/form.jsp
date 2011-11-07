@@ -22,18 +22,30 @@
 				<td class="label">*<s:text name="label.name"/>：</td>
 				<td class="value"><s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/></td>
 				<td data-name="belong" class="label"><s:text name="resource.belong"/>:</td>
-				<td data-name="belong" class="value" style="position:relative;display: block;"><s:textfield name="e.belong.name" 
+				<td data-name="belong" class="value relative"><s:textfield name="e.belong.name" 
 					readonly="true" cssClass="ui-widget-content"/>
-					<span id="selectBelong" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+					<ul class="inputIcons">
+						<li id="selectBelong" class="inputIcon ui-icon ui-icon-circle-plus"
+							title='<s:text name="title.click2select"/>'></li>
+						<li class="clearSelect inputIcon ui-icon ui-icon-circle-close" 
+							data-cfg='e.belong.id,e.belong.name'
+							title='<s:text name="title.click2clear"/>'></li>
+					</ul>
 				</td>
 			</tr>
 			<tr>
 				<td class="label">*<s:text name="label.order"/>：</td>
 				<td class="value"><s:textfield name="e.orderNo" data-validate="required" cssClass="ui-widget-content"/></td>
 				<td data-name="iconClass" class="label"><s:text name="resource.iconClass"/>:</td>
-				<td data-name="iconClass" class="value" style="position:relative;display: block;"><s:textfield name="e.iconClass" 
+				<td data-name="iconClass" class="value relative"><s:textfield name="e.iconClass" 
 					readonly="true" title='%{getText("resource.title.click2selectIconClass")}' cssClass="ui-widget-content"/>
-					<span id="selectIconClass" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+					<ul class="inputIcons">
+						<li id="selectIconClass" class="inputIcon ui-icon ui-icon-circle-plus"
+							title='<s:text name="title.click2select"/>'></li>
+						<li class="clearSelect inputIcon ui-icon ui-icon-circle-close" 
+							data-cfg='e.iconClass'
+							title='<s:text name="title.click2clear"/>'></li>
+					</ul>
 				</td>
 			</tr>
 			<tr>

@@ -17,9 +17,12 @@
 				<td class="label">*<s:text name="label.name"/>:</td>
 				<td class="value"><s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/></td>
 				<td class="label">*<s:text name="actor.belong"/>:</td>
-				<td class="value" style="position:relative;display: block;"><s:textfield name="belongNames" 
+				<td class="value relative"><s:textfield name="belongNames" 
 					data-validate="required" cssClass="ui-widget-content" readonly="true"/>
-					<span id="selectBelong" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+					<ul class="inputIcons">
+						<li id="selectBelong" class="inputIcon ui-icon ui-icon-circle-plus"
+							title='<s:text name="title.click2select"/>'></li>
+					</ul>
 				</td>
 			</tr>
 			<tr>
@@ -42,14 +45,18 @@
 				<span class="text"><s:text name="actor.headerLabel.assignRoles"/>：
 					<s:if test="%{ownedRoles == null || ownedRoles.isEmpty()}"><s:text name="label.empty"/></s:if>
 				</span>
+				<s:if test="!readonly">
 				<span id="addRoles" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addRoles"/>'></span>
+				</s:if>
 			</div>
 			<s:if test="%{ownedRoles != null && !ownedRoles.isEmpty()}">
 			<ul class="horizontal">
 			<s:iterator value="ownedRoles">
 				<li class="horizontal ui-widget-content ui-corner-all" data-id='<s:property value="id" />'>
 					<span class="text"><s:property value="name" /></span>
+					<s:if test="!readonly">
 					<span class="click2remove verticalMiddle ui-icon ui-icon-close" title='<s:text name="title.click2remove"/>'></span>
+					</s:if>
 				</li>
 			</s:iterator>
 			</ul>

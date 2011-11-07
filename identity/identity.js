@@ -213,3 +213,117 @@ bc.identity = {
 		bc.page.newWin(option);
 	}
 };
+
+var $document = $(document);
+
+/**
+ * 选择用户的自动处理。
+ * 需要在dom元素中配置data-cfg属性，格式为：
+ * 	{"valueField":"[值对应的表单域的name]","mapping":"域1name=id,域2name=name"}}
+ * 	如{"valueField":"e.unit.id","mapping":"e.unit.id=id,e.unit.name=name"}}
+ * mapping中等于号后的值为用户信息中的key
+ */
+$document.delegate(".selectUser",{
+	click: function() {
+		var $this = $(this);
+		var cfg = $this.data("cfg");
+		if(!cfg){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		if(typeof cfg == "string")
+			cfg = {mapping:cfg};
+		
+		var $form = $this.closest("form");
+		bc.identity.selectUser({
+			history: cfg.history || false,
+			selecteds: cfg.valueField ? $form.find(":input[name='" + cfg.valueField + "']").val() : null,
+			onOk: function(user){
+				var mapping = cfg.mapping.split(",");
+				var c;
+				for(var i=0; i<mapping.length; i++){
+					c = mapping[i].split("=");
+					if(c.length != 2){
+						alert("mapping的格式配置错误，无法处理！请检查dom元素data-cfg的配置,mapping=" + mapping[i]);
+						return;
+					}
+					$form.find(":input[name='" + c[0] + "']").val(user[c[1]]);
+				}
+			}
+		});
+	}
+});
+
+/**
+ * 选择单位的自动处理。
+ * 需要在dom元素中配置data-cfg属性，格式为：
+ * 	{"valueField":"[值对应的表单域的name]","mapping":"域1name=id,域2name=name"}}
+ * 	如{"valueField":"e.unit.id","mapping":"e.unit.id=id,e.unit.name=name"}}
+ * mapping中等于号后的值为用户信息中的key
+ */
+$document.delegate(".selectUnit",{
+	click: function() {
+		var $this = $(this);
+		var cfg = $this.data("cfg");
+		if(!cfg){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		if(typeof cfg == "string")
+			cfg = {mapping:cfg};
+		
+		var $form = $this.closest("form");
+		bc.identity.selectUnit({
+			selecteds: cfg.valueField ? $form.find(":input[name='" + cfg.valueField + "']").val() : null,
+			onOk: function(user){
+				var mapping = cfg.mapping.split(",");
+				var c;
+				for(var i=0; i<mapping.length; i++){
+					c = mapping[i].split("=");
+					if(c.length != 2){
+						alert("mapping的格式配置错误，无法处理！请检查dom元素data-cfg的配置,mapping=" + mapping[i]);
+						return;
+					}
+					$form.find(":input[name='" + c[0] + "']").val(user[c[1]]);
+				}
+			}
+		});
+	}
+});
+
+/**
+ * 选择单位或部门的自动处理。
+ * 需要在dom元素中配置data-cfg属性，格式为：
+ * 	{"valueField":"[值对应的表单域的name]","mapping":"域1name=id,域2name=name"}}
+ * 	如{"valueField":"e.unit.id","mapping":"e.unit.id=id,e.unit.name=name"}}
+ * mapping中等于号后的值为用户信息中的key
+ */
+$document.delegate(".selectUnitOrDepartment",{
+	click: function() {
+		var $this = $(this);
+		var cfg = $this.data("cfg");
+		if(!cfg){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		if(typeof cfg == "string")
+			cfg = {mapping:cfg};
+		
+		var $form = $this.closest("form");
+		bc.identity.selectUnitOrDepartment({
+			selecteds: cfg.valueField ? $form.find(":input[name='" + cfg.valueField + "']").val() : null,
+			onOk: function(user){
+				var mapping = cfg.mapping.split(",");
+				var c;
+				for(var i=0; i<mapping.length; i++){
+					c = mapping[i].split("=");
+					if(c.length != 2){
+						alert("mapping的格式配置错误，无法处理！请检查dom元素data-cfg的配置,mapping=" + mapping[i]);
+						return;
+					}
+					$form.find(":input[name='" + c[0] + "']").val(user[c[1]]);
+				}
+			}
+		});
+	}
+});

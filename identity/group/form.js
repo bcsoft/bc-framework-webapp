@@ -3,17 +3,6 @@ bc.groupForm = {
 		if(readonly) return;
 		
 		var $form = $(this);
-		//绑定选择上级的按钮事件处理
-		$form.find("#selectBelong").click(function(){
-			var selecteds = $form.find(":input[name='belongIds']").val();
-			bc.identity.selectUnitOrDepartment({
-				selecteds: selecteds,
-				onOk: function(actor){
-					$form.find(":input[name='belongNames']").val(actor.name);
-					$form.find(":input[name='belongIds']").val(actor.id);
-				}
-			});
-		});
 		
 		var liTpl = '<li class="horizontal ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}">'+
 			'<span class="text">{1}</span>'+
