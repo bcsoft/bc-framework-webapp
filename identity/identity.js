@@ -70,6 +70,41 @@ bc.identity = {
 	},
 	
 	/**
+	 * 选择部门信息
+	 * @param {Object} option 配置参数
+	 * @option {String} selecteds 当前应选中的项的值，多个值用逗号连接
+	 * @option {String} excludes 要排除显示的项的值，多个值用逗号连接
+	 * @option {Function} onOk 选择完毕后的回调函数，函数第一个参数为选中的单位信息
+	 */
+	selectDepartment : function(option) {
+		option.data = jQuery.extend({
+			multiple: false,
+			history: false
+		},option.data);
+		if(option.selecteds)
+			option.data.selecteds = option.selecteds;
+		if(option.excludes)
+			option.data.excludes = option.excludes;
+		if(option.history === true)
+			option.data.history = true;
+		if(option.multiple === true)
+			option.data.multiple = true;
+		
+		option = jQuery.extend({
+			url: bc.root + "/bc/selectDepartment",
+			name: "选择部门信息",
+			mid: "selectDepartment",
+			afterClose: function(status){
+				if(status && typeof(option.onOk) == "function"){
+					option.onOk(status);
+				}
+			}
+		},option);
+		
+		bc.page.newWin(option);
+	},
+	
+	/**
 	 * 选择岗位信息
 	 * @param {Object} option 配置参数
 	 * @option {String} actorId 用户的id
@@ -311,6 +346,43 @@ $document.delegate(".selectUnitOrDepartment",{
 		
 		var $form = $this.closest("form");
 		bc.identity.selectUnitOrDepartment({
+			selecteds: cfg.valueField ? $form.find(":input[name='" + cfg.valueField + "']").val() : null,
+			onOk: function(user){
+				var mapping = cfg.mapping.split(",");
+				var c;
+				for(var i=0; i<mapping.length; i++){
+					c = mapping[i].split("=");
+					if(c.length != 2){
+						alert("mapping的格式配置错误，无法处理！请检查dom元素data-cfg的配置,mapping=" + mapping[i]);
+						return;
+					}
+					$form.find(":input[name='" + c[0] + "']").val(user[c[1]]);
+				}
+			}
+		});
+	}
+});
+
+/**
+ * 选择部门的自动处理。
+ * 需要在dom元素中配置data-cfg属性，格式为：
+ * 	{"valueField":"[值对应的表单域的name]","mapping":"域1name=id,域2name=name"}}
+ * 	如{"valueField":"e.unit.id","mapping":"e.unit.id=id,e.unit.name=name"}}
+ * mapping中等于号后的值为用户信息中的key
+ */
+$document.delegate(".selectDepartment",{
+	click: function() {
+		var $this = $(this);
+		var cfg = $this.data("cfg");
+		if(!cfg){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		if(typeof cfg == "string")
+			cfg = {mapping:cfg};
+		
+		var $form = $this.closest("form");
+		bc.identity.selectDepartment({
 			selecteds: cfg.valueField ? $form.find(":input[name='" + cfg.valueField + "']").val() : null,
 			onOk: function(user){
 				var mapping = cfg.mapping.split(",");
