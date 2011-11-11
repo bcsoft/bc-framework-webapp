@@ -28,11 +28,18 @@
 <div id="desktop" class="bc-desktop">
 	<!-- 系统菜单条 -->
 	<div id="top" class="ui-widget-header">
-		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />">
+		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />"
+			title='<s:text name="app.title"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>'>
 		<s:property value="startMenu" escapeHtml="false"/>
-		<table class="rightIcons" cellpadding="0" cellspacing="0" border="0">
+		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td class="rightIcon" id="quickLogout" title="点击注销并退出系统"><a>&nbsp;</a></td>
+				<td class="topIcon" title="邮箱">
+					<a class="icon i0004">&nbsp;</a>
+					<span class="number ui-state-highlight">8</span>
+				</td>
+				<td class="topIcon" title="聊天"><a class="icon i0003">&nbsp;</a></td>
+				<td class="topIcon" title="帮助"><a class="icon i0001">&nbsp;</a></td>
+				<td class="topIcon" id="quickLogout" title="退出"><a class="icon i0000">&nbsp;</a></td>
 			</tr>
 		</table>
 	</div>
@@ -84,20 +91,15 @@
 	<div id="bottom" class="ui-widget-header">
 		<div id="copyrightBar"><a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright" /></a></div>
 		<div id="quickButtons"></div>
-		<table class="rightIcons" cellpadding="0" cellspacing="0" border="0">
+		<table class="bottomIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td class="rightIcon" id="quickShowHide" title="显示桌面"><a class="ui-widget-header">&nbsp;</a></td>
+				<td class="bottomIcon" id="quickShowHide" title="显示桌面"><a class="ui-widget-header">&nbsp;</a></td>
 			</tr>
 		</table>
 	</div>
 </div>
 <!-- 空白框架，通常用于下载附件 -->
 <iframe id="blank" name="blank" style="width:0; height:0; display:hidden;" src="about:blank" scrolling="no" frameborder="0"></iframe>
-<div id="loginInfo">
-<s:property value="context.user.name" />(<s:property value="context.user.pname" />) 登录于  <s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>
-<br/><s:text name="app.title"/> v<s:text name="app.version"/>
-</div>
-
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7/jquery.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js' />"></script>

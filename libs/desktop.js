@@ -201,14 +201,14 @@
 			});
 			
 			// 桌面日历
-			var $right = this.element.find(">#middle>#right");
-			$right.find("#indexCalendar").datepicker({
-				showWeek: true,
-				//showButtonPanel: true,//显示今天按钮
-				firstDay: 7,
-				showOtherMonths: true,
-				selectOtherMonths: true
-			});
+//			var $right = this.element.find(">#middle>#right");
+//			$right.find("#indexCalendar").datepicker({
+//				showWeek: true,
+//				//showButtonPanel: true,//显示今天按钮
+//				firstDay: 7,
+//				showOtherMonths: true,
+//				selectOtherMonths: true
+//			});
 			
 			$center.show();
 		},
