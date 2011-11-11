@@ -68,9 +68,39 @@ bc.form = {
 				logger.debug("disabled:" + this.name);
 				this.disabled=true;
 			});
-			$form.find("span.selectButton").each(function(){
+			$form.find("ul.inputIcons,span.selectButton").each(function(){
 				$(this).hide();
 			});
 		}
 	}
 };
+
+var $document = $(document);
+//表单域内的选择按钮鼠标样式切换
+$(document).delegate("li.inputIcon",{
+	mouseover: function() {
+		$(this).addClass("hover");
+	},
+	mouseout: function() {
+		$(this).removeClass("hover");
+	}
+});
+//清空选择的自动处理
+$document.delegate(".clearSelect",{
+	click: function() {
+		var $this = $(this);
+		var cfg = $this.data("cfg");
+		if(!cfg){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		logger.info("cfg=" + $.toJSON(cfg));
+		var cfgs = cfg.split(",");
+		var c;
+		var $form = $this.closest("form");
+		for(var i=0;i<cfgs.length;i++){
+			c = cfgs[i].split("=");
+			$form.find(":input[name='" + c[0] + "']").val(c.length > 1 ? c[1] : "");
+		}
+	}
+});

@@ -14,7 +14,12 @@
 				<tbody>
 					<tr>
 						<td class="label w80">* <s:text name="option.optionGroup"/>:</td>
-						<td class="value"><s:textfield name="e.optionGroup.value" data-validate="required" readonly="true"/></td>
+						<td class="value relative"><s:textfield name="e.optionGroup.value" data-validate="required" readonly="true"/>
+							<ul class="inputIcons">
+								<li id="selectOptionGroup" class="inputIcon ui-icon ui-icon-circle-plus"
+									title='<s:text name="title.click2select"/>'></li>
+							</ul>
+						</td>
 					</tr>
 					<tr>
 						<td class="label">* <s:text name="option.key"/>:</td>
@@ -35,7 +40,12 @@
 					</tr>
 					<tr>
 						<td class="label"><s:text name="option.icon"/>:</td>
-						<td class="value"><s:textfield name="e.icon" /></td>
+						<td class="value relative"><s:textfield name="e.icon" />
+							<ul class="inputIcons">
+								<li id="selectIconClass" class="inputIcon ui-icon ui-icon-circle-plus"
+									title='<s:text name="title.click2select"/>'></li>
+							</ul>
+						</td>
 					</tr>
 				</tbody>
 			</table>

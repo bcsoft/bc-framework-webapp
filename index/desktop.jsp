@@ -98,7 +98,7 @@
 <br/><s:text name="app.title"/> v<s:text name="app.version"/>
 </div>
 
-<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.6.3/jquery.min.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7/jquery.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/i18n/jquery.ui.datepicker-zh-CN.js' />"></script>

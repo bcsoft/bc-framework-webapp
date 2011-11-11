@@ -33,14 +33,19 @@
 				<span class="text"><s:text name="role.headerLabel.assignResources"/>：
 					<s:if test="%{e.resources == null || e.resources.isEmpty()}"><s:text name="label.empty"/></s:if>
 				</span>
+				<s:if test="!readonly">
 				<span id="addResources" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="role.title.click2addResources"/>'></span>
+				</s:if>
 			</div>
 			<s:if test="%{e.resources != null && !e.resources.isEmpty()}">
 			<ul class="horizontal">
 			<s:iterator value="e.resources">
-				<li class="horizontal ui-widget-content ui-corner-all" data-id='<s:property value="id" />'>
+				<li class="horizontal ui-widget-content ui-corner-all" data-id='<s:property value="id" />'
+					title='<s:property value="fullName" />'>
 					<span class="text"><s:property value="name" /></span>
+					<s:if test="!readonly">
 					<span class="click2remove verticalMiddle ui-icon ui-icon-close" title='<s:text name="title.click2remove"/>'></span>
+					</s:if>
 				</li>
 			</s:iterator>
 			</ul>
