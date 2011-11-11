@@ -43,7 +43,7 @@
 		bc.debug = <s:text name="app.debug" />;
 		bc.ts = bc.debug ? new Date().getTime() : "<s:text name="app.ts" />";
 	</script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.6.3/jquery.min.js'/>"></script>
+	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7/jquery.min.js'/>"></script>
 	<script type="text/javascript" src="<s:url value='/ui-libs/jshash/2.2/md5-min.js'/>"></script>
 <%-- 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/browser/browser.js'/>"></script> --%>
 	<script type="text/javascript" src="<s:url value='/bc/login/login.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
