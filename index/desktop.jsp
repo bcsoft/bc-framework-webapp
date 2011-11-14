@@ -113,6 +113,7 @@
 	bc={};
 	bc.root = "<%=request.getContextPath()%>";
 	bc.debug = <s:text name="app.debug" />;
+	bc.wsurl = "ws://<%=request.getLocalAddr()%>:<%=request.getLocalPort()%><%=request.getContextPath()%>/ws";
 	if (bc.debug) {
 		bc.ts = new Date().getTime();//首次打开主页的时间
 		jQuery(function() {
