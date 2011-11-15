@@ -199,6 +199,48 @@
 				window.open(bc.root + "/logout","_self");
 				return false;
 			});
+
+			// 帮助
+			$top.find("#bchelp,#bcmail").click(function() {
+				alert(bc.title);
+				return false;
+			});
+
+			// 聊天
+			var $bcq = $top.find("#bcq");
+			if($bcq.size() > 0){
+				$bcq.click(function() {
+					bc.page.newWin({
+						mid: "bcq",
+						url: bc.root + "/bc/chat/onlineUser"
+					});
+					return false;
+				});
+				
+				//开启WebSocket
+				if (!window.WebSocket && window.MozWebSocket)
+					window.WebSocket = window.MozWebSocket;
+				if (window.WebSocket){
+					bc.ws = new WebSocket(bc.wsurl + "?id=" + userId + "&name=" + encodeURIComponent(encodeURIComponent(userName)), "chat");
+					bc.ws.onopen = function(){
+						logger.info("WebSocket打开了！");
+					};
+					bc.ws.onmessage =function(e){
+						logger.info(e.data);
+						var json = eval("(" + e.data + ")");
+						var fromId = json.fromId;
+						alert(fromId);
+					};
+					bc.ws.onclose =function(){
+						alert("WebSocket断开了！");
+					};
+					bc.ws.onerror =function(e){
+						bc.msg.slide("当前浏览器不支持WebSocket，无法使用在线聊天工具！");
+					};
+				}else{
+					bc.msg.slide("当前浏览器不支持WebSocket，无法使用在线聊天工具！");
+				}
+			}
 			
 			// 桌面日历
 //			var $right = this.element.find(">#middle>#right");

@@ -1,0 +1,37 @@
+div.online div.container {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+}
+
+div.online div.title {
+	padding: 4px;
+	display: none;
+}
+
+div.online ul.items {
+	list-style: none;
+	padding: 0;
+	margin: 4px;
+	cursor: default;
+}
+div.online ul.items > li.item{
+	position: relative;
+}
+div.online ul.items > li.item > span.text{
+	font-size: 14px;
+	color:#22436C;
+	padding-left: 30px;
+	line-height: 36px;
+}
+div.online ul.items > li.item > img{
+	position: absolute;
+	display:block;
+	width:28px;height:34px;
+	top:50%;
+	margin-top: -17px;
+	padding:0;
+	border: 0;
+	left:1px;
+}

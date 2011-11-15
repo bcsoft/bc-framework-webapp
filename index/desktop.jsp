@@ -33,13 +33,15 @@
 		<s:property value="startMenu" escapeHtml="false"/>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td class="topIcon" title="邮箱">
+				<td class="topIcon" title="邮箱" id="bcmail">
 					<a class="icon i0004">&nbsp;</a>
 					<span class="number ui-state-highlight">8</span>
 				</td>
-				<td class="topIcon" title="聊天"><a class="icon i0003">&nbsp;</a></td>
-				<td class="topIcon" title="帮助"><a class="icon i0001">&nbsp;</a></td>
-				<td class="topIcon" id="quickLogout" title="退出"><a class="icon i0000">&nbsp;</a></td>
+				<s:if test='%{getText("app.bcq") == "true"}'>
+				<td class="topIcon" title="聊天" id="bcq"><a class="icon i0003">&nbsp;</a></td>
+				</s:if>
+				<td class="topIcon" title="帮助" id="bchelp"><a class="icon i0001">&nbsp;</a></td>
+				<td class="topIcon" title="退出" id="quickLogout"><a class="icon i0000">&nbsp;</a></td>
 			</tr>
 		</table>
 	</div>
@@ -111,8 +113,10 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.4/jquery.mousewheel.min.js' />"></script>
 <script type="text/javascript">
 	bc={};
+	bc.title = '<s:text name="app.title"/> v<s:text name="app.version"/>';
 	bc.root = "<%=request.getContextPath()%>";
 	bc.debug = <s:text name="app.debug" />;
+	bc.bcq = <s:text name="app.bcq" />;
 	bc.wsurl = "ws://<%=request.getLocalAddr()%>:<%=request.getLocalPort()%><%=request.getContextPath()%>/ws";
 	if (bc.debug) {
 		bc.ts = new Date().getTime();//首次打开主页的时间
