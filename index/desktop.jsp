@@ -4,23 +4,23 @@
 <html>
 <head>
 <title><s:text name="app.title" /></title>
-<script type="text/javascript">var ts = "<s:text name="app.ts" />";</script>
+<script type="text/javascript">var ts = '<s:property value="ts" />';</script>
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.9pre/themes/base/jquery-ui.css' />" />	
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.8.16/themes/%{personalConfig.theme}/jquery-ui.css' />" />	
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.css' />" />
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.0.2/jquery.pnotify.default.css' />" />
 <s:if test='%{"true" == getText("app.debug")}'>
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/core.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/tabs.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/desktop.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/shortcuts.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/form.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/boxPointer.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/attach.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/core.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/tabs.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/desktop.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/shortcuts.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/form.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/boxPointer.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/attach.css' ><s:param name='ts' value='ts'/></s:url>" />
 </s:if>
 <s:else>
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/bc.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/bc.css' ><s:param name='ts' value='ts'/></s:url>" />
 </s:else>
 </head>
 <body style='font-size:<s:property value="personalConfig.font" />px;' class="bc">
@@ -117,47 +117,47 @@
 	bc.root = "<%=request.getContextPath()%>";
 	bc.debug = <s:text name="app.debug" />;
 	bc.bcq = <s:text name="app.bcq" />;
+	bc.sid = '<s:property value="sid" />';
 	bc.wsurl = "ws://<%=request.getLocalAddr()%>:<%=request.getLocalPort()%><%=request.getContextPath()%>/ws";
+	bc.ts = '<s:property value="ts" />';//系统编译发布的时间
 	if (bc.debug) {
-		bc.ts = new Date().getTime();//首次打开主页的时间
 		jQuery(function() {
 			//logger.toggle();
 			//logger.enable("debug");
 		});
-	}else{
-		bc.ts = "<s:text name="app.ts" />";//系统编译发布的时间
 	}
 	var userId = '<s:property value="context.user.id" />';
 	var userCode = '<s:property value="context.user.code" />';
-	var userName = '<s:property value="context.user.name" />';
+	var userName = '<s:property value="context.user.name" escapeHtml="false"/>';
 </script>
 <s:if test='%{getText("app.debug") == "true"}'>
-	<script type="text/javascript" src="<s:url value='/bc/libs/core.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/ajax.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/msg.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/validate.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/page.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/grid.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/grid.export.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/form.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/boxPointer.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/loader.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/editor.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/attach.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/attach.html5.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/attach.flash.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/image.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/desktop.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/logger.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
-	<script type="text/javascript" src="<s:url value='/bc/libs/logger.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/debug.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/browser.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/tabs.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/dialog.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/core.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/ajax.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/msg.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/validate.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/page.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/grid.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/grid.export.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/form.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/boxPointer.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/loader.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/editor.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/attach.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/attach.html5.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/attach.flash.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/image.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/desktop.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/logger.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<script type="text/javascript" src="<s:url value='/bc/libs/logger.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/debug.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/browser.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/tabs.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/dialog.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/chat.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 </s:if>
 <s:else>
-	<script type="text/javascript" src="<s:url value='/bc/libs/bc.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/bc.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript">
 	if(!window['logger']){
 		/** JavaScript日志组件的幻象，实际的见logger.js */
