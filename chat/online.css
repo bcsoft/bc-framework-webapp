@@ -1,37 +1,62 @@
-div.online div.container {
+div.online>div.container {
 	border: 0;
 	padding: 0;
 	margin: 0;
 	height: 100%;
+	position: relative;
+	font-weight: normal;
 }
 
-div.online div.title {
-	padding: 4px;
-	display: none;
+div.online>div.container>div.bottom {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	height: 34px;
+	border: 0;
 }
 
-div.online ul.items {
+div.online>div.container>div.bottom>.info {
+	padding-left: 4px;
+	padding-top: 10px;
+	font-weight: normal;
+}
+
+div.online>div.container>ul.items {
 	list-style: none;
 	padding: 0;
-	margin: 4px;
+	margin: 0;
 	cursor: default;
-}
-div.online ul.items > li.item{
-	position: relative;
-}
-div.online ul.items > li.item > span.text{
-	font-size: 14px;
-	color:#22436C;
-	padding-left: 30px;
-	line-height: 36px;
-}
-div.online ul.items > li.item > img{
 	position: absolute;
-	display:block;
-	width:28px;height:34px;
-	top:50%;
-	margin-top: -17px;
-	padding:0;
+	top: 0;
+	bottom: 34px;
+	left: 0;
+	right: 0;
+	overflow: auto;
+}
+
+div.online>div.container>ul.items>li.item {
+	position: relative;
 	border: 0;
-	left:1px;
+	border-radius: 0;
+	font-weight: normal;
+}
+
+div.online>div.container>ul.items>li.item>span.text {
+	font-size: 14px;
+	color: #22436C;
+	padding-left: 36px;
+	line-height: 42px;
+}
+
+div.online>div.container>ul.items>li.item>img {
+	position: absolute;
+	display: block;
+	width: 28px;
+	height: 34px;
+	top: 50%;
+	margin-top: -17px;
+	padding: 0;
+	border: 0;
+	left: 4px;
+	border-radius: 2px;
 }

@@ -176,7 +176,7 @@
 					.end().siblings().toggleClass("ui-state-active",false);
 					$dialogContainer.show().end().dialog("moveToTop");
 				}
-				// $this.toggleClass("ui-state-active")
+				$this.removeClass("ui-state-highlight");
 				return false;
 			});
 
@@ -212,6 +212,7 @@
 			if($bcq.size() > 0){
 				$bcq.click(function() {
 					bc.page.newWin({
+						name: "BCQ 2011",
 						mid: "bcq",
 						url: bc.root + "/bc/chat/onlineUser"
 					});
