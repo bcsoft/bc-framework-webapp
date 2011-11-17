@@ -176,7 +176,7 @@
 					.end().siblings().toggleClass("ui-state-active",false);
 					$dialogContainer.show().end().dialog("moveToTop");
 				}
-				// $this.toggleClass("ui-state-active")
+				$this.removeClass("ui-state-highlight");
 				return false;
 			});
 
@@ -196,19 +196,42 @@
 
 			// 注销的控制
 			$top.find("#quickLogout").click(function() {
+				bc.chat.destroy();
 				window.open(bc.root + "/logout","_self");
 				return false;
 			});
+
+			// 帮助
+			$top.find("#bchelp,#bcmail").click(function() {
+				alert(bc.title);
+				return false;
+			});
+
+			// 聊天
+			var $bcq = $top.find("#bcq");
+			if($bcq.size() > 0){
+				$bcq.click(function() {
+					bc.page.newWin({
+						name: "BCQ 2011",
+						mid: "bcq",
+						url: bc.root + "/bc/chat/onlineUser"
+					});
+					return false;
+				});
+				
+				//开启WebSocket
+				bc.chat.init();
+			}
 			
 			// 桌面日历
-			var $right = this.element.find(">#middle>#right");
-			$right.find("#indexCalendar").datepicker({
-				showWeek: true,
-				//showButtonPanel: true,//显示今天按钮
-				firstDay: 7,
-				showOtherMonths: true,
-				selectOtherMonths: true
-			});
+//			var $right = this.element.find(">#middle>#right");
+//			$right.find("#indexCalendar").datepicker({
+//				showWeek: true,
+//				//showButtonPanel: true,//显示今天按钮
+//				firstDay: 7,
+//				showOtherMonths: true,
+//				selectOtherMonths: true
+//			});
 			
 			$center.show();
 		},

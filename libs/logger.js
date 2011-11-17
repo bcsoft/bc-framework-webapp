@@ -58,10 +58,10 @@ window['logger'] = (function($){
 	// 快捷键设置
 	$(document).keyup(function(evt){
 		//logger.info(logger.infoEnabled);
-		if (evt.which == 36 && evt.metaKey) { //切换显示隐藏：Ctrl(metaKey) + Home(36)
+		if (evt.which == 36 && evt.ctrlKey) { //切换显示隐藏：Ctrl(ctrlKey) + Home(36)
 			toggleShow();
-		}else if(visible && evt.which == 39 && evt.metaKey){//切换位置：Ctrl(metaKey) + ->(39)
-			logger.info(evt.which + ";" + evt.metaKey);
+		}else if(visible && evt.which == 39 && evt.ctrlKey){//切换位置：Ctrl(ctrlKey) + ->(39)
+			logger.info(evt.which + ";" + evt.ctrlKey);
 		}
 	});
 	function toggleShow(){

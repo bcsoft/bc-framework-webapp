@@ -597,6 +597,14 @@ bc.page.quickbar={
 		$item.find(">span.text").text($item.attr("data-name"));
 		$item.find(">span.ui-icon").removeClass("loading").addClass("ui-icon-folder-open");
 		$item.toggleClass("ui-state-active",true).siblings().toggleClass("ui-state-active",false);
+	},
+	/**  
+	 * 设置指定的模块的警告显示
+	 * @param mid 模块的id
+	 */
+	warn: function(mid){
+		var $item = $(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + mid + "']");
+		$item.toggleClass("ui-state-highlight",true);
 	}
 };
 
