@@ -208,9 +208,9 @@ $document.delegate(".bc-button.bc-menuButton",{
 			
 			//将菜单的dom迁移到指定的容器
 			var $contextmenu = $this.find(".bc-menu");
-			var menuSelector = $this.attr("data-menuSelector");
-			if(menuSelector && menuSelector.length > 0){
-				$contextmenu.appendTo($this.closest(menuSelector));//添加到指定的容器
+			var menucontainer = $this.attr("data-menucontainer");
+			if(menucontainer && menucontainer.length > 0){
+				$contextmenu.appendTo($this.closest(menucontainer));//添加到指定的容器
 			}else{
 				//$contextmenu.appendTo($this.parent());//添加到父容器
 			}
