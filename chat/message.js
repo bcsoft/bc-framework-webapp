@@ -23,16 +23,7 @@ bc.chatMessage = {
 				json.toSid = toSid;
 				
 				//当前客户端时间
-				var time = new Date();
-				json.time = time.getHours() + ":";
-				if(time.getMinutes() < 10)
-					json.time += "0" + time.getMinutes() + ":";
-				else
-					json.time += time.getMinutes() + ":";
-				if(time.getSeconds() < 10)
-					json.time += "0" + time.getSeconds();
-				else
-					json.time += time.getSeconds();
+				json.time = bc.getTime();
 				
 				//发送消息
 				var _msg = $.toJSON(json);
@@ -45,7 +36,7 @@ bc.chatMessage = {
 				//添加到历史信息
 				bc.chat.addHistory($page,bc.chat.historyItemTpl.format("local","我",json.time,json.msg));
 			}else{
-				bc.chat.addHistory($page,bc.chat.historyItemTpl.format("sys","系统",json.time,"连接已断开，无法发送消息！"));
+				bc.chat.addHistory($page,bc.chat.historyItemTpl.format("sys","系统",bc.getTime(),"连接已断开，无法发送消息！"));
 			}
 		}
 		

@@ -27,7 +27,8 @@ bc.chat = {
 				logger.info("WebSocket打开了！");
 			};
 			bc.ws.onmessage =function(e){
-				logger.info("receive="+e.data);
+				if(logger.debugEnabled)
+					logger.debug("onmessage:e=" + $.toJSON(e));
 				var json = eval("(" + e.data + ")");
 				if(json.type == 2 || json.type == 4){//用户发给用户的信息
 					var toSid = (json.type == 4 ? json.origin : json.sid);
@@ -72,12 +73,24 @@ bc.chat = {
 					bc.msg.slide(json.msg);
 				}
 			};
-			bc.ws.onclose =function(){
-				alert("WebSocket断开了，要连接请重新登录！");
+			bc.ws.onclose =function(e){
+				if(logger.debugEnabled)
+					logger.debug("onclose:e=" + $.toJSON(e));
 				bc.chat.destroy();
+				if(e.wasClean === true){
+					//服务器超时断开
+					logger.info("重新连接WebSocket中...");
+					bc.msg.slide("重新连接WebSocket中...");
+					bc.chat.init();//如果网络断开了，会导致死循环
+				}else{
+					//服务器关闭了
+					alert("WebSocket断开了，请重新登录！");
+				}
 			};
 			bc.ws.onerror =function(e){
-				alert("WebSocket通讯异常，要连接请重新登录！");
+				if(logger.debugEnabled)
+					logger.debug("onerror:e=" + $.toJSON(e));
+				alert("WebSocket通讯异常,要连接请重新登录！");
 				bc.chat.destroy();
 			};
 		}else{
