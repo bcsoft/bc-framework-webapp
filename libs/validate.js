@@ -9,7 +9,7 @@ bc.validator = {
 	 * 表单验证
 	 * <input ... data-validate='{required:true,type:"number",max:10,min:5}'/>
 	 * type的值控制各种不同的验证方式：
-	 * 1) undefined或required 最简单的必填域验证，值不为空即可
+	 * 1) required 最简单的必填域验证，值不为空即可
 	 * 2) number 数字(正数、负数、小数)
 	 * 3) digits 整数(非小数的数字类型)
 	 * 4) email 电子邮件 xx@xx.com
@@ -22,7 +22,7 @@ bc.validator = {
 	 * max的值控制数字的最大值
 	 * minLen的值控制字符串的最小长度(中文按两个字符长度计算)
 	 * maxLen的值控制字符串的最大长度(中文按两个字符长度计算)
-	 * 如果无需配置其他属性，type的值可以直接配置为validate的值，如<input ... data-validate="number"/>
+	 * 如果无需配置其他属性，type的值可以直接配置为validate的值，如<input ... data-validate="number"/>，此时required的值默认为false
 	 * required的值控制是否必须填写true|false
 	 * @$form 表单form的jquery对象
 	 */
@@ -35,7 +35,10 @@ bc.validator = {
 				logger.debug(this.nodeName + "," + this.name + "," + this.value + "," + validate);
 			if(validate && $.trim(validate).length > 0){
 				if(!/^\{/.test(validate)){//不是以字符{开头
-					validate = '{"required":true,"type":"' + validate + '"}';//默认必填
+					if("required" == validate)
+						validate = '{"required":true,"type":"' + validate + '"}';//默认必填
+					else
+						validate = '{"required":,"false":"' + validate + '"}';//默认非必填
 				}
 				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
 				var method = bc.validator.methods[validate.type];
