@@ -52,10 +52,11 @@
 			</tr>
 			<tr>
 				<td class="label">*<s:text name="user.workDate"/>:</td>
-				<td class="value" style="position:relative;display: block;"><input type="text" name="e.detail.workDate" data-validate="date"
-					class="bc-date ui-widget-content" title='<s:text name="title.click2selectDate"/>'
-					value='<s:date format="yyyy-MM-dd" name="e.detail.workDate" />'/>
-					<span class="selectButton verticalMiddle ui-icon ui-icon-calendar"></span>
+				<td class="value relative"><input type="text" name="e.detail.workDate" data-validate="date"
+					class="bc-date ui-widget-content" value='<s:date format="yyyy-MM-dd" name="e.detail.workDate" />'/>
+					<ul class="inputIcons">
+						<li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg='e.detail.workDate' title='<s:text name="title.click2selectDate"/>'></li>
+					</ul>
 				</td>
 				<td class="label"><s:text name="user.gender"/>:</td>
 				<td class="value"><s:radio name="e.detail.sex" list="#{'1':'男','2':'女','0':'不设置'}" 
