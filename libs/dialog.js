@@ -134,6 +134,56 @@ $.extend($.ui.dialog.prototype, {
 	},
 	
 	/** 
+	 * 1)修改创建button的方式
+	 */
+	_createButtons: function( buttons ) {
+		var self = this,
+			hasButtons = false;
+
+		// if we already have a button pane, remove it
+		self.uiDialog.find( ".ui-dialog-buttonpane" ).remove();
+
+		if ( typeof buttons === "object" && buttons !== null ) {
+			$.each( buttons, function() {
+				return !(hasButtons = true);
+			});
+		}
+		if ( hasButtons ) {
+			var uiDialogButtonPane = $( "<div>" )
+					.addClass( "ui-dialog-buttonpane  ui-widget-content ui-helper-clearfix" ),
+				uiButtonSet = $( "<div>" )
+					.addClass( "ui-dialog-buttonset" )
+					.appendTo( uiDialogButtonPane );
+
+			$.each( buttons, function( name, props ) {
+				if(props && props.html ){
+					//这里是添加的扩展处理，让按钮支持使用ToolbarButton生成的html代码
+					uiButtonSet.append(props.html);
+				}else{
+					props = $.isFunction( props ) ?
+						{ click: props, text: name } :
+						props;
+					
+					var button = $( "<button type='button'>" )
+						.attr( props, true )
+						.unbind( "click" )
+						.click(function() {
+							props.click.apply( self.element[0], arguments );
+						})
+						.appendTo( uiButtonSet );
+					if ( $.fn.button ) {
+						button.button();
+					}
+				}
+			});
+			self.uiDialog.addClass( "ui-dialog-buttons" );
+			uiDialogButtonPane.appendTo( self.uiDialog );
+		} else {
+			self.uiDialog.removeClass( "ui-dialog-buttons" );
+		}
+	},
+	
+	/** 
 	 * 1)增加containment参数，控制对话框拖动的限制范围；
 	 * 2)增加dragLimit参数，控制对话框拖出容器的范围；
 	 */

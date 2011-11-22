@@ -246,6 +246,8 @@ bc.page = {
 					btn.click = bc.page.open;
 				}else if(btn.action == "preview"){//预览xheditor的内容
 					btn.click = bc.page.preview;
+				}else if(btn.action == "more"){//带下拉菜单的按钮
+					btn.click = bc.page.more;
 				}else if(btn.fn){//调用自定义函数
 					btn.click = bc.getNested(btn.fn);
 				}

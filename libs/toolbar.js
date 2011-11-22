@@ -41,7 +41,7 @@ bc.toolbar = {
 	
 var $document = $(document);
 //顶部工具条按钮控制
-$document.delegate(".bc-toolbar .bc-button",{
+$document.delegate(".bc-button",{
 	mouseover: function() {
 		$(this).addClass("ui-state-hover");
 	},
@@ -122,7 +122,7 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 });
 
 // 工具条的单选按钮组
-$document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
+$document.delegate(".bc-radioGroup>.ui-button",{
 	mouseover: function() {
 		$(this).addClass("ui-state-hover");
 	},
