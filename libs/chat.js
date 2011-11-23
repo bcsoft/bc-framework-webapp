@@ -22,7 +22,7 @@ bc.chat = {
 		if (!window.WebSocket && window.MozWebSocket)
 			window.WebSocket = window.MozWebSocket;
 		if (window.WebSocket){
-			bc.ws = new WebSocket(bc.wsurl + "?sid=" + bc.sid + "&userId=" + userId + "&userName=" + encodeURIComponent(userName), "chat");
+			bc.ws = new window.WebSocket(bc.wsurl + "?sid=" + bc.sid + "&userId=" + userId + "&userName=" + userName, "chat");
 			bc.ws.onopen = function(){
 				logger.info("WebSocket打开了！");
 			};
@@ -79,9 +79,11 @@ bc.chat = {
 				bc.chat.destroy();
 				if(e.wasClean === true){
 					//服务器超时断开
-					logger.info("重新连接WebSocket中...");
-					bc.msg.slide("重新连接WebSocket中...");
-					bc.chat.init();//如果网络断开了，会导致死循环
+					setTimeout(function(){
+						logger.info("重新连接WebSocket中...");
+						bc.msg.slide("重新连接WebSocket中...");
+						bc.chat.init();//如果网络断开了，会导致死循环
+					},1000);
 				}else{
 					//服务器关闭了
 					alert("WebSocket断开了，请重新登录！");
