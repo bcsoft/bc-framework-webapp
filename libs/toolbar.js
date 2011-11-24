@@ -233,7 +233,7 @@ $document.delegate(".bc-button.bc-menuButton",{
 					$(this).popup("close");
 					//$this.button("option", "label", ui.item.text());
 					if(typeof change == "function"){
-						change.call($this.closest(".bc-page")[0],{
+						change.call($this.closest(".bc-ui-dialog").children(".bc-page")[0],{
 							text: ui.item.attr("data-text"),
 							value: ui.item.attr("data-value")
 						});
