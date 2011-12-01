@@ -187,4 +187,23 @@ bc.formatNumber = function(num, pattern) {
 		}
 	}
 	return retstr.replace(/^,+/, '').replace(/\.$/, '');
-}
+};
+
+/** 获取当前客户端的时间信息，格式为HH:mm:ss
+ * @return 
+ */
+bc.getTime = function(){
+	var now = new Date();
+	var time = now.getHours() + ":";
+	//分
+	if(now.getMinutes() < 10)
+		time += "0" + now.getMinutes() + ":";
+	else
+		time += now.getMinutes() + ":";
+	//秒
+	if(now.getSeconds() < 10)
+		time += "0" + now.getSeconds();
+	else
+		time += now.getSeconds();
+	return time;
+};

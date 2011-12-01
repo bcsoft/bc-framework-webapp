@@ -25,7 +25,8 @@ bc.form = {
 		
 		if(!readonly){
 			//绑定日期选择
-			$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]').each(function(){
+			$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]')
+			.each(function bindSelectCalendar(){
 				var $this = $(this);
 				var cfg = $this.attr("data-cfg");
 				if(cfg && cfg.length > 0){
@@ -102,5 +103,28 @@ $document.delegate(".clearSelect",{
 			c = cfgs[i].split("=");
 			$form.find(":input[name='" + c[0] + "']").val(c.length > 1 ? c[1] : "");
 		}
+	}
+});
+//选择日期的自动处理
+$document.delegate(".selectCalendar",{
+	click: function() {
+		var $this = $(this);
+		var fieldName = $this.attr("data-cfg");
+		if(!fieldName){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		logger.info("fieldName=" + fieldName);
+		var f = "[name='" + fieldName + "']";
+		var $calendarField = $this.closest("form").find("input.bc-date" + f + "," + "input.bc-datetime" + f + "," + "input.bc-time" + f)
+		.each(function(){
+			var $this = $(this);
+			if($this.hasClass('bc-date'))
+				$this.datepicker("show");
+			else if($this.hasClass('bc-datetime'))
+				$this.datetimepicker("show");
+			else
+				$this.timepicker("show");
+		});
 	}
 });

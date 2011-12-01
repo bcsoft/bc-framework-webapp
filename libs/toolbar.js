@@ -41,7 +41,7 @@ bc.toolbar = {
 	
 var $document = $(document);
 //顶部工具条按钮控制
-$document.delegate(".bc-toolbar .bc-button",{
+$document.delegate(".bc-button",{
 	mouseover: function() {
 		$(this).addClass("ui-state-hover");
 	},
@@ -122,7 +122,7 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 });
 
 // 工具条的单选按钮组
-$document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
+$document.delegate(".bc-radioGroup>.ui-button",{
 	mouseover: function() {
 		$(this).addClass("ui-state-hover");
 	},
@@ -193,6 +193,59 @@ $document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
 						alert("undefined function: " + $parent.attr("data-change"));
 					}
 				}
+		}
+		return false;
+	}
+});
+
+
+//工具条的单选按钮组
+$document.delegate(".bc-button.bc-menuButton",{
+	click: function() {
+		var $this = $(this);
+		if($this.attr("data-menuInit") != "true"){//初始化下拉菜单
+			logger.info("data-menuInit!=true");
+			
+			//将菜单的dom迁移到指定的容器
+			var $contextmenu = $this.find(".bc-menu");
+			var menucontainer = $this.attr("data-menucontainer");
+			if(menucontainer && menucontainer.length > 0){
+				$contextmenu.appendTo($this.closest(menucontainer));//添加到指定的容器
+			}else{
+				//$contextmenu.appendTo($this.parent());//添加到父容器
+			}
+			
+			//设置菜单的最小宽度为按钮的当前宽度
+			$contextmenu.css("min-width", $this.width() + "px");
+			
+			//获取回调函数
+			var change = $this.attr("data-change");
+			if(change){
+				change = bc.getNested(change);//将函数名称转换为函数
+				if(typeof change != "function"){
+					alert("没有定义函数: " + $this.attr("data-change"));
+				}
+			}
+			
+			//初始化菜单
+			$contextmenu.menu({
+				select: function(event, ui) {
+					$(this).popup("close");
+					//$this.button("option", "label", ui.item.text());
+					if(typeof change == "function"){
+						change.call($this.closest(".bc-ui-dialog").children(".bc-page")[0],{
+							text: ui.item.attr("data-text"),
+							value: ui.item.attr("data-value")
+						});
+					}
+				}
+			});
+			
+			//绑定点击按钮就显示下拉菜单
+			$contextmenu.popup({trigger: $this}).popup("open");
+			
+			//标记已初始化
+			$this.attr("data-menuInit","true");
 		}
 		return false;
 	}

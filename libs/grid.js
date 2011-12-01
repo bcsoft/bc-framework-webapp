@@ -72,7 +72,7 @@ bc.grid = {
 			
 			//累计表格兄弟的高度
 			var otherHeight = 0;
-			$grid.siblings().each(function(i){
+			$grid.siblings(":visible").each(function(i){
 				otherHeight += $(this).outerHeight(true);
 				logger.debug("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});
