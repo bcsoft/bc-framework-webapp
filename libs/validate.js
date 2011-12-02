@@ -38,7 +38,7 @@ bc.validator = {
 					if("required" == validate)
 						validate = '{"required":true,"type":"' + validate + '"}';//默认必填
 					else
-						validate = '{"required":,"false":"' + validate + '"}';//默认非必填
+						validate = '{"required":false,"type":"' + validate + '"}';//默认非必填
 				}
 				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
 				var method = bc.validator.methods[validate.type];
