@@ -187,7 +187,26 @@ bc.formatNumber = function(num, pattern) {
 		}
 	}
 	return retstr.replace(/^,+/, '').replace(/\.$/, '');
-}
+};
+
+/** 获取当前客户端的时间信息，格式为HH:mm:ss
+ * @return 
+ */
+bc.getTime = function(){
+	var now = new Date();
+	var time = now.getHours() + ":";
+	//分
+	if(now.getMinutes() < 10)
+		time += "0" + now.getMinutes() + ":";
+	else
+		time += now.getMinutes() + ":";
+	//秒
+	if(now.getSeconds() < 10)
+		time += "0" + now.getSeconds();
+	else
+		time += now.getSeconds();
+	return time;
+};
 /**
  * 对$.ajax的通用封装:全局ajax设置
  * 
@@ -367,7 +386,7 @@ bc.validator = {
 	 * 表单验证
 	 * <input ... data-validate='{required:true,type:"number",max:10,min:5}'/>
 	 * type的值控制各种不同的验证方式：
-	 * 1) undefined或required 最简单的必填域验证，值不为空即可
+	 * 1) required 最简单的必填域验证，值不为空即可
 	 * 2) number 数字(正数、负数、小数)
 	 * 3) digits 整数(非小数的数字类型)
 	 * 4) email 电子邮件 xx@xx.com
@@ -380,7 +399,7 @@ bc.validator = {
 	 * max的值控制数字的最大值
 	 * minLen的值控制字符串的最小长度(中文按两个字符长度计算)
 	 * maxLen的值控制字符串的最大长度(中文按两个字符长度计算)
-	 * 如果无需配置其他属性，type的值可以直接配置为validate的值，如<input ... data-validate="number"/>
+	 * 如果无需配置其他属性，type的值可以直接配置为validate的值，如<input ... data-validate="number"/>，此时required的值默认为false
 	 * required的值控制是否必须填写true|false
 	 * @$form 表单form的jquery对象
 	 */
@@ -393,7 +412,10 @@ bc.validator = {
 				logger.debug(this.nodeName + "," + this.name + "," + this.value + "," + validate);
 			if(validate && $.trim(validate).length > 0){
 				if(!/^\{/.test(validate)){//不是以字符{开头
-					validate = '{"required":true,"type":"' + validate + '"}';//默认必填
+					if("required" == validate)
+						validate = '{"required":true,"type":"' + validate + '"}';//默认必填
+					else
+						validate = '{"required":false,"type":"' + validate + '"}';//默认非必填
 				}
 				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
 				var method = bc.validator.methods[validate.type];
@@ -794,6 +816,8 @@ bc.page = {
 					btn.click = bc.page.open;
 				}else if(btn.action == "preview"){//预览xheditor的内容
 					btn.click = bc.page.preview;
+				}else if(btn.action == "more"){//带下拉菜单的按钮
+					btn.click = bc.page.more;
 				}else if(btn.fn){//调用自定义函数
 					btn.click = bc.getNested(btn.fn);
 				}
@@ -1145,6 +1169,14 @@ bc.page.quickbar={
 		$item.find(">span.text").text($item.attr("data-name"));
 		$item.find(">span.ui-icon").removeClass("loading").addClass("ui-icon-folder-open");
 		$item.toggleClass("ui-state-active",true).siblings().toggleClass("ui-state-active",false);
+	},
+	/**  
+	 * 设置指定的模块的警告显示
+	 * @param mid 模块的id
+	 */
+	warn: function(mid){
+		var $item = $(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + mid + "']");
+		$item.toggleClass("ui-state-highlight",true);
 	}
 };
 
@@ -1306,7 +1338,7 @@ bc.toolbar = {
 	
 var $document = $(document);
 //顶部工具条按钮控制
-$document.delegate(".bc-toolbar .bc-button",{
+$document.delegate(".bc-button",{
 	mouseover: function() {
 		$(this).addClass("ui-state-hover");
 	},
@@ -1387,7 +1419,7 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 });
 
 // 工具条的单选按钮组
-$document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
+$document.delegate(".bc-radioGroup>.ui-button",{
 	mouseover: function() {
 		$(this).addClass("ui-state-hover");
 	},
@@ -1458,6 +1490,59 @@ $document.delegate(".bc-toolbar .bc-radioGroup>.ui-button",{
 						alert("undefined function: " + $parent.attr("data-change"));
 					}
 				}
+		}
+		return false;
+	}
+});
+
+
+//工具条的单选按钮组
+$document.delegate(".bc-button.bc-menuButton",{
+	click: function() {
+		var $this = $(this);
+		if($this.attr("data-menuInit") != "true"){//初始化下拉菜单
+			logger.info("data-menuInit!=true");
+			
+			//将菜单的dom迁移到指定的容器
+			var $contextmenu = $this.find(".bc-menu");
+			var menucontainer = $this.attr("data-menucontainer");
+			if(menucontainer && menucontainer.length > 0){
+				$contextmenu.appendTo($this.closest(menucontainer));//添加到指定的容器
+			}else{
+				//$contextmenu.appendTo($this.parent());//添加到父容器
+			}
+			
+			//设置菜单的最小宽度为按钮的当前宽度
+			$contextmenu.css("min-width", $this.width() + "px");
+			
+			//获取回调函数
+			var change = $this.attr("data-change");
+			if(change){
+				change = bc.getNested(change);//将函数名称转换为函数
+				if(typeof change != "function"){
+					alert("没有定义函数: " + $this.attr("data-change"));
+				}
+			}
+			
+			//初始化菜单
+			$contextmenu.menu({
+				select: function(event, ui) {
+					$(this).popup("close");
+					//$this.button("option", "label", ui.item.text());
+					if(typeof change == "function"){
+						change.call($this.closest(".bc-ui-dialog").children(".bc-page")[0],{
+							text: ui.item.attr("data-text"),
+							value: ui.item.attr("data-value")
+						});
+					}
+				}
+			});
+			
+			//绑定点击按钮就显示下拉菜单
+			$contextmenu.popup({trigger: $this}).popup("open");
+			
+			//标记已初始化
+			$this.attr("data-menuInit","true");
 		}
 		return false;
 	}
@@ -1538,7 +1623,7 @@ bc.grid = {
 			
 			//累计表格兄弟的高度
 			var otherHeight = 0;
-			$grid.siblings().each(function(i){
+			$grid.siblings(":visible").each(function(i){
 				otherHeight += $(this).outerHeight(true);
 				logger.debug("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});
@@ -2180,7 +2265,8 @@ bc.form = {
 		
 		if(!readonly){
 			//绑定日期选择
-			$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]').each(function(){
+			$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]')
+			.each(function bindSelectCalendar(){
 				var $this = $(this);
 				var cfg = $this.attr("data-cfg");
 				if(cfg && cfg.length > 0){
@@ -2223,12 +2309,65 @@ bc.form = {
 				logger.debug("disabled:" + this.name);
 				this.disabled=true;
 			});
-			$form.find("span.selectButton").each(function(){
+			$form.find("ul.inputIcons,span.selectButton").each(function(){
 				$(this).hide();
 			});
 		}
 	}
 };
+
+var $document = $(document);
+//表单域内的选择按钮鼠标样式切换
+$(document).delegate("li.inputIcon",{
+	mouseover: function() {
+		$(this).addClass("hover");
+	},
+	mouseout: function() {
+		$(this).removeClass("hover");
+	}
+});
+//清空选择的自动处理
+$document.delegate(".clearSelect",{
+	click: function() {
+		var $this = $(this);
+		var cfg = $this.data("cfg");
+		if(!cfg){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		logger.info("cfg=" + $.toJSON(cfg));
+		var cfgs = cfg.split(",");
+		var c;
+		var $form = $this.closest("form");
+		for(var i=0;i<cfgs.length;i++){
+			c = cfgs[i].split("=");
+			$form.find(":input[name='" + c[0] + "']").val(c.length > 1 ? c[1] : "");
+		}
+	}
+});
+//选择日期的自动处理
+$document.delegate(".selectCalendar",{
+	click: function() {
+		var $this = $(this);
+		var fieldName = $this.attr("data-cfg");
+		if(!fieldName){
+			alert("没有配置dom元素data-cfg属性的值，无法处理！");
+			return;
+		}
+		logger.info("fieldName=" + fieldName);
+		var f = "[name='" + fieldName + "']";
+		var $calendarField = $this.closest("form").find("input.bc-date" + f + "," + "input.bc-datetime" + f + "," + "input.bc-time" + f)
+		.each(function(){
+			var $this = $(this);
+			if($this.hasClass('bc-date'))
+				$this.datepicker("show");
+			else if($this.hasClass('bc-datetime'))
+				$this.datetimepicker("show");
+			else
+				$this.timepicker("show");
+		});
+	}
+});
 /**
  * BoxPointer控件
  *
@@ -3630,7 +3769,7 @@ $(".bc-imageEditor").live("click",function(e){
 					.end().siblings().toggleClass("ui-state-active",false);
 					$dialogContainer.show().end().dialog("moveToTop");
 				}
-				// $this.toggleClass("ui-state-active")
+				$this.removeClass("ui-state-highlight");
 				return false;
 			});
 
@@ -3650,19 +3789,42 @@ $(".bc-imageEditor").live("click",function(e){
 
 			// 注销的控制
 			$top.find("#quickLogout").click(function() {
+				bc.chat.destroy();
 				window.open(bc.root + "/logout","_self");
 				return false;
 			});
+
+			// 帮助
+			$top.find("#bchelp,#bcmail").click(function() {
+				alert(bc.title);
+				return false;
+			});
+
+			// 聊天
+			var $bcq = $top.find("#bcq");
+			if($bcq.size() > 0){
+				$bcq.click(function() {
+					bc.page.newWin({
+						name: "BCQ 2011",
+						mid: "bcq",
+						url: bc.root + "/bc/chat/onlineUser"
+					});
+					return false;
+				});
+				
+				//开启WebSocket
+				bc.chat.init();
+			}
 			
 			// 桌面日历
-			var $right = this.element.find(">#middle>#right");
-			$right.find("#indexCalendar").datepicker({
-				showWeek: true,
-				//showButtonPanel: true,//显示今天按钮
-				firstDay: 7,
-				showOtherMonths: true,
-				selectOtherMonths: true
-			});
+//			var $right = this.element.find(">#middle>#right");
+//			$right.find("#indexCalendar").datepicker({
+//				showWeek: true,
+//				//showButtonPanel: true,//显示今天按钮
+//				firstDay: 7,
+//				showOtherMonths: true,
+//				selectOtherMonths: true
+//			});
 			
 			$center.show();
 		},
@@ -4272,6 +4434,56 @@ $.extend($.ui.dialog.prototype, {
 
 		if ( $.fn.bgiframe ) {
 			uiDialog.bgiframe();
+		}
+	},
+	
+	/** 
+	 * 1)修改创建button的方式
+	 */
+	_createButtons: function( buttons ) {
+		var self = this,
+			hasButtons = false;
+
+		// if we already have a button pane, remove it
+		self.uiDialog.find( ".ui-dialog-buttonpane" ).remove();
+
+		if ( typeof buttons === "object" && buttons !== null ) {
+			$.each( buttons, function() {
+				return !(hasButtons = true);
+			});
+		}
+		if ( hasButtons ) {
+			var uiDialogButtonPane = $( "<div>" )
+					.addClass( "ui-dialog-buttonpane  ui-widget-content ui-helper-clearfix" ),
+				uiButtonSet = $( "<div>" )
+					.addClass( "ui-dialog-buttonset" )
+					.appendTo( uiDialogButtonPane );
+
+			$.each( buttons, function( name, props ) {
+				if(props && props.html ){
+					//这里是添加的扩展处理，让按钮支持使用ToolbarButton生成的html代码
+					uiButtonSet.append(props.html);
+				}else{
+					props = $.isFunction( props ) ?
+						{ click: props, text: name } :
+						props;
+					
+					var button = $( "<button type='button'>" )
+						.attr( props, true )
+						.unbind( "click" )
+						.click(function() {
+							props.click.apply( self.element[0], arguments );
+						})
+						.appendTo( uiButtonSet );
+					if ( $.fn.button ) {
+						button.button();
+					}
+				}
+			});
+			self.uiDialog.addClass( "ui-dialog-buttons" );
+			uiDialogButtonPane.appendTo( self.uiDialog );
+		} else {
+			self.uiDialog.removeClass( "ui-dialog-buttons" );
 		}
 	},
 	
