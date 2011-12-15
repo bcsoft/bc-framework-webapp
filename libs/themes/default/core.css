@@ -51,7 +51,9 @@ body {
  */
 /**修改字体*/
 .bc .ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
-.bc .ui-widget input, .bc .ui-widget select, .bc .ui-widget textarea, .bc .ui-widget button {font-family: "微软雅黑", "宋体", sans-serif;}
+.bc .ui-widget input,.bc .ui-widget select,.bc .ui-widget textarea,.bc .ui-widget button,.bc .ui-widget div.input{
+	font-family: "微软雅黑", "宋体", sans-serif;
+}
 /**修改对话框*/
 .bc-ui-dialog {
 	padding: 0 6px 6px 6px;
