@@ -72,10 +72,10 @@ if(bc.debug){
 var html = '<div style="position:absolute;bottom:5px;left:5px;color:#969696;text-overflow: ellipsis;white-space: nowrap;font-size:12px;">';
 if($.browser.msie){
 	if($.browser.version < 8){//用户浏览器版本太低的处理
-		html += "<div>当前浏览器版本太低，无法正常使用本系统，建议您使用 Chrome 浏览器! <a href='" + bc.root + "/bc/attach/download?puid=chrome14.0.835.186'>内网下载</a>";
+		html += "<div>当前浏览器版本太低，无法正常使用本系统，建议您使用 Chrome 浏览器! <a href='" + bc.root + "/bc/attach/download?puid=chrome15.0.874.121'>内网下载</a>";
 		html += "&nbsp;<a href='http://www.google.com/chrome'>外网下载</a><div>";
 	}else if($.browser.version >=8 && $.browser.version < 9){//IE8升级建议
-		html += "<div>当前浏览器不支持Html5，为了得到更好的用户体验和浏览速度，建议您使用 Chrome 浏览器! <a href='" + bc.root + "/bc/attach/download?puid=chrome14.0.835.186'>内网下载</a>";
+		html += "<div>当前浏览器不支持Html5，为了得到更好的用户体验和浏览速度，建议您使用 Chrome 浏览器! <a href='" + bc.root + "/bc/attach/download?puid=chrome15.0.874.121'>内网下载</a>";
 		html += "&nbsp;<a href='http://www.google.com/chrome'>外网下载</a><div>";
 	}
 }
