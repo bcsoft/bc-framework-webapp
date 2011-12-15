@@ -6,21 +6,21 @@
 	<s:form name="browserForm" theme="simple">
 		<div class="browsersTitle">支持Html5的浏览器：</div>
 		<ul class="browsers ui-widget-content">
-			<li class="browser ui-corner-all ui-state-default" data-puid="chrome14.0.835.186" title="点击下载">
+			<li class="browser ui-corner-all ui-state-default" data-puid="chrome15.0.874.121" title="点击下载">
 				<span class="browser-icon chrome12"></span>
-				<span class="text">(23MB) 谷歌浏览器Chrome14.0</span>
+				<span class="text">(24MB) 谷歌浏览器Chrome15.0</span>
 			</li>
-			<li class="browser ui-corner-all ui-state-default" data-puid="firefox7.0" title="点击下载">
+			<li class="browser ui-corner-all ui-state-default" data-puid="firefox8.0.1" title="点击下载">
 				<span class="browser-icon firefox5"></span>
-				<span class="text">(13MB) 火狐浏览器Firefox7.0</span>
+				<span class="text">(16MB) 火狐浏览器Firefox8.0</span>
 			</li>
 			<li class="browser ui-corner-all ui-state-default" data-puid="safari5.1" title="点击下载">
 				<span class="browser-icon safari5"></span>
 				<span class="text">(36MB) 苹果浏览器Safari5.1</span>
 			</li>
-			<li class="browser ui-corner-all ui-state-default" data-puid="opera11.50" title="点击下载">
+			<li class="browser ui-corner-all ui-state-default" data-puid="opera11.60" title="点击下载">
 				<span class="browser-icon opera11"></span>
-				<span class="text">(10MB) 挪威浏览器Opera11.50</span>
+				<span class="text">(8MB) 挪威浏览器Opera11.60</span>
 			</li>
 			<li class="browser ui-corner-all ui-state-default" data-puid="ie9.0" title="点击下载">
 				<span class="browser-icon ie9"></span>
