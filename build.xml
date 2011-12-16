@@ -87,6 +87,9 @@
 			<fileset dir="${bclibs.dir}">
 				<include name="dialog.js" />
 			</fileset>
+			<fileset dir="${bclibs.dir}">
+				<include name="chat.js" />
+			</fileset>
 		</concat>
 	</target>
 
