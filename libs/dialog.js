@@ -198,23 +198,30 @@ $.extend($.ui.dialog.prototype, {
 				offset: ui.offset
 			};
 		}
+		
+		var parent =  $(options.appendTo);
+		var minTop = options.dragLimit[0];
+		var maxTop = parent.height() - options.dragLimit[2];
+		var minLeft = options.dragLimit[3] - self.uiDialog.width();
+		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
 			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
 			handle: ".ui-dialog-titlebar",
 			containment: self.options.containment,//这里是修改的代码
+			helper: function(e){
+				var w = self.uiDialog.width();
+				var h = self.uiDialog.height();
+				return '<div class="'+self.uiDialog.attr("class")+'" style="background-color:#ccc;width:'+w+'px;height:'+h+'px;z-index:'+($.ui.dialog.maxZ+1)+'"></div>';
+			},
 			start: function( event, ui ) {
+				//self.uiDialog.find(".ui-dialog-content").children().hide();
 				$( this )
 					.addClass( "ui-dialog-dragging" );
 				self._trigger( "dragStart", event, filteredUi( ui ) );
 			},
 			drag: function( event, ui ) {
 				if(!self.options.containment && options.dragLimit){
-					var parent =  $(options.appendTo);
-					var minTop = options.dragLimit[0];
-					var maxTop = parent.height() - options.dragLimit[2];
-					var minLeft = options.dragLimit[3] - self.uiDialog.width();
-					var maxLeft = parent.width() - options.dragLimit[1];
 					//logger.info("parent:" + $.toJSON(parent.position()) + ",w" + parent.width() + ",h" + parent.height());
 					//logger.info("position:" + $.toJSON(ui.position));
 					
@@ -240,6 +247,7 @@ $.extend($.ui.dialog.prototype, {
 					ui.position.left - doc.scrollLeft(),
 					ui.position.top - doc.scrollTop()
 				];
+				self._position(options.position);
 				$( this )
 					.removeClass( "ui-dialog-dragging" );
 				self._trigger( "dragStop", event, filteredUi( ui ) );
