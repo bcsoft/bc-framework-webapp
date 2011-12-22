@@ -1166,6 +1166,12 @@ td.label{
 	_width: 6em;
 }
 
+td.label .little{
+	text-align: left;
+	font-size: 80%;
+	display: inline-block;
+}
+
 td.topLabel{
 	text-align: right;
 	vertical-align: top;
@@ -1183,11 +1189,13 @@ td.value{
 
 td.value input,td.value textarea,td.value div.input{
 	width: 98%;
+	margin: 0;
+	padding: 0;
 }
 td.value div.input{
 	height: 19px;
 	padding: 1px 0;
-	margin: 2px 0;
+	margin: 0;
 	font-weight: normal;
 }
 td.value div.input .link{
@@ -1197,6 +1205,8 @@ td.value div.input .link{
 
 td.value select{
 	width: 99.5%;
+	margin: 0;
+	padding: 0;
 }
 /*
 td.value .ui-icon{
@@ -1226,7 +1236,6 @@ tr.widthMarker{
 	line-height: 1px;
 	font-size: 1px;
 }
-
 /**
  * 桌面主题样式
  *
