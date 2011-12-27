@@ -198,6 +198,12 @@ $.extend($.ui.dialog.prototype, {
 				offset: ui.offset
 			};
 		}
+		
+		var parent =  $(options.appendTo);
+		var minTop = options.dragLimit[0];
+		var maxTop = parent.height() - options.dragLimit[2];
+		var minLeft = options.dragLimit[3] - self.uiDialog.width();
+		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
 			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
