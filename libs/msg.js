@@ -89,7 +89,7 @@ bc.msg = {
     },
     /** 信息提示框：提示框icon=info的简化使用版 */
     info: function(msg, title, onOk){
-    	alert("TODO");
+    	bc.msg.alert(msg, title, onOk, "info");
     },
     /** 信息警告框：提示框icon=warning的简化使用版 */
     warn: function(msg, title, onOk){
