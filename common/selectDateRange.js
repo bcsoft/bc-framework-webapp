@@ -22,4 +22,4 @@ bc.selectDateRangeFrom = {
 		});
 		$page.dialog("close");
 	}
-}
+};
