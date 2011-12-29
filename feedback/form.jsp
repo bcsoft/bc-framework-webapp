@@ -13,7 +13,7 @@
 			<s:textfield name="e.subject" data-validate="required" style="width:99%" cssClass="ui-widget-content"/>
 		</div>
 		<div class="formEditor">
-			<textarea name="e.content" class="bc-editor" data-validate="required"
+			<textarea style="height:200px;" name="e.content" class="bc-editor" data-validate="required"
 				 data-ptype="feedback.editor" data-puid='${e.uid}' 
 				 data-readonly='${e.id != null}' data-tools='simple'>${e.content}</textarea>
 		</div>
