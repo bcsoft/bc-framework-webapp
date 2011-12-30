@@ -24,5 +24,20 @@
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		<s:hidden name="e.modifier.id" />
 		<input type="hidden" name="e.modifiedDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.modifiedDate" />'/>
+		
+		<s:if test="!e.isNew()">
+		<div class="formFields">
+			<s:iterator value="e.replies" var="r">
+			<div class="reply" style="border-bottom:1px solid blue;">
+				<div class="replyHeader">
+					<s:date format="yyyy-MM-dd HH:mm:ss" name="fileDate" /> <s:property value="author.name"/>
+				</div>
+				<div class="replySubject">
+					<s:property value="subject"/>
+				</div>
+			</div>
+			</s:iterator>
+		</div>
+		</s:if>
 	</s:form>
 </div>
