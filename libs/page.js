@@ -99,8 +99,6 @@ bc.page = {
 					}).bind("dialogclose",function(event,ui){
 						var $this = $(this);
 						var status = $dom.data("data-status");
-						//调用回调函数
-						if(option.afterClose) option.afterClose.call($dom[0],status);
 						
 						//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
 						//ie8试过没问题
@@ -114,6 +112,9 @@ bc.page = {
 						$this.dialog("destroy").remove();
 						//删除任务栏对应的dom元素
 						$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+						
+						//调用回调函数
+						if(option.afterClose) option.afterClose.call($dom[0],status);
 					}).attr("data-src",option.url).attr("data-mid",option.mid)
 					.bind("dialogfocus", function(event, ui) {
 						//logger.debug("dialogfocus");

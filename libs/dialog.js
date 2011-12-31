@@ -25,7 +25,7 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 
 $.extend($.ui.dialog.prototype.options, {
 	appendTo: "body",
-	dragLimit: [0,80,30,20]//上,右,下,左
+	dragLimit: [0,80,35,40]//上,右,下,左
 });
 $.extend($.ui.dialog.prototype.options.position, {
 	// 修改为避免对话框顶部超出容器的top或left
@@ -198,25 +198,39 @@ $.extend($.ui.dialog.prototype, {
 				offset: ui.offset
 			};
 		}
+		
+		var parent =  $(options.appendTo);
+		var minTop = options.dragLimit[0];
+		var maxTop = parent.height() - options.dragLimit[2];
+		var minLeft = options.dragLimit[3] - self.uiDialog.width();
+		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
 			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
 			handle: ".ui-dialog-titlebar",
 			containment: self.options.containment,//这里是修改的代码
+			helper: function(e){
+				//性能优化添加的代码：使用马甲代替窗口的动态移动
+				var w = self.uiDialog.width();
+				var h = self.uiDialog.height();
+				return '<div class="'+self.uiDialog.attr("class")+'" style="background:none;'
+					+"border-style:dotted;border-width:3px;border-radius:0;box-shadow:none;"
+					+"width:"+w+'px;height:'+h+'px;z-index:'+($.ui.dialog.maxZ+1)+'"></div>';
+			},
 			start: function( event, ui ) {
-				$( this )
-					.addClass( "ui-dialog-dragging" );
+				$( this ).addClass( "ui-dialog-dragging" );
 				self._trigger( "dragStart", event, filteredUi( ui ) );
 			},
 			drag: function( event, ui ) {
 				if(!self.options.containment && options.dragLimit){
+					//logger.info("parent:" + $.toJSON(parent.position()) + ",w" + parent.width() + ",h" + parent.height());
+					//logger.info("position:" + $.toJSON(ui.position));
+					
 					var parent =  $(options.appendTo);
 					var minTop = options.dragLimit[0];
 					var maxTop = parent.height() - options.dragLimit[2];
 					var minLeft = options.dragLimit[3] - self.uiDialog.width();
 					var maxLeft = parent.width() - options.dragLimit[1];
-					//logger.info("parent:" + $.toJSON(parent.position()) + ",w" + parent.width() + ",h" + parent.height());
-					//logger.info("position:" + $.toJSON(ui.position));
 					
 					//控制top
 					if(ui.position.top > maxTop){
@@ -240,6 +254,10 @@ $.extend($.ui.dialog.prototype, {
 					ui.position.left - doc.scrollLeft(),
 					ui.position.top - doc.scrollTop()
 				];
+				
+				//性能优化添加的代码：根据马甲的位置重新定位窗口的位置
+				self.uiDialog.css({left:options.position[0],top:options.position[1]});
+				
 				$( this )
 					.removeClass( "ui-dialog-dragging" );
 				self._trigger( "dragStop", event, filteredUi( ui ) );

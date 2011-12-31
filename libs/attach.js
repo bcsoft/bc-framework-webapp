@@ -30,7 +30,7 @@ bc.attach={
 	downloadAll: function(attachsEl,callback){
 		var $attachs = $(attachsEl);
 		if($attachs.find(".attach").size()){
-			window.open(bc.root + "/bc/attach/downloadAll?ptype=" + $attachs.attr("data-ptype"), "blank");
+			window.open(bc.root + "/bc/attach/downloadAll?ptype=" + $attachs.attr("data-ptype") + "&puid=" + $attachs.attr("data-puid"), "blank");
 		}else{
 			bc.msg.slide("当前没有可下载的附件！");
 		}
