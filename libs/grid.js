@@ -183,7 +183,7 @@ bc.grid = {
 				data = $.extend(data, extras);
 			}
 		}
-		
+
 		//附加排序参数
 		var $sortColumn = $page.find(".bc-grid .header .table td.sortable.asc,.bc-grid .header .table td.sortable.desc");
 		if($sortColumn.size()){
@@ -210,6 +210,9 @@ bc.grid = {
 			if(searchText && searchText.length > 0)data.search = searchText;
 		}
 		
+		//记住原来的水平滚动参数
+		var oldScrollLeft = $page.find(".data .right").scrollLeft();
+		
 		//重新加载数据
 		bc.ajax({
 			url : url, data: data,
@@ -220,6 +223,12 @@ bc.grid = {
 				$data.empty().replaceWith(html);//整个data更换
 				$data = $page.find(".bc-grid .data");//重新获取data对象
 				bc.grid.init($page);
+				
+				//恢复水平滚动参数
+				if(oldScrollLeft > 0){
+					logger.info("scroll4Left...");
+					$data.find(".right").scrollLeft(oldScrollLeft);
+				}
 				
 				//如果总页数变了，就更新一下
 				var newPageCount = $data.attr("data-pageCount");
