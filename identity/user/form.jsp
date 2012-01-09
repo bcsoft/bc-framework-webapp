@@ -51,7 +51,7 @@
 				<td class="value"><s:textfield name="e.email" data-validate='{"type":"email","required":false}' cssClass="ui-widget-content"/></td>
 			</tr>
 			<tr>
-				<td class="label">*<s:text name="user.workDate"/>:</td>
+				<td class="label"><s:text name="user.workDate"/>:</td>
 				<td class="value relative"><input type="text" name="e.detail.workDate" data-validate="date"
 					class="bc-date ui-widget-content" value='<s:date format="yyyy-MM-dd" name="e.detail.workDate" />'/>
 					<ul class="inputIcons">
