@@ -28,7 +28,7 @@ bc.validator = {
 	 */
 	validate: function($form) {
 		var ok = true;
-		$form.find(":input:enabled:not(input[type='hidden']):not(:button)")
+		$form.find(":input:enabled:not(input[type='hidden']):not(:button):not(textarea.bc-editor)")
 		.each(function(i, n){
 			var validate = $(this).attr("data-validate");
 			if(logger.debugEnabled)
