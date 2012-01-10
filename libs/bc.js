@@ -2448,34 +2448,34 @@ bc.boxPointer = {
 		var boxPointer = $(bc.boxPointer.TPL).appendTo("body").attr("id","boxPointer"+id);
 		
 		//添加关闭按钮
-		if(option.close == "click" || option.close == "auto"){
-			boxPointer.append('<a href="#" class="close ui-state-default ui-corner-all"><span class="ui-icon ui-icon-closethick"></span></a>')
-			.find("a.close")
-			.click(function(){
-				$(this).parent().unbind().remove();
-				return false;
-			}).hover(
-			  function () {
-			    $(this).addClass("ui-state-hover");
-			  },
-			  function () {
-			    $(this).removeClass("ui-state-hover");
-			  }
-			);
-		}
+		boxPointer.append('<a href="#" class="close ui-state-default ui-corner-all"><span class="ui-icon ui-icon-closethick"></span></a>')
+		.find("a.close")
+		.click(function(){
+			$(this).parent().unbind().remove();
+			return false;
+		}).hover(
+		  function () {
+		    $(this).addClass("ui-state-hover");
+		  },
+		  function () {
+		    $(this).removeClass("ui-state-hover");
+		  }
+		);
 
-		if(option.close == "auto")
-			option.close = 5000;
-		
-		//自动关闭
-		setTimeout(function(){
-			boxPointer.unbind().hide("fast",function(){
-				//移除之前记录到dom中的bpid
-				target.removeData("bpid");
-				//彻底删除元素
-				boxPointer.remove();
-			});
-		},option.close);
+		if(option.close != "click" ){//自动关闭的配置
+			if(option.close == "auto")
+				option.close = 5000;
+			
+			//自动关闭
+			setTimeout(function(){
+				boxPointer.unbind().hide("fast",function(){
+					//移除之前记录到dom中的bpid
+					target.removeData("bpid");
+					//彻底删除元素
+					boxPointer.remove();
+				});
+			},option.close);
+		}
 		
 		//添加内容
 		var content = boxPointer.find(".content");
