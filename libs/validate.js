@@ -28,7 +28,7 @@ bc.validator = {
 	 */
 	validate: function($form) {
 		var ok = true;
-		$form.find(":input:enabled:not(:hidden):not(:button)")
+		$form.find(":input:enabled:not(input[type='hidden']):not(:button)")
 		.each(function(i, n){
 			var validate = $(this).attr("data-validate");
 			if(logger.debugEnabled)
@@ -170,6 +170,31 @@ bc.validator = {
 	 * @validateType 验证的类型
 	 */
 	remind: function(element,validateType,args){
+		var $el = $(element);
+		//alert(element.name);
+		//滚动元素到可视区域
+		var $scrollContainer = $el.closest("div.content,div.bc-page");
+		var pOffset = $scrollContainer.offset();
+		var myOffset = $el.offset();
+		if(logger.infoEnabled){
+			logger.info("offset1=" + $.toJSON(pOffset));
+			logger.info("scrollTop1=" + $scrollContainer.scrollTop());
+			logger.info("offset2=" + $.toJSON(myOffset));
+			logger.info("scrollTop2=" + $el.scrollTop());
+		}
+		if(myOffset.top < pOffset.top){//顶部超出可视范围就将其滚出来
+			logger.info("scroll4Top...");
+			$scrollContainer.scrollTop($scrollContainer.scrollTop() - pOffset.top + myOffset.top - 5);
+		}else{
+			var pHeight = $scrollContainer.height();
+			var myHeight = $el.height();
+			var d = myOffset.top + myHeight - (pOffset.top + pHeight);
+			if(d > 0){//底部超出可视范围就将其滚出来
+				logger.info("scroll4Bottom...");
+				$scrollContainer.scrollTop($scrollContainer.scrollTop() + d + 5);
+			}
+		}
+		
 		var msg = bc.validator.messages[validateType];
 		if($.isArray(args))
 			msg = msg.format.apply(msg,args);

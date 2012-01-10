@@ -323,7 +323,7 @@ bc.msg = {
     },
     /** 信息提示框：提示框icon=info的简化使用版 */
     info: function(msg, title, onOk){
-    	alert("TODO");
+    	bc.msg.alert(msg, title, onOk, "info");
     },
     /** 信息警告框：提示框icon=warning的简化使用版 */
     warn: function(msg, title, onOk){
@@ -405,7 +405,7 @@ bc.validator = {
 	 */
 	validate: function($form) {
 		var ok = true;
-		$form.find(":input:enabled:not(:hidden):not(:button)")
+		$form.find(":input:enabled:not(input[type='hidden']):not(:button)")
 		.each(function(i, n){
 			var validate = $(this).attr("data-validate");
 			if(logger.debugEnabled)
@@ -547,6 +547,31 @@ bc.validator = {
 	 * @validateType 验证的类型
 	 */
 	remind: function(element,validateType,args){
+		var $el = $(element);
+		//alert(element.name);
+		//滚动元素到可视区域
+		var $scrollContainer = $el.closest("div.content,div.bc-page");
+		var pOffset = $scrollContainer.offset();
+		var myOffset = $el.offset();
+		if(logger.infoEnabled){
+			logger.info("offset1=" + $.toJSON(pOffset));
+			logger.info("scrollTop1=" + $scrollContainer.scrollTop());
+			logger.info("offset2=" + $.toJSON(myOffset));
+			logger.info("scrollTop2=" + $el.scrollTop());
+		}
+		if(myOffset.top < pOffset.top){//顶部超出可视范围就将其滚出来
+			logger.info("scroll4Top...");
+			$scrollContainer.scrollTop($scrollContainer.scrollTop() - pOffset.top + myOffset.top - 5);
+		}else{
+			var pHeight = $scrollContainer.height();
+			var myHeight = $el.height();
+			var d = myOffset.top + myHeight - (pOffset.top + pHeight);
+			if(d > 0){//底部超出可视范围就将其滚出来
+				logger.info("scroll4Bottom...");
+				$scrollContainer.scrollTop($scrollContainer.scrollTop() + d + 5);
+			}
+		}
+		
 		var msg = bc.validator.messages[validateType];
 		if($.isArray(args))
 			msg = msg.format.apply(msg,args);
@@ -669,8 +694,6 @@ bc.page = {
 					}).bind("dialogclose",function(event,ui){
 						var $this = $(this);
 						var status = $dom.data("data-status");
-						//调用回调函数
-						if(option.afterClose) option.afterClose.call($dom[0],status);
 						
 						//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
 						//ie8试过没问题
@@ -684,6 +707,9 @@ bc.page = {
 						$this.dialog("destroy").remove();
 						//删除任务栏对应的dom元素
 						$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+						
+						//调用回调函数
+						if(option.afterClose) option.afterClose.call($dom[0],status);
 					}).attr("data-src",option.url).attr("data-mid",option.mid)
 					.bind("dialogfocus", function(event, ui) {
 						//logger.debug("dialogfocus");
@@ -1734,7 +1760,7 @@ bc.grid = {
 				data = $.extend(data, extras);
 			}
 		}
-		
+
 		//附加排序参数
 		var $sortColumn = $page.find(".bc-grid .header .table td.sortable.asc,.bc-grid .header .table td.sortable.desc");
 		if($sortColumn.size()){
@@ -1761,6 +1787,9 @@ bc.grid = {
 			if(searchText && searchText.length > 0)data.search = searchText;
 		}
 		
+		//记住原来的水平滚动参数
+		var oldScrollLeft = $page.find(".data .right").scrollLeft();
+		
 		//重新加载数据
 		bc.ajax({
 			url : url, data: data,
@@ -1771,6 +1800,12 @@ bc.grid = {
 				$data.empty().replaceWith(html);//整个data更换
 				$data = $page.find(".bc-grid .data");//重新获取data对象
 				bc.grid.init($page);
+				
+				//恢复水平滚动参数
+				if(oldScrollLeft > 0){
+					logger.info("scroll4Left...");
+					$data.find(".right").scrollLeft(oldScrollLeft);
+				}
 				
 				//如果总页数变了，就更新一下
 				var newPageCount = $data.attr("data-pageCount");
@@ -2413,7 +2448,7 @@ bc.boxPointer = {
 		var boxPointer = $(bc.boxPointer.TPL).appendTo("body").attr("id","boxPointer"+id);
 		
 		//添加关闭按钮
-		if(option.close == "click"){
+		if(option.close == "click" || option.close == "auto"){
 			boxPointer.append('<a href="#" class="close ui-state-default ui-corner-all"><span class="ui-icon ui-icon-closethick"></span></a>')
 			.find("a.close")
 			.click(function(){
@@ -2427,20 +2462,20 @@ bc.boxPointer = {
 			    $(this).removeClass("ui-state-hover");
 			  }
 			);
-		}else{
-			if(option.close == "auto")
-				option.close = 5000;
-			
-			//自动关闭
-			setTimeout(function(){
-				boxPointer.unbind().hide("fast",function(){
-					//移除之前记录到dom中的bpid
-					target.removeData("bpid");
-					//彻底删除元素
-					boxPointer.remove();
-				});
-			},option.close);
 		}
+
+		if(option.close == "auto")
+			option.close = 5000;
+		
+		//自动关闭
+		setTimeout(function(){
+			boxPointer.unbind().hide("fast",function(){
+				//移除之前记录到dom中的bpid
+				target.removeData("bpid");
+				//彻底删除元素
+				boxPointer.remove();
+			});
+		},option.close);
 		
 		//添加内容
 		var content = boxPointer.find(".content");
@@ -2832,7 +2867,7 @@ bc.attach={
 	downloadAll: function(attachsEl,callback){
 		var $attachs = $(attachsEl);
 		if($attachs.find(".attach").size()){
-			window.open(bc.root + "/bc/attach/downloadAll?ptype=" + $attachs.attr("data-ptype"), "blank");
+			window.open(bc.root + "/bc/attach/downloadAll?ptype=" + $attachs.attr("data-ptype") + "&puid=" + $attachs.attr("data-puid"), "blank");
 		}else{
 			bc.msg.slide("当前没有可下载的附件！");
 		}
@@ -4502,6 +4537,12 @@ $.extend($.ui.dialog.prototype, {
 				offset: ui.offset
 			};
 		}
+		
+		var parent =  $(options.appendTo);
+		var minTop = options.dragLimit[0];
+		var maxTop = parent.height() - options.dragLimit[2];
+		var minLeft = options.dragLimit[3] - self.uiDialog.width();
+		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
 			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
