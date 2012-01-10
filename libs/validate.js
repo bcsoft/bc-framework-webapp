@@ -15,7 +15,7 @@ bc.validator = {
 	 * 4) email 电子邮件 xx@xx.com
 	 * 5) url 网址 TODO
 	 * 6) date 日期 yyyy-MM-dd
-	 * 7) datetime 日期时间 yyyy-MM-dd HH:mm[:ss]
+	 * 7) datetime 日期时间 yyyy-MM-dd HH:mm:ss
 	 * 8) time 时间 HH:mm[:ss]
 	 * 9) phone 电话号码
 	 * min的值控制数字的最小值
@@ -28,7 +28,8 @@ bc.validator = {
 	 */
 	validate: function($form) {
 		var ok = true;
-		$form.find(":input:enabled:not(input[type='hidden']):not(:button)")
+		$form.find("div.input[data-validate],:input:enabled:not(input[type='hidden']):not(:button):not(textarea.bc-editor)")
+		//添加内部特殊的div模拟input控件的验证
 		.each(function(i, n){
 			var validate = $(this).attr("data-validate");
 			if(logger.debugEnabled)
@@ -105,6 +106,15 @@ bc.validator = {
 				// could be an array for select-multiple or a string, both are fine this way
 				var val = $(element).val();
 				return val && val.length > 0;
+			case 'div':
+				// 添加内部特殊的div模拟input控件的验证
+				$el = $(element);
+				if($el.is("div.input[data-validate]")){
+					var t = $el.text()
+					return t && $.trim(t).length > 0;
+				}else{
+					return false;
+				}
 			case 'input':
 				if(/radio|checkbox/i.test(element.type)){//多选和单选框
 					return $form.find("input:checked[name='" + element.name + "']").length > 0;
@@ -157,7 +167,7 @@ bc.validator = {
 		},
 		/**yyyy-MM-dd HH:mm[:ss]格式的日期和时间*/
 		datetime: function(element) {
-			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1])) \d{1,2}:(\d{1,2}|(d{1,2}:\d{1,2}))$/.test(element.value);
+			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1])) \d{1,2}:\d{1,2}:\d{1,2}$/.test(element.value);
 		},
 		/**HH:mm[:ss]格式的时间*/
 		time: function(element) {

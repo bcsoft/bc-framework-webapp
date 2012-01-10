@@ -286,6 +286,21 @@
 			//通过ajax加载页签的内容
 			$.get(url,function(html){
 				$content.empty().append(html);
+				
+				// 设置内部页签的一些属性参数:与 bc.page.newWin的处理一致
+				var $tabBCPage = $content.children("div.bc-page");
+				if($tabBCPage.size() > 0){
+					$tabBCPage.attr("data-src",url);
+					
+					// 获取父页面的data-mid
+					var pmid = $content.closest("div.bc-page").attr("data-mid");
+					if(!pmid){
+						pmid = new Date();
+					}
+					logger.info("pmid=" + pmid);
+					$tabBCPage.attr("data-mid",pmid + ".tab" + index);
+				}
+				
 				//抛出加载完毕事件
 				_this._trigger("load",null,{content:$content,tab:$tab});
 				//_this._showTab($tab,$content);

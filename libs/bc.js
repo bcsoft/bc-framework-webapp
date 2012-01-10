@@ -405,7 +405,7 @@ bc.validator = {
 	 */
 	validate: function($form) {
 		var ok = true;
-		$form.find(":input:enabled:not(input[type='hidden']):not(:button)")
+		$form.find(":input:enabled:not(input[type='hidden']):not(:button):not(textarea.bc-editor)")
 		.each(function(i, n){
 			var validate = $(this).attr("data-validate");
 			if(logger.debugEnabled)
@@ -2448,34 +2448,34 @@ bc.boxPointer = {
 		var boxPointer = $(bc.boxPointer.TPL).appendTo("body").attr("id","boxPointer"+id);
 		
 		//添加关闭按钮
-		if(option.close == "click" || option.close == "auto"){
-			boxPointer.append('<a href="#" class="close ui-state-default ui-corner-all"><span class="ui-icon ui-icon-closethick"></span></a>')
-			.find("a.close")
-			.click(function(){
-				$(this).parent().unbind().remove();
-				return false;
-			}).hover(
-			  function () {
-			    $(this).addClass("ui-state-hover");
-			  },
-			  function () {
-			    $(this).removeClass("ui-state-hover");
-			  }
-			);
-		}
+		boxPointer.append('<a href="#" class="close ui-state-default ui-corner-all"><span class="ui-icon ui-icon-closethick"></span></a>')
+		.find("a.close")
+		.click(function(){
+			$(this).parent().unbind().remove();
+			return false;
+		}).hover(
+		  function () {
+		    $(this).addClass("ui-state-hover");
+		  },
+		  function () {
+		    $(this).removeClass("ui-state-hover");
+		  }
+		);
 
-		if(option.close == "auto")
-			option.close = 5000;
-		
-		//自动关闭
-		setTimeout(function(){
-			boxPointer.unbind().hide("fast",function(){
-				//移除之前记录到dom中的bpid
-				target.removeData("bpid");
-				//彻底删除元素
-				boxPointer.remove();
-			});
-		},option.close);
+		if(option.close != "click" ){//自动关闭的配置
+			if(option.close == "auto")
+				option.close = 5000;
+			
+			//自动关闭
+			setTimeout(function(){
+				boxPointer.unbind().hide("fast",function(){
+					//移除之前记录到dom中的bpid
+					target.removeData("bpid");
+					//彻底删除元素
+					boxPointer.remove();
+				});
+			},option.close);
+		}
 		
 		//添加内容
 		var content = boxPointer.find(".content");
@@ -4228,6 +4228,21 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			//通过ajax加载页签的内容
 			$.get(url,function(html){
 				$content.empty().append(html);
+				
+				// 设置内部页签的一些属性参数:与 bc.page.newWin的处理一致
+				var $tabBCPage = $content.children("div.bc-page");
+				if($tabBCPage.size() > 0){
+					$tabBCPage.attr("data-src",url);
+					
+					// 获取父页面的data-mid
+					var pmid = $content.closest("div.bc-page").attr("data-mid");
+					if(!pmid){
+						pmid = new Date();
+					}
+					logger.info("pmid=" + pmid);
+					$tabBCPage.attr("data-mid",pmid + ".tab" + index);
+				}
+				
 				//抛出加载完毕事件
 				_this._trigger("load",null,{content:$content,tab:$tab});
 				//_this._showTab($tab,$content);
