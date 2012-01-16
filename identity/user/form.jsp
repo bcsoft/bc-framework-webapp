@@ -45,8 +45,8 @@
 				<td class="value"><s:textfield name="e.phone" data-validate='{"type":"phone","required":false}' cssClass="ui-widget-content"/></td>
 			</tr>
 			<tr>
-				<td class="label">*<s:text name="user.card"/>:</td>
-				<td class="value"><s:textfield name="e.detail.card" data-validate="required" cssClass="ui-widget-content"/></td>
+				<td class="label"><s:text name="user.card"/>:</td>
+				<td class="value"><s:textfield name="e.detail.card" cssClass="ui-widget-content"/></td>
 				<td class="label"><s:text name="label.email"/>:</td>
 				<td class="value"><s:textfield name="e.email" data-validate='{"type":"email","required":false}' cssClass="ui-widget-content"/></td>
 			</tr>
