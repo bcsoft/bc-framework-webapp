@@ -22,7 +22,7 @@ bc.msg = {
      * @param {String} icon [可选]显示的图标类型：error,question,info,warning，默认不显示图标
      */
     alert: function(msg, title, onOk, icon){
-    	$('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (msg || 'no message.') + '</div>').dialog({
+    	return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (msg || 'no message.') + '</div>').dialog({
 			modal: true, title: title || bc.msg.DEFAULT_TITLE
 		}).bind("dialogclose",function(event,ui){
 			$(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
@@ -37,7 +37,7 @@ bc.msg = {
      * @param {String} title [可选]标题,默认为OZ.Messager.DEFAULT_TITLE
      */
     confirm: function(msg, onOk, onCancel, title){
-    	$('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (msg || 'no message.') + '</div>').dialog({
+    	return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (msg || 'no message.') + '</div>').dialog({
 			modal: true, title: title || bc.msg.DEFAULT_TITLE,
 			buttons:[
 			    {
@@ -76,7 +76,7 @@ bc.msg = {
      * @param {Boolean} showIcon [可选]是否显示图标，默认为false(不显示)
      */
     prompt: function(msg, onOk, onCancel, value, multiline, title, isPassword, showIcon){
-    	$.messager.prompt(title||OZ.Messager.DEFAULT_TITLE, msg, 
+    	return $.messager.prompt(title||OZ.Messager.DEFAULT_TITLE, msg, 
     		function(value,isOk,oldValue){
 	    		if (isOk){
 	    			if(typeof onOk == "function") onOk.call(this,value,oldValue);
@@ -89,7 +89,7 @@ bc.msg = {
     },
     /** 信息提示框：提示框icon=info的简化使用版 */
     info: function(msg, title, onOk){
-    	bc.msg.alert(msg, title, onOk, "info");
+    	return bc.msg.alert(msg, title, onOk, "info");
     },
     /** 信息警告框：提示框icon=warning的简化使用版 */
     warn: function(msg, title, onOk){
