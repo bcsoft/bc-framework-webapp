@@ -93,4 +93,16 @@ if($.browser.msie && $.browser.version < 8){//用户浏览器版本太低的处�
 	alert("浏览器版本太低，无法正常使用本系统，建议您使用 Chrome 浏览器， 试试左下角的“下载”按钮吧！如果您使用的是双核浏览器，请切换到高速模式使用！");
 }
 
+/** 查看系统变更日志 */
+var clWin;
+$("#version").click(function(){
+	if(!clWin){
+		clWin = window.open(bc.root + "/changelog/changelog.html","_blank");
+	}else{
+		clWin.document.location.reload(true);
+		clWin.focus();
+	}
+	return false;
+});
+
 });
