@@ -15,6 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/desktop.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/shortcuts.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.export.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/form.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/boxPointer.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/attach.css' ><s:param name='ts' value='ts'/></s:url>" />

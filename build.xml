@@ -115,6 +115,9 @@
 					<include name="grid.css" />
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
+					<include name="grid.export.css" />
+				</fileset>
+				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="form.css" />
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
