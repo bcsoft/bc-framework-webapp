@@ -33,10 +33,10 @@
 		<s:property value="startMenu" escapeHtml="false"/>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td class="topIcon" title="邮箱" id="bcmail">
+				<!-- <td class="topIcon" title="邮箱" id="bcmail">
 					<a class="icon i0004">&nbsp;</a>
 					<span class="number ui-state-highlight">8</span>
-				</td>
+				</td> -->
 				<s:if test='%{getText("app.bcq") == "true"}'>
 				<td class="topIcon" title="聊天" id="bcq"><a class="icon i0003">&nbsp;</a></td>
 				</s:if>
