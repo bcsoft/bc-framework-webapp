@@ -202,8 +202,22 @@
 			});
 
 			// 帮助
+			var clWin;
 			$top.find("#bchelp,#bcmail").click(function() {
-				alert(bc.title);
+				var $helpDlg = bc.msg.info('点击 <a href="#" id="clClick">这里</a> 查看系统更新日志！',bc.title);
+				$helpDlg.find("#clClick").click(function(){
+					//打开查看更新日志的窗口
+					if(!clWin){
+						clWin = window.open(bc.root + "/changelog/changelog.html","_blank");
+					}else{
+						clWin.document.location.reload(true);
+						clWin.focus();
+					}
+					
+					//关闭对话框
+					$helpDlg.dialog("close");
+					return false;
+				});
 				return false;
 			});
 
