@@ -145,15 +145,25 @@ body {
 	top: 0.4em;
 	right: 0.4em;
 }
-.bc-searchButton a{
+.bc-searchButton a#searchBtn{
 	position: absolute;
 	top: 50%;
 	margin-top: -8px;
 	left: 0.12em;
 }
-.bc-searchButton input{
+.bc-searchButton input#searchText{
 	padding-left: 1.4em;
 	width: 180px;
+}
+.bc-searchButton.advance input#searchText{
+	padding-right: 1.4em;
+	width: 162px;
+}
+.bc-searchButton a#advanceSearchBtn{
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+	right: 0.12em;
 }
 .w60{width: 60px;}
 .w80{width: 80px;}
