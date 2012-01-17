@@ -18,6 +18,7 @@ bc.validator = {
 	 * 7) datetime 日期时间 yyyy-MM-dd HH:mm:ss
 	 * 8) time 时间 HH:mm[:ss]
 	 * 9) phone 电话号码
+	 * 10) money 金额
 	 * min的值控制数字的最小值
 	 * max的值控制数字的最大值
 	 * minLen的值控制字符串的最小长度(中文按两个字符长度计算)
@@ -172,6 +173,10 @@ bc.validator = {
 		/**HH:mm[:ss]格式的时间*/
 		time: function(element) {
 			return /^\d{1,2}:(\d{1,2}|(d{1,2}:\d{1,2}))$/.test(element.value);
+		},
+		/** 金额：1,111,111,111.00 */
+		money: function(element) {
+			return /^-?(?:\d*|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(element.value);
 		}
 	},
 	/**
@@ -213,6 +218,7 @@ bc.validator = {
 	messages:{
 		required:"这里必须填写哦！",
 		number: "这里必须填写数字哦！<br>如 12、1.2。",
+		money: "这里必须填写金额哦！<br>如 123,456,789.00、12,345。",
 		digits: "这里必须填写整数哦！<br>如 12。",
 		email: "请输入正确格式的电子邮件！<br>如 bc@163.com。",
 		phone: "请输入正确格式的电话号码！<br>如 13011112222、88887777、88887777-800、020-88887777-800。",
