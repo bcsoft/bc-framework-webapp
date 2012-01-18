@@ -108,6 +108,7 @@ $document.delegate(".bc-toolbar #searchText","keyup", function(e) {
 		});
 	}
 });
+//右侧的搜索框处理：点击左侧的简单搜索按钮
 $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 	var $this = $(this);
 	var $page = $this.parents(".bc-page");
@@ -118,6 +119,44 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 		click: $search.attr("data-click")//自定义的函数
 	});
 	
+	return false;
+});
+//右侧的搜索框处理：点击右侧的高级搜索按钮
+$document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
+	var $this = $(this);
+	if($this.attr("data-menuInit") != "true"){//初始化下拉菜单
+		logger.info("data-menuInit!=true");
+		
+		//将菜单的dom迁移到指定的容器
+		var $contextmenu = $this.next(".bc-advanceSearchPopup");
+		var menucontainer = $this.attr("data-menucontainer") || ".bc-searchButton";
+		if(menucontainer && menucontainer.length > 0){
+			$contextmenu.appendTo($this.closest(menucontainer));//添加到指定的容器
+		}else{
+			//$contextmenu.appendTo($this.parent());//添加到父容器
+		}
+		
+		//设置菜单的最小宽度为按钮的当前宽度
+		$contextmenu.css("min-width", $this.parent().width() + "px");
+		
+		//获取回调函数
+		var change = $this.attr("data-change");
+		if(change){
+			change = bc.getNested(change);//将函数名称转换为函数
+			if(typeof change != "function"){
+				alert("没有定义函数: " + $this.attr("data-change"));
+			}
+		}
+		
+		//绑定点击按钮就显示下拉菜单
+		$contextmenu.popup({
+			trigger: $this,
+			position: {my: "right top",at: "right bottom",of: $this.prev(),offset:"0 -1"}
+		}).popup("open");
+		
+		//标记已初始化
+		$this.attr("data-menuInit","true");
+	}
 	return false;
 });
 
@@ -198,8 +237,7 @@ $document.delegate(".bc-radioGroup>.ui-button",{
 	}
 });
 
-
-//工具条的单选按钮组
+//工具条的带下拉菜单按钮
 $document.delegate(".bc-button.bc-menuButton",{
 	click: function() {
 		var $this = $(this);
