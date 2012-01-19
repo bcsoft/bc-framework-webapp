@@ -45,7 +45,7 @@ bc.grid.export2Excel = function($grid,el) {
 	var maxh = 12;											// 控制1列最多输出的条目数
 	var totalCount = columns.size();						// 总条目数
 	var splitCount,headerCount;
-	if(headerCount <= 12 ){
+	if(headerCount <= maxh ){
 		splitCount = 1;
 		headerCount = totalCount;
 	}else{
@@ -85,6 +85,7 @@ bc.grid.export2Excel = function($grid,el) {
 		of:el,dir:"top",close:"click",
 		offset:"-8 -4",
 		iconClass:null,
+		appendTo: $grid.closest(".ui-dialog"),
 		content:html
 	});
 	
