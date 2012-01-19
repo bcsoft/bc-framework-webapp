@@ -25,39 +25,7 @@ bc.form = {
 		
 		if(!readonly){
 			//绑定日期选择
-			$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]')
-			.each(function bindSelectCalendar(){
-				var $this = $(this);
-				var cfg = $this.attr("data-cfg");
-				if(cfg && cfg.length > 0){
-					cfg = eval("(" + cfg + ")");
-				}else{
-					cfg = {};
-				}
-				if(typeof cfg.onSelect == "string"){
-					var fn = bc.getNested(cfg.onSelect);
-					if(typeof fn != "function"){
-						alert('函数“' + cfg.onSelect + '”没有定义！');
-						return false;
-					}
-					cfg.onSelect = fn;
-				}
-				cfg = jQuery.extend({
-					//showWeek: true,//显示第几周
-					//showButtonPanel: true,//显示今天按钮、
-					showOtherMonths: true,
-					selectOtherMonths: true,
-					firstDay: 7,
-					dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
-				},cfg);
-				
-				if($this.hasClass('bc-date'))
-					$this.datepicker(cfg);
-				else if($this.hasClass('bc-datetime'))
-					$this.datetimepicker(cfg);
-				else
-					$this.timepicker(cfg);
-			});
+			bc.form.initCalendarSelect($form);
 			
 			//绑定flash上传附件
 			$form.find(".attachs.flashUpload").has(":file.uploadFile").each(function(){
@@ -73,6 +41,45 @@ bc.form = {
 				$(this).hide();
 			});
 		}
+	},
+	
+	/** 初始化日期、时间控件的事件绑定
+	 */
+	initCalendarSelect : function($form) {
+		$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]')
+		.filter(":not('.custom')")
+		.each(function bindSelectCalendar(){
+			var $this = $(this);
+			var cfg = $this.attr("data-cfg");
+			if(cfg && cfg.length > 0){
+				cfg = eval("(" + cfg + ")");
+			}else{
+				cfg = {};
+			}
+			if(typeof cfg.onSelect == "string"){
+				var fn = bc.getNested(cfg.onSelect);
+				if(typeof fn != "function"){
+					alert('函数“' + cfg.onSelect + '”没有定义！');
+					return false;
+				}
+				cfg.onSelect = fn;
+			}
+			cfg = jQuery.extend({
+				//showWeek: true,//显示第几周
+				//showButtonPanel: true,//显示今天按钮、
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				firstDay: 7,
+				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
+			},cfg);
+			
+			if($this.hasClass('bc-date'))
+				$this.datepicker(cfg);
+			else if($this.hasClass('bc-datetime'))
+				$this.datetimepicker(cfg);
+			else
+				$this.timepicker(cfg);
+		});
 	}
 };
 
@@ -91,17 +98,20 @@ $document.delegate(".clearSelect",{
 	click: function() {
 		var $this = $(this);
 		var cfg = $this.data("cfg");
+		if(logger.debugEnabled)logger.debug("cfg=" + $.toJSON(cfg));
 		if(!cfg){
-			alert("没有配置dom元素data-cfg属性的值，无法处理！");
-			return;
-		}
-		logger.info("cfg=" + $.toJSON(cfg));
-		var cfgs = cfg.split(",");
-		var c;
-		var $form = $this.closest("form");
-		for(var i=0;i<cfgs.length;i++){
-			c = cfgs[i].split("=");
-			$form.find(":input[name='" + c[0] + "']").val(c.length > 1 ? c[1] : "");
+			// 自动查找临近的元素
+			$this.parent("ul.inputIcons").siblings("input[type='text'],input[type='hidden']").val("");
+			
+			//alert("没有配置dom元素data-cfg属性的值，无法处理！");
+		}else{
+			var cfgs = cfg.split(",");
+			var c;
+			var $form = $this.closest("form");
+			for(var i=0;i<cfgs.length;i++){
+				c = cfgs[i].split("=");
+				$form.find(":input[name='" + c[0] + "']").val(c.length > 1 ? c[1] : "");
+			}
 		}
 	}
 });
@@ -110,14 +120,19 @@ $document.delegate(".selectCalendar",{
 	click: function() {
 		var $this = $(this);
 		var fieldName = $this.attr("data-cfg");
+		if(logger.debugEnabled)logger.debug("fieldName=" + fieldName);
+		var $calendarField;
 		if(!fieldName){
-			alert("没有配置dom元素data-cfg属性的值，无法处理！");
-			return;
+			// 自动查找临近的元素
+			$calendarField = $this.parent("ul.inputIcons").siblings("input[type='text']");
+			
+			//alert("没有配置dom元素data-cfg属性的值，无法处理！");
+		}else{
+			var f = "[name='" + fieldName + "']";
+			$calendarField = $this.closest("form").find("input.bc-date" + f + "," + "input.bc-datetime" + f + "," + "input.bc-time" + f);
 		}
-		logger.info("fieldName=" + fieldName);
-		var f = "[name='" + fieldName + "']";
-		var $calendarField = $this.closest("form").find("input.bc-date" + f + "," + "input.bc-datetime" + f + "," + "input.bc-time" + f)
-		.each(function(){
+		
+		$calendarField.each(function(){
 			var $this = $(this);
 			if($this.hasClass('bc-date'))
 				$this.datepicker("show");
