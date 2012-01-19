@@ -141,6 +141,7 @@
 	<script type="text/javascript" src="<s:url value='/bc/libs/validate.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/page.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.search.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/grid.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/grid.export.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/form.js' ><s:param name='ts' value='ts'/></s:url>"></script>

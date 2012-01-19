@@ -181,45 +181,50 @@ body {
 }
 
 /** 高级搜索 */
-.bc-advanceSearchPopup{
+.bc-conditionsForm{
 	position: absolute;
-	padding: 4px 8px;
+	padding: 8px 8px 4px 8px;
 	display: inline-block;
 }
-.bc-advanceSearchPopup .conditions{
+.bc-conditionsForm a.closeBtn{
+	position: absolute;
+	top: 2px;
+	right: 2px;
+}
+.bc-conditionsForm .conditions{
 	list-style: none;
 	margin: 0;
 	padding:0;
 }
-.bc-advanceSearchPopup .conditions .condition{
+.bc-conditionsForm .conditions .condition{
 	clear:both;
 	margin: 6px 0 6px 0;
 }
-.bc-advanceSearchPopup .conditions .condition.first{
+.bc-conditionsForm .conditions .condition.first{
 	margin-top: 0;
 }
-.bc-advanceSearchPopup .conditions .condition>.label{
+.bc-conditionsForm .conditions .condition>.label{
 	text-align: left;
 	padding-left: 2px;
 }
-.bc-advanceSearchPopup .conditions .condition>.value{
+.bc-conditionsForm .conditions .condition>.value{
 	position: relative;
 }
-.bc-advanceSearchPopup .conditions .condition>.value label>span{
+.bc-conditionsForm .conditions .condition>.value label>span{
 	margin: 0 4px 0 2px;
 }
-.bc-advanceSearchPopup .conditions .condition>.value input[type='text']{
+.bc-conditionsForm .conditions .condition>.value input[type='text']{
 	width: 99%;
 	margin: 0;
 	padding: 0;
 }
-.bc-advanceSearchPopup .conditions .condition>.value select{
+.bc-conditionsForm .conditions .condition>.value select{
 	width: 99%;
 	margin: 0;
 	padding: 0;
 }
-.bc-advanceSearchPopup .conditions .condition>.value input[type='radio'],
-.bc-advanceSearchPopup .conditions .condition>.value input[type='checkbox']{
+.bc-conditionsForm .conditions .condition>.value input[type='radio'],
+.bc-conditionsForm .conditions .condition>.value input[type='checkbox']{
 	margin: 0;
 }
 div.clear{

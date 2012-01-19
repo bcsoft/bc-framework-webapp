@@ -36,6 +36,98 @@ bc.toolbar = {
 				click.call($page[0],{callback:callback});
 			break;
 		}
+	},
+	
+	/** 初始化高级搜索窗口
+	 * @param $advanceSearchBtn 点击的按钮
+	 * @param $conditionsForm 高级搜索窗口
+	 */
+	initAdvanceSearchFrom: function($advanceSearchBtn, $conditionsForm){
+		if($conditionsForm.size() == 0) return;
+		
+		//设置窗口的最小宽度为按钮的当前宽度
+		$conditionsForm.css("min-width", $advanceSearchBtn.parent().width() + "px");
+		
+		//绑定点击按钮就显示条件窗口的事件
+		$conditionsForm.bcsearch({
+			trigger: $advanceSearchBtn,
+			position: {my: "right top",at: "right bottom",of: $advanceSearchBtn.prev(),offset:"0 1"}
+		}).bcsearch("open");
+		
+		//标记已初始化
+		$advanceSearchBtn.attr("data-advanceSearchInit","true");
+	},
+	
+	/** 执行高级搜索：上下文为当前窗口页面
+	 * @param option 选项
+	 * @param target 点击的按钮
+	 */
+	doAdvanceSearch: function(option,target) {
+		var $page = $(this);
+		var $target = $(target);
+		var $conditionsFrom = $target.closest(".bc-conditionsForm");
+		if(logger.debugEnabled)logger.debug("doAdvanceSearch:" + $conditionsFrom.attr("class"));
+		
+		// 格式验证
+		if(!bc.validator.validate($conditionsFrom))
+			return
+		
+		// 组合高级查询条件
+		var conditions = [];
+		var $this,value,c;
+		$conditionsFrom.find("[data-condition]").each(function(){
+			$this = $(this);
+			if($this.is("input[type='text'],input[type='hidden'],textarea,select")){//文本框、隐藏域、下拉选择框
+				value = $this.val();
+				c = eval("(" + $this.attr("data-condition") + ")");
+				if(logger.debugEnabled)logger.debug("c1=" + $.toJSON(c));
+				if(value && value.length > 0){
+					conditions.push({type:c.type,ql:c.ql,value:value});
+				}
+			}else if($this.is("div")){//单选按钮组或多选框的容器
+				c = eval("(" + $this.attr("data-condition") + ")");
+				if(logger.debugEnabled)logger.debug("c2=" + $.toJSON(c));
+				var $ms = $this.find(":checked");
+				if($ms.length == 1){//单个值
+					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + "=?",value:$ms[0].value});
+				}else if($ms.length > 1){//多个值
+					var ins = " in (";
+					value = [];
+					for(var i=0;i<$ms.length;i++){
+						ins += (i==0 ? "?" : ",?");
+						value.push($ms[i].value);
+					}
+					ins += ")";
+					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + ins,value: value});
+				}
+			}
+		});
+		
+		// 将搜索条件保存到指定位置
+		var extras = $page.data("extras");
+		if(!extras) extras = {};
+		extras.search4advance = $.toJSON(conditions);
+		if(logger.infoEnabled)logger.info("search4advance=" + extras.search4advance);
+		
+		// 重设置为第一页
+		$page.find("ul.pager #pageNo").text(1);
+		
+		// 重新加载列表数据
+		bc.grid.reloadData($page, function(){
+			logger.info("advanceSearch reloadData callback");
+		});
+	},
+	
+	/** 清空高级搜索条件
+	 * @param option 选项
+	 * @param target 点击的按钮
+	 */
+	doAdvanceClean: function(option,target) {
+		var $conditionsFrom = $(target).closest(".bc-conditionsForm");
+		$conditionsFrom.find("input[type='text'],input[type='hidden'],textarea,select").val("");
+		$conditionsFrom.find(":checked").each(function(){
+			this.checked = false;
+		});
 	}
 };
 	
@@ -64,32 +156,32 @@ $document.delegate(".bc-button",{
 		//上下文统一为页面，第一个参数为配置
 		switch (action){
 		case "create"://新建--视图中
-			bc.page.create.call(pageEl,{callback:callback,extras:extras});
+			bc.page.create.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		case "edit"://编辑----视图中
-			bc.page.edit.call(pageEl,{callback:callback,extras:extras});
+			bc.page.edit.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		case "open"://查看----视图中
-			bc.page.open.call(pageEl,{callback:callback,extras:extras});
+			bc.page.open.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		case "delete"://删除----视图
-			bc.page.delete_.call(pageEl,{callback:callback,extras:extras});
+			bc.page.delete_.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		case "disabled"://禁用----视图
-			bc.page.disabled.call(pageEl,{callback:callback,extras:extras});
+			bc.page.disabled.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		case "save"://保存----表单
-			bc.page.save.call(pageEl,{callback:callback,extras:extras});
+			bc.page.save.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		case "cancel"://关闭对话框
-			bc.page.cancel.call(pageEl,{callback:callback,extras:extras});
+			bc.page.cancel.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		default ://调用自定义的函数
 			var click = $this.attr("data-click");
 			if(typeof click == "string")
 				click = bc.getNested(click);//将函数名称转换为函数
 			if(typeof click == "function")
-				click.call(pageEl,{callback:callback,extras:extras});
+				click.call(pageEl,{callback:callback,extras:extras},this);
 			break;
 		}
 	}
@@ -124,38 +216,37 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 //右侧的搜索框处理：点击右侧的高级搜索按钮
 $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 	var $this = $(this);
-	if($this.attr("data-menuInit") != "true"){//初始化下拉菜单
-		logger.info("data-menuInit!=true");
+	if($this.attr("data-advanceSearchInit") != "true"){//初始化条件窗口
+		var cotainer = $this.attr("data-conditionsForm") || ".bc-page";//".bc-searchButton";
+		var $conditionsFormParent = $this.closest(cotainer);
+		logger.info("cotainer=" + cotainer);
 		
-		//将菜单的dom迁移到指定的容器
-		var $contextmenu = $this.next(".bc-advanceSearchPopup");
-		var menucontainer = $this.attr("data-menucontainer") || ".bc-searchButton";
-		if(menucontainer && menucontainer.length > 0){
-			$contextmenu.appendTo($this.closest(menucontainer));//添加到指定的容器
-		}else{
-			//$contextmenu.appendTo($this.parent());//添加到父容器
+		// 初始化条件窗口
+		var conditionsFormUrl = $this.parent().attr("data-url");//获取条件窗口html代码的请求路径
+		logger.info("conditionsFormUrl=" + conditionsFormUrl);
+		if(conditionsFormUrl && conditionsFormUrl.length > 0){//通过ajax获取条件窗口
+			bc.ajax({
+				url: conditionsFormUrl,
+				type: "POST",
+				dataType: "html",
+				success: function(html){
+					logger.info("finish loaded conditionsForm");
+					//先清空可能的条件窗口
+					$this.next(".bc-conditionsForm").remove();
+					
+					//添加到指定的容器
+					var $conditionsForm = $(html);
+					$conditionsForm.appendTo($conditionsFormParent);
+					
+					//绑定日期选择
+					bc.form.initCalendarSelect($conditionsForm);
+
+					bc.toolbar.initAdvanceSearchFrom($this,$conditionsForm);
+				}
+			});
+		}else{//自定义的条件窗口
+			bc.toolbar.initAdvanceSearchFrom($this,$this.next(".bc-conditionsForm"));
 		}
-		
-		//设置菜单的最小宽度为按钮的当前宽度
-		$contextmenu.css("min-width", $this.parent().width() + "px");
-		
-		//获取回调函数
-		var change = $this.attr("data-change");
-		if(change){
-			change = bc.getNested(change);//将函数名称转换为函数
-			if(typeof change != "function"){
-				alert("没有定义函数: " + $this.attr("data-change"));
-			}
-		}
-		
-		//绑定点击按钮就显示下拉菜单
-		$contextmenu.popup({
-			trigger: $this,
-			position: {my: "right top",at: "right bottom",of: $this.prev(),offset:"0 -1"}
-		}).popup("open");
-		
-		//标记已初始化
-		$this.attr("data-menuInit","true");
 	}
 	return false;
 });
@@ -287,6 +378,39 @@ $document.delegate(".bc-button.bc-menuButton",{
 		}
 		return false;
 	}
+});
+
+// 基于jQueryUI的下拉框
+$document.delegate(".bc-select","click", function(e) {
+	var $this = $(this);
+	if($this.is("input[type='text']")){//文本框
+		$input = $this;
+	}else if($this.is(".inputIcon")){//文本框右侧的按钮
+		$input = $this.parent().siblings("input[type='text']");
+	}
+	
+	if($input.attr("data-bcselectInit") != "true"){//初始化下拉列表
+		var source = $input.data("source");
+		if(logger.debugEnabled)logger.debug("source=" + $.toJSON(source));
+		
+		$input.autocomplete({
+			delay: 0,
+			minLength: 0,
+			source: source,
+			select: function(event, ui){
+				if(logger.debugEnabled)logger.debug("selectItem=" + $.toJSON(ui.item));
+				//设置隐藏域字段的值
+				$input.next().val(ui.item.value);
+			}
+		});
+		
+		$input.attr("data-bcselectInit","true");
+	}
+	
+	// 切换列表的显示
+	$input.autocomplete("search", "");
+
+	return false;
 });
 
 })(jQuery);

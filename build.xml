@@ -46,6 +46,9 @@
 				<include name="toolbar.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
+				<include name="toolbar.search.js" />
+			</fileset>
+			<fileset dir="${bclibs.dir}">
 				<include name="grid.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
