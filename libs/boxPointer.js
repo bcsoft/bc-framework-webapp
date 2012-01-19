@@ -30,7 +30,8 @@ bc.boxPointer = {
     		dir:"bottom",
     		content:"undefined content!",
     		of: document.body,
-    		iconClass: "ui-icon-alert"
+    		iconClass: "ui-icon-alert",
+    		appendTo: "body"
     	},option);
 		var target = $(option.of);
 		
@@ -40,7 +41,7 @@ bc.boxPointer = {
 		target.data("bpid",id);
 
 		//自动生成容器
-		var boxPointer = $(bc.boxPointer.TPL).appendTo("body").attr("id","boxPointer"+id);
+		var boxPointer = $(bc.boxPointer.TPL).appendTo(option.appendTo).attr("id","boxPointer"+id);
 		
 		//添加关闭按钮
 		boxPointer.append('<a href="#" class="close ui-state-default ui-corner-all"><span class="ui-icon ui-icon-closethick"></span></a>')
