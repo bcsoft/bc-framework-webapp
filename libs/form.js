@@ -66,7 +66,9 @@ bc.form = {
 			}
 			cfg = jQuery.extend({
 				//showWeek: true,//显示第几周
-				//showButtonPanel: true,//显示今天按钮、
+				//showButtonPanel: true,//显示今天按钮
+				//changeMonth: true,
+				changeYear: true,
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				firstDay: 7,
