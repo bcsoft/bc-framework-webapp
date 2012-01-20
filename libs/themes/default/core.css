@@ -200,6 +200,10 @@ body {
 	clear:both;
 	margin: 6px 0 6px 0;
 }
+.bc-condition-autocomplete{
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
 .bc-conditionsForm .conditions .condition.first{
 	margin-top: 0;
 }

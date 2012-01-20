@@ -51,7 +51,7 @@ bc.toolbar = {
 		//绑定点击按钮就显示条件窗口的事件
 		$conditionsForm.bcsearch({
 			trigger: $advanceSearchBtn,
-			position: {my: "right top",at: "right bottom",of: $advanceSearchBtn.prev(),offset:"0 1"}
+			position: {my: "right top",at: "right bottom",of: $advanceSearchBtn.prev(),offset:"0 -1"}
 		}).bcsearch("open");
 		
 		//标记已初始化
@@ -389,21 +389,45 @@ $document.delegate(".bc-select","click", function(e) {
 		$input = $this.parent().siblings("input[type='text']");
 	}
 	
-	if($input.attr("data-bcselectInit") != "true"){//初始化下拉列表
+	if($input.attr("data-bcselectInit") != "true"){
+		//获取下拉列表的数据源
 		var source = $input.data("source");
 		if(logger.debugEnabled)logger.debug("source=" + $.toJSON(source));
 		
+		//初始化下拉列表
 		$input.autocomplete({
 			delay: 0,
 			minLength: 0,
+			position: {
+				my: "left top",
+				at: "left bottom",
+				offset:"0 -1",
+				collision: "none"
+			},
 			source: source,
 			select: function(event, ui){
 				if(logger.debugEnabled)logger.debug("selectItem=" + $.toJSON(ui.item));
 				//设置隐藏域字段的值
+				$input.val(ui.item.label);
 				$input.next().val(ui.item.value);
+				
+				//返回false禁止autocomplete自动填写值到$input
+				return false;
 			}
-		});
+		}).autocomplete("widget").addClass("bc-condition-autocomplete");
 		
+		// 设置下拉列表的最大高度
+		var maxHeight = $input.attr("data-maxHeight");
+		if(maxHeight){
+			$input.autocomplete("widget").css({
+				'max-height': maxHeight,/*ie6 unsupport*/
+				'overflow-y': 'auto',
+				'overflow-x': 'hidden'
+				//,'paddin-right': '20px'
+			});
+		}
+		
+		// 标记为已经初始化
 		$input.attr("data-bcselectInit","true");
 	}
 	
