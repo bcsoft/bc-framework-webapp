@@ -108,6 +108,11 @@ bc.form = {
 				}
 			}
 			
+			//重构回调函数，使控件重新获取焦点
+			cfg.onClose = function(){
+				$this.focus();
+			}
+			
 			if($this.hasClass('bc-date'))
 				$this.datepicker(cfg);
 			else if($this.hasClass('bc-datetime'))
