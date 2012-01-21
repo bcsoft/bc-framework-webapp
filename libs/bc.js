@@ -76,6 +76,14 @@ Date.prototype.format = function(format){
 		  format = format.replace(RegExp.$1,RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length)); 
   return format; 
 }
+/** 返回指定日期类型字符串(以yyyy开头)添加指定年度后的字符串 */
+Date.addYear=function(_date,num){
+	if(typeof _date == "string" && _date.length > 4){
+		return (parseInt(_date.substr(0,4)) + num) + _date.substr(4);
+	}else{
+		return _date;
+	}
+};
 
 /** 获取新的唯一id值: var newId = bc.nextId();*/
 bc.id=0;
@@ -1555,6 +1563,10 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 //右侧的搜索框处理：点击右侧的高级搜索按钮
 $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 	var $this = $(this);
+	
+	// 隐藏高级搜索按钮
+	$this.hide();
+	
 	if($this.attr("data-advanceSearchInit") != "true"){//初始化条件窗口
 		var cotainer = $this.attr("data-conditionsForm") || ".bc-page";//".bc-searchButton";
 		var $conditionsFormParent = $this.closest(cotainer);
@@ -2022,6 +2034,9 @@ $.widget( "ui.bcsearch", {
 	},
 
 	close: function( event ) {
+		// 显示高级搜索按钮
+		this.options.trigger.show();
+		
 		this._beforeClose();
 		this._hide( this.element, this.options.hide );
 
@@ -2800,7 +2815,10 @@ bc.form = {
 			//只读表单的处理
 			$form.find(":input:visible").each(function(){
 				logger.debug("disabled:" + this.name);
-				this.disabled=true;
+				if(this.nodeName.toLowerCase() == "select")
+					this.disabled=true;
+				else
+					this.readOnly=true;
 			});
 			$form.find("ul.inputIcons,span.selectButton").each(function(){
 				$(this).hide();
@@ -2832,13 +2850,48 @@ bc.form = {
 			cfg = jQuery.extend({
 				//showWeek: true,//显示第几周
 				//showButtonPanel: true,//显示今天按钮
-				//changeMonth: true,
-				changeYear: true,
+				//changeMonth: true,//显示月份下拉框
+				changeYear: true,//显示年份下拉框
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				firstDay: 7,
 				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
 			},cfg);
+			
+			// 额外的处理
+			if(cfg.addYear){//自动将另一控件的值设置为此控件值加指定年份后的值的处理
+				logger.debug("addYear=" + cfg.addYear);
+				var $toField;
+				if(typeof cfg.addYear == "number"){
+					//自动找到另一个控件
+					$toField = $this.parent(".bc-dateContainer").siblings(".bc-dateContainer")
+					.children("input[type='text']");
+				}else{
+					//按类似“5|fieldName”的格式解析出另一个控件
+					var ss = cfg.addYear.split("|");
+					cfg.addYear = parseInt(ss[0]);
+					if(ss.length > 1)
+						$toField = $form.find("input[name='" + ss[1] + "']");
+				}
+
+				if($toField.length){
+					var oldFun = cfg.onSelect;
+					cfg.onSelect = function(dateText,inst){
+						// 设置联动值
+						$toField.val(Date.addYear(dateText,cfg.addYear));
+						
+						//调用原来的回调函数
+						if(typeof oldFun == "function"){
+							return oldFun.call(this,dateText,inst);
+						}
+					};
+				}
+			}
+			
+			//重构回调函数，使控件重新获取焦点
+			cfg.onClose = function(){
+				$this.focus();
+			}
 			
 			if($this.hasClass('bc-date'))
 				$this.datepicker(cfg);

@@ -216,6 +216,10 @@ $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 //右侧的搜索框处理：点击右侧的高级搜索按钮
 $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 	var $this = $(this);
+	
+	// 隐藏高级搜索按钮
+	$this.hide();
+	
 	if($this.attr("data-advanceSearchInit") != "true"){//初始化条件窗口
 		var cotainer = $this.attr("data-conditionsForm") || ".bc-page";//".bc-searchButton";
 		var $conditionsFormParent = $this.closest(cotainer);

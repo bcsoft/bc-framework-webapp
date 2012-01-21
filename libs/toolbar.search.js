@@ -243,6 +243,9 @@ $.widget( "ui.bcsearch", {
 	},
 
 	close: function( event ) {
+		// 显示高级搜索按钮
+		this.options.trigger.show();
+		
 		this._beforeClose();
 		this._hide( this.element, this.options.hide );
 
