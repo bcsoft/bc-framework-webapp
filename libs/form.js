@@ -70,13 +70,43 @@ bc.form = {
 			cfg = jQuery.extend({
 				//showWeek: true,//显示第几周
 				//showButtonPanel: true,//显示今天按钮
-				//changeMonth: true,
-				changeYear: true,
+				//changeMonth: true,//显示月份下拉框
+				changeYear: true,//显示年份下拉框
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				firstDay: 7,
 				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
 			},cfg);
+			
+			// 额外的处理
+			if(cfg.addYear){//自动将另一控件的值设置为此控件值加指定年份后的值的处理
+				logger.debug("addYear=" + cfg.addYear);
+				var $toField;
+				if(typeof cfg.addYear == "number"){
+					//自动找到另一个控件
+					$toField = $this.parent(".bc-dateContainer").siblings(".bc-dateContainer")
+					.children("input[type='text']");
+				}else{
+					//按类似“5|fieldName”的格式解析出另一个控件
+					var ss = cfg.addYear.split("|");
+					cfg.addYear = parseInt(ss[0]);
+					if(ss.length > 1)
+						$toField = $form.find("input[name='" + ss[1] + "']");
+				}
+
+				if($toField.length){
+					var oldFun = cfg.onSelect;
+					cfg.onSelect = function(dateText,inst){
+						// 设置联动值
+						$toField.val(Date.addYear(dateText,cfg.addYear));
+						
+						//调用原来的回调函数
+						if(typeof oldFun == "function"){
+							return oldFun.call(this,dateText,inst);
+						}
+					};
+				}
+			}
 			
 			if($this.hasClass('bc-date'))
 				$this.datepicker(cfg);
