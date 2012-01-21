@@ -76,6 +76,14 @@ Date.prototype.format = function(format){
 		  format = format.replace(RegExp.$1,RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length)); 
   return format; 
 }
+/** 返回指定日期类型字符串(以yyyy开头)添加指定年度后的字符串 */
+Date.addYear=function(_date,num){
+	if(typeof _date == "string" && _date.length > 4){
+		return (parseInt(_date.substr(0,4)) + num) + _date.substr(4);
+	}else{
+		return _date;
+	}
+};
 
 /** 获取新的唯一id值: var newId = bc.nextId();*/
 bc.id=0;
