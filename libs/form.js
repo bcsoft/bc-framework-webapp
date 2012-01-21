@@ -35,7 +35,10 @@ bc.form = {
 			//只读表单的处理
 			$form.find(":input:visible").each(function(){
 				logger.debug("disabled:" + this.name);
-				this.disabled=true;
+				if(this.nodeName.toLowerCase() == "select")
+					this.disabled=true;
+				else
+					this.readOnly=true;
 			});
 			$form.find("ul.inputIcons,span.selectButton").each(function(){
 				$(this).hide();
