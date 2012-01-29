@@ -95,12 +95,17 @@ if($.browser.msie && $.browser.version < 8){//用户浏览器版本太低的处�
 
 /** 查看系统变更日志 */
 var clWin;
-$("#version").click(function(){
-	if(!clWin){
-		clWin = window.open(bc.root + "/changelog/changelog.html","_blank");
-	}else{
-		clWin.document.location.reload(true);
-		clWin.focus();
+$("#version").click(function showChangelog(){
+	try {
+		if (!clWin) {
+			clWin = window.open(bc.root + "/changelog/changelog.html?ts=" + bc.ts, "_blank");
+		} else {
+			clWin.document.location.reload(true);
+			clWin.focus();
+		}
+	} catch (e) {
+		clWin = null;
+		showChangelog();
 	}
 	return false;
 });
