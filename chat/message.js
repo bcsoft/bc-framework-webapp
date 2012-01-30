@@ -20,7 +20,6 @@ bc.chatMessage = {
 				json.type = 2;	//用户发到用户的信息
 				json.msg = msg;
 				json.toSid = toSid;
-				json.toSid = toSid;
 				
 				//当前客户端时间
 				json.time = bc.getTime();

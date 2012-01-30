@@ -68,6 +68,10 @@ bc.chat = {
 						}
 					}else{
 						bc.msg.slide(json.msg);
+						
+						 if(json.type == 1 && json.sid == bc.sid){//自己登录超时下线
+							 bc.chat.relogin();
+						 }
 					}					
 				}else{// if(json.type == 1){//广播的信息
 					bc.msg.slide(json.msg);
@@ -77,8 +81,8 @@ bc.chat = {
 				if(logger.debugEnabled)
 					logger.debug("onclose:e=" + $.toJSON(e));
 				bc.chat.destroy();
-				if(e.wasClean === true){
-					//服务器超时断开
+				if(e.wasClean === true && !bc.chat.stopReconnect){
+					//WebSocket服务器超时断开
 					setTimeout(function(){
 						logger.info("重新连接WebSocket中...");
 						bc.msg.slide("重新连接WebSocket中...");
@@ -95,10 +99,12 @@ bc.chat = {
 				alert("WebSocket通讯异常,要连接请重新登录！");
 				bc.chat.destroy();
 			};
+			bc.chat.stopReconnect = false;
 		}else{
 			bc.msg.slide("当前浏览器不支持WebSocket，无法使用在线聊天工具！");
 		}
 	},
+	stopReconnect: false,
 	/**销毁已初始化的WebSocket*/
 	destroy:function(){
 		if(bc.ws){
@@ -128,7 +134,25 @@ bc.chat = {
 	},
 	/**删除离线用户*/
 	removeUser:function($page,sid){
-		$page.find("li.item[data-sid='" + sid + "']").remove();
+		if(bc.sid == sid){	// 自己登录超时导致的离线，提示用户重新登录
+			bc.chat.relogin(sid);
+		}else{				// 别人离线
+			$page.find("li.item[data-sid='" + sid + "']").remove();
+		}
+	},
+	/** 重新登录 */
+	relogin:function(sid){
+		bc.page.newWin({
+			mid: 'relogin',
+			url: bc.root + '/relogin',
+			name: '重新登录',
+			modal: true,
+			afterClose: function(json){
+				logger.info("relogin:json=" + $.toJSON(json));
+			}
+		});
+		bc.chat.stopReconnect = true;
+		bc.chat.destroy();
 	}
 };
 })(jQuery);

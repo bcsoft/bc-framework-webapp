@@ -232,7 +232,7 @@
 			if($bcq.size() > 0){
 				$bcq.click(function() {
 					bc.page.newWin({
-						name: "BCQ 2011",
+						name: "BCQ 2012",
 						mid: "bcq",
 						url: bc.root + "/bc/chat/onlineUser"
 					});
