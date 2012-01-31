@@ -16,27 +16,22 @@ bc.grid.export2Excel = function($grid,el) {
 	//获取要导出的列名
 	
 	var html=[];
-	html.push('<form name="exporter" method="post" style="margin:8px;">');
+	html.push('<form class="bc-export" name="exporter" method="post">');
 	
 	//分页时添加“确认导出范围”
 	var paging = $grid.find("li.pagerIconGroup.seek").size() > 0;
 	if(paging){//分页
-		html.push('<div style="height:22px;line-height:22px;font-size:14px;font-weight:bold;color:#333;">确认导出范围</div>'
-			+'<ul style="list-style:none;margin:0;padding:0;">'
-			+'<li style="margin:2px;_margin:0;">'
-			+'<label for="exportScope1">'
-			+'<input style="margin:2px 0;_margin:0;" type="radio" id="exportScope1" name="exportScope" value="1" checked>'
-			+'<span style="margin:0 4px;_margin:0 2px;">当前页</span></label>'
-			+'&nbsp;&nbsp;<label for="exportScope2">'
-			+'<input style="margin:2px 0;_margin:0;" type="radio" id="exportScope2" name="exportScope" value="2">'
-			+'<span style="margin:0 4px;_margin:0 2px;">全部</span></label></li>'
-			+'</ul>');
+		html.push('<div class="rangeTitle">确认导出范围</div>'
+			+'<ul class="rangeUl"><li>'
+			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1" checked><span>当前页</span></label>'
+			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2"><span>全部</span></label>'
+			+'</li></ul>');
 	}
 	
 	//添加剩余的模板内容
-	html.push('<div style="margin-top:8px;height:22px;line-height:22px;font-size:14px;font-weight:bold;color:#333;">选择导出字段</div>'
-		+'<ul style="list-style:none;margin:0;padding:0;">{0}</ul>'
-		+'<div style="padding:0 4px;text-align:right;">'
+	html.push('<div class="headersTitle">选择导出字段</div>'
+		+'<table class="headersTable" cellspacing="2" cellpadding="0"><tbody><tr>{0}</tr></tbody></table>'
+		+'<div class="buttons">'
 		+'<a id="continue" style="text-decoration:underline;cursor:pointer;">继续</a>&nbsp;&nbsp;'
 		+'<a id="cancel" style="text-decoration:underline;cursor:pointer;">取消</a></div>'
 		+'<input type="hidden" name="search">'
@@ -47,22 +42,50 @@ bc.grid.export2Excel = function($grid,el) {
 	var headerIds=[],headerNames=[];
 	var fields = []
 	var columns = $grid.find("div.header>div.right>table.table td");
-	columns.each(function(i){
-		var $this = $(this);
-		headerIds.push($this.attr("data-id"));
-		headerNames.push($this.attr("data-label"));
-		fields.push('<li style="margin:2px;_margin:0;">'
-			+'<label for="field'+i+'">'
-			+'<input style="margin:2px 0;_margin:0;" type="checkbox" id="field'+i+'" name="field" value="'+headerIds[i]+'" checked>'
-			+'<span style="margin:0 4px;_margin:0 2px;">'+headerNames[i]+'</span></label></li>');
-	});
-	html = html.join("").format(fields.join(""));
+	var maxh = 12;											// 控制1列最多输出的条目数
+	var totalCount = columns.size();						// 总条目数
+	var splitCount,headerCount;
+	if(headerCount <= maxh ){
+		splitCount = 1;
+		headerCount = totalCount;
+	}else{
+		splitCount = Math.ceil(totalCount / maxh);			// 判断要分开为几大列
+		headerCount = Math.ceil(totalCount / splitCount);	// 每列实际的条目数：尽量平均分配
+	}
+	
+	if(logger.debugEnabled){
+		logger.debug("splitCount=" + splitCount);
+		logger.debug("headerCount=" + headerCount);
+		logger.debug("totalCount=" + totalCount);
+	}
+	var allHeaders  = [];
+	var _ul,index,$column;
+	for(var i=0;i<splitCount;i++){
+		_ul = [];
+		_ul.push('<td class="headersTd"><ul>');
+		for(var j=0;j<headerCount;j++){
+			index = j + i * headerCount;
+			if(index >= totalCount){
+				break;
+			}else{
+				$column = $(columns[index]);
+				_ul.push('<li>'
+					+'<label for="field'+i+'">'
+					+'<input type="checkbox" id="field'+i+'" name="field" value="'+$column.attr("data-id")+'" checked>'
+					+'<span>'+$column.attr("data-label")+'</span></label></li>');
+			}
+		}
+		_ul.push('</ul></td>');
+		allHeaders.push(_ul.join(""));
+	}
+	html = html.join("").format(allHeaders.join(""));
 	
 	//显示“确认导出”窗口
 	var boxPointer = bc.boxPointer.show({
 		of:el,dir:"top",close:"click",
 		offset:"-8 -4",
 		iconClass:null,
+		appendTo: $grid.closest(".ui-dialog"),
 		content:html
 	});
 	

@@ -15,6 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/desktop.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/shortcuts.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.css' ><s:param name='ts' value='ts'/></s:url>" />
+	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/grid.export.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/form.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/boxPointer.css' ><s:param name='ts' value='ts'/></s:url>" />
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/attach.css' ><s:param name='ts' value='ts'/></s:url>" />
@@ -33,10 +34,10 @@
 		<s:property value="startMenu" escapeHtml="false"/>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td class="topIcon" title="邮箱" id="bcmail">
+				<!-- <td class="topIcon" title="邮箱" id="bcmail">
 					<a class="icon i0004">&nbsp;</a>
 					<span class="number ui-state-highlight">8</span>
-				</td>
+				</td> -->
 				<s:if test='%{getText("app.bcq") == "true"}'>
 				<td class="topIcon" title="聊天" id="bcq"><a class="icon i0003">&nbsp;</a></td>
 				</s:if>
@@ -140,6 +141,7 @@
 	<script type="text/javascript" src="<s:url value='/bc/libs/validate.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/page.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.search.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/grid.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/grid.export.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/form.js' ><s:param name='ts' value='ts'/></s:url>"></script>

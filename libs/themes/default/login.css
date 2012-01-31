@@ -32,9 +32,9 @@ body {
 	text-align: center;
 	color: #6797BF;
 }
-#systemInfo span{
+#systemInfo #version{
 	font-size: 12px;
-	color:gray;
+	color: blue;
 }
 
 #main {

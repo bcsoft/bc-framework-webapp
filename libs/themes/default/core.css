@@ -140,21 +140,108 @@ body {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 }
+
+/** 搜索框 */
 .bc-searchButton{
 	position: absolute;
 	top: 0.4em;
 	right: 0.4em;
 }
-.bc-searchButton a{
+.bc-rightButtons{
+	display: inline-block;
+	position: absolute;
+	top: 0.4em;
+	right: 0;
+}
+.bc-rightButtons .bc-searchButton{
+	position: relative;
+	margin-left: 0.4em;
+	margin-right: 0;
+	top: 0;
+}
+.bc-searchButton a#searchBtn{
 	position: absolute;
 	top: 50%;
 	margin-top: -8px;
 	left: 0.12em;
 }
-.bc-searchButton input{
+.bc-searchButton input#searchText{
 	padding-left: 1.4em;
 	width: 180px;
 }
+.bc-searchButton.advance input#searchText{
+	padding-right: 1.4em;
+	width: 162px;
+}
+.bc-searchButton.advance a#advanceSearchBtn{
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+	right: 0.12em;
+}
+
+/** 高级搜索 */
+.bc-conditionsForm{
+	position: absolute;
+	padding: 8px 8px 4px 8px;
+	display: inline-block;
+}
+.bc-conditionsForm a.closeBtn{
+	position: absolute;
+	top: 2px;
+	right: 2px;
+}
+.bc-conditionsForm .conditions{
+	list-style: none;
+	margin: 0;
+	padding:0;
+}
+.bc-conditionsForm .conditions .condition{
+	clear:both;
+	margin: 6px 0 6px 0;
+}
+.bc-condition-autocomplete{
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+.bc-conditionsForm .conditions .condition.first{
+	margin-top: 0;
+}
+.bc-conditionsForm .conditions .condition>.label{
+	text-align: left;
+	padding-left: 2px;
+}
+.bc-conditionsForm .conditions .condition>.value{
+	position: relative;
+}
+.bc-conditionsForm .conditions .condition>.value label>span{
+	margin: 0 4px 0 2px;
+}
+.bc-conditionsForm .conditions .condition>.value input[type='text']{
+	width: 99%;
+	margin: 0;
+	padding: 0;
+}
+.bc-conditionsForm .conditions .condition>.value select{
+	width: 99%;
+	margin: 0;
+	padding: 0;
+}
+.bc-conditionsForm .conditions .condition>.value input[type='radio'],
+.bc-conditionsForm .conditions .condition>.value input[type='checkbox']{
+	margin: 0;
+}
+div.clear{
+	clear:both;
+	width:auto;
+	height:0
+}
+div.bc-dateContainer{
+	position: relative;
+	display: inline-block;
+}
+
+/** 常用宽度 */
 .w60{width: 60px;}
 .w80{width: 80px;}
 .w100{width: 100px;}
@@ -209,7 +296,7 @@ ul.inputIcons li.inputIcon.hover{
 span.ui-icon.verticalMiddle {position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:4px;cursor:pointer;}
 
 /*让td元素支持相对定位*/
-td.relative{
+td.relative,div.relative{
 	position: relative;
 	display: block; /*for firefox*/
 }

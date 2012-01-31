@@ -46,6 +46,9 @@
 				<include name="toolbar.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
+				<include name="toolbar.search.js" />
+			</fileset>
+			<fileset dir="${bclibs.dir}">
 				<include name="grid.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
@@ -113,6 +116,9 @@
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="grid.css" />
+				</fileset>
+				<fileset dir="${bclibs.dir}/themes/@{theme}">
+					<include name="grid.export.css" />
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="form.css" />

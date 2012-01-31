@@ -1,0 +1,74 @@
+/**
+ * grid导出ExcelTip框的样式控制
+ *
+ * @author rongjihuang@gmail.com
+ * @date 2012-01-16
+ */
+
+/** 总容器 */
+form.bc-export {
+	margin: 8px;
+}
+
+/** 确认导出范围 */
+form.bc-export>div.rangeTitle {
+	height: 22px;
+	line-height: 22px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #333;
+}
+
+form.bc-export>ul.rangeUl {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+form.bc-export>ul.rangeUl>li, form.bc-export>table.headersTable td.headersTd>ul>li{
+	margin: 2px;
+	_margin: 0;
+}
+
+form.bc-export>ul.rangeUl>li>label, form.bc-export>table.headersTable td.headersTd>ul>li>label{
+	margin-right: 8px;
+}
+
+form.bc-export>ul.rangeUl>li>label>input, form.bc-export>table.headersTable td.headersTd>ul>li>label>input{
+	margin: 2px 0;
+	_margin: 0;
+}
+
+form.bc-export>ul.rangeUl>li>label>span, form.bc-export>table.headersTable td.headersTd>ul>li>label>span{
+	margin: 0 4px;
+	_margin: 0 2px;
+}
+
+/** 选择导出字段 */
+form.bc-export>div.headersTitle {
+	margin-top: 8px;
+	height: 22px;
+	line-height: 22px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #333;
+}
+
+form.bc-export>table.headersTable {
+	border: 0;
+}
+
+form.bc-export>table.headersTable td.headersTd {
+	vertical-align: top;
+}
+
+form.bc-export>table.headersTable td.headersTd>ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+form.bc-export>div.buttons {
+	padding: 0 4px;
+	text-align: right;
+}

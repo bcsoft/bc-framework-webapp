@@ -14,7 +14,7 @@
 	href="<s:url value='/bc/libs/themes/default/login.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 </head>
 <body>
-	<div id="systemInfo"><s:text name="app.title"/>&nbsp;<span>v<s:text name="app.version"/></span></div>
+	<div id="systemInfo"><s:text name="app.title"/>&nbsp;<a id="version" href="#">v<s:text name="app.version"/></a></div>
 	<table id="main" cellpadding="0" cellspacing="0" border="0">
 		<tbody>
 			<tr>
