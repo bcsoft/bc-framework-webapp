@@ -30,7 +30,7 @@
 	<!-- 系统菜单条 -->
 	<div id="top" class="ui-widget-header">
 		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />"
-			title='<s:text name="app.title"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:date name="#session.loginTime" format="yyyy-MM-dd HH:mm"/>'>
+			title='<s:text name="app.title"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:property value="#session.loginTime" />'>
 		<s:property value="startMenu" escapeHtml="false"/>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
@@ -118,6 +118,8 @@
 	bc.root = "<%=request.getContextPath()%>";
 	bc.debug = <s:text name="app.debug" />;
 	bc.bcq = <s:text name="app.bcq" />;
+	bc.loginTime = '${loginTime}';
+	bc.md5 = '<s:property value="md5" />';
 	bc.sid = '<s:property value="sid" />';
 	
 	//一定要使用location.host获取真实的url地址，否则safari在初始化WebSocket时会重置session导致信息丢失

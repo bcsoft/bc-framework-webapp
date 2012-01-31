@@ -2,7 +2,6 @@ bc.reloginFrom={
 	/** 初始化 */
 	init: function(){
 		var $page = $(this);
-		logger.info("bc.relogin.init");
 		
 		// 自动填写当前登录过的帐号
 		$page.find("input[name='name']").val(userCode);
@@ -31,16 +30,19 @@ bc.reloginFrom={
 
 		// 执行登录
 		bc.msg.slide("正在重新登录...");
-		$.ajax({
+		bc.ajax({
 			url : bc.root + "/doLogin",
 			data : {
 				name : name,
-				password : hex_md5(password)//使用md5加密避免密码明文传输
+				password : hex_md5(password),//使用md5加密避免密码明文传输
+				sid: bc.sid,
+				relogin: true
 			},
 			type : "POST",
 			dataType: "json",
 			success : function(json) {
 				if(json.success){
+					logger.info("new sid=" + json.sid);
 					bc.msg.slide("重新登录成功！");
 					bc.sid = json.sid;
 					
@@ -48,7 +50,7 @@ bc.reloginFrom={
 					$page.data("data-status",json);
 					$page.dialog("close");
 				}else{
-					bc.msg.alert(json.msg);
+					bc.msg.slide(json.msg);
 				}
 			},
 			error : function(json) {

@@ -14,9 +14,9 @@
 			</tr>
 			<tr>
 				<td class="label">密码：</td>
-				<td class="value"><s:textfield name="password" data-validate="required"/></td>
+				<td class="value"><s:password name="password" data-validate="required"/></td>
 			</tr>
 		</table>
-		<p class="formComment">您登录系统已经超时，为确保连接安全，需要输入密码重新登录！</p>
+		<p class="formComment">系统登录已经超时，需要您输入密码重新登录！</p>
 	</s:form>
 </div>
