@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="feedback.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/feedback/save" />'
-	data-js='<s:url value="/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0" />,<s:url value="/bc/feedback/form.js" />'
+	data-js='js:editor,<s:url value="/bc/feedback/form.js" />'
 	data-initMethod='bc.feedbackForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="feedbackForm" theme="simple">
