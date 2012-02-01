@@ -226,6 +226,7 @@ jQuery(function($){
 		type: "POST",
 		error: function(request, textStatus, errorThrown) {
 			if(bc.page.showError){
+				logger.error("bc.ajax error!");
 				//显示漂亮的错误提示窗口
 				bc.page.showError({url:this.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
 			}else{
@@ -780,6 +781,24 @@ bc.page = {
 				if(dataJs && dataJs.length > 0){
 					//先加载js文件后执行模块指定的初始化方法
 					dataJs = dataJs.split(",");//逗号分隔多个文件
+					
+					// 处理预定义的js、css文件
+					var t;
+					for(var i=0;i<dataJs.length;i++){
+						if(dataJs[i].indexOf("js:") == 0){//预定义的js文件
+							t = bc.loader.preconfig.js[dataJs[i].substr(3)];
+							if(t){
+								t = bc.root + t;
+								logger.debug(dataJs[i] + "=" +  t);
+								dataJs[i] = t;
+							}else{
+								alert("没有预定义“" + dataJs[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
+							}
+						}else if(dataJs[i].indexOf("css:") == 0){//预定义的css文件
+							
+						}
+					}
+					
 					dataJs.push(_init);
 					bc.load(dataJs);
 				}else{
@@ -3210,7 +3229,7 @@ bc.loader = {
 		}
 	},
 	a: function(u,l) {
-		logger.info("call a");
+		//logger.info("call a");
 		var s, t, m = this, n = u[0].replace(/.+\/|\.min\.js|\.js|\?.+|\W/g, ''), k = {js: {t: "script", a: "src"}, css: {t: "link", a: "href", r: "stylesheet"}, "i": {t: "img", a: "src"}}; // Clean up the name of the script for storage in the queue
 		t = u[0].match(/\.(js|css).*$/i); t = (t) ? t[1] : "i";
 		n=u[0];
@@ -3341,6 +3360,34 @@ var a = ["a","b","c",function(){}];
 a = [rebuildArgs1(a,false)];
 alert(array2string(a));
 */
+/**
+ * 预定义的JS、CSS文件
+ *
+ * @author rongjihuang@gmail.com
+ * @date 2012-02-01
+ * @dep bc.loader
+ */
+
+bc.loader.preconfig = {};
+
+/** 在js、css路径后添加ts=0可以避免loader组件再在其后添加系统的时间戳 */
+bc.loader.preconfig.js = {
+	/** 开源组件 */
+	jquery: '/ui-libs/jquery/1.7/jquery.min.js?ts=0',
+	jqueryui: '/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js?ts=0',
+	jqueryui_i18n: '/ui-libs/jquery-ui/1.9pre/ui/i18n/jquery.ui.datepicker-zh-CN.js?ts=0',
+	editor: '/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0',
+	xheditor: '/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0',
+	highcharts: '/ui-libs/highcharts/2.1.8/highcharts.min.js?ts=0',
+	highcharts_exporting: '/ui-libs/highcharts/2.1.8/modules/exporting.min.js?ts=0',
+	
+	/** 平台 */
+	bc_identity: '/bc/identity/identity.js'
+};
+
+bc.loader.preconfig.css = {
+	jqueryui: '/ui-libs/jquery-ui/1.9pre/themes/base/jquery-ui.css?ts=0',
+};
 /**
  * 富文本编辑器
  * 
@@ -4394,17 +4441,23 @@ $(".bc-imageEditor").live("click",function(e){
 			var clWin;
 			$top.find("#bchelp,#bcmail").click(function() {
 				var $helpDlg = bc.msg.info('点击 <a href="#" id="clClick">这里</a> 查看系统更新日志！',bc.title);
-				$helpDlg.find("#clClick").click(function(){
-					//打开查看更新日志的窗口
-					if(!clWin){
-						clWin = window.open(bc.root + "/changelog/changelog.html","_blank");
-					}else{
-						clWin.document.location.reload(true);
-						clWin.focus();
+				$helpDlg.find("#clClick").click(function showChangelog(){
+					try {
+						//打开查看更新日志的窗口
+						if (!clWin) {
+							clWin = window.open(bc.root
+									+ "/changelog/changelog.html?ts=" + bc.ts, "_blank");
+						} else {
+							clWin.document.location.reload(true);
+							clWin.focus();
+						}
+						
+						//关闭对话框
+						$helpDlg.dialog("close");
+					} catch (e) {
+						clWin = null;
+						showChangelog();
 					}
-					
-					//关闭对话框
-					$helpDlg.dialog("close");
 					return false;
 				});
 				return false;
@@ -4415,7 +4468,7 @@ $(".bc-imageEditor").live("click",function(e){
 			if($bcq.size() > 0){
 				$bcq.click(function() {
 					bc.page.newWin({
-						name: "BCQ 2011",
+						name: "BCQ 2012",
 						mid: "bcq",
 						url: bc.root + "/bc/chat/onlineUser"
 					});
@@ -5272,7 +5325,7 @@ bc.chat = {
 		if (!window.WebSocket && window.MozWebSocket)
 			window.WebSocket = window.MozWebSocket;
 		if (window.WebSocket){
-			bc.ws = new window.WebSocket(bc.wsurl + "?sid=" + bc.sid + "&userId=" + userId + "&userName=" + userName, "chat");
+			bc.ws = new window.WebSocket(bc.wsurl + "?sid=" + bc.sid + "&c=" + userId + "," + userName, "chat");
 			bc.ws.onopen = function(){
 				logger.info("WebSocket打开了！");
 			};
@@ -5300,25 +5353,29 @@ bc.chat = {
 						bc.msg.slide(json.name + "：" + json.msg);
 					}
 				}else if(json.type == 0 || json.type == 1){//上下线信息
-					//寻找在线用户列表对话框
-					var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bcq']").parent();
-					if($msgDialog.size()){//找到对话框
-						if(json.type == 0){//上线
-							//添加在线用户
-							bc.chat.addUser($msgDialog,json);
-						}else if(json.type == 1){//下线
-							//删除离线用户
-							bc.chat.removeUser($msgDialog,json.sid);
-						}
-						
-						//如果对话框当前被隐藏，提示一下
-						if ($msgDialog.is(":hidden")) {
-							bc.page.quickbar.warn("bcq");
+					if(json.type == 1 && json.sid == bc.sid){//自己登录后的超时下线
+						bc.chat.autologin(json.sid);
+					}else{
+						//寻找在线用户列表对话框
+						var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bcq']").parent();
+						if($msgDialog.size()){//找到对话框
+							if(json.type == 0){//上线
+								//添加在线用户
+								bc.chat.addUser($msgDialog,json);
+							}else if(json.type == 1){//下线
+								//删除离线用户
+								bc.chat.removeUser($msgDialog,json.sid);
+							}
+							
+							//如果对话框当前被隐藏，提示一下
+							if ($msgDialog.is(":hidden")) {
+								bc.page.quickbar.warn("bcq");
+								bc.msg.slide(json.msg);
+							}
+						}else{
 							bc.msg.slide(json.msg);
 						}
-					}else{
-						bc.msg.slide(json.msg);
-					}					
+					}
 				}else{// if(json.type == 1){//广播的信息
 					bc.msg.slide(json.msg);
 				}
@@ -5327,8 +5384,8 @@ bc.chat = {
 				if(logger.debugEnabled)
 					logger.debug("onclose:e=" + $.toJSON(e));
 				bc.chat.destroy();
-				if(e.wasClean === true){
-					//服务器超时断开
+				if(e.wasClean === true && !bc.chat.stopReconnect){
+					//WebSocket服务器超时断开
 					setTimeout(function(){
 						logger.info("重新连接WebSocket中...");
 						bc.msg.slide("重新连接WebSocket中...");
@@ -5345,10 +5402,12 @@ bc.chat = {
 				alert("WebSocket通讯异常,要连接请重新登录！");
 				bc.chat.destroy();
 			};
+			bc.chat.stopReconnect = false;
 		}else{
 			bc.msg.slide("当前浏览器不支持WebSocket，无法使用在线聊天工具！");
 		}
 	},
+	stopReconnect: false,
 	/**销毁已初始化的WebSocket*/
 	destroy:function(){
 		if(bc.ws){
@@ -5378,7 +5437,53 @@ bc.chat = {
 	},
 	/**删除离线用户*/
 	removeUser:function($page,sid){
-		$page.find("li.item[data-sid='" + sid + "']").remove();
+		if(bc.sid == sid){	// 自己登录超时导致的离线，提示用户重新登录
+			bc.chat.relogin(sid);
+		}else{				// 别人离线
+			$page.find("li.item[data-sid='" + sid + "']").remove();
+		}
+	},
+	/** 手动重新登录 */
+	relogin:function(sid,title){
+		// 让用户输入密码重新登录
+		bc.page.newWin({
+			mid: 'relogin',
+			url: bc.root + '/relogin',
+			name: title || '重新登录',
+			modal: true
+		});
+		//bc.chat.stopReconnect = true;
+		//bc.chat.destroy();
+	},
+	/** 自动重新登录 */
+	autologin:function(sid){
+		bc.msg.slide("登录超时，正在重新登录...");
+		bc.ajax({
+			url : bc.root + "/doLogin",
+			data : {
+				name : userCode + "aa",
+				password : bc.md5,
+				sid: sid,
+				relogin: true
+			},
+			type : "POST",
+			dataType: "json",
+			success : function(json) {
+				if(json.success){
+					bc.msg.slide("重新登录成功！");
+					bc.sid = json.sid;
+				}else{
+					logger.info("autoRelogin failed:" + json.msg);
+					// 转到手动登录
+					bc.chat.relogin(sid, '重新登录系统');
+				}
+			},
+			error : function(json) {
+				logger.info("autoRelogin error:" +　$.toJSON(json));
+				// 转到手动登录
+				bc.chat.relogin(sid, '登录系统');
+			}
+		});
 	}
 };
 })(jQuery);
