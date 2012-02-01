@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="group.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/group/save" />'
-	data-js='<s:url value="/bc/identity/group/form.js" />,<s:url value="/bc/identity/identity.js" />'
+	data-js='<s:url value="/bc/identity/group/form.js" />,js:bc_identity'
 	data-initMethod='bc.groupForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow:auto;">
 	<s:form name="groupForm" theme="simple">

@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="resource.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/resource/save" />'
-	data-js='<s:url value="/bc/identity/resource/form.js" />,<s:url value="/bc/identity/identity.js" />'
+	data-js='<s:url value="/bc/identity/resource/form.js" />,js:bc_identity'
 	data-initMethod='bc.resourceForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow:auto;">
 	<s:form name="resourceForm" theme="simple">
