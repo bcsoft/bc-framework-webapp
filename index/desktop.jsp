@@ -149,6 +149,7 @@
 	<script type="text/javascript" src="<s:url value='/bc/libs/form.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/boxPointer.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/loader.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/loader.preconfig.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/editor.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/attach.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/attach.html5.js' ><s:param name='ts' value='ts'/></s:url>"></script>

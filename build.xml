@@ -64,6 +64,9 @@
 				<include name="loader.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
+				<include name="loader.preconfig.js" />
+			</fileset>
+			<fileset dir="${bclibs.dir}">
 				<include name="editor.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
