@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="bulletin.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/bulletin/save" />'
-	data-js='<s:url value="/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0" />,<s:url value="/bc/bulletin/form.js" />'
+	data-js='js:editor,<s:url value="/bc/bulletin/form.js" />'
 	data-initMethod='bc.bulletinForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="bulletinForm" theme="simple">
