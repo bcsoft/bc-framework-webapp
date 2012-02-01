@@ -119,7 +119,7 @@
 	bc.debug = <s:text name="app.debug" />;
 	bc.bcq = <s:text name="app.bcq" />;
 	bc.loginTime = '${loginTime}';
-	bc.md5 = '<s:property value="md5" />';
+	bc.md5 = '${md5}';
 	bc.sid = '<s:property value="sid" />';
 	
 	//一定要使用location.host获取真实的url地址，否则safari在初始化WebSocket时会重置session导致信息丢失
