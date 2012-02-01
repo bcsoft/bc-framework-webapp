@@ -158,7 +158,7 @@ bc.chat = {
 		bc.ajax({
 			url : bc.root + "/doLogin",
 			data : {
-				name : userCode + "aa",
+				name : userCode,
 				password : bc.md5,
 				sid: sid,
 				relogin: true
