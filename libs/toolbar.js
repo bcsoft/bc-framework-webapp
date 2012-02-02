@@ -88,17 +88,21 @@ bc.toolbar = {
 				c = eval("(" + $this.attr("data-condition") + ")");
 				if(logger.debugEnabled)logger.debug("c2=" + $.toJSON(c));
 				var $ms = $this.find(":checked");
-				if($ms.length == 1){//单个值
-					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + "=?",value:$ms[0].value});
-				}else if($ms.length > 1){//多个值
+				var values = [],vv;
+				$ms.each(function(){
+					vv=this.value.split(",");//单个项可以包含多个值，用逗号连接即可
+					for(var i=0;i<vv.length;i++)
+						values.push(vv[i]);
+				});
+				if(values.length == 1){//单个值
+					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + "=?",value:values[0]});
+				}else if(values.length > 1){//多个值
 					var ins = " in (";
-					value = [];
-					for(var i=0;i<$ms.length;i++){
+					for(var i=0;i<values.length;i++){
 						ins += (i==0 ? "?" : ",?");
-						value.push($ms[i].value);
 					}
 					ins += ")";
-					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + ins,value: value});
+					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + ins,value: values});
 				}
 			}
 		});

@@ -22,7 +22,7 @@ bc.chat = {
 		if (!window.WebSocket && window.MozWebSocket)
 			window.WebSocket = window.MozWebSocket;
 		if (window.WebSocket){
-			bc.ws = new window.WebSocket(bc.wsurl + "?sid=" + bc.sid + "&userId=" + userId + "&userName=" + userName, "chat");
+			bc.ws = new window.WebSocket(bc.wsurl + "?sid=" + bc.sid + "&c=" + userId + "," + userName, "chat");
 			bc.ws.onopen = function(){
 				logger.info("WebSocket打开了！");
 			};
@@ -50,25 +50,29 @@ bc.chat = {
 						bc.msg.slide(json.name + "：" + json.msg);
 					}
 				}else if(json.type == 0 || json.type == 1){//上下线信息
-					//寻找在线用户列表对话框
-					var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bcq']").parent();
-					if($msgDialog.size()){//找到对话框
-						if(json.type == 0){//上线
-							//添加在线用户
-							bc.chat.addUser($msgDialog,json);
-						}else if(json.type == 1){//下线
-							//删除离线用户
-							bc.chat.removeUser($msgDialog,json.sid);
-						}
-						
-						//如果对话框当前被隐藏，提示一下
-						if ($msgDialog.is(":hidden")) {
-							bc.page.quickbar.warn("bcq");
+					if(json.type == 1 && json.sid == bc.sid){//自己登录后的超时下线
+						bc.chat.autologin(json.sid);
+					}else{
+						//寻找在线用户列表对话框
+						var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bcq']").parent();
+						if($msgDialog.size()){//找到对话框
+							if(json.type == 0){//上线
+								//添加在线用户
+								bc.chat.addUser($msgDialog,json);
+							}else if(json.type == 1){//下线
+								//删除离线用户
+								bc.chat.removeUser($msgDialog,json.sid);
+							}
+							
+							//如果对话框当前被隐藏，提示一下
+							if ($msgDialog.is(":hidden")) {
+								bc.page.quickbar.warn("bcq");
+								bc.msg.slide(json.msg);
+							}
+						}else{
 							bc.msg.slide(json.msg);
 						}
-					}else{
-						bc.msg.slide(json.msg);
-					}					
+					}
 				}else{// if(json.type == 1){//广播的信息
 					bc.msg.slide(json.msg);
 				}
@@ -77,8 +81,8 @@ bc.chat = {
 				if(logger.debugEnabled)
 					logger.debug("onclose:e=" + $.toJSON(e));
 				bc.chat.destroy();
-				if(e.wasClean === true){
-					//服务器超时断开
+				if(e.wasClean === true && !bc.chat.stopReconnect){
+					//WebSocket服务器超时断开
 					setTimeout(function(){
 						logger.info("重新连接WebSocket中...");
 						bc.msg.slide("重新连接WebSocket中...");
@@ -95,10 +99,12 @@ bc.chat = {
 				alert("WebSocket通讯异常,要连接请重新登录！");
 				bc.chat.destroy();
 			};
+			bc.chat.stopReconnect = false;
 		}else{
 			bc.msg.slide("当前浏览器不支持WebSocket，无法使用在线聊天工具！");
 		}
 	},
+	stopReconnect: false,
 	/**销毁已初始化的WebSocket*/
 	destroy:function(){
 		if(bc.ws){
@@ -128,7 +134,53 @@ bc.chat = {
 	},
 	/**删除离线用户*/
 	removeUser:function($page,sid){
-		$page.find("li.item[data-sid='" + sid + "']").remove();
+		if(bc.sid == sid){	// 自己登录超时导致的离线，提示用户重新登录
+			bc.chat.relogin(sid);
+		}else{				// 别人离线
+			$page.find("li.item[data-sid='" + sid + "']").remove();
+		}
+	},
+	/** 手动重新登录 */
+	relogin:function(sid,title){
+		// 让用户输入密码重新登录
+		bc.page.newWin({
+			mid: 'relogin',
+			url: bc.root + '/relogin',
+			name: title || '重新登录',
+			modal: true
+		});
+		//bc.chat.stopReconnect = true;
+		//bc.chat.destroy();
+	},
+	/** 自动重新登录 */
+	autologin:function(sid){
+		bc.msg.slide("登录超时，正在重新登录...");
+		bc.ajax({
+			url : bc.root + "/doLogin",
+			data : {
+				name : userCode,
+				password : bc.md5,
+				sid: sid,
+				relogin: true
+			},
+			type : "POST",
+			dataType: "json",
+			success : function(json) {
+				if(json.success){
+					bc.msg.slide("重新登录成功！");
+					bc.sid = json.sid;
+				}else{
+					logger.info("autoRelogin failed:" + json.msg);
+					// 转到手动登录
+					bc.chat.relogin(sid, '重新登录系统');
+				}
+			},
+			error : function(json) {
+				logger.info("autoRelogin error:" +　$.toJSON(json));
+				// 转到手动登录
+				bc.chat.relogin(sid, '登录系统');
+			}
+		});
 	}
 };
 })(jQuery);

@@ -9,6 +9,7 @@ jQuery(function($){
 		type: "POST",
 		error: function(request, textStatus, errorThrown) {
 			if(bc.page.showError){
+				logger.error("bc.ajax error!");
 				//显示漂亮的错误提示窗口
 				bc.page.showError({url:this.url, more:request.responseText || request.responseHTML,from:"bc.ajax.error"});
 			}else{
