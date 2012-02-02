@@ -28,6 +28,7 @@ $.widget( "ui.bcsearch", {
 		useCleanButton: false
 	},
 	_create: function() {
+		var $this = this;
 		if ( !this.options.trigger ) {
 			this.options.trigger = this.element.prev();
 		}
@@ -52,10 +53,34 @@ $.widget( "ui.bcsearch", {
 		this._beforeClose();
 		this.element.hide();
 		
+		// 添加搜索按钮
+		if(this.element.children(".operate").size() == 0){
+			var tpl = '<div class="operate">';
+			
+			// 搜索按钮
+			tpl += '<button id="doSearchBtn" class="bc-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" '+
+						'data-click="bc.toolbar.doAdvanceSearch">'+
+						'<span class="ui-button-icon-primary ui-icon ui-icon-search"></span>'+
+						'<span class="ui-button-text">查询</span>'+
+					'</button>';
+			
+			// 清空按钮
+			if(this.options.useCleanButton){
+				tpl += '<button id="doCleanBtn" class="bc-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" '+
+							'data-click="bc.toolbar.doAdvanceClean">'+
+							'<span class="ui-button-icon-primary ui-icon ui-icon-minus"></span>'+
+							'<span class="ui-button-text">清空</span>'+
+						'</button>';
+			}
+			
+			tpl += '</div>';
+
+			this.element.append(tpl);
+		}
+		
 		// 添加关闭按钮
-		var $this = this;
 		if(this.element.children(".closeBtn").size() == 0){
-			this.element.append('<a href="#" class="closeBtn ui-corner-all" title="点击关闭"><span class="ui-icon ui-icon-closethick">关闭</span></a>');
+			this.element.append('<a id="doClose" href="#" class="closeBtn ui-corner-all" title="点击关闭"><span class="ui-icon ui-icon-closethick">关闭</span></a>');
 			this.element.children(".closeBtn").click(function(event){
 				$this.close( event );
 				return false;
@@ -68,31 +93,6 @@ $.widget( "ui.bcsearch", {
 					$(this).toggleClass("ui-state-hover");
 				}
 			);
-		}
-		
-		// 添加搜索按钮
-		if(this.element.children(".operate").size() == 0){
-			var tpl = '<div class="operate">';
-			
-			// 搜索按钮
-			tpl += '<button class="bc-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" '+
-						'data-click="bc.toolbar.doAdvanceSearch">'+
-						'<span class="ui-button-icon-primary ui-icon ui-icon-search"></span>'+
-						'<span class="ui-button-text">查询</span>'+
-					'</button>';
-			
-			// 清空按钮
-			if(this.options.useCleanButton){
-				tpl += '<button class="bc-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" '+
-							'data-click="bc.toolbar.doAdvanceClean">'+
-							'<span class="ui-button-icon-primary ui-icon ui-icon-minus"></span>'+
-							'<span class="ui-button-text">清空</span>'+
-						'</button>';
-			}
-			
-			tpl += '</div>';
-
-			this.element.append(tpl);
 		}
 
 		this._bind(this.options.trigger, {
@@ -222,6 +222,10 @@ $.widget( "ui.bcsearch", {
 			this.element.menu( "focus", event, this.element.children( "li" ).first() );
 			this.element.focus();
 		} else {
+			// 让关闭按钮获取焦点
+			this.element.find("#doClose").focus();
+			
+			/*
 			// set focus to the first tabbable element in the popup container
 			// if there are no tabbable elements, set focus on the popup itself
 			var tabbables = this.element.find( ":tabbable" );
@@ -234,6 +238,7 @@ $.widget( "ui.bcsearch", {
 				tabbables = tabbables.add( this.element[ 0 ] );
 			}
 			tabbables.first().focus( 1 );
+			*/
 		}
 
 		// take trigger out of tab order to allow shift-tab to skip trigger
