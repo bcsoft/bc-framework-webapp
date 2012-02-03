@@ -22,7 +22,9 @@
 				</tr>
 				<tr>
 					<td class="label"><s:text name="syslog.unitName"/>:</td>
-					<td class="value" colspan="3"><s:textfield name="e.author.unitName" readonly="true"/></td>
+					<td class="value"><s:textfield name="e.author.unitName" readonly="true"/></td>
+					<td class="label"><s:text name="syslog.sid"/>:</td>
+					<td class="value"><s:textfield name="e.sid" readonly="true"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="syslog.clientIp"/>:</td>
