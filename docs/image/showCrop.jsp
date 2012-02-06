@@ -8,6 +8,7 @@
 		<table class="table" cellspacing="0" cellpadding="0" style="height:100%;">
 			<tr style="line-height:1px;height:1px;font-size: 1px;">
 				<td style="width:<s:property value="cropSize"/>px;">&nbsp</td>
+				<td style="width:156px;">&nbsp</td>
 				<td>&nbsp</td>
 			</tr>
 			<tr>
@@ -36,9 +37,10 @@
 					<div style="text-align: left;margin-top:8px;font-size: 12px;">原图：</div>
 					<div style="margin:auto;font-size: 12px;"><span id="zoomInfo"></span></div>
 				</td>
+				<td>&nbsp</td>
 			</tr>
 			<tr>
-				<td style="text-align: center; vertical-align: bottom;padding:8px;">
+				<td style="text-align: center; vertical-align: bottom;padding:8px;overflow: hidden;">
 					<div style="min-width:110px;text-align: center;">
 						<div style='background-color: black; margin:auto;width: <s:property value="preWidth"/>px; height: <s:property value="preHeight"/>px; overflow: hidden;border: 1px solid #ccc;'>
 							<s:if test="%{id != null}">
@@ -52,12 +54,13 @@
 						<div class="bc-image ui-widget ui-state-default ui-corner-all"  
 							data-puid='<s:property value="puid"/>' data-ptype='<s:property value="ptype"/>' data-callback='bc.showCrop.finishUpload' 
 							data-extensions='<s:property value="extensions"/>'
-							style="margin:auto;position: relative;color: #2A5DB0;line-height:40px;height:40px;width:5em;font-size: 22px;margin-top:16px;">更换图片<input 
+							style="margin:auto;position: relative;color: #2A5DB0;line-height:40px;height:40px;width:5em;font-size: 22px;margin-top:16px;cursor:pointer;">更换图片<input 
 							type="file" class="uploadImage" name="uploadImage" 
-							style="position: absolute;left: 0;top: 0;width: 4.5em;height: 1.5em;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
+							style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
 						</div>
 					</div>
 				</td>
+				<td>&nbsp</td>
 			</tr>
 		</table>
 		<s:hidden name="id"/>

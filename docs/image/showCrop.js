@@ -278,7 +278,8 @@ bc.showCrop = {
 	    if(option.puid) url+="&puid=" + option.puid;
 	    
 	    //检测文件类型的限制
-	    var fileName = option.file.fileName;
+	    var fileName = option.file.name;
+		logger.info("file.name=" + option.file.name + ",file.fileName=" + option.file.fileName);
 	    if(option.extensions && option.extensions.length > 0){
 	    	var extensions = option.extensions.toLowerCase();
     		if(extensions.indexOf(fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase()) == -1){
@@ -338,9 +339,10 @@ bc.showCrop = {
 		xhr.setRequestHeader('Content-Type', 'application/octet-stream');
 		//对文件名进行URI编码避免后台中文乱码（后台需URI解码）
 		xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="'+encodeURIComponent(fileName)+'"');
-		if(xhr.sendAsBinary)//Firefox4
+		logger.info("jQuery.browser.version=" + jQuery.browser.version);
+		if(xhr.sendAsBinary && $.browser.mozilla && $.browser.version <=9)//Firefox4
 			xhr.sendAsBinary(option.file.getAsBinary());
-		else //Chrome12
+		else //Chrome12+,firfox10+,opera,safari
 			xhr.send(option.file);
 	}
 };
