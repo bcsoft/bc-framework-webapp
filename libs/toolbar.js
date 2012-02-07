@@ -56,6 +56,16 @@ bc.toolbar = {
 		
 		//标记已初始化
 		$advanceSearchBtn.attr("data-advanceSearchInit","true");
+		
+		// 控制是否可拖动高级搜索框
+		if($conditionsForm.is(".draggable") && $.fn.draggable){
+			$conditionsForm.css("cursor","move").draggable({
+				cancel: ".conditions,button,a"
+			});
+			
+			// 让高级搜索框超出对话框范围也可见
+			$conditionsForm.closest(".bc-page").css("overflow","visible");
+		}
 	},
 	
 	/** 执行高级搜索：上下文为当前窗口页面
