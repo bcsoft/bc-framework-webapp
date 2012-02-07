@@ -140,11 +140,18 @@ bc.toolbar = {
 	 * @param target 点击的按钮
 	 */
 	doAdvanceClean: function(option,target) {
+		// 清除条件框的值
 		var $conditionsFrom = $(target).closest(".bc-conditionsForm");
 		$conditionsFrom.find("input[type='text'],input[type='hidden'],textarea,select").val("");
 		$conditionsFrom.find(":checked").each(function(){
 			this.checked = false;
 		});
+		
+		// 清除页面保存的条件值
+		var extras = $conditionsFrom.closest(".bc-page").data("extras");
+		if(extras){
+			delete extras.search4advance;
+		}
 	}
 };
 	
