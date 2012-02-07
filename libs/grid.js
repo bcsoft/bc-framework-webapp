@@ -153,6 +153,17 @@ bc.grid = {
 	 * @option callback 请求数据完毕后的处理函数
 	 */
 	reloadData: function($page,option) {
+		var fromMID = $page.attr("data-from");
+		logger.info("grid.reloadData:fromMID=" + fromMID);
+		if(fromMID){
+			// 获取原始的$page对象
+			$page = $(".bc-ui-dialog>.bc-page[data-mid='" + fromMID + "']");
+			if($page.size() == 0){
+				logger.info("找不到相应的原始对话框，忽略不作处理！fromMID=" + fromMID);
+				return;
+			}
+		}
+		
 		var ts = "grid.reloadData." + $page.attr("data-mid");
 		logger.profile(ts);
 		// 显示加载动画
