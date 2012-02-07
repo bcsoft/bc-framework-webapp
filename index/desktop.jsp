@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<!--[if !IE]><!--><!DOCTYPE html><!--<![endif]-->
+<!--[if !IE]><!DOCTYPE html><![endif]-->
+<!--[if lte IE 8]><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><![endif]-->
+<!--[if gte IE 9]><!DOCTYPE html><![endif]-->
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>

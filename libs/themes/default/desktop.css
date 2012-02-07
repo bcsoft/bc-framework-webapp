@@ -113,6 +113,11 @@ ul.bc-menubar>li.ui-menubar-item>a.ui-menubar-link>span.ui-button-text {
 	padding-right: 0.4em;
 }
 
+ul.bc-menubar ul.childMenu{
+	border-radius: 0;
+	box-shadow: 1px 1px 10px #ccc;
+}
+
 /**桌面快捷方式*/
 a.shortcut,a.recycle {
 	margin: 10px 5px 5px 10px;
