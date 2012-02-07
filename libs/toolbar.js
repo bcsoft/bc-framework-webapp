@@ -109,7 +109,10 @@ bc.toolbar = {
 		
 		// 将搜索条件保存到指定位置
 		var extras = $page.data("extras");
-		if(!extras) extras = {};
+		if(!extras){
+			$page.data("extras",{});
+			extras = $page.data("extras");
+		}
 		extras.search4advance = $.toJSON(conditions);
 		if(logger.infoEnabled)logger.info("search4advance=" + extras.search4advance);
 		
