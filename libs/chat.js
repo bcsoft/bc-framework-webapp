@@ -37,13 +37,7 @@ bc.chat = {
 					//寻找聊天对话框
 					var $msgDialog = $(".ui-dialog>.ui-dialog-content.chatMsg[data-mid='chat-" + toSid + "']").parent();
 					if($msgDialog.size()){//找到对话框
-						//插入聊天消息
-						bc.chat.addHistory($msgDialog,bc.chat.historyItemTpl.format(className,userName,json.time,json.msg));
-						
-						//如果对话框当前被隐藏，任务栏搞动一下
-						if ($msgDialog.is(":hidden")) {
-							bc.page.quickbar.warn("chat-" + toSid);
-						}
+						bc.chat.receive($msgDialog,className,userName,toSid,json.time,json.msg);
 					}else{
 						//用户还没有打开聊天窗口就提示一下
 						//TODO 记录这些信息以便在用户打开聊天窗口后自动添加进去
@@ -54,11 +48,15 @@ bc.chat = {
 						bc.chat.autologin(json.sid);
 					}else{
 						//寻找在线用户列表对话框
-						var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bcq']").parent();
+						var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bq']").parent();
+						var $sidDialog = $(".ui-dialog>.ui-dialog-content.chatMsg[data-mid='chat-" + json.sid + "']").parent();
 						if($msgDialog.size()){//找到对话框
 							if(json.type == 0){//上线
 								//添加在线用户
 								bc.chat.addUser($msgDialog,json);
+								
+								//提示上线
+								bc.chat.receive($sidDialog,"sys","系统",json.sid,json.time,json.msg);
 							}else if(json.type == 1){//下线
 								//删除离线用户
 								bc.chat.removeUser($msgDialog,json.sid);
@@ -66,11 +64,16 @@ bc.chat = {
 							
 							//如果对话框当前被隐藏，提示一下
 							if ($msgDialog.is(":hidden")) {
-								bc.page.quickbar.warn("bcq");
+								bc.page.quickbar.warn("bq");
 								bc.msg.slide(json.msg);
 							}
 						}else{
 							bc.msg.slide(json.msg);
+						}
+						
+						// 寻找当前打开的聊天对话框并提示
+						if(json.type == 1){//下线
+							bc.chat.receive($sidDialog,"sys","系统",json.sid,json.time,json.msg);
 						}
 					}
 				}else{// if(json.type == 1){//广播的信息
@@ -115,6 +118,18 @@ bc.chat = {
 			if(bc.ws.close)
 				bc.ws.close();
 			bc.ws = null;
+		}
+	},
+	/**接收一条聊天记录*/
+	receive:function($page,className,userName,fromSid,time,msg){
+		if($page.size() == 0) return;
+
+		//插入聊天消息
+		bc.chat.addHistory($page,bc.chat.historyItemTpl.format(className,userName,time,msg));
+		
+		//如果对话框当前被隐藏，任务栏搞动一下
+		if ($page.is(":hidden")) {
+			bc.page.quickbar.warn("chat-" + fromSid);
 		}
 	},
 	/**添加一条聊天记录*/

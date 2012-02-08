@@ -13,7 +13,7 @@ bc.online = {
 				//打开与此用户的聊天窗口
 				var user = $(this).data("user");
 				bc.page.newWin({
-					name: "BCQ " + user.name,
+					name: "BQ " + user.name,
 					mid: "chat-" + user.sid,
 					url: bc.root + "/bc/chat/message",
 					data: {toSid:user.sid,toName:user.name,toIp:user.ip}

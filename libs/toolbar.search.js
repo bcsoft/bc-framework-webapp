@@ -251,6 +251,9 @@ $.widget( "ui.bcsearch", {
 		// 显示高级搜索按钮
 		this.options.trigger.show();
 		
+		// 清空搜索条件
+		bc.toolbar.doAdvanceClean.call(this,null,this.element);
+		
 		this._beforeClose();
 		this._hide( this.element, this.options.hide );
 

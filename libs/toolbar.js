@@ -56,6 +56,16 @@ bc.toolbar = {
 		
 		//标记已初始化
 		$advanceSearchBtn.attr("data-advanceSearchInit","true");
+		
+		// 控制是否可拖动高级搜索框
+		if($conditionsForm.is(".draggable") && $.fn.draggable){
+			$conditionsForm.css("cursor","move").draggable({
+				cancel: ".conditions,button,a"
+			});
+			
+			// 让高级搜索框超出对话框范围也可见
+			$conditionsForm.closest(".bc-page").css("overflow","visible");
+		}
 	},
 	
 	/** 执行高级搜索：上下文为当前窗口页面
@@ -109,7 +119,10 @@ bc.toolbar = {
 		
 		// 将搜索条件保存到指定位置
 		var extras = $page.data("extras");
-		if(!extras) extras = {};
+		if(!extras){
+			$page.data("extras",{});
+			extras = $page.data("extras");
+		}
 		extras.search4advance = $.toJSON(conditions);
 		if(logger.infoEnabled)logger.info("search4advance=" + extras.search4advance);
 		
@@ -127,11 +140,18 @@ bc.toolbar = {
 	 * @param target 点击的按钮
 	 */
 	doAdvanceClean: function(option,target) {
+		// 清除条件框的值
 		var $conditionsFrom = $(target).closest(".bc-conditionsForm");
 		$conditionsFrom.find("input[type='text'],input[type='hidden'],textarea,select").val("");
 		$conditionsFrom.find(":checked").each(function(){
 			this.checked = false;
 		});
+		
+		// 清除页面保存的条件值
+		var extras = $conditionsFrom.closest(".bc-page").data("extras");
+		if(extras){
+			delete extras.search4advance;
+		}
 	}
 };
 	
