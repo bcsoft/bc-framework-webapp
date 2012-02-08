@@ -82,12 +82,12 @@ bc.form = {
 			if(cfg.addYear){//自动将另一控件的值设置为此控件值加指定年份后的值的处理
 				logger.debug("addYear=" + cfg.addYear);
 				var $toField;
-				if(typeof cfg.addYear == "number"){
+				if(typeof cfg.addYear == "number"){//直接加年
 					//自动找到另一个控件
 					$toField = $this.parent(".bc-dateContainer").siblings(".bc-dateContainer")
 					.children("input[type='text']");
 				}else{
-					//按类似“5|fieldName”的格式解析出另一个控件
+					//按类似“3 1 -2|fieldName”的格式解析出另一个控件，“3 1 -2”表示加3年再加1月再减2日
 					var ss = cfg.addYear.split("|");
 					cfg.addYear = parseInt(ss[0]);
 					if(ss.length > 1)
@@ -97,8 +97,18 @@ bc.form = {
 				if($toField.length){
 					var oldFun = cfg.onSelect;
 					cfg.onSelect = function(dateText,inst){
-						// 设置联动值
-						$toField.val(Date.addYear(dateText,cfg.addYear));
+						// 转换字符串为日期值：http://docs.jquery.com/UI/Datepicker/parseDate
+						var _date = $.datepicker.parseDate(cfg.format || 'yy-mm-dd', dateText);
+						var sss = ss[0].split(" ");
+						_date.setFullYear(_date.getFullYear() + parseInt(sss[0]));//加年
+						if(sss.length > 1)_date.setMonth(_date.getMonth() + parseInt(sss[1]));//加月
+						if(sss.length > 2)_date.setDate(_date.getDate() + parseInt(sss[2]));//加日
+						if(sss.length > 3)_date.setHours(_date.getHours() + parseInt(sss[3]));//加时
+						if(sss.length > 4)_date.setMinutes(_date.getMinutes() + parseInt(sss[4]));//加分
+						if(sss.length > 5)_date.setSeconds(_date.getSeconds() + parseInt(sss[5]));//加秒
+						
+						// 设置联动值：http://docs.jquery.com/UI/Datepicker/formatDate
+						$toField.val($.datepicker.formatDate(cfg.format || 'yy-mm-dd',_date));
 						
 						//调用原来的回调函数
 						if(typeof oldFun == "function"){
