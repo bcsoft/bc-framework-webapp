@@ -20,6 +20,18 @@ body {
 	background-color: #f5f5f5;
 }
 
+#debugInfo {
+	position: absolute;
+	width: 600px;
+	margin-left: -300px;
+	left: 50%;
+	top: 10px;
+	font-size: 40px;
+	color: red;
+	font-weight: bold;
+	text-align: center;
+}
+
 #systemInfo {
 	position: absolute;
 	background-color: #f5f5f5;

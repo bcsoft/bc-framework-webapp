@@ -8,10 +8,13 @@ bc.page = {
 	/**创建窗口
 	 * @param {Object} option
 	 * @option {String} url 地址
-	 * @option {String} data 附加的数据
-	 * @option {String} afterOpen 窗口新建好后的回调函数
-	 * @option {String} afterClose 窗口关闭后的回调函数。function(event, ui)
-	 * @option {String} beforeClose 窗口关闭前的回调函数，返回false将阻止关闭窗口。function(event, ui)
+	 * @option {String} mid [可选]对话框的唯一标识id
+	 * @option {String} from [可选]打开此对话框的源对话框的mid
+	 * @option {String} name [可选]任务栏显示的名称
+	 * @option {String} data [可选]附加的数据
+	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
+	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
+	 * @option {String} beforeClose [可选]窗口关闭前的回调函数，返回false将阻止关闭窗口。function(event, ui)
 	 */
 	newWin: function(option) {
 		option = option || {};
@@ -123,6 +126,17 @@ bc.page = {
 							cur.addClass("ui-state-active").siblings().toggleClass("ui-state-active",false);
 					});
 					//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
+					
+					// 记录来源窗口的id
+					if(option.from){
+						if(typeof option.from == "string"){//直接传入来源窗口的mid
+							$dom.attr("data-from",option.from);
+						}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
+							$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
+						}else{
+							alert("不支持的from对象类型！");
+						}
+					}
 					
 					var dataType = $dom.attr("data-type");
 					if(dataType == "list"){//视图
@@ -510,12 +524,14 @@ bc.page = {
 				data = $.extend(data, extras);
 			}
 			
+			var fromMID = $page.attr("data-mid");
 			bc.page.newWin({
 				url:url, data: data || null,
-				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
+				from: fromMID,
+				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
 				afterClose: function(status){
-					if(status == "saved")
+					if(status)
 						bc.grid.reloadData($page);
 				},
 				afterOpen: option.callback
@@ -552,12 +568,14 @@ bc.page = {
 				data = $.extend(data, extras);
 			}
 			
+			var fromMID = $page.attr("data-mid");
 			bc.page.newWin({
 				url:url, data: data || null,
-				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
+				from: fromMID,
+				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
 				afterClose: function(status){
-					if(status == "saved")
+					if(status)
 						bc.grid.reloadData($page);
 				},
 				afterOpen: option.callback

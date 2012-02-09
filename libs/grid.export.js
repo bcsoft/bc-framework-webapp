@@ -23,8 +23,8 @@ bc.grid.export2Excel = function($grid,el) {
 	if(paging){//分页
 		html.push('<div class="rangeTitle">确认导出范围</div>'
 			+'<ul class="rangeUl"><li>'
-			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1" checked><span>当前页</span></label>'
-			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2"><span>全部</span></label>'
+			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1"><span>当前页</span></label>'
+			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2" checked><span>全部</span></label>'
 			+'</li></ul>');
 	}
 	

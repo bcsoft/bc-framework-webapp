@@ -231,10 +231,16 @@
 			var $bcq = $top.find("#bcq");
 			if($bcq.size() > 0){
 				$bcq.click(function() {
+					// ie的提示：微软计划ie10才开始支持websocket
+					if(jQuery.browser.msie && jQuery.browser.version < 10){
+						alert("当前浏览器不支持WebSocket技术，无法使用在线聊天工具！");
+						return false;
+					}
+					
 					bc.page.newWin({
-						name: "BCQ 2012",
-						mid: "bcq",
-						url: bc.root + "/bc/chat/onlineUser"
+						name: "BQ2012",
+						mid: "bq",
+						url: bc.root + "/bc/websocket/online"
 					});
 					return false;
 				});

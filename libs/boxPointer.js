@@ -9,7 +9,7 @@ bc.boxPointer = {
 	id:0,
 	
 	/** 默认的 */
-	TPL: '<div class="boxPointer ui-widget ui-state-error ui-corner-all"><div class="content"></div><s class="pointerBorder"><i class="pointerColor"></i></s></div>',
+	TPL: '<div class="boxPointer ui-widget ui-state-highlight ui-corner-all"><div class="content"></div><s class="pointerBorder"><i class="pointerColor"></i></s></div>',
 	OK: "确定",
 	CANCEL: "取消",
 	CSS_TOP:{},
