@@ -4,8 +4,15 @@
 	data-js='<s:url value="/bc/libs/themes/default/browser.css" />' 
 	data-option='{"width":600,"minWidth":250,"minHeight":250,"height":400,"modal":true}' style="overflow-y:auto;">
 	<s:form name="browserForm" theme="simple">
-		<div class="browsersTitle">支持Html5的浏览器：</div>
+		<div class="browsersTitle">现代化的浏览器(支持Html5)：</div>
 		<ul class="browsers ui-widget-content">
+			<s:iterator value="browsers4html5">
+			<li class="browser ui-corner-all ui-state-default" data-puid='<s:property value="puid"/>' title="点击下载">
+				<span class='browser-icon <s:property value="icon"/>'></span>
+				<span class="text">(<s:property value="sizeInfo"/>) <s:property value="subject"/></span>
+			</li>
+			</s:iterator>
+			<!-- 
 			<li class="browser ui-corner-all ui-state-default" data-puid="chrome15.0.874.121" title="点击下载">
 				<span class="browser-icon chrome12"></span>
 				<span class="text">(24MB) 谷歌浏览器Chrome15.0</span>
@@ -26,13 +33,22 @@
 				<span class="browser-icon ie9"></span>
 				<span class="text">(18MB) 微软浏览器IE9.0</span>
 			</li>
+			 -->
 		</ul>
-		<div class="browsersTitle">其他浏览器：</div>
+		<div class="browsersTitle">过时的浏览器(不支持Html5)：</div>
 		<ul class="browsers ui-widget-content">
+			<s:iterator value="browsers4old">
+			<li class="browser ui-corner-all ui-state-default" data-puid='<s:property value="puid"/>' title="点击下载">
+				<span class='browser-icon <s:property value="icon"/>'></span>
+				<span class="text">(<s:property value="sizeInfo"/>) <s:property value="subject"/></span>
+			</li>
+			</s:iterator>
+			<!-- 
 			<li class="browser ui-corner-all ui-state-default" data-puid="ie8.0" title="点击下载">
 				<span class="browser-icon ie8"></span>
 				<span class="text">(16MB) 微软浏览器IE8.0</span>
 			</li>
+			 -->
 		</ul>
 	</s:form>
 </div>

@@ -58,8 +58,9 @@ table.table { /*width: 100%;
 	margin-top: -8px;
 }
 
-.bc-grid tr.row.ui-state-default {
-	background: none;
+.bc-grid tr.row.ui-widget-content {
+	font-weight: normal;
+	/*background: none;*/
 }
 
 .bc-grid tr.row.even { /*filter: alpha(opacity=50);	opacity: 0.5;*/
@@ -216,4 +217,5 @@ table.table { /*width: 100%;
 
 .bc-grid>.data>.right tr.row a.bc-link {
 	text-decoration: underline;
+	color: inherit;
 }

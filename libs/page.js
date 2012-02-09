@@ -378,7 +378,7 @@ bc.page = {
 			}
 		}
 		var data=null;
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			data = "id=" + $tds.attr("data-id");
 		}else if($tds.length > 1){
@@ -428,7 +428,7 @@ bc.page = {
 			}
 		}
 		var data=null;
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			data = "id=" + $tds.attr("data-id");
 		}else if($tds.length > 1){
@@ -514,7 +514,7 @@ bc.page = {
 				url += "/edit";
 			}
 		}
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			var data = {id: $tds.attr("data-id")};
 			
@@ -558,7 +558,7 @@ bc.page = {
 				url += "/open";
 			}
 		}
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			var data = {id: $tds.attr("data-id")};
 			
