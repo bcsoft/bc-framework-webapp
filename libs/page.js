@@ -10,7 +10,7 @@ bc.page = {
 	 * @option {String} url 地址
 	 * @option {String} mid [可选]对话框的唯一标识id
 	 * @option {String} from [可选]打开此对话框的源对话框的mid
-	 * @option {String} name [可选]任务栏显示的名称
+	 * @option {String} name [可选]任务栏显示的名称或对话框的标题
 	 * @option {String} data [可选]附加的数据
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
@@ -77,8 +77,9 @@ bc.page = {
 					}
 					cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
 					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
-					if(!$dom.attr("title"))
-						cfg.title=option.name;
+					//if(!$dom.attr("title")) cfg.title=option.name;
+					cfg.title = option.name || $dom.attr("title");// 对话框标题
+					
 					$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
 						open: function(event, ui) {
 							var dataType = $dom.attr("data-type");
