@@ -331,3 +331,8 @@ td.relative,div.relative{
 .formTabs.ui-tabs .ui-tabs-nav { border: 0; background: none;}
 .formTabs.ui-tabs .ui-tabs-panel {border-width: 1px;background-color: transparent;}
 .formTabs.ui-tabs .ui-tabs-nav li { margin-bottom: 0;}
+
+
+ul.bc-menu>li.ui-menu-item>a {
+	color: inherit;
+}
