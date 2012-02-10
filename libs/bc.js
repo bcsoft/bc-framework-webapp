@@ -628,10 +628,13 @@ bc.page = {
 	/**创建窗口
 	 * @param {Object} option
 	 * @option {String} url 地址
-	 * @option {String} data 附加的数据
-	 * @option {String} afterOpen 窗口新建好后的回调函数
-	 * @option {String} afterClose 窗口关闭后的回调函数。function(event, ui)
-	 * @option {String} beforeClose 窗口关闭前的回调函数，返回false将阻止关闭窗口。function(event, ui)
+	 * @option {String} mid [可选]对话框的唯一标识id
+	 * @option {String} from [可选]打开此对话框的源对话框的mid
+	 * @option {String} name [可选]任务栏显示的名称
+	 * @option {String} data [可选]附加的数据
+	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
+	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
+	 * @option {String} beforeClose [可选]窗口关闭前的回调函数，返回false将阻止关闭窗口。function(event, ui)
 	 */
 	newWin: function(option) {
 		option = option || {};
@@ -743,6 +746,17 @@ bc.page = {
 							cur.addClass("ui-state-active").siblings().toggleClass("ui-state-active",false);
 					});
 					//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
+					
+					// 记录来源窗口的id
+					if(option.from){
+						if(typeof option.from == "string"){//直接传入来源窗口的mid
+							$dom.attr("data-from",option.from);
+						}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
+							$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
+						}else{
+							alert("不支持的from对象类型！");
+						}
+					}
 					
 					var dataType = $dom.attr("data-type");
 					if(dataType == "list"){//视图
@@ -984,7 +998,7 @@ bc.page = {
 			}
 		}
 		var data=null;
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			data = "id=" + $tds.attr("data-id");
 		}else if($tds.length > 1){
@@ -1034,7 +1048,7 @@ bc.page = {
 			}
 		}
 		var data=null;
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			data = "id=" + $tds.attr("data-id");
 		}else if($tds.length > 1){
@@ -1120,7 +1134,7 @@ bc.page = {
 				url += "/edit";
 			}
 		}
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			var data = {id: $tds.attr("data-id")};
 			
@@ -1130,12 +1144,14 @@ bc.page = {
 				data = $.extend(data, extras);
 			}
 			
+			var fromMID = $page.attr("data-mid");
 			bc.page.newWin({
 				url:url, data: data || null,
-				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
+				from: fromMID,
+				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
 				afterClose: function(status){
-					if(status == "saved")
+					if(status)
 						bc.grid.reloadData($page);
 				},
 				afterOpen: option.callback
@@ -1162,7 +1178,7 @@ bc.page = {
 				url += "/open";
 			}
 		}
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			var data = {id: $tds.attr("data-id")};
 			
@@ -1172,12 +1188,14 @@ bc.page = {
 				data = $.extend(data, extras);
 			}
 			
+			var fromMID = $page.attr("data-mid");
 			bc.page.newWin({
 				url:url, data: data || null,
-				mid: $page.attr("data-mid") + "." + $tds.attr("data-id"),
+				from: fromMID,
+				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
 				afterClose: function(status){
-					if(status == "saved")
+					if(status)
 						bc.grid.reloadData($page);
 				},
 				afterOpen: option.callback
@@ -1422,6 +1440,16 @@ bc.toolbar = {
 		
 		//标记已初始化
 		$advanceSearchBtn.attr("data-advanceSearchInit","true");
+		
+		// 控制是否可拖动高级搜索框
+		if($conditionsForm.is(".draggable") && $.fn.draggable){
+			$conditionsForm.css("cursor","move").draggable({
+				cancel: ".conditions,button,a"
+			});
+			
+			// 让高级搜索框超出对话框范围也可见
+			$conditionsForm.closest(".bc-page").css("overflow","visible");
+		}
 	},
 	
 	/** 执行高级搜索：上下文为当前窗口页面
@@ -1475,7 +1503,10 @@ bc.toolbar = {
 		
 		// 将搜索条件保存到指定位置
 		var extras = $page.data("extras");
-		if(!extras) extras = {};
+		if(!extras){
+			$page.data("extras",{});
+			extras = $page.data("extras");
+		}
 		extras.search4advance = $.toJSON(conditions);
 		if(logger.infoEnabled)logger.info("search4advance=" + extras.search4advance);
 		
@@ -1493,11 +1524,18 @@ bc.toolbar = {
 	 * @param target 点击的按钮
 	 */
 	doAdvanceClean: function(option,target) {
+		// 清除条件框的值
 		var $conditionsFrom = $(target).closest(".bc-conditionsForm");
 		$conditionsFrom.find("input[type='text'],input[type='hidden'],textarea,select").val("");
 		$conditionsFrom.find(":checked").each(function(){
 			this.checked = false;
 		});
+		
+		// 清除页面保存的条件值
+		var extras = $conditionsFrom.closest(".bc-page").data("extras");
+		if(extras){
+			delete extras.search4advance;
+		}
 	}
 };
 	
@@ -2065,6 +2103,9 @@ $.widget( "ui.bcsearch", {
 		// 显示高级搜索按钮
 		this.options.trigger.show();
 		
+		// 清空搜索条件
+		bc.toolbar.doAdvanceClean.call(this,null,this.element);
+		
 		this._beforeClose();
 		this._hide( this.element, this.options.hide );
 
@@ -2094,6 +2135,14 @@ $.widget( "ui.bcsearch", {
  */
 (function($) {
 bc.grid = {
+	/**
+	 * 选中行的样式
+	 */
+	selectedClass: 'ui-state-highlight',//旧版为 'ui-state-default ui-state-focus'
+	/**
+	 * 是否允许表格的鼠标悬停行样式切换
+	 */
+	enabledHoverToggle: true,
 	/**
 	 * 表格型页面的初始化
 	 * @param container 对话框内容的jquery对象
@@ -2240,6 +2289,17 @@ bc.grid = {
 	 * @option callback 请求数据完毕后的处理函数
 	 */
 	reloadData: function($page,option) {
+		var fromMID = $page.attr("data-from");
+		logger.info("grid.reloadData:fromMID=" + fromMID);
+		if(fromMID){
+			// 获取原始的$page对象
+			$page = $(".bc-ui-dialog>.bc-page[data-mid='" + fromMID + "']");
+			if($page.size() == 0){
+				logger.info("找不到相应的原始对话框，忽略不作处理！fromMID=" + fromMID);
+				return;
+			}
+		}
+		
 		var ts = "grid.reloadData." + $page.attr("data-mid");
 		logger.profile(ts);
 		// 显示加载动画
@@ -2347,7 +2407,7 @@ bc.grid = {
 	 * @param $grid grid的jquery对象
 	 */
 	getSelected: function($grid,option){
-		var $tds = $grid.find(">.data>.left tr.ui-state-focus>td.id");
+		var $tds = $grid.find(">.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			return [$tds.attr("data-id")];
 		}else if($tds.length > 1){
@@ -2470,60 +2530,47 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 	return false;
 });
 
-//单击行切换样式
-$(".bc-grid>.data>.right tr.row").live("click",function(){
+//单击行、双击行、鼠标悬停及离开行
+var _bc_grig_tr_live = "click dblclick";
+if(bc.grid.enabledHoverToggle) _bc_grig_tr_live += " mouseover mouseout";
+$(".bc-grid>.data tr.row").live(_bc_grig_tr_live,function(event){
 	//处理选中行的样式
 	var $this = $(this);
-	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
-	var $row = $this.closest(".right").prev().find("tr.row:eq("+index+")");
-	$row.toggleClass("ui-state-default ui-state-focus").find("td.id>span.ui-icon").toggleClass("ui-icon-check");
-	
-	//处理单选：其他已选中行样式的恢复
-	var $grid = $this.closest(".bc-grid");
-	if($grid.hasClass("singleSelect")){
-		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
+	var index = $this.index();
+	var $row = $this.closest(".right,.left").siblings().find("tr.row:eq("+index+")");
+	if (event.type == 'click') {				// 单击行
+		logger.info("event.type=" + event.type);
+		$row.add(this).toggleClass(bc.grid.selectedClass)
+		.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+		
+		var $grid = $this.closest(".bc-grid");
+		if($grid.hasClass("singleSelect")){//处理单选：其他已选中行样式的恢复
+			$row.add(this).siblings("."+bc.grid.selectedClass).removeClass(bc.grid.selectedClass)
 			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
-	}
-});
-$(".bc-grid>.data>.left tr.row").live("click",function(){
-	//处理选中行的样式
-	var $this = $(this);
-	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
-	var $row = $this.closest(".left").next().find("tr.row:eq("+index+")");
-	$row.toggleClass("ui-state-default ui-state-focus");
-	$this.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
-	
-	//处理单选：其他已选中行样式的恢复
-	var $grid = $this.closest(".bc-grid");
-	if($grid.hasClass("singleSelect")){
-		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
-			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
-	}
-});
-
-//双击行执行编辑
-$(".bc-grid>.data>.right tr.row").live("dblclick",function(){
-	var $this = $(this);
-	var index = $this.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false).index();
-	var $row = $this.closest(".right").prev()
-		.find("tr.row:eq("+index+")").add(this);
-	$row.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false)
-		.siblings().removeClass("ui-state-focus").toggleClass("ui-state-default",true)
-		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
-	$row.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
-
-	var $page = $this.closest(".bc-page");
-	var $grid = $this.closest(".bc-grid");
-	
-	var dblClickRowFnStr = $grid.attr("data-dblclickrow");
-	if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
-		var dblClickRowFn = bc.getNested(dblClickRowFnStr);
-		if(!dblClickRowFn){
-			alert("函数'" + dblClickRowFnStr + "'没有定义！");
-		}else{
-			//上下文为页面
-			dblClickRowFn.call($page[0]);
 		}
+	}else if (event.type == 'dblclick') {		// 双击行
+		logger.info("event.type=" + event.type);
+		$row.add(this).toggleClass(bc.grid.selectedClass,true)
+		.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
+		
+		$row.add(this).siblings("."+bc.grid.selectedClass).removeClass(bc.grid.selectedClass)
+		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
+
+		var $page = $this.closest(".bc-page");
+		var $grid = $this.closest(".bc-grid");
+		
+		var dblClickRowFnStr = $grid.attr("data-dblclickrow");// 双击行的回调函数
+		if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
+			var dblClickRowFn = bc.getNested(dblClickRowFnStr);
+			if(!dblClickRowFn){
+				alert("函数'" + dblClickRowFnStr + "'没有定义！");
+			}else{
+				//上下文为页面
+				dblClickRowFn.call($page[0]);
+			}
+		}
+	}else if (event.type == 'mouseover' || event.type == 'mouseout') {	// 鼠标悬停及离开行
+		$row.add(this).toggleClass("ui-state-hover");
 	}
 });
 
@@ -2558,7 +2605,7 @@ $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 	$this.toggleClass("ui-icon-notice ui-icon-check");
 	var check = $this.hasClass("ui-icon-check");
 	$this.closest(".header").next().find("tr.row")
-	.toggleClass("ui-state-focus",check)
+	.toggleClass("ui-state-highlight",check)
 	.find("td.id>span.ui-icon").toggleClass("ui-icon-check",check);
 });
 
@@ -2652,8 +2699,8 @@ bc.grid.export2Excel = function($grid,el) {
 	if(paging){//分页
 		html.push('<div class="rangeTitle">确认导出范围</div>'
 			+'<ul class="rangeUl"><li>'
-			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1" checked><span>当前页</span></label>'
-			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2"><span>全部</span></label>'
+			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1"><span>当前页</span></label>'
+			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2" checked><span>全部</span></label>'
 			+'</li></ul>');
 	}
 	
@@ -2889,24 +2936,31 @@ bc.form = {
 			// 额外的处理
 			if(cfg.addYear){//自动将另一控件的值设置为此控件值加指定年份后的值的处理
 				logger.debug("addYear=" + cfg.addYear);
+				var ss = cfg.addYear.split("|");
 				var $toField;
-				if(typeof cfg.addYear == "number"){
-					//自动找到另一个控件
+				if(ss.length < 2){//自动找到另一个控件
 					$toField = $this.parent(".bc-dateContainer").siblings(".bc-dateContainer")
 					.children("input[type='text']");
 				}else{
-					//按类似“5|fieldName”的格式解析出另一个控件
-					var ss = cfg.addYear.split("|");
-					cfg.addYear = parseInt(ss[0]);
-					if(ss.length > 1)
-						$toField = $form.find("input[name='" + ss[1] + "']");
+					//按类似“3 1 -2|fieldName”的格式解析出另一个控件，“3 1 -2”表示加3年再加1月再减2日
+					$toField = $form.find("input[name='" + ss[1] + "']");
 				}
 
 				if($toField.length){
 					var oldFun = cfg.onSelect;
 					cfg.onSelect = function(dateText,inst){
-						// 设置联动值
-						$toField.val(Date.addYear(dateText,cfg.addYear));
+						// 转换字符串为日期值：http://docs.jquery.com/UI/Datepicker/parseDate
+						var _date = $.datepicker.parseDate(cfg.format || 'yy-mm-dd', dateText);
+						var sss = ss[0].split(" ");
+						_date.setFullYear(_date.getFullYear() + parseInt(sss[0]));//加年
+						if(sss.length > 1)_date.setMonth(_date.getMonth() + parseInt(sss[1]));//加月
+						if(sss.length > 2)_date.setDate(_date.getDate() + parseInt(sss[2]));//加日
+						if(sss.length > 3)_date.setHours(_date.getHours() + parseInt(sss[3]));//加时
+						if(sss.length > 4)_date.setMinutes(_date.getMinutes() + parseInt(sss[4]));//加分
+						if(sss.length > 5)_date.setSeconds(_date.getSeconds() + parseInt(sss[5]));//加秒
+						
+						// 设置联动值：http://docs.jquery.com/UI/Datepicker/formatDate
+						$toField.val($.datepicker.formatDate(cfg.format || 'yy-mm-dd',_date));
 						
 						//调用原来的回调函数
 						if(typeof oldFun == "function"){
@@ -4476,10 +4530,16 @@ $(".bc-imageEditor").live("click",function(e){
 			var $bcq = $top.find("#bcq");
 			if($bcq.size() > 0){
 				$bcq.click(function() {
+					// ie的提示：微软计划ie10才开始支持websocket
+					if(jQuery.browser.msie && jQuery.browser.version < 10){
+						alert("当前浏览器不支持WebSocket技术，无法使用在线聊天工具！");
+						return false;
+					}
+					
 					bc.page.newWin({
-						name: "BCQ 2012",
-						mid: "bcq",
-						url: bc.root + "/bc/chat/onlineUser"
+						name: "BQ2012",
+						mid: "bq",
+						url: bc.root + "/bc/websocket/online"
 					});
 					return false;
 				});
@@ -5349,13 +5409,7 @@ bc.chat = {
 					//寻找聊天对话框
 					var $msgDialog = $(".ui-dialog>.ui-dialog-content.chatMsg[data-mid='chat-" + toSid + "']").parent();
 					if($msgDialog.size()){//找到对话框
-						//插入聊天消息
-						bc.chat.addHistory($msgDialog,bc.chat.historyItemTpl.format(className,userName,json.time,json.msg));
-						
-						//如果对话框当前被隐藏，任务栏搞动一下
-						if ($msgDialog.is(":hidden")) {
-							bc.page.quickbar.warn("chat-" + toSid);
-						}
+						bc.chat.receive($msgDialog,className,userName,toSid,json.time,json.msg);
 					}else{
 						//用户还没有打开聊天窗口就提示一下
 						//TODO 记录这些信息以便在用户打开聊天窗口后自动添加进去
@@ -5366,11 +5420,15 @@ bc.chat = {
 						bc.chat.autologin(json.sid);
 					}else{
 						//寻找在线用户列表对话框
-						var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bcq']").parent();
+						var $msgDialog = $(".ui-dialog>.ui-dialog-content.online[data-mid='bq']").parent();
+						var $sidDialog = $(".ui-dialog>.ui-dialog-content.chatMsg[data-mid='chat-" + json.sid + "']").parent();
 						if($msgDialog.size()){//找到对话框
 							if(json.type == 0){//上线
 								//添加在线用户
 								bc.chat.addUser($msgDialog,json);
+								
+								//提示上线
+								bc.chat.receive($sidDialog,"sys","系统",json.sid,json.time,json.msg);
 							}else if(json.type == 1){//下线
 								//删除离线用户
 								bc.chat.removeUser($msgDialog,json.sid);
@@ -5378,11 +5436,16 @@ bc.chat = {
 							
 							//如果对话框当前被隐藏，提示一下
 							if ($msgDialog.is(":hidden")) {
-								bc.page.quickbar.warn("bcq");
+								bc.page.quickbar.warn("bq");
 								bc.msg.slide(json.msg);
 							}
 						}else{
 							bc.msg.slide(json.msg);
+						}
+						
+						// 寻找当前打开的聊天对话框并提示
+						if(json.type == 1){//下线
+							bc.chat.receive($sidDialog,"sys","系统",json.sid,json.time,json.msg);
 						}
 					}
 				}else{// if(json.type == 1){//广播的信息
@@ -5427,6 +5490,18 @@ bc.chat = {
 			if(bc.ws.close)
 				bc.ws.close();
 			bc.ws = null;
+		}
+	},
+	/**接收一条聊天记录*/
+	receive:function($page,className,userName,fromSid,time,msg){
+		if($page.size() == 0) return;
+
+		//插入聊天消息
+		bc.chat.addHistory($page,bc.chat.historyItemTpl.format(className,userName,time,msg));
+		
+		//如果对话框当前被隐藏，任务栏搞动一下
+		if ($page.is(":hidden")) {
+			bc.page.quickbar.warn("chat-" + fromSid);
 		}
 	},
 	/**添加一条聊天记录*/

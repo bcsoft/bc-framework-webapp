@@ -8,6 +8,14 @@
 (function($) {
 bc.grid = {
 	/**
+	 * 选中行的样式
+	 */
+	selectedClass: 'ui-state-highlight',//旧版为 'ui-state-default ui-state-focus'
+	/**
+	 * 是否允许表格的鼠标悬停行样式切换
+	 */
+	enabledHoverToggle: true,
+	/**
 	 * 表格型页面的初始化
 	 * @param container 对话框内容的jquery对象
 	 */
@@ -271,7 +279,7 @@ bc.grid = {
 	 * @param $grid grid的jquery对象
 	 */
 	getSelected: function($grid,option){
-		var $tds = $grid.find(">.data>.left tr.ui-state-focus>td.id");
+		var $tds = $grid.find(">.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			return [$tds.attr("data-id")];
 		}else if($tds.length > 1){
@@ -394,60 +402,47 @@ $("ul li.pagerIconGroup.size>.pagerIcon").live("click", function() {
 	return false;
 });
 
-//单击行切换样式
-$(".bc-grid>.data>.right tr.row").live("click",function(){
+//单击行、双击行、鼠标悬停及离开行
+var _bc_grig_tr_live = "click dblclick";
+if(bc.grid.enabledHoverToggle) _bc_grig_tr_live += " mouseover mouseout";
+$(".bc-grid>.data tr.row").live(_bc_grig_tr_live,function(event){
 	//处理选中行的样式
 	var $this = $(this);
-	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
-	var $row = $this.closest(".right").prev().find("tr.row:eq("+index+")");
-	$row.toggleClass("ui-state-default ui-state-focus").find("td.id>span.ui-icon").toggleClass("ui-icon-check");
-	
-	//处理单选：其他已选中行样式的恢复
-	var $grid = $this.closest(".bc-grid");
-	if($grid.hasClass("singleSelect")){
-		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
+	var index = $this.index();
+	var $row = $this.closest(".right,.left").siblings().find("tr.row:eq("+index+")");
+	if (event.type == 'click') {				// 单击行
+		logger.info("event.type=" + event.type);
+		$row.add(this).toggleClass(bc.grid.selectedClass)
+		.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
+		
+		var $grid = $this.closest(".bc-grid");
+		if($grid.hasClass("singleSelect")){//处理单选：其他已选中行样式的恢复
+			$row.add(this).siblings("."+bc.grid.selectedClass).removeClass(bc.grid.selectedClass)
 			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
-	}
-});
-$(".bc-grid>.data>.left tr.row").live("click",function(){
-	//处理选中行的样式
-	var $this = $(this);
-	var index = $this.toggleClass("ui-state-default ui-state-focus").index();
-	var $row = $this.closest(".left").next().find("tr.row:eq("+index+")");
-	$row.toggleClass("ui-state-default ui-state-focus");
-	$this.find("td.id>span.ui-icon").toggleClass("ui-icon-check");
-	
-	//处理单选：其他已选中行样式的恢复
-	var $grid = $this.closest(".bc-grid");
-	if($grid.hasClass("singleSelect")){
-		$row.add(this).siblings(".ui-state-focus").removeClass("ui-state-focus").toggleClass("ui-state-default",true)
-			.find("td.id>span.ui-icon").removeClass("ui-icon-check");
-	}
-});
-
-//双击行执行编辑
-$(".bc-grid>.data>.right tr.row").live("dblclick",function(){
-	var $this = $(this);
-	var index = $this.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false).index();
-	var $row = $this.closest(".right").prev()
-		.find("tr.row:eq("+index+")").add(this);
-	$row.toggleClass("ui-state-focus",true).toggleClass("ui-state-default",false)
-		.siblings().removeClass("ui-state-focus").toggleClass("ui-state-default",true)
-		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
-	$row.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
-
-	var $page = $this.closest(".bc-page");
-	var $grid = $this.closest(".bc-grid");
-	
-	var dblClickRowFnStr = $grid.attr("data-dblclickrow");
-	if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
-		var dblClickRowFn = bc.getNested(dblClickRowFnStr);
-		if(!dblClickRowFn){
-			alert("函数'" + dblClickRowFnStr + "'没有定义！");
-		}else{
-			//上下文为页面
-			dblClickRowFn.call($page[0]);
 		}
+	}else if (event.type == 'dblclick') {		// 双击行
+		logger.info("event.type=" + event.type);
+		$row.add(this).toggleClass(bc.grid.selectedClass,true)
+		.find("td.id>span.ui-icon").toggleClass("ui-icon-check",true);
+		
+		$row.add(this).siblings("."+bc.grid.selectedClass).removeClass(bc.grid.selectedClass)
+		.find("td.id>span.ui-icon").removeClass("ui-icon-check");
+
+		var $page = $this.closest(".bc-page");
+		var $grid = $this.closest(".bc-grid");
+		
+		var dblClickRowFnStr = $grid.attr("data-dblclickrow");// 双击行的回调函数
+		if(dblClickRowFnStr && dblClickRowFnStr.length >= 0){
+			var dblClickRowFn = bc.getNested(dblClickRowFnStr);
+			if(!dblClickRowFn){
+				alert("函数'" + dblClickRowFnStr + "'没有定义！");
+			}else{
+				//上下文为页面
+				dblClickRowFn.call($page[0]);
+			}
+		}
+	}else if (event.type == 'mouseover' || event.type == 'mouseout') {	// 鼠标悬停及离开行
+		$row.add(this).toggleClass("ui-state-hover");
 	}
 });
 
@@ -482,7 +477,7 @@ $(".bc-grid>.header td.id>span.ui-icon").live("click",function(){
 	$this.toggleClass("ui-icon-notice ui-icon-check");
 	var check = $this.hasClass("ui-icon-check");
 	$this.closest(".header").next().find("tr.row")
-	.toggleClass("ui-state-focus",check)
+	.toggleClass("ui-state-highlight",check)
 	.find("td.id>span.ui-icon").toggleClass("ui-icon-check",check);
 });
 
