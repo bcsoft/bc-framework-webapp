@@ -9,7 +9,7 @@
 					<td class="label"><s:text name="syslog.userName"/>:</td>
 					<td class="value w200"><s:textfield name="e.author.name" readonly="true"/></td>
 					<td class="label"><s:text name="syslog.type"/>:</td>
-					<td class="value"><s:radio name="e.type" list="#{'0':'登录','1':'注销','2':'超时'}" 
+					<td class="value"><s:radio name="e.type" list="#{'0':'登录','1':'注销','2':'超时','3':'重登录'}" 
 						value="e.type" cssStyle="width:auto;" disabled="true"/></td>
 				</tr>
 				<tr>
