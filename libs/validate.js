@@ -9,7 +9,7 @@ bc.validator = {
 	 * 表单验证
 	 * <input ... data-validate='{required:true,type:"number",max:10,min:5}'/>
 	 * type的值控制各种不同的验证方式：
-	 * 1) required 最简单的必填域验证，值不为空即可
+	 * 1) required 最简单的必填域验证，值不为空即可，如字符串
 	 * 2) number 数字(正数、负数、小数)
 	 * 3) digits 整数(非小数的数字类型)
 	 * 4) email 电子邮件 xx@xx.com
@@ -19,6 +19,7 @@ bc.validator = {
 	 * 8) time 时间 HH:mm[:ss]
 	 * 9) phone 电话号码
 	 * 10) money 金额
+	 * 11) custom 自定义验证，需要指定验证的正则表达式regexp和提示信息info
 	 * min的值控制数字的最小值
 	 * max的值控制数字的最大值
 	 * minLen的值控制字符串的最小长度(中文按两个字符长度计算)
@@ -32,7 +33,9 @@ bc.validator = {
 		$form.find("div.input[data-validate],:input:enabled:not(input[type='hidden']):not(:button):not(textarea.bc-editor)")
 		//添加内部特殊的div模拟input控件的验证
 		.each(function(i, n){
-			var validate = $(this).attr("data-validate");
+			var $this = $(this);
+			var validate = $this.attr("data-validate");
+			logger.info("validate=" + validate);
 			if(logger.debugEnabled)
 				logger.debug(this.nodeName + "," + this.name + "," + this.value + "," + validate);
 			if(validate && $.trim(validate).length > 0){
@@ -44,12 +47,12 @@ bc.validator = {
 				}
 				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
 				var method = bc.validator.methods[validate.type];
+				var value = $(this).val();
 				if(method){
-					var value = $(this).val();
 					if(validate.required || (value && value.length > 0)){//必填或有值时
 						ok = method.call(validate, this, $form);//类型验证
 						if(!ok){//验证不通过，增加界面的提示
-							bc.validator.remind(this,validate.type);
+							bc.validator.remind(this,validate.type,null,validate);
 							return false;
 						}else{
 							//再验证其他细化的参数
@@ -58,7 +61,7 @@ bc.validator = {
 								if(validate.min || validate.min === 0 ){
 									ok = bc.validator.methods.min.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "min", [validate.min+""]);
+										bc.validator.remind(this, "min", [validate.min+""],validate);
 										return false;
 									}
 								}
@@ -66,7 +69,7 @@ bc.validator = {
 								if(validate.max || validate.max === 0 ){
 									ok = bc.validator.methods.max.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "max", [validate.max+""]);
+										bc.validator.remind(this, "max", [validate.max+""],validate);
 										return false;
 									}
 								}
@@ -75,7 +78,7 @@ bc.validator = {
 								if(validate.minLen || validate.minLen === 0 ){
 									ok = bc.validator.methods.minLen.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "minLen", [validate.minLen+""]);
+										bc.validator.remind(this, "minLen", [validate.minLen+""],validate);
 										return false;
 									}
 								}
@@ -83,7 +86,7 @@ bc.validator = {
 								if(validate.maxLen || validate.maxLen === 0 ){
 									ok = bc.validator.methods.maxLen.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "maxLen", [validate.maxLen+""]);
+										bc.validator.remind(this, "maxLen", [validate.maxLen+""],validate);
 										return false;
 									}
 								}
@@ -91,8 +94,33 @@ bc.validator = {
 						}
 					}
 					return ok;
-				}else{
-					logger.error("undefined method: bc.validator.methods['" + validate.type + "']");
+				}else{// 自定义验证
+					// 必须的配置参数验证
+					if(!validate.method || !validate.msg){
+						alert("使用自定义验证必须指定method和msg的配置：el=" + this.name);
+						return false;
+					}
+					logger.info("validate.method=" + validate.method);
+					logger.info("validate.msg=" + validate.msg);
+					
+					// 要求必填但又无值时直接提示
+					if(validate.required && (!value || value.length == 0)){
+						ok = false;
+						bc.validator.remind(this, "custom", null, validate);
+						return false;
+					}
+
+					// 使用自定义的方法进行验证
+					var method = bc.getNested(validate.method);
+					if(typeof method != "function"){
+						alert("没有定义函数“" + validate.method + "”:el=" + this.name);
+						return false;
+					}
+					ok = method.call(validate, this, $form);//验证
+					if(!ok){
+						bc.validator.remind(this, "custom", null, validate);
+						return false;
+					}
 				}
 			}
 		});
@@ -181,36 +209,37 @@ bc.validator = {
 	},
 	/**
 	 * 显示验证不通过的提示信息
-	 * @element 验证不通过的dom元素
-	 * @validateType 验证的类型
+	 * @param element 验证不通过的dom元素
+	 * @param validateType 验证的类型
+	 * @param cfg 验证的配置对象
 	 */
-	remind: function(element,validateType,args){
+	remind: function(element,validateType,args,cfg){
 		var $el = $(element);
 		//alert(element.name);
 		//滚动元素到可视区域
 		var $scrollContainer = $el.closest("div.content,div.bc-page");
 		var pOffset = $scrollContainer.offset();
 		var myOffset = $el.offset();
-		if(logger.infoEnabled){
-			logger.info("offset1=" + $.toJSON(pOffset));
-			logger.info("scrollTop1=" + $scrollContainer.scrollTop());
-			logger.info("offset2=" + $.toJSON(myOffset));
-			logger.info("scrollTop2=" + $el.scrollTop());
+		if(logger.debugEnabled){
+			logger.debug("offset1=" + $.toJSON(pOffset));
+			logger.debug("scrollTop1=" + $scrollContainer.scrollTop());
+			logger.debug("offset2=" + $.toJSON(myOffset));
+			logger.debug("scrollTop2=" + $el.scrollTop());
 		}
 		if(myOffset.top < pOffset.top){//顶部超出可视范围就将其滚出来
-			logger.info("scroll4Top...");
+			logger.debug("scroll4Top...");
 			$scrollContainer.scrollTop($scrollContainer.scrollTop() - pOffset.top + myOffset.top - 5);
 		}else{
 			var pHeight = $scrollContainer.height();
 			var myHeight = $el.height();
 			var d = myOffset.top + myHeight - (pOffset.top + pHeight);
 			if(d > 0){//底部超出可视范围就将其滚出来
-				logger.info("scroll4Bottom...");
+				logger.debug("scroll4Bottom...");
 				$scrollContainer.scrollTop($scrollContainer.scrollTop() + d + 5);
 			}
 		}
 		
-		var msg = bc.validator.messages[validateType];
+		var msg = ((cfg && cfg.msg) ? cfg.msg : bc.validator.messages[validateType]);
 		if($.isArray(args))
 			msg = msg.format.apply(msg,args);
 		bc.boxPointer.show({of:element, content:msg});
