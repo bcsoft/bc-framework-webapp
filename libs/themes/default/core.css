@@ -333,6 +333,6 @@ td.relative,div.relative{
 .formTabs.ui-tabs .ui-tabs-nav li { margin-bottom: 0;}
 
 
-ul.bc-menu>li.ui-menu-item>a {
+ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	color: inherit;
 }
