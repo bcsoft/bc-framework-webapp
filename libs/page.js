@@ -11,6 +11,7 @@ bc.page = {
 	 * @option {String} mid [可选]对话框的唯一标识id
 	 * @option {String} from [可选]打开此对话框的源对话框的mid
 	 * @option {String} name [可选]任务栏显示的名称或对话框的标题
+	 * @option {String} title [可选]对话框的标题,如果不指定则使用请求返回的值
 	 * @option {String} data [可选]附加的数据
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
@@ -45,162 +46,10 @@ bc.page = {
 			dataType : "html",
 			success : function(html) {
 				logger.profile("newWin.ajax." + option.mid);
-				logger.profile("newWin.init." + option.mid);
-				logger.debug("success loaded html");
-				//var tc = document.getElementById("tempContainer");
-				//if(!tc){
-				//	tc=$('<div id="tempContainer"></div>').appendTo("body")[0];
-				//}
-				//tc.innerHTML=html;
-				var $dom = $(html);
-				if($dom.size() > 1){
-					//logger.error("error page. try set theme='simple' for struts2 tag");
-					$dom.remove();
-					
-					//alert("喔唷，出错啦！");
-					//显示漂亮的错误提示窗口
-					bc.page.showError({url:option.url, more:html,from:"bc.page.newWin->bc.ajax.success->$dom.size()>1"});
-					
-					//删除任务栏对应的dom元素
-					$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
-					return;
-				}
-				function _init(){
-					//从dom构建并显示桌面组件
-					var cfg = $dom.attr("data-option");
-					//logger.info("cfg=" + cfg);
-					if(cfg && /^\{/.test($.trim(cfg))){
-						//对json格式进行解释
-						cfg = eval("(" + cfg + ")");
-					}else{
-						cfg = {};
-					}
-					cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
-					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
-					//if(!$dom.attr("title")) cfg.title=option.name;
-					cfg.title = option.name || $dom.attr("title");// 对话框标题
-					
-					$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
-						open: function(event, ui) {
-							var dataType = $dom.attr("data-type");
-							if(dataType == "list"){//视图
-								//视图聚焦到搜索框
-								$dom.find("#searchText").focus();
-							}else if(dataType == "form"){//表单
-								//聚焦到表单的第一个可输入元素
-								$dom.find(":text:eq(0)").focus();
-							}
-						},
-						appendTo:"#middle",
-						scroll:false,
-						containment:false//"#middle"
-					}));
-					$dom.bind("dialogbeforeclose",function(event,ui){
-						var status = $dom.data("data-status");
-						//调用回调函数
-						if(option.beforeClose) 
-							return option.beforeClose.call($dom[0],status);
-					}).bind("dialogclose",function(event,ui){
-						var $this = $(this);
-						var status = $dom.data("data-status");
-						
-						//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
-						//ie8试过没问题
-						if(jQuery.browser.msie && jQuery.browser.version >= 9){
-							logger.info("IE9坑爹啊");
-							$this.find("object").each(function(){
-								this.parentNode.innerHTML="";
-							});
-						}
-						//彻底删除所有相关的dom元素
-						$this.dialog("destroy").remove();
-						//删除任务栏对应的dom元素
-						$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
-						
-						//调用回调函数
-						if(option.afterClose) option.afterClose.call($dom[0],status);
-					}).attr("data-src",option.url).attr("data-mid",option.mid)
-					.bind("dialogfocus", function(event, ui) {
-						//logger.debug("dialogfocus");
-						var cur = $(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']");
-						if(!cur.hasClass("ui-state-active"))
-							cur.addClass("ui-state-active").siblings().toggleClass("ui-state-active",false);
-					});
-					//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
-					
-					// 记录来源窗口的id
-					if(option.from){
-						if(typeof option.from == "string"){//直接传入来源窗口的mid
-							$dom.attr("data-from",option.from);
-						}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
-							$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
-						}else{
-							alert("不支持的from对象类型！");
-						}
-					}
-					
-					var dataType = $dom.attr("data-type");
-					if(dataType == "list"){//视图
-						if($dom.find(".bc-grid").size()){//表格的额外处理
-							bc.grid.init($dom,cfg,cfg.readonly);
-						}
-					}else if(dataType == "form"){//表单
-						bc.form.init($dom,cfg,cfg.readonly);//如绑定日期选择事件等
-					}
-					
-					//插入最大化|还原按钮、最小化按钮
-					if(cfg.maximize !== false){
-						//$dom.dialog(
-					}
-					
-					//执行组件指定的额外初始化方法，上下文为$dom
-					var method = $dom.attr("data-initMethod");
-					logger.debug("initMethod="+method);
-					if(method){
-						method = bc.getNested(method);
-						if(typeof method == "function"){
-							method.call($dom, cfg,cfg.readonly);
-						}else{
-							alert("undefined function: " + $dom.attr("data-initMethod"));
-						}
-					}
-					
-					//通知任务栏模块加载完毕
-					bc.page.quickbar.loaded(option.mid);
-					
-					//调用回调函数
-					if(option.afterOpen) option.afterOpen.call($dom[0]);
-				}
-				//alert(html);
-				var dataJs = $dom.attr("data-js");
-				if(dataJs && dataJs.length > 0){
-					//先加载js文件后执行模块指定的初始化方法
-					dataJs = dataJs.split(",");//逗号分隔多个文件
-					
-					// 处理预定义的js、css文件
-					var t;
-					for(var i=0;i<dataJs.length;i++){
-						if(dataJs[i].indexOf("js:") == 0){//预定义的js文件
-							t = bc.loader.preconfig.js[dataJs[i].substr(3)];
-							if(t){
-								t = bc.root + t;
-								logger.debug(dataJs[i] + "=" +  t);
-								dataJs[i] = t;
-							}else{
-								alert("没有预定义“" + dataJs[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
-							}
-						}else if(dataJs[i].indexOf("css:") == 0){//预定义的css文件
-							
-						}
-					}
-					
-					dataJs.push(_init);
-					bc.load(dataJs);
-				}else{
-					//执行模块指定的初始化方法
-					_init();
-				}
-				logger.profile("newWin.init." + option.mid);
+				var _option = jQuery.extend({},option);
+				delete _option.url;
+				_option.html = html;
+				bc.page._createWin(_option);
 			},
 			error: function(request, textStatus, errorThrown) {
 				//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
@@ -216,6 +65,162 @@ bc.page = {
 			}
 		});
 	},
+	/**
+	 * 创建窗口
+	 */
+	_createWin: function(option){
+		var $dom = $(option.html);
+		if($dom.size() > 1){
+			//logger.error("error page. try set theme='simple' for struts2 tag");
+			$dom.remove();
+			
+			//alert("喔唷，出错啦！");
+			//显示漂亮的错误提示窗口
+			bc.page.showError({url:option.url, more:option.html,from:"bc.page.newWin->bc.ajax.success->$dom.size()>1"});
+			
+			//删除任务栏对应的dom元素
+			$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+			return;
+		}
+		function _init(){
+			//从dom构建并显示桌面组件
+			var cfg = $dom.attr("data-option");
+			//logger.info("cfg=" + cfg);
+			if(cfg && /^\{/.test($.trim(cfg))){
+				//对json格式进行解释
+				cfg = eval("(" + cfg + ")");
+			}else{
+				cfg = {};
+			}
+			cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
+			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
+			//if(!$dom.attr("title")) cfg.title=option.name;
+			cfg.title = option.title || $dom.attr("title");// 对话框标题
+			
+			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
+			
+			$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
+				open: function(event, ui) {
+					var dataType = $dom.attr("data-type");
+					if(dataType == "list"){//视图
+						//视图聚焦到搜索框
+						$dom.find("#searchText").focus();
+					}else if(dataType == "form"){//表单
+						//聚焦到表单的第一个可输入元素
+						$dom.find(":text:eq(0)").focus();
+					}
+				},
+				appendTo:"#middle",
+				scroll:false,
+				containment:false//"#middle"
+			}));
+			$dom.bind("dialogbeforeclose",function(event,ui){
+				var status = $dom.data("data-status");
+				//调用回调函数
+				if(option.beforeClose) 
+					return option.beforeClose.call($dom[0],status);
+			}).bind("dialogclose",function(event,ui){
+				var $this = $(this);
+				var status = $dom.data("data-status");
+				
+				//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
+				//ie8试过没问题
+				if(jQuery.browser.msie && jQuery.browser.version >= 9){
+					logger.info("IE9坑爹啊");
+					$this.find("object").each(function(){
+						this.parentNode.innerHTML="";
+					});
+				}
+				//彻底删除所有相关的dom元素
+				$this.dialog("destroy").remove();
+				//删除任务栏对应的dom元素
+				$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+				
+				//调用回调函数
+				if(option.afterClose) option.afterClose.call($dom[0],status);
+			}).attr("data-src",option.url || "").attr("data-mid",option.mid)
+			.bind("dialogfocus", function(event, ui) {
+				//logger.debug("dialogfocus");
+				var cur = $(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']");
+				if(!cur.hasClass("ui-state-active"))
+					cur.addClass("ui-state-active").siblings().toggleClass("ui-state-active",false);
+			});
+			//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
+			
+			// 记录来源窗口的id
+			if(option.from){
+				if(typeof option.from == "string"){//直接传入来源窗口的mid
+					$dom.attr("data-from",option.from);
+				}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
+					$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
+				}else{
+					alert("不支持的from对象类型！");
+				}
+			}
+			
+			var dataType = $dom.attr("data-type");
+			if(dataType == "list"){//视图
+				if($dom.find(".bc-grid").size()){//表格的额外处理
+					bc.grid.init($dom,cfg,cfg.readonly);
+				}
+			}else if(dataType == "form"){//表单
+				bc.form.init($dom,cfg,cfg.readonly);//如绑定日期选择事件等
+			}
+			
+			//插入最大化|还原按钮、最小化按钮
+			if(cfg.maximize !== false){
+				//$dom.dialog(
+			}
+			
+			//执行组件指定的额外初始化方法，上下文为$dom
+			var method = $dom.attr("data-initMethod");
+			logger.debug("initMethod="+method);
+			if(method){
+				method = bc.getNested(method);
+				if(typeof method == "function"){
+					method.call($dom, cfg,cfg.readonly);
+				}else{
+					alert("undefined function: " + $dom.attr("data-initMethod"));
+				}
+			}
+			
+			//通知任务栏模块加载完毕
+			bc.page.quickbar.loaded(option.mid);
+			
+			//调用回调函数
+			if(option.afterOpen) option.afterOpen.call($dom[0]);
+		}
+		//alert(html);
+		var dataJs = $dom.attr("data-js");
+		if(dataJs && dataJs.length > 0){
+			//先加载js文件后执行模块指定的初始化方法
+			dataJs = dataJs.split(",");//逗号分隔多个文件
+			
+			// 处理预定义的js、css文件
+			var t;
+			for(var i=0;i<dataJs.length;i++){
+				if(dataJs[i].indexOf("js:") == 0){//预定义的js文件
+					t = bc.loader.preconfig.js[dataJs[i].substr(3)];
+					if(t){
+						t = bc.root + t;
+						logger.debug(dataJs[i] + "=" +  t);
+						dataJs[i] = t;
+					}else{
+						alert("没有预定义“" + dataJs[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
+					}
+				}else if(dataJs[i].indexOf("css:") == 0){//预定义的css文件
+					
+				}
+			}
+			
+			dataJs.push(_init);
+			bc.load(dataJs);
+		}else{
+			//执行模块指定的初始化方法
+			_init();
+		}
+	},
+	
 	/**
 	 * 显示请求错误的提示窗口
 	 */
@@ -531,6 +536,7 @@ bc.page = {
 				from: fromMID,
 				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
+				title: $tds.attr("data-name"),
 				afterClose: function(status){
 					if(status)
 						bc.grid.reloadData($page);
@@ -575,6 +581,7 @@ bc.page = {
 				from: fromMID,
 				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
+				title: $tds.attr("data-name"),
 				afterClose: function(status){
 					if(status)
 						bc.grid.reloadData($page);
