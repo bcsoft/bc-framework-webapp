@@ -24,6 +24,9 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 	};
 
 $.extend($.ui.dialog.prototype.options, {
+	closable: true,//关闭按钮
+	minimizable: false,//最小化按钮
+	maximizable: false,//最大化按钮
 	appendTo: "body",
 	dragLimit: [0,80,35,40]//上,右,下,左
 });
@@ -94,29 +97,62 @@ $.extend($.ui.dialog.prototype, {
 					"ui-corner-all  ui-helper-clearfix" )
 				.prependTo( uiDialog ),
 
-			uiDialogTitlebarClose = $( "<a href='#'></a>" )
-				.addClass( "ui-dialog-titlebar-close  ui-corner-all" )
-				.attr( "role", "button" )
-				.click(function( event ) {
-					event.preventDefault();
-					self.close( event );
-				})
-				.appendTo( uiDialogTitlebar ),
-
-			uiDialogTitlebarCloseText = ( self.uiDialogTitlebarCloseText = $( "<span>" ) )
-				.addClass( "ui-icon ui-icon-closethick" )
-				.text( options.closeText )
-				.appendTo( uiDialogTitlebarClose ),
+//			uiDialogTitlebarClose = $( "<a href='#'></a>" )
+//				.addClass( "ui-dialog-titlebar-close  ui-corner-all" )
+//				.attr( "role", "button" )
+//				.click(function( event ) {
+//					event.preventDefault();
+//					self.close( event );
+//				})
+//				.appendTo( uiDialogTitlebar ),
+//
+//			uiDialogTitlebarCloseText = ( self.uiDialogTitlebarCloseText = $( "<span>" ) )
+//				.addClass( "ui-icon ui-icon-closethick" )
+//				.text( options.closeText )
+//				.appendTo( uiDialogTitlebarClose ),
 
 			uiDialogTitle = $( "<span>" )
 				.addClass( "ui-dialog-title" )
 				.attr( "id", titleId )
 				.html( title )
 				.prependTo( uiDialogTitlebar );
+		
+		// 添加右上角的按钮容器
+		var $topRightButtons = $('<div class="ui-dialog-titlebar-buttons"></div>').appendTo( uiDialogTitlebar );
+		
+		// 添加最小化按钮：
+		if (options.minimizable) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-minusthick">minimize</span></a>')
+			.appendTo($topRightButtons)
+			.click(function( event ) {
+				event.preventDefault();
+				self.minimize( event );
+			});
+		}
+		
+		// 添加最大化按钮：maximized
+		if (options.maximizable) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-arrow-4-diag">maximize</span></a>')
+			.appendTo($topRightButtons)
+			.click(function( event ) {
+				event.preventDefault();
+				self.maximize( event );
+			});
+		}
+		
+		// 最后添加右上角的关闭按钮
+		if (options.closable) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-closethick">close</span></a>')
+			.appendTo($topRightButtons)
+			.click(function( event ) {
+				event.preventDefault();
+				self.close( event );
+			});
+		}
 
 		uiDialogTitlebar.find( "*" ).add( uiDialogTitlebar ).disableSelection();
-		this._hoverable( uiDialogTitlebarClose );
-		this._focusable( uiDialogTitlebarClose );
+		this._hoverable($topRightButtons.children());
+		this._focusable($topRightButtons.children());
 
 		if ( options.draggable && $.fn.draggable ) {
 			self._makeDraggable();
@@ -264,6 +300,20 @@ $.extend($.ui.dialog.prototype, {
 				$.ui.dialog.overlay.resize();
 			}
 		});
+	},
+	/** 最大化窗口 */
+	maximize: function(event) {
+		logger.debug("maximize");
+		var self = this;
+		self._trigger('maximize', event);
+		return self;
+	},
+	/** 最小化窗口 */
+	minimize: function(event) {
+		logger.debug("minimize");
+		var self = this;
+		self._trigger('minimize', event);
+		return self;
 	}
 });
 

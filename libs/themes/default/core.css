@@ -336,3 +336,17 @@ td.relative,div.relative{
 ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	color: inherit;
 }
+
+/** 对话框右上角的按钮样式控制 */
+.ui-dialog .ui-dialog-titlebar-buttons {
+	list-style: none;
+	position: absolute;
+	right: .3em;
+	top: 50%;
+	margin: -10px 0 0 0;
+	height: 18px;
+	padding: 0;
+}
+.ui-dialog .ui-dialog-titlebar-buttons a{cursor: pointer; padding: 1px; margin: 0; float: left;}
+.ui-dialog .ui-dialog-titlebar-buttons a span {display: block; margin: 1px;}
+.ui-dialog .ui-dialog-titlebar-buttons a:hover, .ui-dialog .ui-dialog-titlebar-buttons a:focus {padding: 0;}
