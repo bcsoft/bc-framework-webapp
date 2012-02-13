@@ -96,6 +96,7 @@ bc.page = {
 			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
+			if($dom.attr("data-type") == "form") cfg.minimizable = true;// 默认为表单添加最小化按钮
 			
 			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
 			
@@ -147,24 +148,6 @@ bc.page = {
 			});
 			//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
 			
-			// 窗口最小化的处理
-			if(cfg.minimizable){
-				$dom.bind("dialogminimize",function(event,ui){
-					$dom.parent().hide();
-					$("#bottom").find(".quickButton[data-mid='" + option.mid + "']")
-					.removeClass("ui-state-active")
-					.find(">span.ui-icon")
-					.removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
-				});
-			}
-			
-			// 窗口最大化的处理
-			if(cfg.maximizable){
-				$dom.bind("dialogmaximize",function(event,ui){
-					logger.info("--maximize");
-				});
-			}
-			
 			// 记录来源窗口的id
 			if(option.from){
 				if(typeof option.from == "string"){//直接传入来源窗口的mid
@@ -185,11 +168,6 @@ bc.page = {
 				bc.form.init($dom,cfg,cfg.readonly);//如绑定日期选择事件等
 			}
 			
-			//插入最大化|还原按钮、最小化按钮
-			if(cfg.maximize !== false){
-				//$dom.dialog(
-			}
-			
 			//执行组件指定的额外初始化方法，上下文为$dom
 			var method = $dom.attr("data-initMethod");
 			logger.debug("initMethod="+method);
@@ -200,6 +178,24 @@ bc.page = {
 				}else{
 					alert("undefined function: " + $dom.attr("data-initMethod"));
 				}
+			}
+			
+			// 窗口最小化的处理
+			if(cfg.minimizable){
+				$dom.bind("dialogminimize",function(event,ui){
+					$dom.parent().hide();
+					$("#bottom").find(".quickButton[data-mid='" + option.mid + "']")
+					.removeClass("ui-state-active")
+					.find(">span.ui-icon")
+					.removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
+				});
+			}
+			
+			// 窗口最大化的处理
+			if(cfg.maximizable){
+				$dom.bind("dialogmaximize",function(event,ui){
+					logger.info("--maximize");
+				});
 			}
 			
 			//通知任务栏模块加载完毕

@@ -132,7 +132,7 @@ $.extend($.ui.dialog.prototype, {
 		
 		// 添加最大化按钮：maximized
 		if (options.maximizable) {
-			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-arrow-4-diag">maximize</span></a>')
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-extlink">maximize</span></a>')
 			.appendTo($topRightButtons)
 			.click(function( event ) {
 				event.preventDefault();
@@ -303,14 +303,61 @@ $.extend($.ui.dialog.prototype, {
 	},
 	/** 最大化窗口 */
 	maximize: function(event) {
-		logger.debug("maximize");
 		var self = this;
+		
+		// 修改按钮样式
+		var $maxOrMin = self.uiDialog.find(".ui-icon-extlink,.ui-icon-newwin");
+		var isMax = $maxOrMin.hasClass("ui-icon-newwin");
+		self.options.isMax = isMax;
+		$maxOrMin.toggleClass("ui-icon-extlink ui-icon-newwin");
+		
+		// 记录原始状态
+		var newWidth,newHeight,newLeft,newTop,$appendTo = $(self.options.appendTo);
+		var s = 0;//最大化后周边预留的间隙
+		if(!self.options.isMax){
+			self.options.originalHeight = self.uiDialog.height();
+			self.options.originalWidth = self.uiDialog.width();
+			var p = self.uiDialog.position();
+			self.options.originalLeft = p.left;
+			self.options.originalTop = p.top;
+			
+			newLeft = s;
+			newTop = s;
+			newWidth = $appendTo.width() - 2*s - (self.uiDialog.outerWidth(true) - self.options.originalWidth);
+			newHeight = $appendTo.height() - 2*s - (self.uiDialog.outerHeight(true) - self.options.originalHeight);
+			
+			// 禁止移动、改变窗口的大小
+			self.uiDialog.draggable("disable");
+			self.uiDialog.resizable("disable");
+			self.uiDialog.removeClass("ui-state-disabled").children(".ui-dialog-titlebar").css("cursor","default");
+		}else{
+			newWidth = self.options.originalWidth;
+			newHeight = self.options.originalHeight;
+			newLeft = self.options.originalLeft;
+			newTop = self.options.originalTop;
+			
+			// 重新启用移动、改变窗口的大小
+			self.uiDialog.draggable("enable");
+			self.uiDialog.resizable("enable");
+			self.uiDialog.children(".ui-dialog-titlebar").css("cursor","move");
+		}
+		
+		// 处理窗口的大小
+		self.uiDialog.css({left:newLeft, top:newTop, width:newWidth, height:newHeight});
+		
+		// 处理窗口内容元素的大小
+		self.element.css({
+			width: newWidth - (self.element.outerWidth(true) - self.element.width()), 
+			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true)
+		});
+		
+		self._trigger('resize', event);
+		
 		self._trigger('maximize', event);
 		return self;
 	},
 	/** 最小化窗口 */
 	minimize: function(event) {
-		logger.debug("minimize");
 		var self = this;
 		self._trigger('minimize', event);
 		return self;
