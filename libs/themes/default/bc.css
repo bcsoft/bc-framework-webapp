@@ -332,6 +332,25 @@ td.relative,div.relative{
 .formTabs.ui-tabs .ui-tabs-panel {border-width: 1px;background-color: transparent;}
 .formTabs.ui-tabs .ui-tabs-nav li { margin-bottom: 0;}
 
+
+ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
+	color: inherit;
+}
+
+/** 对话框右上角的按钮样式控制 */
+.ui-dialog .ui-dialog-titlebar-buttons {
+	list-style: none;
+	position: absolute;
+	right: .3em;
+	top: 50%;
+	margin: -10px 0 0 0;
+	height: 18px;
+	padding: 0;
+}
+.ui-dialog .ui-dialog-titlebar-buttons a{cursor: pointer; padding: 1px; margin: 0; float: left;}
+.ui-dialog .ui-dialog-titlebar-buttons a span {display: block; margin: 1px;}
+.ui-dialog .ui-dialog-titlebar-buttons a:hover, .ui-dialog .ui-dialog-titlebar-buttons a:focus {padding: 0;}
+
 /**
  * tabs组件水平布局的样式设置
  *
@@ -1373,10 +1392,17 @@ td.value div.input .link{
 }
 
 td.value select{
-	width: 99.5%;
+	width: 99%;
+	-webkit-width: 95%;
 	margin: 0;
 	padding: 0;
+	/*webkit的select背景无法透明的模拟修正*/
+	-webkit-appearance: none;
+	border-left-width: 2px;
 }
+td.value select[disabled='disabled']{
+}
+
 /*
 td.value .ui-icon{
 	float: left;
