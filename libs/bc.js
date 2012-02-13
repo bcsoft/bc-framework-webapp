@@ -4356,7 +4356,11 @@ $(".bc-imageEditor").live("click",function(e){
  * @date 2011-09-29
  */
 (function($, undefined) {
-
+	// webkit特殊处理
+	if(jQuery.browser.safari){
+		$("body").addClass("webkit");
+	}
+	
 	$.widget("ui.bcdesktop", {
 		version : "1.0",
 		options : {
