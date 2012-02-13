@@ -147,6 +147,24 @@ bc.page = {
 			});
 			//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
 			
+			// 窗口最小化的处理
+			if(cfg.minimizable){
+				$dom.bind("dialogminimize",function(event,ui){
+					$dom.parent().hide();
+					$("#bottom").find(".quickButton[data-mid='" + option.mid + "']")
+					.removeClass("ui-state-active")
+					.find(">span.ui-icon")
+					.removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
+				});
+			}
+			
+			// 窗口最大化的处理
+			if(cfg.maximizable){
+				$dom.bind("dialogmaximize",function(event,ui){
+					logger.info("--maximize");
+				});
+			}
+			
 			// 记录来源窗口的id
 			if(option.from){
 				if(typeof option.from == "string"){//直接传入来源窗口的mid
