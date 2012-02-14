@@ -360,7 +360,7 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 div.bc-tabs.layout-top {
 	position: relative;
 	clear: both;
-	width: 775px;
+	/*width: 775px;*/
 	color: #616161
 }
 
@@ -466,6 +466,9 @@ div.bc-tabs.layout-top div.contentContainer {
 	overflow: hidden;
 	/*height: 277px;*/
 	padding: 0;
+}
+div.bc-tabs.layout-top div.contentContainer.noBottomBoder {
+	border-bottom-width: 0;;
 }
 div.bc-tabs.layout-top div.contentContainer div.content{
 	position: relative;
@@ -1328,7 +1331,7 @@ div.formEditor {
 }
 /** 表单多页签容器*/
 div.formTabs {
-	margin: 8px;
+	margin: 0px;
 }
 /** 表单附件区容器*/
 div.formAttachs {
