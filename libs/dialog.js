@@ -348,7 +348,7 @@ $.extend($.ui.dialog.prototype, {
 		// 处理窗口内容元素的大小
 		self.element.css({
 			width: newWidth - (self.element.outerWidth(true) - self.element.width()), 
-			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true)
+			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true) - self.uiDialog.children(".ui-dialog-buttonpane").outerHeight(true)
 		});
 		
 		self._trigger('resize', event);

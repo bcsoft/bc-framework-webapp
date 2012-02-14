@@ -38,7 +38,7 @@ bc.grid = {
 		bc.grid.resizeGridPage(container);
 		container.bind("dialogresize", function(event, ui) {
 			bc.grid.resizeGridPage(container);
-		})
+		});
 		
 		//禁止选择文字
 		$grid.disableSelection();

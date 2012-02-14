@@ -96,7 +96,10 @@ bc.page = {
 			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
-			if($dom.attr("data-type") == "form") cfg.minimizable = true;// 默认为表单添加最小化按钮
+			if($dom.attr("data-type") == "form") {
+				cfg.minimizable = true;// 默认为表单添加最小化按钮
+				cfg.maximizable = true;// 默认为表单添加最大化按钮
+			}
 			
 			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
 			
@@ -781,5 +784,7 @@ bc.page.defaultBcTabsOption = {
 	},
 	show:function(event,ui){
 		logger.info("show:" + ui.content.attr("class"));
-	}
+	},
+	/** 内容容器的高度是否自动根据tabs容器的高度变化 */
+	autoResize: true
 };
