@@ -242,7 +242,7 @@ $.extend($.ui.dialog.prototype, {
 		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
-			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+			cancel: ".ui-dialog-content, .ui-dialog-titlebar-buttons",
 			handle: ".ui-dialog-titlebar",
 			containment: self.options.containment,//这里是修改的代码
 			helper: function(e){

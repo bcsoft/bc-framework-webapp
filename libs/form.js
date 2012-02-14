@@ -58,7 +58,7 @@ bc.form = {
 	/** 重新调整tab的尺寸
 	 */
 	resizeFromTabs : function($form) {
-		logger.info("resizeFromTabs");
+		if(logger.debugEnabled)logger.debug("resizeFromTabs");
 		this.bctabs("resize");
 	},
 	
