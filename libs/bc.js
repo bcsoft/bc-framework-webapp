@@ -395,7 +395,7 @@ bc.validator = {
 	 * 表单验证
 	 * <input ... data-validate='{required:true,type:"number",max:10,min:5}'/>
 	 * type的值控制各种不同的验证方式：
-	 * 1) required 最简单的必填域验证，值不为空即可
+	 * 1) required 最简单的必填域验证，值不为空即可，如字符串
 	 * 2) number 数字(正数、负数、小数)
 	 * 3) digits 整数(非小数的数字类型)
 	 * 4) email 电子邮件 xx@xx.com
@@ -405,6 +405,7 @@ bc.validator = {
 	 * 8) time 时间 HH:mm[:ss]
 	 * 9) phone 电话号码
 	 * 10) money 金额
+	 * 11) custom 自定义验证，需要指定验证的正则表达式regexp和提示信息info
 	 * min的值控制数字的最小值
 	 * max的值控制数字的最大值
 	 * minLen的值控制字符串的最小长度(中文按两个字符长度计算)
@@ -418,7 +419,9 @@ bc.validator = {
 		$form.find("div.input[data-validate],:input:enabled:not(input[type='hidden']):not(:button):not(textarea.bc-editor)")
 		//添加内部特殊的div模拟input控件的验证
 		.each(function(i, n){
-			var validate = $(this).attr("data-validate");
+			var $this = $(this);
+			var validate = $this.attr("data-validate");
+			logger.info("validate=" + validate);
 			if(logger.debugEnabled)
 				logger.debug(this.nodeName + "," + this.name + "," + this.value + "," + validate);
 			if(validate && $.trim(validate).length > 0){
@@ -430,12 +433,12 @@ bc.validator = {
 				}
 				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
 				var method = bc.validator.methods[validate.type];
+				var value = $(this).val();
 				if(method){
-					var value = $(this).val();
 					if(validate.required || (value && value.length > 0)){//必填或有值时
 						ok = method.call(validate, this, $form);//类型验证
 						if(!ok){//验证不通过，增加界面的提示
-							bc.validator.remind(this,validate.type);
+							bc.validator.remind(this,validate.type,null,validate);
 							return false;
 						}else{
 							//再验证其他细化的参数
@@ -444,7 +447,7 @@ bc.validator = {
 								if(validate.min || validate.min === 0 ){
 									ok = bc.validator.methods.min.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "min", [validate.min+""]);
+										bc.validator.remind(this, "min", [validate.min+""],validate);
 										return false;
 									}
 								}
@@ -452,7 +455,7 @@ bc.validator = {
 								if(validate.max || validate.max === 0 ){
 									ok = bc.validator.methods.max.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "max", [validate.max+""]);
+										bc.validator.remind(this, "max", [validate.max+""],validate);
 										return false;
 									}
 								}
@@ -461,7 +464,7 @@ bc.validator = {
 								if(validate.minLen || validate.minLen === 0 ){
 									ok = bc.validator.methods.minLen.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "minLen", [validate.minLen+""]);
+										bc.validator.remind(this, "minLen", [validate.minLen+""],validate);
 										return false;
 									}
 								}
@@ -469,7 +472,7 @@ bc.validator = {
 								if(validate.maxLen || validate.maxLen === 0 ){
 									ok = bc.validator.methods.maxLen.call(validate,this);
 									if(!ok){
-										bc.validator.remind(this, "maxLen", [validate.maxLen+""]);
+										bc.validator.remind(this, "maxLen", [validate.maxLen+""],validate);
 										return false;
 									}
 								}
@@ -477,8 +480,33 @@ bc.validator = {
 						}
 					}
 					return ok;
-				}else{
-					logger.error("undefined method: bc.validator.methods['" + validate.type + "']");
+				}else{// 自定义验证
+					// 必须的配置参数验证
+					if(!validate.method || !validate.msg){
+						alert("使用自定义验证必须指定method和msg的配置：el=" + this.name);
+						return false;
+					}
+					logger.info("validate.method=" + validate.method);
+					logger.info("validate.msg=" + validate.msg);
+					
+					// 要求必填但又无值时直接提示
+					if(validate.required && (!value || value.length == 0)){
+						ok = false;
+						bc.validator.remind(this, "custom", null, validate);
+						return false;
+					}
+
+					// 使用自定义的方法进行验证
+					var method = bc.getNested(validate.method);
+					if(typeof method != "function"){
+						alert("没有定义函数“" + validate.method + "”:el=" + this.name);
+						return false;
+					}
+					ok = method.call(validate, this, $form);//验证
+					if(!ok){
+						bc.validator.remind(this, "custom", null, validate);
+						return false;
+					}
 				}
 			}
 		});
@@ -554,7 +582,7 @@ bc.validator = {
 		},
 		/**yyyy-MM-dd HH:mm[:ss]格式的日期和时间*/
 		datetime: function(element) {
-			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1])) \d{1,2}:\d{1,2}:\d{1,2}$/.test(element.value);
+			return /^(\d{4})-([0-9]|([0][1-9])|([1][0-2]))-([0-9]|([0][1-9])|([1-2][0-9])|([3][0-1])) ((\d{1,2}:\d{1,2})|(\d{1,2}:\d{1,2}:\d{1,2}))$/.test(element.value);
 		},
 		/**HH:mm[:ss]格式的时间*/
 		time: function(element) {
@@ -567,42 +595,44 @@ bc.validator = {
 	},
 	/**
 	 * 显示验证不通过的提示信息
-	 * @element 验证不通过的dom元素
-	 * @validateType 验证的类型
+	 * @param element 验证不通过的dom元素
+	 * @param validateType 验证的类型
+	 * @param cfg 验证的配置对象
 	 */
-	remind: function(element,validateType,args){
+	remind: function(element,validateType,args,cfg){
 		var $el = $(element);
 		//alert(element.name);
 		//滚动元素到可视区域
 		var $scrollContainer = $el.closest("div.content,div.bc-page");
 		var pOffset = $scrollContainer.offset();
 		var myOffset = $el.offset();
-		if(logger.infoEnabled){
-			logger.info("offset1=" + $.toJSON(pOffset));
-			logger.info("scrollTop1=" + $scrollContainer.scrollTop());
-			logger.info("offset2=" + $.toJSON(myOffset));
-			logger.info("scrollTop2=" + $el.scrollTop());
+		if(logger.debugEnabled){
+			logger.debug("offset1=" + $.toJSON(pOffset));
+			logger.debug("scrollTop1=" + $scrollContainer.scrollTop());
+			logger.debug("offset2=" + $.toJSON(myOffset));
+			logger.debug("scrollTop2=" + $el.scrollTop());
 		}
 		if(myOffset.top < pOffset.top){//顶部超出可视范围就将其滚出来
-			logger.info("scroll4Top...");
+			logger.debug("scroll4Top...");
 			$scrollContainer.scrollTop($scrollContainer.scrollTop() - pOffset.top + myOffset.top - 5);
 		}else{
 			var pHeight = $scrollContainer.height();
 			var myHeight = $el.height();
 			var d = myOffset.top + myHeight - (pOffset.top + pHeight);
 			if(d > 0){//底部超出可视范围就将其滚出来
-				logger.info("scroll4Bottom...");
+				logger.debug("scroll4Bottom...");
 				$scrollContainer.scrollTop($scrollContainer.scrollTop() + d + 5);
 			}
 		}
 		
-		var msg = bc.validator.messages[validateType];
+		var msg = ((cfg && cfg.msg) ? cfg.msg : bc.validator.messages[validateType]);
 		if($.isArray(args))
 			msg = msg.format.apply(msg,args);
 		bc.boxPointer.show({of:element, content:msg});
 	},
 	messages:{
 		required:"这里必须填写哦！",
+		string:"这里必须填写哦！",
 		number: "这里必须填写数字哦！<br>如 12、1.2。",
 		money: "这里必须填写金额哦！<br>如 123,456,789.00、12,345。",
 		digits: "这里必须填写整数哦！<br>如 12。",
@@ -630,7 +660,8 @@ bc.page = {
 	 * @option {String} url 地址
 	 * @option {String} mid [可选]对话框的唯一标识id
 	 * @option {String} from [可选]打开此对话框的源对话框的mid
-	 * @option {String} name [可选]任务栏显示的名称
+	 * @option {String} name [可选]任务栏显示的名称或对话框的标题
+	 * @option {String} title [可选]对话框的标题,如果不指定则使用请求返回的值
 	 * @option {String} data [可选]附加的数据
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
@@ -665,161 +696,10 @@ bc.page = {
 			dataType : "html",
 			success : function(html) {
 				logger.profile("newWin.ajax." + option.mid);
-				logger.profile("newWin.init." + option.mid);
-				logger.debug("success loaded html");
-				//var tc = document.getElementById("tempContainer");
-				//if(!tc){
-				//	tc=$('<div id="tempContainer"></div>').appendTo("body")[0];
-				//}
-				//tc.innerHTML=html;
-				var $dom = $(html);
-				if($dom.size() > 1){
-					//logger.error("error page. try set theme='simple' for struts2 tag");
-					$dom.remove();
-					
-					//alert("喔唷，出错啦！");
-					//显示漂亮的错误提示窗口
-					bc.page.showError({url:option.url, more:html,from:"bc.page.newWin->bc.ajax.success->$dom.size()>1"});
-					
-					//删除任务栏对应的dom元素
-					$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
-					return;
-				}
-				function _init(){
-					//从dom构建并显示桌面组件
-					var cfg = $dom.attr("data-option");
-					//logger.info("cfg=" + cfg);
-					if(cfg && /^\{/.test($.trim(cfg))){
-						//对json格式进行解释
-						cfg = eval("(" + cfg + ")");
-					}else{
-						cfg = {};
-					}
-					cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
-					//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
-					if(!$dom.attr("title"))
-						cfg.title=option.name;
-					$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
-						open: function(event, ui) {
-							var dataType = $dom.attr("data-type");
-							if(dataType == "list"){//视图
-								//视图聚焦到搜索框
-								$dom.find("#searchText").focus();
-							}else if(dataType == "form"){//表单
-								//聚焦到表单的第一个可输入元素
-								$dom.find(":text:eq(0)").focus();
-							}
-						},
-						appendTo:"#middle",
-						scroll:false,
-						containment:false//"#middle"
-					}));
-					$dom.bind("dialogbeforeclose",function(event,ui){
-						var status = $dom.data("data-status");
-						//调用回调函数
-						if(option.beforeClose) 
-							return option.beforeClose.call($dom[0],status);
-					}).bind("dialogclose",function(event,ui){
-						var $this = $(this);
-						var status = $dom.data("data-status");
-						
-						//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
-						//ie8试过没问题
-						if(jQuery.browser.msie && jQuery.browser.version >= 9){
-							logger.info("IE9坑爹啊");
-							$this.find("object").each(function(){
-								this.parentNode.innerHTML="";
-							});
-						}
-						//彻底删除所有相关的dom元素
-						$this.dialog("destroy").remove();
-						//删除任务栏对应的dom元素
-						$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
-						
-						//调用回调函数
-						if(option.afterClose) option.afterClose.call($dom[0],status);
-					}).attr("data-src",option.url).attr("data-mid",option.mid)
-					.bind("dialogfocus", function(event, ui) {
-						//logger.debug("dialogfocus");
-						var cur = $(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']");
-						if(!cur.hasClass("ui-state-active"))
-							cur.addClass("ui-state-active").siblings().toggleClass("ui-state-active",false);
-					});
-					//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
-					
-					// 记录来源窗口的id
-					if(option.from){
-						if(typeof option.from == "string"){//直接传入来源窗口的mid
-							$dom.attr("data-from",option.from);
-						}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
-							$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
-						}else{
-							alert("不支持的from对象类型！");
-						}
-					}
-					
-					var dataType = $dom.attr("data-type");
-					if(dataType == "list"){//视图
-						if($dom.find(".bc-grid").size()){//表格的额外处理
-							bc.grid.init($dom,cfg,cfg.readonly);
-						}
-					}else if(dataType == "form"){//表单
-						bc.form.init($dom,cfg,cfg.readonly);//如绑定日期选择事件等
-					}
-					
-					//插入最大化|还原按钮、最小化按钮
-					if(cfg.maximize !== false){
-						//$dom.dialog(
-					}
-					
-					//执行组件指定的额外初始化方法，上下文为$dom
-					var method = $dom.attr("data-initMethod");
-					logger.debug("initMethod="+method);
-					if(method){
-						method = bc.getNested(method);
-						if(typeof method == "function"){
-							method.call($dom, cfg,cfg.readonly);
-						}else{
-							alert("undefined function: " + $dom.attr("data-initMethod"));
-						}
-					}
-					
-					//通知任务栏模块加载完毕
-					bc.page.quickbar.loaded(option.mid);
-					
-					//调用回调函数
-					if(option.afterOpen) option.afterOpen.call($dom[0]);
-				}
-				//alert(html);
-				var dataJs = $dom.attr("data-js");
-				if(dataJs && dataJs.length > 0){
-					//先加载js文件后执行模块指定的初始化方法
-					dataJs = dataJs.split(",");//逗号分隔多个文件
-					
-					// 处理预定义的js、css文件
-					var t;
-					for(var i=0;i<dataJs.length;i++){
-						if(dataJs[i].indexOf("js:") == 0){//预定义的js文件
-							t = bc.loader.preconfig.js[dataJs[i].substr(3)];
-							if(t){
-								t = bc.root + t;
-								logger.debug(dataJs[i] + "=" +  t);
-								dataJs[i] = t;
-							}else{
-								alert("没有预定义“" + dataJs[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
-							}
-						}else if(dataJs[i].indexOf("css:") == 0){//预定义的css文件
-							
-						}
-					}
-					
-					dataJs.push(_init);
-					bc.load(dataJs);
-				}else{
-					//执行模块指定的初始化方法
-					_init();
-				}
-				logger.profile("newWin.init." + option.mid);
+				var _option = jQuery.extend({},option);
+				delete _option.url;
+				_option.html = html;
+				bc.page._createWin(_option);
 			},
 			error: function(request, textStatus, errorThrown) {
 				//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
@@ -835,6 +715,179 @@ bc.page = {
 			}
 		});
 	},
+	/**
+	 * 创建窗口
+	 */
+	_createWin: function(option){
+		var $dom = $(option.html);
+		if($dom.size() > 1){
+			//logger.error("error page. try set theme='simple' for struts2 tag");
+			$dom.remove();
+			
+			//alert("喔唷，出错啦！");
+			//显示漂亮的错误提示窗口
+			bc.page.showError({url:option.url, more:option.html,from:"bc.page.newWin->bc.ajax.success->$dom.size()>1"});
+			
+			//删除任务栏对应的dom元素
+			$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+			return;
+		}
+		function _init(){
+			//从dom构建并显示桌面组件
+			var cfg = $dom.attr("data-option");
+			//logger.info("cfg=" + cfg);
+			if(cfg && /^\{/.test($.trim(cfg))){
+				//对json格式进行解释
+				cfg = eval("(" + cfg + ")");
+			}else{
+				cfg = {};
+			}
+			cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
+			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
+			//if(!$dom.attr("title")) cfg.title=option.name;
+			cfg.title = option.title || $dom.attr("title");// 对话框标题
+			if($dom.attr("data-type") == "form") {
+				cfg.minimizable = true;// 默认为表单添加最小化按钮
+				cfg.maximizable = true;// 默认为表单添加最大化按钮
+			}
+			
+			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
+			
+			$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
+				open: function(event, ui) {
+					var dataType = $dom.attr("data-type");
+					if(dataType == "list"){//视图
+						//视图聚焦到搜索框
+						$dom.find("#searchText").focus();
+					}else if(dataType == "form"){//表单
+						//聚焦到表单的第一个可输入元素
+						$dom.find(":text:eq(0)").focus();
+					}
+				},
+				appendTo:"#middle",
+				scroll:false,
+				containment:false//"#middle"
+			}));
+			$dom.bind("dialogbeforeclose",function(event,ui){
+				var status = $dom.data("data-status");
+				//调用回调函数
+				if(option.beforeClose) 
+					return option.beforeClose.call($dom[0],status);
+			}).bind("dialogclose",function(event,ui){
+				var $this = $(this);
+				var status = $dom.data("data-status");
+				
+				//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
+				//ie8试过没问题
+				if(jQuery.browser.msie && jQuery.browser.version >= 9){
+					logger.info("IE9坑爹啊");
+					$this.find("object").each(function(){
+						this.parentNode.innerHTML="";
+					});
+				}
+				//彻底删除所有相关的dom元素
+				$this.dialog("destroy").remove();
+				//删除任务栏对应的dom元素
+				$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+				
+				//调用回调函数
+				if(option.afterClose) option.afterClose.call($dom[0],status);
+			}).attr("data-src",option.url || "").attr("data-mid",option.mid)
+			.bind("dialogfocus", function(event, ui) {
+				//logger.debug("dialogfocus");
+				var cur = $(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']");
+				if(!cur.hasClass("ui-state-active"))
+					cur.addClass("ui-state-active").siblings().toggleClass("ui-state-active",false);
+			});
+			//.disableSelection();这个会导致表单中输入框部分浏览器无法获取输入焦点
+			
+			// 记录来源窗口的id
+			if(option.from){
+				if(typeof option.from == "string"){//直接传入来源窗口的mid
+					$dom.attr("data-from",option.from);
+				}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
+					$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
+				}else{
+					alert("不支持的from对象类型！");
+				}
+			}
+			
+			var dataType = $dom.attr("data-type");
+			if(dataType == "list"){//视图
+				if($dom.find(".bc-grid").size()){//表格的额外处理
+					bc.grid.init($dom,cfg,cfg.readonly);
+				}
+			}else if(dataType == "form"){//表单
+				bc.form.init($dom,cfg,cfg.readonly);//如绑定日期选择事件等
+			}
+			
+			//执行组件指定的额外初始化方法，上下文为$dom
+			var method = $dom.attr("data-initMethod");
+			logger.debug("initMethod="+method);
+			if(method){
+				method = bc.getNested(method);
+				if(typeof method == "function"){
+					method.call($dom, cfg,cfg.readonly);
+				}else{
+					alert("undefined function: " + $dom.attr("data-initMethod"));
+				}
+			}
+			
+			// 窗口最小化的处理
+			if(cfg.minimizable){
+				$dom.bind("dialogminimize",function(event,ui){
+					$dom.parent().hide();
+					$("#bottom").find(".quickButton[data-mid='" + option.mid + "']")
+					.removeClass("ui-state-active")
+					.find(">span.ui-icon")
+					.removeClass("ui-icon-folder-open").addClass("ui-icon-folder-collapsed");
+				});
+			}
+			
+			// 窗口最大化的处理
+			if(cfg.maximizable){
+				$dom.bind("dialogmaximize",function(event,ui){
+					if(logger.infoEnabled)logger.info("--maximize");
+				});
+			}
+			
+			//通知任务栏模块加载完毕
+			bc.page.quickbar.loaded(option.mid);
+			
+			//调用回调函数
+			if(option.afterOpen) option.afterOpen.call($dom[0]);
+		}
+		//alert(html);
+		var dataJs = $dom.attr("data-js");
+		if(dataJs && dataJs.length > 0){
+			//先加载js文件后执行模块指定的初始化方法
+			dataJs = dataJs.split(",");//逗号分隔多个文件
+			
+			// 处理预定义的js、css文件
+			var t;
+			for(var i=0;i<dataJs.length;i++){
+				if(dataJs[i].indexOf("js:") == 0){//预定义的js文件
+					t = bc.loader.preconfig.js[dataJs[i].substr(3)];
+					if(t){
+						t = bc.root + t;
+						logger.debug(dataJs[i] + "=" +  t);
+						dataJs[i] = t;
+					}else{
+						alert("没有预定义“" + dataJs[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
+					}
+				}else if(dataJs[i].indexOf("css:") == 0){//预定义的css文件
+					
+				}
+			}
+			
+			dataJs.push(_init);
+			bc.load(dataJs);
+		}else{
+			//执行模块指定的初始化方法
+			_init();
+		}
+	},
+	
 	/**
 	 * 显示请求错误的提示窗口
 	 */
@@ -860,7 +913,7 @@ bc.page = {
 			$error.unbind().remove();
 		});
 		$error.find("span.more").click(function(){
-			logger.info("span.more");
+			if(logger.infoEnabled)logger.info("span.more");
 			var errorWin=window.open('', 'bcErrorShow');
 			var errorDoc = errorWin.document;
 			errorDoc.open();
@@ -934,7 +987,7 @@ bc.page = {
 				url += "/save";
 			}
 		}
-		logger.info("saveUrl=" + url);
+		if(logger.infoEnabled)logger.info("saveUrl=" + url);
 		var $form = $("form",$page);
 		
 		//表单验证
@@ -1150,6 +1203,7 @@ bc.page = {
 				from: fromMID,
 				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
+				title: $tds.attr("data-name"),
 				afterClose: function(status){
 					if(status)
 						bc.grid.reloadData($page);
@@ -1194,6 +1248,7 @@ bc.page = {
 				from: fromMID,
 				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
+				title: $tds.attr("data-name"),
 				afterClose: function(status){
 					if(status)
 						bc.grid.reloadData($page);
@@ -1276,7 +1331,7 @@ bc.page.initTabPageLoad = function (event, ui){
 	
 	var $tabPanel = $(ui.panel);
 	var $page = $tabPanel.find(">.bc-page");
-	logger.info("bc-page.size:" + $page.size());
+	if(logger.infoEnabled)logger.info("bc-page.size:" + $page.size());
 	if(!$page.size()) return;
 	
 	$page.height($tabPanel.height());
@@ -1347,9 +1402,9 @@ function _initBcTabsLoad(){
  */
 bc.page.defaultBcTabsOption = {
 	load:function(event,ui){
-		logger.info("load:" +  $(this).attr("class"));
+		if(logger.infoEnabled)logger.info("load:" +  $(this).attr("class"));
 		var $page = ui.content.children(".bc-page");
-		logger.info("tabs.load:bc-page.size=" + $page.size());
+		if(logger.debugEnabled)logger.debug("tabs.load:bc-page.size=" + $page.size());
 		if(!$page.size()) return;
 		
 		// 加载js、css文件
@@ -1366,11 +1421,21 @@ bc.page.defaultBcTabsOption = {
 		
 		//对视图和表单执行额外的初始化
 		var dataType = $page.attr("data-type");
-		logger.info("tabs.load:dataType=" + dataType);
+		if(logger.debugEnabled)logger.debug("tabs.load:dataType=" + dataType);
 		if(dataType == "list"){//视图
 			if($page.find(".bc-grid").size()){//表格的额外处理
 				bc.grid.init($page);
 				$page.removeAttr("title");
+				
+				// 绑定窗体尺寸变动事件
+				$page.parent().closest(".bc-page").bind("dialogresize",function(){
+					// 调整当前页签内grid的尺寸
+					if(ui.content.is(":visible") && ui.content.attr("data-resized") == "true"){
+						if(logger.debugEnabled)logger.debug("resized=true,index=" + ui.content.index());
+						bc.grid.init($page);
+						ui.content.attr("data-resized","false");
+					}
+				});
 			}
 		}else if(dataType == "form"){//表单
 			bc.form.init($page);//如绑定日期选择事件等
@@ -1378,8 +1443,16 @@ bc.page.defaultBcTabsOption = {
 		}
 	},
 	show:function(event,ui){
-		logger.info("show:" + ui.content.attr("class"));
-	}
+		if(logger.debugEnabled)logger.debug("show:" + ui.content.attr("class"));
+		// 调整当前页签内grid的尺寸
+		if(ui.content.attr("data-resized") == "true"){
+			if(logger.debugEnabled)logger.debug("show.resized=true,index=" + ui.content.index());
+			bc.grid.init(ui.content.children(".bc-page"));
+			ui.content.attr("data-resized","false");
+		}
+	},
+	/** 内容容器的高度是否自动根据tabs容器的高度变化 */
+	autoResize: true
 };
 
 /**
@@ -2166,7 +2239,7 @@ bc.grid = {
 		bc.grid.resizeGridPage(container);
 		container.bind("dialogresize", function(event, ui) {
 			bc.grid.resizeGridPage(container);
-		})
+		});
 		
 		//禁止选择文字
 		$grid.disableSelection();
@@ -2699,8 +2772,8 @@ bc.grid.export2Excel = function($grid,el) {
 	if(paging){//分页
 		html.push('<div class="rangeTitle">确认导出范围</div>'
 			+'<ul class="rangeUl"><li>'
-			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1"><span>当前页</span></label>'
-			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2" checked><span>全部</span></label>'
+			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1" checked><span>当前页</span></label>'
+			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2"><span>全部</span></label>'
 			+'</li></ul>');
 	}
 	
@@ -2868,7 +2941,7 @@ bc.form = {
 		logger.info("bc.form.init:readonly=" + readonly);
 		
 		//绑定富文本编辑器
-		$form.find("textarea.bc-editor").each(function(){
+		$form.find("textarea.bc-editor").filter(":not('.custom')").each(function(){
 			$this = $(this);
 			$this.xheditor(bc.editor.getConfig({
 				ptype: $this.attr("data-ptype"),
@@ -2899,6 +2972,22 @@ bc.form = {
 				$(this).hide();
 			});
 		}
+		
+		// 绑定多页签处理
+		$form.find(".formTabs").filter(":not('.custom')").each(function(){
+			$this = $(this);
+			var $tabs = $this.bctabs(bc.page.defaultBcTabsOption);
+			$form.bind("dialogresize", function(event, ui) {
+				bc.form.resizeFromTabs.call($tabs,$form);
+			});
+		});
+	},
+	
+	/** 重新调整tab的尺寸
+	 */
+	resizeFromTabs : function($form) {
+		if(logger.debugEnabled)logger.debug("resizeFromTabs");
+		this.bctabs("resize");
 	},
 	
 	/** 初始化日期、时间控件的事件绑定
@@ -4304,7 +4393,11 @@ $(".bc-imageEditor").live("click",function(e){
  * @date 2011-09-29
  */
 (function($, undefined) {
-
+	// webkit特殊处理
+	if(jQuery.browser.safari){
+		$("body").addClass("webkit");
+	}
+	
 	$.widget("ui.bcdesktop", {
 		version : "1.0",
 		options : {
@@ -4708,7 +4801,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			
 			//页签的点击事件
 			this.element.delegate("ul.tabs>li.tab>a", "click", function() {
-				logger.info("tabs.click:id=" + _this.element.attr("id"));
+				if(logger.debugEnabled)logger.debug("tabs.click:id=" + _this.element.attr("id"));
 				_this.load($(this).parent().index());
 				return false;
 			});
@@ -4730,7 +4823,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			//处理鼠标的滚轮事件
 			if (this.element.find("div.tabsContainer.sliding").size() && this.options.tabsScroll == true && $.fn.mousewheel) {
 				this.element.find("ul.tabs").mousewheel(function(event, delta) {
-					logger.info("mousewheel:delta=" + delta);
+					if(logger.debugEnabled)logger.debug("mousewheel:delta=" + delta);
 					(delta > 0) ? _this.prev() : _this.next();
 					return false;
 				});
@@ -4750,20 +4843,20 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 		
 		/** 初始化前后按钮的显示 */
 		_initPrevNext : function() {
-			logger.info("tabs._initPrevNext");
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext");
 			var $tabs = this.element.find("ul.tabs");
 			var $lastElem = $tabs.children('li:last');
 			var $slidElem = $tabs.parent();
 			var usePrevNext = ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)) > ($slidElem.width() - this.options.offsetNext);
 			
 			//自动创建前后按钮
-			logger.info("tabs._initPrevNext:usePrevNext=" + usePrevNext);
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext:usePrevNext=" + usePrevNext);
 			$tabs.children('li').each(function(i){
-				logger.info("tabs._initPrevNext:-" + i + "=" + $(this).position().left);
+				if(logger.debugEnabled)logger.debug("tabs._initPrevNext:-" + i + "=" + $(this).position().left);
 			});
 				
-			logger.info("tabs._initPrevNext:0=" + ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)));
-			logger.info("tabs._initPrevNext:1=" + ($slidElem.width() - this.options.offsetNext));
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext:0=" + ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)));
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext:1=" + ($slidElem.width() - this.options.offsetNext));
 			if(usePrevNext && $slidElem.siblings().size() == 0){
 				$slidElem.parent().append(''+
 					'<div class="prev ui-widget-content">'+
@@ -4803,7 +4896,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 		},
 		/** 启用向前按钮 */
 		_enablePrev : function() {
-			logger.info("_enablePrev");
+			if(logger.debugEnabled)logger.debug("_enablePrev");
 			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",false)
 			.hover(function(){$(this).addClass("ui-state-hover");},
 					function(){$(this).removeClass("ui-state-hover");});
@@ -4816,7 +4909,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 		
 		/** 显示tab */
 		_showTab : function($tab,$content) {
-			logger.info("tabs._showTab");
+			if(logger.debugEnabled)logger.debug("tabs._showTab");
 			//页签
 			var $preActiveTab = $tab.siblings(".active");
 			$tab.data("preTabIndex",$preActiveTab.index()).add($preActiveTab).toggleClass("active").end();
@@ -4831,7 +4924,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				var cwh = $tabs.parent()[this.options.val.wh](false);
 				var mlt = parseInt($tabs.css(this.options.val.marginLT));
 				var wh = $tab[this.options.val.wh](true);
-				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if(logger.debugEnabled)logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
 				if((wh + lt) > (cwh - this.options.offsetNext)){
 					this.next();
 				}
@@ -4839,19 +4932,23 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			
 			//内容
 			if(this.options.animate){
-				this["_" + this.options.contentAnimateMethod]($tab,$content);
+				var _this = this;
+				this["_" + this.options.contentAnimateMethod]($tab,$content,function(){
+					//抛出show事件
+					_this._trigger("show",null,{content:$content,tab:$tab});
+				});
 			}else{
 				$content.add($content.siblings(".active")).toggleClass("active");
+				
+				//抛出show事件
+				this._trigger("show",null,{content:$content,tab:$tab});
 			}
-			
-			//抛出show事件
-			this._trigger("show",null,{content:$content,tab:$tab});
 		},
 		
 		/** 水平方向动画显示内容 */
-		_slideH : function($tab,$content) {
+		_slideH : function($tab,$content,callback) {
 			var _this = this;
-			logger.info("tabs._slideH");
+			if(logger.debugEnabled)logger.debug("tabs._slideH");
 			var w = $content.width();
 			//上一内容
 			$oldContent = this.element.find(">.contentContainer>.content.active");
@@ -4861,7 +4958,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			if(this.options.height == "auto"){
 				var oldHeight = $oldContent.outerHeight(true);
 				var newHeight = $content.outerHeight(true);
-				logger.info("tabs._slideH:oldHeight=" + oldHeight + ",newHeight=" + newHeight);
+				if(logger.debugEnabled)logger.debug("tabs._slideH:oldHeight=" + oldHeight + ",newHeight=" + newHeight);
 				$contentContainer.stop().css({height: oldHeight})
 				.animate({height: newHeight}, this.options.heightAnimateDuration, this.options.heightAnimateEasing);
 			}
@@ -4886,7 +4983,12 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				$oldContent.add($content).css({position: "relative"});
 				if(_this.options.height == "auto")
 					$contentContainer.css({height:"auto"});
-				logger.info("tabs._slideH:newHeight=" + $content.height());
+				if(logger.debugEnabled)logger.debug("tabs._slideH:newHeight=" + $content.height());
+				
+				if(typeof callback == "function"){
+					if(logger.debugEnabled)logger.debug("tabs._slideH.callback");
+					callback.call(this);
+				}
 			});
 		},
 		
@@ -4901,7 +5003,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			var $a = $tab.children("a");
 			
 			var url = $a.attr("href");
-			logger.info("tabs.load:index=" + index + ",href=" + url);
+			if(logger.debugEnabled)logger.debug("tabs.load:index=" + index + ",href=" + url);
 			if(url.indexOf("#") == 0){
 				var $content = this.element.find(">div.contentContainer>" + url);
 				if(!$content.size())
@@ -4936,12 +5038,13 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 					if(!pmid){
 						pmid = new Date();
 					}
-					logger.info("pmid=" + pmid);
+					if(logger.debugEnabled)logger.debug("pmid=" + pmid);
 					$tabBCPage.attr("data-mid",pmid + ".tab" + index);
 				}
 				
 				//抛出加载完毕事件
 				_this._trigger("load",null,{content:$content,tab:$tab});
+				
 				//_this._showTab($tab,$content);
 			});
 			
@@ -4975,10 +5078,10 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				$li = $(this);
 				var wh = $li[_this.options.val.wh](true);
 				var lt = $li.position()[_this.options.val.lt];
-				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if(logger.debugEnabled)logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
 				if ((wh + lt) >= 0) {
 					var newmlt = lt - mlt - _this.options.offsetPrev;
-					logger.info("next:index=" + index + ",newmlt=" + newmlt);
+					if(logger.debugEnabled)logger.debug("next:index=" + index + ",newmlt=" + newmlt);
 					
 					//显示这个页签 
 					if(_this.options.animate){
@@ -5020,10 +5123,10 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				$li = $(this);
 				var wh = $li[_this.options.val.wh](true);
 				var lt = $li.position()[_this.options.val.lt];
-				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if(logger.debugEnabled)logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
 				if ((wh + lt) > (cwh - _this.options.offsetNext)) {
 					var newmlt = wh + lt - mlt + _this.options.offsetNext - cwh;
-					logger.info("next:index=" + index + ",newmlt=" + newmlt);
+					if(logger.debugEnabled)logger.debug("next:index=" + index + ",newmlt=" + newmlt);
 					
 					//显示这个页签 
 					if(_this.options.animate){
@@ -5044,6 +5147,28 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				}
 			});
 			
+			return this;
+		},
+
+		/** 重新根据容器调整尺寸 */
+		resize : function() {
+			if(logger.debugEnabled)logger.debug("tabs:resize");
+			
+			// 内容容器高度设置
+			if(this.options.autoResize){
+				var h = this.element.parent().height() - this.element.find(">.tabsContainer").outerHeight(true);
+				var $contentContainer = this.element.find(">.contentContainer");
+				h = h - ($contentContainer.outerHeight(true) - $contentContainer.height());
+				h = Math.max(h,this.options.minHeight);
+				$contentContainer.height(h);
+			}
+	
+			//向前向后按钮的显示
+			this._initPrevNext();
+			
+			// 将各个页签标记为父尺寸已变动
+			this.element.find(".content").attr("data-resized","true");
+
 			return this;
 		}
 	});
@@ -5075,6 +5200,9 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 	};
 
 $.extend($.ui.dialog.prototype.options, {
+	closable: true,//关闭按钮
+	minimizable: false,//最小化按钮
+	maximizable: false,//最大化按钮
 	appendTo: "body",
 	dragLimit: [0,80,35,40]//上,右,下,左
 });
@@ -5145,29 +5273,62 @@ $.extend($.ui.dialog.prototype, {
 					"ui-corner-all  ui-helper-clearfix" )
 				.prependTo( uiDialog ),
 
-			uiDialogTitlebarClose = $( "<a href='#'></a>" )
-				.addClass( "ui-dialog-titlebar-close  ui-corner-all" )
-				.attr( "role", "button" )
-				.click(function( event ) {
-					event.preventDefault();
-					self.close( event );
-				})
-				.appendTo( uiDialogTitlebar ),
-
-			uiDialogTitlebarCloseText = ( self.uiDialogTitlebarCloseText = $( "<span>" ) )
-				.addClass( "ui-icon ui-icon-closethick" )
-				.text( options.closeText )
-				.appendTo( uiDialogTitlebarClose ),
+//			uiDialogTitlebarClose = $( "<a href='#'></a>" )
+//				.addClass( "ui-dialog-titlebar-close  ui-corner-all" )
+//				.attr( "role", "button" )
+//				.click(function( event ) {
+//					event.preventDefault();
+//					self.close( event );
+//				})
+//				.appendTo( uiDialogTitlebar ),
+//
+//			uiDialogTitlebarCloseText = ( self.uiDialogTitlebarCloseText = $( "<span>" ) )
+//				.addClass( "ui-icon ui-icon-closethick" )
+//				.text( options.closeText )
+//				.appendTo( uiDialogTitlebarClose ),
 
 			uiDialogTitle = $( "<span>" )
 				.addClass( "ui-dialog-title" )
 				.attr( "id", titleId )
 				.html( title )
 				.prependTo( uiDialogTitlebar );
+		
+		// 添加右上角的按钮容器
+		var $topRightButtons = $('<div class="ui-dialog-titlebar-buttons"></div>').appendTo( uiDialogTitlebar );
+		
+		// 添加最小化按钮：
+		if (options.minimizable) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-minusthick">minimize</span></a>')
+			.appendTo($topRightButtons)
+			.click(function( event ) {
+				event.preventDefault();
+				self.minimize( event );
+			});
+		}
+		
+		// 添加最大化按钮：maximized
+		if (options.maximizable) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-extlink">maximize</span></a>')
+			.appendTo($topRightButtons)
+			.click(function( event ) {
+				event.preventDefault();
+				self.maximize( event );
+			});
+		}
+		
+		// 最后添加右上角的关闭按钮
+		if (options.closable) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-closethick">close</span></a>')
+			.appendTo($topRightButtons)
+			.click(function( event ) {
+				event.preventDefault();
+				self.close( event );
+			});
+		}
 
 		uiDialogTitlebar.find( "*" ).add( uiDialogTitlebar ).disableSelection();
-		this._hoverable( uiDialogTitlebarClose );
-		this._focusable( uiDialogTitlebarClose );
+		this._hoverable($topRightButtons.children());
+		this._focusable($topRightButtons.children());
 
 		if ( options.draggable && $.fn.draggable ) {
 			self._makeDraggable();
@@ -5257,7 +5418,7 @@ $.extend($.ui.dialog.prototype, {
 		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
-			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+			cancel: ".ui-dialog-content, .ui-dialog-titlebar-buttons",
 			handle: ".ui-dialog-titlebar",
 			containment: self.options.containment,//这里是修改的代码
 			helper: function(e){
@@ -5315,6 +5476,67 @@ $.extend($.ui.dialog.prototype, {
 				$.ui.dialog.overlay.resize();
 			}
 		});
+	},
+	/** 最大化窗口 */
+	maximize: function(event) {
+		var self = this;
+		
+		// 修改按钮样式
+		var $maxOrMin = self.uiDialog.find(".ui-icon-extlink,.ui-icon-newwin");
+		var isMax = $maxOrMin.hasClass("ui-icon-newwin");
+		self.options.isMax = isMax;
+		$maxOrMin.toggleClass("ui-icon-extlink ui-icon-newwin");
+		
+		// 记录原始状态
+		var newWidth,newHeight,newLeft,newTop,$appendTo = $(self.options.appendTo);
+		var s = 0;//最大化后周边预留的间隙
+		if(!self.options.isMax){
+			self.options.originalHeight = self.uiDialog.height();
+			self.options.originalWidth = self.uiDialog.width();
+			var p = self.uiDialog.position();
+			self.options.originalLeft = p.left;
+			self.options.originalTop = p.top;
+			
+			newLeft = s;
+			newTop = s;
+			newWidth = $appendTo.width() - 2*s - (self.uiDialog.outerWidth(true) - self.options.originalWidth);
+			newHeight = $appendTo.height() - 2*s - (self.uiDialog.outerHeight(true) - self.options.originalHeight);
+			
+			// 禁止移动、改变窗口的大小
+			self.uiDialog.draggable("disable");
+			self.uiDialog.resizable("disable");
+			self.uiDialog.removeClass("ui-state-disabled").children(".ui-dialog-titlebar").css("cursor","default");
+		}else{
+			newWidth = self.options.originalWidth;
+			newHeight = self.options.originalHeight;
+			newLeft = self.options.originalLeft;
+			newTop = self.options.originalTop;
+			
+			// 重新启用移动、改变窗口的大小
+			self.uiDialog.draggable("enable");
+			self.uiDialog.resizable("enable");
+			self.uiDialog.children(".ui-dialog-titlebar").css("cursor","move");
+		}
+		
+		// 处理窗口的大小
+		self.uiDialog.css({left:newLeft, top:newTop, width:newWidth, height:newHeight});
+		
+		// 处理窗口内容元素的大小
+		self.element.css({
+			width: newWidth - (self.element.outerWidth(true) - self.element.width()), 
+			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true) - self.uiDialog.children(".ui-dialog-buttonpane").outerHeight(true)
+		});
+		
+		self._trigger('resize', event);
+		
+		self._trigger('maximize', event);
+		return self;
+	},
+	/** 最小化窗口 */
+	minimize: function(event) {
+		var self = this;
+		self._trigger('minimize', event);
+		return self;
 	}
 });
 

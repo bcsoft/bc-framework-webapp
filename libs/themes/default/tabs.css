@@ -7,7 +7,7 @@
 div.bc-tabs.layout-top {
 	position: relative;
 	clear: both;
-	width: 775px;
+	/*width: 775px;*/
 	color: #616161
 }
 
@@ -113,6 +113,9 @@ div.bc-tabs.layout-top div.contentContainer {
 	overflow: hidden;
 	/*height: 277px;*/
 	padding: 0;
+}
+div.bc-tabs.layout-top div.contentContainer.noBottomBoder {
+	border-bottom-width: 0;;
 }
 div.bc-tabs.layout-top div.contentContainer div.content{
 	position: relative;

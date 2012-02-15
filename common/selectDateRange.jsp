@@ -16,7 +16,7 @@
 				data-validate='{"type":"date","required":true}'
 				data-cfg='{"changeYear":true}'
 				value='<s:date format="yyyy-MM-dd" name="startDate" />'
-				style="width: 10em;" class="bc-date ui-widget-content" />
+				style="width: 9em;" class="bc-date ui-widget-content" />
 			<ul class="inputIcons" style="right: 0px;">
 				<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"
 					data-cfg='startDate'></li>
@@ -27,7 +27,7 @@
 				data-validate='{"type":"date","required":true}'
 				data-cfg='{"changeYear":true}'
 				value='<s:date format="yyyy-MM-dd" name="endDate" />'
-				style="width: 10em;" class="bc-date ui-widget-content" />
+				style="width: 9em;" class="bc-date ui-widget-content" />
 			<ul class="inputIcons" style="right: 0px;">
 				<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"
 					data-cfg='endDate'></li>

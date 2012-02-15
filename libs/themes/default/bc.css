@@ -287,8 +287,8 @@ ul.inputIcons li.inputIcon{
 	padding: 0;
 	margin: 0;
 	float: left;
-	opacity: 0.5;
-	filter: alpha(opacity=50);
+	opacity: 0.7;
+	filter: alpha(opacity=70);
 }
 ul.inputIcons li.inputIcon.hover{
 	opacity: 1;
@@ -332,6 +332,25 @@ td.relative,div.relative{
 .formTabs.ui-tabs .ui-tabs-panel {border-width: 1px;background-color: transparent;}
 .formTabs.ui-tabs .ui-tabs-nav li { margin-bottom: 0;}
 
+
+ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
+	color: inherit;
+}
+
+/** 对话框右上角的按钮样式控制 */
+.ui-dialog .ui-dialog-titlebar-buttons {
+	list-style: none;
+	position: absolute;
+	right: .3em;
+	top: 50%;
+	margin: -10px 0 0 0;
+	height: 18px;
+	padding: 0;
+}
+.ui-dialog .ui-dialog-titlebar-buttons a{cursor: pointer; padding: 1px; margin: 0; float: left;}
+.ui-dialog .ui-dialog-titlebar-buttons a span {display: block; margin: 1px;}
+.ui-dialog .ui-dialog-titlebar-buttons a:hover, .ui-dialog .ui-dialog-titlebar-buttons a:focus {padding: 0;}
+
 /**
  * tabs组件水平布局的样式设置
  *
@@ -341,7 +360,7 @@ td.relative,div.relative{
 div.bc-tabs.layout-top {
 	position: relative;
 	clear: both;
-	width: 775px;
+	/*width: 775px;*/
 	color: #616161
 }
 
@@ -447,6 +466,9 @@ div.bc-tabs.layout-top div.contentContainer {
 	overflow: hidden;
 	/*height: 277px;*/
 	padding: 0;
+}
+div.bc-tabs.layout-top div.contentContainer.noBottomBoder {
+	border-bottom-width: 0;;
 }
 div.bc-tabs.layout-top div.contentContainer div.content{
 	position: relative;
@@ -1309,7 +1331,7 @@ div.formEditor {
 }
 /** 表单多页签容器*/
 div.formTabs {
-	margin: 8px;
+	margin: 0px;
 }
 /** 表单附件区容器*/
 div.formAttachs {
@@ -1373,16 +1395,33 @@ td.value div.input .link{
 }
 
 td.value select{
-	width: 99.5%;
+	width: 99%;
 	margin: 0;
 	padding: 0;
 }
+
+.webkit .bc-page select{
+	height: 21px;
+	/*webkit的select背景无法透明的模拟修正*/
+	-webkit-appearance: none;
+	background: url('images/browser/webkit_select_down.png') no-repeat right center;
+	width: 98.5%;
+	margin: 0;
+	padding: 0;
+}
+.webkit .bc-page select[disabled='disabled'] {
+	background: none;
+}
+.webkit .bc-page select option{
+	background: none;
+	color: black;
+}
+
 /*
 td.value .ui-icon{
 	float: left;
 	margin-top: 4px;
 }*/
-
 textarea.bc-editor{
 	width: 100%;
 	height: 100%;

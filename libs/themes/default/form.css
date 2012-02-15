@@ -48,7 +48,7 @@ div.formEditor {
 }
 /** 表单多页签容器*/
 div.formTabs {
-	margin: 8px;
+	margin: 0px;
 }
 /** 表单附件区容器*/
 div.formAttachs {
@@ -113,14 +113,25 @@ td.value div.input .link{
 
 td.value select{
 	width: 99%;
-	-webkit-width: 95%;
 	margin: 0;
 	padding: 0;
+}
+
+.webkit .bc-page select{
+	height: 21px;
 	/*webkit的select背景无法透明的模拟修正*/
 	-webkit-appearance: none;
-	border-left-width: 2px;
+	background: url('images/browser/webkit_select_down.png') no-repeat right center;
+	width: 98.5%;
+	margin: 0;
+	padding: 0;
 }
-td.value select[disabled='disabled']{
+.webkit .bc-page select[disabled='disabled'] {
+	background: none;
+}
+.webkit .bc-page select option{
+	background: none;
+	color: black;
 }
 
 /*
@@ -128,7 +139,6 @@ td.value .ui-icon{
 	float: left;
 	margin-top: 4px;
 }*/
-
 textarea.bc-editor{
 	width: 100%;
 	height: 100%;
