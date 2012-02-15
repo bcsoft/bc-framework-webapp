@@ -746,7 +746,10 @@ bc.page = {
 			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
-			if($dom.attr("data-type") == "form") cfg.minimizable = true;// 默认为表单添加最小化按钮
+			if($dom.attr("data-type") == "form") {
+				cfg.minimizable = true;// 默认为表单添加最小化按钮
+				cfg.maximizable = true;// 默认为表单添加最大化按钮
+			}
 			
 			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
 			
@@ -844,7 +847,7 @@ bc.page = {
 			// 窗口最大化的处理
 			if(cfg.maximizable){
 				$dom.bind("dialogmaximize",function(event,ui){
-					logger.info("--maximize");
+					if(logger.infoEnabled)logger.info("--maximize");
 				});
 			}
 			
@@ -910,7 +913,7 @@ bc.page = {
 			$error.unbind().remove();
 		});
 		$error.find("span.more").click(function(){
-			logger.info("span.more");
+			if(logger.infoEnabled)logger.info("span.more");
 			var errorWin=window.open('', 'bcErrorShow');
 			var errorDoc = errorWin.document;
 			errorDoc.open();
@@ -984,7 +987,7 @@ bc.page = {
 				url += "/save";
 			}
 		}
-		logger.info("saveUrl=" + url);
+		if(logger.infoEnabled)logger.info("saveUrl=" + url);
 		var $form = $("form",$page);
 		
 		//表单验证
@@ -1328,7 +1331,7 @@ bc.page.initTabPageLoad = function (event, ui){
 	
 	var $tabPanel = $(ui.panel);
 	var $page = $tabPanel.find(">.bc-page");
-	logger.info("bc-page.size:" + $page.size());
+	if(logger.infoEnabled)logger.info("bc-page.size:" + $page.size());
 	if(!$page.size()) return;
 	
 	$page.height($tabPanel.height());
@@ -1399,9 +1402,9 @@ function _initBcTabsLoad(){
  */
 bc.page.defaultBcTabsOption = {
 	load:function(event,ui){
-		logger.info("load:" +  $(this).attr("class"));
+		if(logger.infoEnabled)logger.info("load:" +  $(this).attr("class"));
 		var $page = ui.content.children(".bc-page");
-		logger.info("tabs.load:bc-page.size=" + $page.size());
+		if(logger.debugEnabled)logger.debug("tabs.load:bc-page.size=" + $page.size());
 		if(!$page.size()) return;
 		
 		// 加载js、css文件
@@ -1418,11 +1421,21 @@ bc.page.defaultBcTabsOption = {
 		
 		//对视图和表单执行额外的初始化
 		var dataType = $page.attr("data-type");
-		logger.info("tabs.load:dataType=" + dataType);
+		if(logger.debugEnabled)logger.debug("tabs.load:dataType=" + dataType);
 		if(dataType == "list"){//视图
 			if($page.find(".bc-grid").size()){//表格的额外处理
 				bc.grid.init($page);
 				$page.removeAttr("title");
+				
+				// 绑定窗体尺寸变动事件
+				$page.parent().closest(".bc-page").bind("dialogresize",function(){
+					// 调整当前页签内grid的尺寸
+					if(ui.content.is(":visible") && ui.content.attr("data-resized") == "true"){
+						if(logger.debugEnabled)logger.debug("resized=true,index=" + ui.content.index());
+						bc.grid.init($page);
+						ui.content.attr("data-resized","false");
+					}
+				});
 			}
 		}else if(dataType == "form"){//表单
 			bc.form.init($page);//如绑定日期选择事件等
@@ -1430,8 +1443,16 @@ bc.page.defaultBcTabsOption = {
 		}
 	},
 	show:function(event,ui){
-		logger.info("show:" + ui.content.attr("class"));
-	}
+		if(logger.debugEnabled)logger.debug("show:" + ui.content.attr("class"));
+		// 调整当前页签内grid的尺寸
+		if(ui.content.attr("data-resized") == "true"){
+			if(logger.debugEnabled)logger.debug("show.resized=true,index=" + ui.content.index());
+			bc.grid.init(ui.content.children(".bc-page"));
+			ui.content.attr("data-resized","false");
+		}
+	},
+	/** 内容容器的高度是否自动根据tabs容器的高度变化 */
+	autoResize: true
 };
 
 /**
@@ -2218,7 +2239,7 @@ bc.grid = {
 		bc.grid.resizeGridPage(container);
 		container.bind("dialogresize", function(event, ui) {
 			bc.grid.resizeGridPage(container);
-		})
+		});
 		
 		//禁止选择文字
 		$grid.disableSelection();
@@ -2751,8 +2772,8 @@ bc.grid.export2Excel = function($grid,el) {
 	if(paging){//分页
 		html.push('<div class="rangeTitle">确认导出范围</div>'
 			+'<ul class="rangeUl"><li>'
-			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1"><span>当前页</span></label>'
-			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2" checked><span>全部</span></label>'
+			+'<label for="exportScope1"><input type="radio" id="exportScope1" name="exportScope" value="1" checked><span>当前页</span></label>'
+			+'<label for="exportScope2"><input type="radio" id="exportScope2" name="exportScope" value="2"><span>全部</span></label>'
 			+'</li></ul>');
 	}
 	
@@ -2920,7 +2941,7 @@ bc.form = {
 		logger.info("bc.form.init:readonly=" + readonly);
 		
 		//绑定富文本编辑器
-		$form.find("textarea.bc-editor").each(function(){
+		$form.find("textarea.bc-editor").filter(":not('.custom')").each(function(){
 			$this = $(this);
 			$this.xheditor(bc.editor.getConfig({
 				ptype: $this.attr("data-ptype"),
@@ -2951,6 +2972,22 @@ bc.form = {
 				$(this).hide();
 			});
 		}
+		
+		// 绑定多页签处理
+		$form.find(".formTabs").filter(":not('.custom')").each(function(){
+			$this = $(this);
+			var $tabs = $this.bctabs(bc.page.defaultBcTabsOption);
+			$form.bind("dialogresize", function(event, ui) {
+				bc.form.resizeFromTabs.call($tabs,$form);
+			});
+		});
+	},
+	
+	/** 重新调整tab的尺寸
+	 */
+	resizeFromTabs : function($form) {
+		if(logger.debugEnabled)logger.debug("resizeFromTabs");
+		this.bctabs("resize");
 	},
 	
 	/** 初始化日期、时间控件的事件绑定
@@ -4764,7 +4801,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			
 			//页签的点击事件
 			this.element.delegate("ul.tabs>li.tab>a", "click", function() {
-				logger.info("tabs.click:id=" + _this.element.attr("id"));
+				if(logger.debugEnabled)logger.debug("tabs.click:id=" + _this.element.attr("id"));
 				_this.load($(this).parent().index());
 				return false;
 			});
@@ -4786,7 +4823,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			//处理鼠标的滚轮事件
 			if (this.element.find("div.tabsContainer.sliding").size() && this.options.tabsScroll == true && $.fn.mousewheel) {
 				this.element.find("ul.tabs").mousewheel(function(event, delta) {
-					logger.info("mousewheel:delta=" + delta);
+					if(logger.debugEnabled)logger.debug("mousewheel:delta=" + delta);
 					(delta > 0) ? _this.prev() : _this.next();
 					return false;
 				});
@@ -4806,20 +4843,20 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 		
 		/** 初始化前后按钮的显示 */
 		_initPrevNext : function() {
-			logger.info("tabs._initPrevNext");
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext");
 			var $tabs = this.element.find("ul.tabs");
 			var $lastElem = $tabs.children('li:last');
 			var $slidElem = $tabs.parent();
 			var usePrevNext = ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)) > ($slidElem.width() - this.options.offsetNext);
 			
 			//自动创建前后按钮
-			logger.info("tabs._initPrevNext:usePrevNext=" + usePrevNext);
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext:usePrevNext=" + usePrevNext);
 			$tabs.children('li').each(function(i){
-				logger.info("tabs._initPrevNext:-" + i + "=" + $(this).position().left);
+				if(logger.debugEnabled)logger.debug("tabs._initPrevNext:-" + i + "=" + $(this).position().left);
 			});
 				
-			logger.info("tabs._initPrevNext:0=" + ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)));
-			logger.info("tabs._initPrevNext:1=" + ($slidElem.width() - this.options.offsetNext));
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext:0=" + ($lastElem.position()[this.options.val.lt] + $lastElem[this.options.val.wh](true)));
+			if(logger.debugEnabled)logger.debug("tabs._initPrevNext:1=" + ($slidElem.width() - this.options.offsetNext));
 			if(usePrevNext && $slidElem.siblings().size() == 0){
 				$slidElem.parent().append(''+
 					'<div class="prev ui-widget-content">'+
@@ -4859,7 +4896,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 		},
 		/** 启用向前按钮 */
 		_enablePrev : function() {
-			logger.info("_enablePrev");
+			if(logger.debugEnabled)logger.debug("_enablePrev");
 			this.element.find("div.prev>a.prev").toggleClass("ui-state-disabled",false)
 			.hover(function(){$(this).addClass("ui-state-hover");},
 					function(){$(this).removeClass("ui-state-hover");});
@@ -4872,7 +4909,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 		
 		/** 显示tab */
 		_showTab : function($tab,$content) {
-			logger.info("tabs._showTab");
+			if(logger.debugEnabled)logger.debug("tabs._showTab");
 			//页签
 			var $preActiveTab = $tab.siblings(".active");
 			$tab.data("preTabIndex",$preActiveTab.index()).add($preActiveTab).toggleClass("active").end();
@@ -4887,7 +4924,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				var cwh = $tabs.parent()[this.options.val.wh](false);
 				var mlt = parseInt($tabs.css(this.options.val.marginLT));
 				var wh = $tab[this.options.val.wh](true);
-				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if(logger.debugEnabled)logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
 				if((wh + lt) > (cwh - this.options.offsetNext)){
 					this.next();
 				}
@@ -4895,19 +4932,23 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			
 			//内容
 			if(this.options.animate){
-				this["_" + this.options.contentAnimateMethod]($tab,$content);
+				var _this = this;
+				this["_" + this.options.contentAnimateMethod]($tab,$content,function(){
+					//抛出show事件
+					_this._trigger("show",null,{content:$content,tab:$tab});
+				});
 			}else{
 				$content.add($content.siblings(".active")).toggleClass("active");
+				
+				//抛出show事件
+				this._trigger("show",null,{content:$content,tab:$tab});
 			}
-			
-			//抛出show事件
-			this._trigger("show",null,{content:$content,tab:$tab});
 		},
 		
 		/** 水平方向动画显示内容 */
-		_slideH : function($tab,$content) {
+		_slideH : function($tab,$content,callback) {
 			var _this = this;
-			logger.info("tabs._slideH");
+			if(logger.debugEnabled)logger.debug("tabs._slideH");
 			var w = $content.width();
 			//上一内容
 			$oldContent = this.element.find(">.contentContainer>.content.active");
@@ -4917,7 +4958,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			if(this.options.height == "auto"){
 				var oldHeight = $oldContent.outerHeight(true);
 				var newHeight = $content.outerHeight(true);
-				logger.info("tabs._slideH:oldHeight=" + oldHeight + ",newHeight=" + newHeight);
+				if(logger.debugEnabled)logger.debug("tabs._slideH:oldHeight=" + oldHeight + ",newHeight=" + newHeight);
 				$contentContainer.stop().css({height: oldHeight})
 				.animate({height: newHeight}, this.options.heightAnimateDuration, this.options.heightAnimateEasing);
 			}
@@ -4942,7 +4983,12 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				$oldContent.add($content).css({position: "relative"});
 				if(_this.options.height == "auto")
 					$contentContainer.css({height:"auto"});
-				logger.info("tabs._slideH:newHeight=" + $content.height());
+				if(logger.debugEnabled)logger.debug("tabs._slideH:newHeight=" + $content.height());
+				
+				if(typeof callback == "function"){
+					if(logger.debugEnabled)logger.debug("tabs._slideH.callback");
+					callback.call(this);
+				}
 			});
 		},
 		
@@ -4957,7 +5003,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 			var $a = $tab.children("a");
 			
 			var url = $a.attr("href");
-			logger.info("tabs.load:index=" + index + ",href=" + url);
+			if(logger.debugEnabled)logger.debug("tabs.load:index=" + index + ",href=" + url);
 			if(url.indexOf("#") == 0){
 				var $content = this.element.find(">div.contentContainer>" + url);
 				if(!$content.size())
@@ -4992,12 +5038,13 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 					if(!pmid){
 						pmid = new Date();
 					}
-					logger.info("pmid=" + pmid);
+					if(logger.debugEnabled)logger.debug("pmid=" + pmid);
 					$tabBCPage.attr("data-mid",pmid + ".tab" + index);
 				}
 				
 				//抛出加载完毕事件
 				_this._trigger("load",null,{content:$content,tab:$tab});
+				
 				//_this._showTab($tab,$content);
 			});
 			
@@ -5031,10 +5078,10 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				$li = $(this);
 				var wh = $li[_this.options.val.wh](true);
 				var lt = $li.position()[_this.options.val.lt];
-				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if(logger.debugEnabled)logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
 				if ((wh + lt) >= 0) {
 					var newmlt = lt - mlt - _this.options.offsetPrev;
-					logger.info("next:index=" + index + ",newmlt=" + newmlt);
+					if(logger.debugEnabled)logger.debug("next:index=" + index + ",newmlt=" + newmlt);
 					
 					//显示这个页签 
 					if(_this.options.animate){
@@ -5076,10 +5123,10 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				$li = $(this);
 				var wh = $li[_this.options.val.wh](true);
 				var lt = $li.position()[_this.options.val.lt];
-				logger.info("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+				if(logger.debugEnabled)logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
 				if ((wh + lt) > (cwh - _this.options.offsetNext)) {
 					var newmlt = wh + lt - mlt + _this.options.offsetNext - cwh;
-					logger.info("next:index=" + index + ",newmlt=" + newmlt);
+					if(logger.debugEnabled)logger.debug("next:index=" + index + ",newmlt=" + newmlt);
 					
 					//显示这个页签 
 					if(_this.options.animate){
@@ -5100,6 +5147,28 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 				}
 			});
 			
+			return this;
+		},
+
+		/** 重新根据容器调整尺寸 */
+		resize : function() {
+			if(logger.debugEnabled)logger.debug("tabs:resize");
+			
+			// 内容容器高度设置
+			if(this.options.autoResize){
+				var h = this.element.parent().height() - this.element.find(">.tabsContainer").outerHeight(true);
+				var $contentContainer = this.element.find(">.contentContainer");
+				h = h - ($contentContainer.outerHeight(true) - $contentContainer.height());
+				h = Math.max(h,this.options.minHeight);
+				$contentContainer.height(h);
+			}
+	
+			//向前向后按钮的显示
+			this._initPrevNext();
+			
+			// 将各个页签标记为父尺寸已变动
+			this.element.find(".content").attr("data-resized","true");
+
 			return this;
 		}
 	});
@@ -5349,7 +5418,7 @@ $.extend($.ui.dialog.prototype, {
 		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
-			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+			cancel: ".ui-dialog-content, .ui-dialog-titlebar-buttons",
 			handle: ".ui-dialog-titlebar",
 			containment: self.options.containment,//这里是修改的代码
 			helper: function(e){
@@ -5455,7 +5524,7 @@ $.extend($.ui.dialog.prototype, {
 		// 处理窗口内容元素的大小
 		self.element.css({
 			width: newWidth - (self.element.outerWidth(true) - self.element.width()), 
-			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true)
+			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true) - self.uiDialog.children(".ui-dialog-buttonpane").outerHeight(true)
 		});
 		
 		self._trigger('resize', event);

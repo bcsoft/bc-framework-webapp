@@ -48,7 +48,7 @@ div.formEditor {
 }
 /** 表单多页签容器*/
 div.formTabs {
-	margin: 8px;
+	margin: 0px;
 }
 /** 表单附件区容器*/
 div.formAttachs {

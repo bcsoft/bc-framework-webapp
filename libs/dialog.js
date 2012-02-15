@@ -242,7 +242,7 @@ $.extend($.ui.dialog.prototype, {
 		var maxLeft = parent.width() - options.dragLimit[1];
 	
 		self.uiDialog.draggable({
-			cancel: ".ui-dialog-content, .ui-dialog-titlebar-close",
+			cancel: ".ui-dialog-content, .ui-dialog-titlebar-buttons",
 			handle: ".ui-dialog-titlebar",
 			containment: self.options.containment,//这里是修改的代码
 			helper: function(e){
@@ -348,7 +348,7 @@ $.extend($.ui.dialog.prototype, {
 		// 处理窗口内容元素的大小
 		self.element.css({
 			width: newWidth - (self.element.outerWidth(true) - self.element.width()), 
-			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true)
+			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true) - self.uiDialog.children(".ui-dialog-buttonpane").outerHeight(true)
 		});
 		
 		self._trigger('resize', event);

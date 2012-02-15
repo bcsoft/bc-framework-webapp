@@ -13,7 +13,7 @@ bc.form = {
 		logger.info("bc.form.init:readonly=" + readonly);
 		
 		//绑定富文本编辑器
-		$form.find("textarea.bc-editor").each(function(){
+		$form.find("textarea.bc-editor").filter(":not('.custom')").each(function(){
 			$this = $(this);
 			$this.xheditor(bc.editor.getConfig({
 				ptype: $this.attr("data-ptype"),
@@ -44,6 +44,22 @@ bc.form = {
 				$(this).hide();
 			});
 		}
+		
+		// 绑定多页签处理
+		$form.find(".formTabs").filter(":not('.custom')").each(function(){
+			$this = $(this);
+			var $tabs = $this.bctabs(bc.page.defaultBcTabsOption);
+			$form.bind("dialogresize", function(event, ui) {
+				bc.form.resizeFromTabs.call($tabs,$form);
+			});
+		});
+	},
+	
+	/** 重新调整tab的尺寸
+	 */
+	resizeFromTabs : function($form) {
+		if(logger.debugEnabled)logger.debug("resizeFromTabs");
+		this.bctabs("resize");
 	},
 	
 	/** 初始化日期、时间控件的事件绑定

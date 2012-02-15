@@ -96,7 +96,10 @@ bc.page = {
 			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
-			if($dom.attr("data-type") == "form") cfg.minimizable = true;// 默认为表单添加最小化按钮
+			if($dom.attr("data-type") == "form") {
+				cfg.minimizable = true;// 默认为表单添加最小化按钮
+				cfg.maximizable = true;// 默认为表单添加最大化按钮
+			}
 			
 			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
 			
@@ -194,7 +197,7 @@ bc.page = {
 			// 窗口最大化的处理
 			if(cfg.maximizable){
 				$dom.bind("dialogmaximize",function(event,ui){
-					logger.info("--maximize");
+					if(logger.infoEnabled)logger.info("--maximize");
 				});
 			}
 			
@@ -260,7 +263,7 @@ bc.page = {
 			$error.unbind().remove();
 		});
 		$error.find("span.more").click(function(){
-			logger.info("span.more");
+			if(logger.infoEnabled)logger.info("span.more");
 			var errorWin=window.open('', 'bcErrorShow');
 			var errorDoc = errorWin.document;
 			errorDoc.open();
@@ -334,7 +337,7 @@ bc.page = {
 				url += "/save";
 			}
 		}
-		logger.info("saveUrl=" + url);
+		if(logger.infoEnabled)logger.info("saveUrl=" + url);
 		var $form = $("form",$page);
 		
 		//表单验证
@@ -678,7 +681,7 @@ bc.page.initTabPageLoad = function (event, ui){
 	
 	var $tabPanel = $(ui.panel);
 	var $page = $tabPanel.find(">.bc-page");
-	logger.info("bc-page.size:" + $page.size());
+	if(logger.infoEnabled)logger.info("bc-page.size:" + $page.size());
 	if(!$page.size()) return;
 	
 	$page.height($tabPanel.height());
@@ -749,9 +752,9 @@ function _initBcTabsLoad(){
  */
 bc.page.defaultBcTabsOption = {
 	load:function(event,ui){
-		logger.info("load:" +  $(this).attr("class"));
+		if(logger.infoEnabled)logger.info("load:" +  $(this).attr("class"));
 		var $page = ui.content.children(".bc-page");
-		logger.info("tabs.load:bc-page.size=" + $page.size());
+		if(logger.debugEnabled)logger.debug("tabs.load:bc-page.size=" + $page.size());
 		if(!$page.size()) return;
 		
 		// 加载js、css文件
@@ -768,11 +771,21 @@ bc.page.defaultBcTabsOption = {
 		
 		//对视图和表单执行额外的初始化
 		var dataType = $page.attr("data-type");
-		logger.info("tabs.load:dataType=" + dataType);
+		if(logger.debugEnabled)logger.debug("tabs.load:dataType=" + dataType);
 		if(dataType == "list"){//视图
 			if($page.find(".bc-grid").size()){//表格的额外处理
 				bc.grid.init($page);
 				$page.removeAttr("title");
+				
+				// 绑定窗体尺寸变动事件
+				$page.parent().closest(".bc-page").bind("dialogresize",function(){
+					// 调整当前页签内grid的尺寸
+					if(ui.content.is(":visible") && ui.content.attr("data-resized") == "true"){
+						if(logger.debugEnabled)logger.debug("resized=true,index=" + ui.content.index());
+						bc.grid.init($page);
+						ui.content.attr("data-resized","false");
+					}
+				});
 			}
 		}else if(dataType == "form"){//表单
 			bc.form.init($page);//如绑定日期选择事件等
@@ -780,6 +793,14 @@ bc.page.defaultBcTabsOption = {
 		}
 	},
 	show:function(event,ui){
-		logger.info("show:" + ui.content.attr("class"));
-	}
+		if(logger.debugEnabled)logger.debug("show:" + ui.content.attr("class"));
+		// 调整当前页签内grid的尺寸
+		if(ui.content.attr("data-resized") == "true"){
+			if(logger.debugEnabled)logger.debug("show.resized=true,index=" + ui.content.index());
+			bc.grid.init(ui.content.children(".bc-page"));
+			ui.content.attr("data-resized","false");
+		}
+	},
+	/** 内容容器的高度是否自动根据tabs容器的高度变化 */
+	autoResize: true
 };
