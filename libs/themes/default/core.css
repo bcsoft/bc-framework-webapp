@@ -237,7 +237,7 @@ div.clear{
 	width:auto;
 	height:0
 }
-div.bc-dateContainer{
+div.bc-dateContainer,div.bc-relativeContainer{
 	position: relative;
 	display: inline-block;
 }

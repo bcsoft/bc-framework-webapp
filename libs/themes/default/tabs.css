@@ -13,7 +13,7 @@ div.bc-tabs.layout-top {
 
 div.bc-tabs.layout-top div.tabsContainer{
 	position: relative;
-	z-index: 1;
+	z-index: 20;
 	width: 100% !important;
 	height: 34px;
 	margin-bottom: -1px;
@@ -114,7 +114,7 @@ div.bc-tabs.layout-top div.contentContainer {
 	/*height: 277px;*/
 	padding: 0;
 }
-div.bc-tabs.layout-top div.contentContainer.noBottomBoder {
+div.bc-tabs.layout-top div.contentContainer.noBottomBorder {
 	border-bottom-width: 0;;
 }
 div.bc-tabs.layout-top div.contentContainer div.content{
