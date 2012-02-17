@@ -126,7 +126,7 @@
 	bc.sid = '<s:property value="sid" />';
 	
 	//一定要使用location.host获取真实的url地址，否则safari在初始化WebSocket时会重置session导致信息丢失
-	bc.wsurl = (location.protocol == "https" ? "wss://" : "ws://") + location.host + bc.root + "/ws";
+	bc.wsurl = <s:text name="app.ws.url"/>;
 	
 	bc.ts = '<s:property value="ts" />';//系统编译发布的时间
 	if (bc.debug) {

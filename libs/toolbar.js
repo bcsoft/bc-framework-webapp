@@ -94,7 +94,7 @@ bc.toolbar = {
 				if(value && value.length > 0){
 					conditions.push({type:c.type,ql:c.ql,value:value});
 				}
-			}else if($this.is("div")){//单选按钮组或多选框的容器
+			}else if($this.is(".radios,.checkboxes")){//单选按钮组或多选框的容器
 				c = eval("(" + $this.attr("data-condition") + ")");
 				if(logger.debugEnabled)logger.debug("c2=" + $.toJSON(c));
 				var $ms = $this.find(":checked");
@@ -114,6 +114,48 @@ bc.toolbar = {
 					ins += ")";
 					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + ins,value: values});
 				}
+			}else if($this.is(".multi")){//多值混合类型
+				c = this.getAttribute("data-condition");
+				c = c.replace(/\r|\n|\t/g,"");
+				if(logger.debugEnabled)logger.debug("multi:data-condition=" + c);
+				c = eval("(" + c + ")");
+				// 获取起始、结束日期的值
+				var $values = $this.find("input.value");
+				var zero = "", all = "", qlkey = "",valueCfg,v,$t;
+				var values = [];
+				$values.each(function(i){
+					$t = $(this);
+					v = $t.val();
+					valueCfg = $t.data("value");
+					zero += "0";
+					all += "1";
+					qlkey += v.length > 0 ? "1" : "0";
+					if(v.length > 0){//有值的情况
+						if(typeof valueCfg == "string"){
+							valueCfg = {type: valueCfg, value: v, like:false};
+						}else{
+							valueCfg.value = v;
+						}
+						values.push(valueCfg);
+					}
+				});
+				
+				if(logger.debugEnabled)logger.debug("zero=" + zero + ";all=" + all + ";qlkey=" + qlkey + ";values.length=" + values.length);
+				
+				if(qlkey != zero){//排除全部无值的情况
+					if(all == qlkey){//全部有值的情况
+						qlkey = "ql";
+					}else{// 部分有值的情况
+						qlkey = "ql" + qlkey;
+					}
+					if(values.length == 1){
+						conditions.push({type: values[0].type,ql: c[qlkey],value: values[0].value,like: !!values[0].like});
+					}else{
+						conditions.push({type:"multi",ql: c[qlkey],value: values});
+					}
+				}
+			}else{
+				alert("不支持的条件配置：data-condition=" + $this.attr("data-condition"));
 			}
 		});
 		

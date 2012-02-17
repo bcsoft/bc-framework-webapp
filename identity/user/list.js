@@ -4,7 +4,7 @@ bc.userList = {
 		var $page = $(this);
 		
 		//获取选中的用户id
-		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		var data = null;
 		if($tds.length == 1){
 			data = "ids=" + $tds.attr("data-id");
