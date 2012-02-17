@@ -117,7 +117,7 @@ bc.toolbar = {
 			}else if($this.is(".multi")){//多值混合类型
 				c = this.getAttribute("data-condition");
 				c = c.replace(/\r|\n|\t/g,"");
-				if(logger.infoEnabled)logger.info("-data-condition=" + c);
+				if(logger.debugEnabled)logger.debug("multi:data-condition=" + c);
 				c = eval("(" + c + ")");
 				// 获取起始、结束日期的值
 				var $values = $this.find("input.value");
@@ -139,7 +139,10 @@ bc.toolbar = {
 						values.push(valueCfg);
 					}
 				});
-				if(all == qlkey && zero != qlkey){//排除全部无值的情况
+				
+				if(logger.debugEnabled)logger.debug("zero=" + zero + ";all=" + all + ";qlkey=" + qlkey + ";values.length=" + values.length);
+				
+				if(qlkey != zero){//排除全部无值的情况
 					if(all == qlkey){//全部有值的情况
 						qlkey = "ql";
 					}else{// 部分有值的情况
@@ -151,14 +154,6 @@ bc.toolbar = {
 						conditions.push({type:"multi",ql: c[qlkey],value: values});
 					}
 				}
-//				
-//				if(startDate.length > 0 && endDate.length > 0){//ql
-//					conditions.push({type:"multi",ql: c.ql,value: [{type:"startDate",value:startDate},{type:"endDate",value:endDate}]});
-//				}else if(startDate.length > 0 && endDate.length == 0){//ql10
-//					conditions.push({type:"startDate",ql: c.ql10,value: startDate});
-//				}else if(startDate.length == 0 && endDate.length > 0){//ql01
-//					conditions.push({type:"endDate",ql: c.ql01,value: endDate});
-//				}
 			}else{
 				alert("不支持的条件配置：data-condition=" + $this.attr("data-condition"));
 			}
