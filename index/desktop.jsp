@@ -26,6 +26,10 @@
 <s:else>
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/bc.css' ><s:param name='ts' value='ts'/></s:url>" />
 </s:else>
+<!-- 额外加载的css文件 -->
+<s:if test='%{"app.index.css" != getText("app.index.css")}'>
+	<link rel="stylesheet" type="text/css" href="<s:url value='%{getText("app.index.css")}' ><s:param name='ts' value='ts'/></s:url>" />
+</s:if>
 </head>
 <body style='font-size:<s:property value="personalConfig.font" />px;' class="bc">
 <!-- 整个桌面 -->
