@@ -20,7 +20,6 @@ bc.placeOriginForm = {
 		// 点击选择上级小按钮弹出选择视图
 		$form.find("#selectPname").click(function() {
 					var selectType = $form.find("input:[name='e.type']:radio:[checked]").val();
-					logger.info("selectType:" + selectType);
 					// 如果为省级，则无上级可选
 					if (selectType == 1) {
 						bc.msg.info("你好，此类型没有上级可以选择！");
@@ -29,7 +28,7 @@ bc.placeOriginForm = {
 						if (selectType == 2) {// 地级 应选省级
 							selectType = 1;
 						} else {// 县级 应选地级
-							selectType = 2;
+							selectType = '1,2';
 						}
 
 						// 构建默认参数
@@ -63,6 +62,23 @@ bc.placeOriginForm = {
 								if (superiorPlace) {
 									$form.find(":input[name='e.pid']").val(superiorPlace.id);
 									$form.find(":input[name='pname']").val(superiorPlace.name);
+									if($form.find(":input[name='e.core']").val()==''){
+										if(superiorPlace.level=='省级'){
+											var $val=superiorPlace.core.substring(0,2);
+											$form.find(":input[name='e.core']").val($val)
+											var zero = "000000000";
+											$form.find(":input[name='e.fullcore']").val(
+													$val + zero);
+										}else{
+											var $val=superiorPlace.core.substring(0,4);
+											$form.find(":input[name='e.core']").val($val)
+											var zero = "000000000";
+											$form.find(":input[name='e.fullcore']").val(
+													$val + zero);
+										}
+									}
+									
+									
 									if(superiorPlace.fullname){
 										$form.find(":input[name='e.fullname']").val(superiorPlace.fullname+
 												$form.find(":input[name='e.name']").val());
