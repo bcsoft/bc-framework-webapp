@@ -18,6 +18,8 @@ bc.superiorPlaceSelectDialog = {
 			data = {};
 			data.id = $tds.attr("data-id");
 			var $tr = $grid.find(">.data>.right tr.ui-state-highlight");
+			data.level= $tr.find("td:eq(0)").text();
+			data.core= $tr.find("td:eq(1)").text();
 			data.name = $tr.find("td:eq(2)").text();
 			data.fullname = $tr.find("td:eq(3)").text();
 		}
