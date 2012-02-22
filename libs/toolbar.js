@@ -460,12 +460,8 @@ $document.delegate(".bc-select","click", function(e) {
 	}
 	
 	if($input.attr("data-bcselectInit") != "true"){
-		//获取下拉列表的数据源
-		var source = $input.data("source");
-		if(logger.debugEnabled)logger.debug("source=" + $.toJSON(source));
-		
-		//初始化下拉列表
-		$input.autocomplete({
+		// 获取自定义的配置
+		var option = $.extend({
 			delay: 0,
 			minLength: 0,
 			position: {
@@ -474,7 +470,6 @@ $document.delegate(".bc-select","click", function(e) {
 				offset:"0 -1",
 				collision: "none"
 			},
-			source: source,
 			select: function(event, ui){
 				if(logger.debugEnabled)logger.debug("selectItem=" + $.toJSON(ui.item));
 				//设置隐藏域字段的值
@@ -484,7 +479,36 @@ $document.delegate(".bc-select","click", function(e) {
 				//返回false禁止autocomplete自动填写值到$input
 				return false;
 			}
-		}).autocomplete("widget").addClass("bc-condition-autocomplete");
+		},$input.data("cfg"));
+		
+		//获取下拉列表的数据源
+		var source = $input.data("source");
+		if(logger.debugEnabled)logger.debug("source=" + $.toJSON(source));
+		if(source) option.source = source;
+		
+		// 合并自定义的回调函数
+		if(typeof option.callback == "string"){
+			var callback = bc.getNested(option.callback);
+			if(typeof callback != "function"){
+				alert("没有定义的回调函数：callback=" + option.callback);
+			}else{
+				option.callback = callback;
+				var originSelectFn = option.select;
+				option.select = function(event, ui){
+					// 调用原始的select函数
+					if(typeof originSelectFn == "function")
+						originSelectFn.apply(this,arguments);
+					
+					// 再调用自定义的回调函数
+					option.callback.apply(this,arguments);
+					
+					return false;
+				}
+			}
+		}
+		
+		//初始化下拉列表
+		$input.autocomplete(option).autocomplete("widget").addClass("bc-condition-autocomplete");
 		
 		// 设置下拉列表的最大高度
 		var maxHeight = $input.attr("data-maxHeight");

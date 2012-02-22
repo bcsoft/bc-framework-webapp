@@ -164,7 +164,22 @@ $document.delegate(".clearSelect",{
 		if(logger.debugEnabled)logger.debug("cfg=" + $.toJSON(cfg));
 		if(!cfg){
 			// 自动查找临近的元素
-			$this.parent("ul.inputIcons").siblings("input[type='text'],input[type='hidden']").val("");
+			var $s = $this.parent("ul.inputIcons").siblings("input[type='text'],input[type='hidden']");
+			$s.val("");
+			
+			// 调用自定义的回调函数
+			$s = $s.filter("input[type='text']");//主配置元素
+			if($s.size() > 0){
+				cfg = $s.data("cfg");
+				if(cfg && (typeof cfg.callback == "string")){
+					var callback = bc.getNested(cfg.callback);
+					if(typeof callback != "function"){
+						alert("没有定义的回调函数：callback=" + cfg.callback);
+					}else{
+						callback.apply(this,arguments);
+					}
+				}
+			}
 			
 			//alert("没有配置dom元素data-cfg属性的值，无法处理！");
 		}else{
