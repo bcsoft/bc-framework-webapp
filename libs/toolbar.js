@@ -457,6 +457,7 @@ $document.delegate(".bc-select","click", function(e) {
 		$input = $this;
 	}else if($this.is(".inputIcon")){//文本框右侧的按钮
 		$input = $this.parent().siblings("input[type='text']");
+		$input.focus();
 	}
 	
 	if($input.attr("data-bcselectInit") != "true"){
