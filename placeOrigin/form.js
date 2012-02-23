@@ -62,18 +62,18 @@ bc.placeOriginForm = {
 								if (superiorPlace) {
 									$form.find(":input[name='e.pid']").val(superiorPlace.id);
 									$form.find(":input[name='pname']").val(superiorPlace.name);
-									if($form.find(":input[name='e.core']").val()==''){
+									if($form.find(":input[name='e.code']").val()==''){
 										if(superiorPlace.level=='省级'){
 											var $val=superiorPlace.core.substring(0,2);
-											$form.find(":input[name='e.core']").val($val)
+											$form.find(":input[name='e.code']").val($val)
 											var zero = "000000000";
-											$form.find(":input[name='e.fullcore']").val(
+											$form.find(":input[name='e.fullcode']").val(
 													$val + zero);
 										}else{
 											var $val=superiorPlace.core.substring(0,4);
-											$form.find(":input[name='e.core']").val($val)
+											$form.find(":input[name='e.code']").val($val)
 											var zero = "000000000";
-											$form.find(":input[name='e.fullcore']").val(
+											$form.find(":input[name='e.fullcode']").val(
 													$val + zero);
 										}
 									}
@@ -102,7 +102,7 @@ bc.placeOriginForm = {
 				});
 		
 		// 输入编码时 自动生成全编码
-		$form.find(":input[name='e.core']").blur(
+		$form.find(":input[name='e.code']").blur(
 				function() {
 					var $val = $(this).val();
 					var length = $val.length;
@@ -111,14 +111,14 @@ bc.placeOriginForm = {
 					logger.info(length);
 
 					if (length == 0) {
-						$form.find(":input[name='e.fullcore']").val('');
+						$form.find(":input[name='e.fullcode']").val('');
 					}
 					// 长度为不超过6位
 					else if (length <= 6) {
 						// 选中性省级，低级，县级
 						if ((typeR == 1 || typeR == 2) || typeR == 3) {
 							var zero = "000000000";
-							$form.find(":input[name='e.fullcore']").val(
+							$form.find(":input[name='e.fullcode']").val(
 									$val + zero);
 						}
 					}

@@ -21,8 +21,8 @@
 					<td class="value"><s:textfield name="e.name" cssClass="ui-widget-content" data-validate="required"/></td>
 				</tr>
 				<tr>
-					<td class="label"><s:text name="placeorigin.core"/>:</td>
-					<td class="value"><s:textfield name="e.core" cssClass="ui-widget-content" data-validate='{"minLen": 6,"maxLen": 6,"type":"number"}'/></td>
+					<td class="label"><s:text name="placeorigin.code"/>:</td>
+					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate='{"minLen": 6,"maxLen": 6,"type":"number"}'/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="placeorigin.higherlevel"/>:</td>
@@ -37,8 +37,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="label"><s:text name="placeorigin.fullcore"/>:</td>
-					<td class="value"><s:textfield name="e.fullcore" readonly="true" cssClass="ui-widget-content" /></td>
+					<td class="label"><s:text name="placeorigin.fullcode"/>:</td>
+					<td class="value"><s:textfield name="e.fullcode" readonly="true" cssClass="ui-widget-content" /></td>
 				</tr>
 				<tr>
 					<td class="topLabel" ><s:text name="placeorigin.fullname"/>:</td>
