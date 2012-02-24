@@ -35,7 +35,7 @@ bc.validator = {
 		.each(function(i, n){
 			var $this = $(this);
 			var validate = $this.attr("data-validate");
-			logger.info("validate=" + validate);
+			if(logger.debugEnabled)logger.debug("validate=" + validate);
 			if(logger.debugEnabled)
 				logger.debug(this.nodeName + "," + this.name + "," + this.value + "," + validate);
 			if(validate && $.trim(validate).length > 0){

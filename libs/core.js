@@ -215,3 +215,23 @@ bc.getTime = function(){
 		time += now.getSeconds();
 	return time;
 };
+/**
+ * 计算指定时间范围内的耗时描述信息
+ * 
+ * @param startTime 开始时间
+ * @param endTime 结束时间
+ * @return
+ */
+bc.getWasteTime = function(startTime,endTime){
+	if(!endTime) endTime = new Date().getTime();
+	var wt = (endTime - startTime);//毫秒
+	//logger.info("wt=" + wt + ",startTime=" + startTime + ",endTime=" + endTime);
+	if (wt < 1000) {
+		return wt + "毫秒";
+	} else if (wt < 1000 * 60) {
+		return bc.formatNumber(wt/1000,"#.#") + "秒";
+	} else {
+		var m = wt / (1000 * 60);
+		return m + "分" + bc.formatNumber((wt - m * 1000 * 60) / 1000,"#.#") + "秒";
+	}
+};

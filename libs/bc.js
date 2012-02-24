@@ -216,6 +216,26 @@ bc.getTime = function(){
 	return time;
 };
 /**
+ * 计算指定时间范围内的耗时描述信息
+ * 
+ * @param startTime 开始时间
+ * @param endTime 结束时间
+ * @return
+ */
+bc.getWasteTime = function(startTime,endTime){
+	if(!endTime) endTime = new Date().getTime();
+	var wt = (endTime - startTime);//毫秒
+	//logger.info("wt=" + wt + ",startTime=" + startTime + ",endTime=" + endTime);
+	if (wt < 1000) {
+		return wt + "毫秒";
+	} else if (wt < 1000 * 60) {
+		return bc.formatNumber(wt/1000,"#.#") + "秒";
+	} else {
+		var m = wt / (1000 * 60);
+		return m + "分" + bc.formatNumber((wt - m * 1000 * 60) / 1000,"#.#") + "秒";
+	}
+};
+/**
  * 对$.ajax的通用封装:全局ajax设置
  * 
  * @author rongjihuang@gmail.com
@@ -421,7 +441,7 @@ bc.validator = {
 		.each(function(i, n){
 			var $this = $(this);
 			var validate = $this.attr("data-validate");
-			logger.info("validate=" + validate);
+			if(logger.debugEnabled)logger.debug("validate=" + validate);
 			if(logger.debugEnabled)
 				logger.debug(this.nodeName + "," + this.name + "," + this.value + "," + validate);
 			if(validate && $.trim(validate).length > 0){
@@ -1551,7 +1571,7 @@ bc.toolbar = {
 				if(value && value.length > 0){
 					conditions.push({type:c.type,ql:c.ql,value:value});
 				}
-			}else if($this.is("div")){//单选按钮组或多选框的容器
+			}else if($this.is(".radios,.checkboxes")){//单选按钮组或多选框的容器
 				c = eval("(" + $this.attr("data-condition") + ")");
 				if(logger.debugEnabled)logger.debug("c2=" + $.toJSON(c));
 				var $ms = $this.find(":checked");
@@ -1571,6 +1591,48 @@ bc.toolbar = {
 					ins += ")";
 					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + ins,value: values});
 				}
+			}else if($this.is(".multi")){//多值混合类型
+				c = this.getAttribute("data-condition");
+				c = c.replace(/\r|\n|\t/g,"");
+				if(logger.debugEnabled)logger.debug("multi:data-condition=" + c);
+				c = eval("(" + c + ")");
+				// 获取起始、结束日期的值
+				var $values = $this.find("input.value");
+				var zero = "", all = "", qlkey = "",valueCfg,v,$t;
+				var values = [];
+				$values.each(function(i){
+					$t = $(this);
+					v = $t.val();
+					valueCfg = $t.data("value");
+					zero += "0";
+					all += "1";
+					qlkey += v.length > 0 ? "1" : "0";
+					if(v.length > 0){//有值的情况
+						if(typeof valueCfg == "string"){
+							valueCfg = {type: valueCfg, value: v, like:false};
+						}else{
+							valueCfg.value = v;
+						}
+						values.push(valueCfg);
+					}
+				});
+				
+				if(logger.debugEnabled)logger.debug("zero=" + zero + ";all=" + all + ";qlkey=" + qlkey + ";values.length=" + values.length);
+				
+				if(qlkey != zero){//排除全部无值的情况
+					if(all == qlkey){//全部有值的情况
+						qlkey = "ql";
+					}else{// 部分有值的情况
+						qlkey = "ql" + qlkey;
+					}
+					if(values.length == 1){
+						conditions.push({type: values[0].type,ql: c[qlkey],value: values[0].value,like: !!values[0].like});
+					}else{
+						conditions.push({type:"multi",ql: c[qlkey],value: values});
+					}
+				}
+			}else{
+				alert("不支持的条件配置：data-condition=" + $this.attr("data-condition"));
 			}
 		});
 		
@@ -1872,15 +1934,12 @@ $document.delegate(".bc-select","click", function(e) {
 		$input = $this;
 	}else if($this.is(".inputIcon")){//文本框右侧的按钮
 		$input = $this.parent().siblings("input[type='text']");
+		$input.focus();
 	}
 	
 	if($input.attr("data-bcselectInit") != "true"){
-		//获取下拉列表的数据源
-		var source = $input.data("source");
-		if(logger.debugEnabled)logger.debug("source=" + $.toJSON(source));
-		
-		//初始化下拉列表
-		$input.autocomplete({
+		// 获取自定义的配置
+		var option = $.extend({
 			delay: 0,
 			minLength: 0,
 			position: {
@@ -1889,7 +1948,6 @@ $document.delegate(".bc-select","click", function(e) {
 				offset:"0 -1",
 				collision: "none"
 			},
-			source: source,
 			select: function(event, ui){
 				if(logger.debugEnabled)logger.debug("selectItem=" + $.toJSON(ui.item));
 				//设置隐藏域字段的值
@@ -1899,7 +1957,36 @@ $document.delegate(".bc-select","click", function(e) {
 				//返回false禁止autocomplete自动填写值到$input
 				return false;
 			}
-		}).autocomplete("widget").addClass("bc-condition-autocomplete");
+		},$input.data("cfg"));
+		
+		//获取下拉列表的数据源
+		var source = $input.data("source");
+		if(logger.debugEnabled)logger.debug("source=" + $.toJSON(source));
+		if(source) option.source = source;
+		
+		// 合并自定义的回调函数
+		if(typeof option.callback == "string"){
+			var callback = bc.getNested(option.callback);
+			if(typeof callback != "function"){
+				alert("没有定义的回调函数：callback=" + option.callback);
+			}else{
+				option.callback = callback;
+				var originSelectFn = option.select;
+				option.select = function(event, ui){
+					// 调用原始的select函数
+					if(typeof originSelectFn == "function")
+						originSelectFn.apply(this,arguments);
+					
+					// 再调用自定义的回调函数
+					option.callback.apply(this,arguments);
+					
+					return false;
+				}
+			}
+		}
+		
+		//初始化下拉列表
+		$input.autocomplete(option).autocomplete("widget").addClass("bc-condition-autocomplete");
 		
 		// 设置下拉列表的最大高度
 		var maxHeight = $input.attr("data-maxHeight");
@@ -3092,7 +3179,22 @@ $document.delegate(".clearSelect",{
 		if(logger.debugEnabled)logger.debug("cfg=" + $.toJSON(cfg));
 		if(!cfg){
 			// 自动查找临近的元素
-			$this.parent("ul.inputIcons").siblings("input[type='text'],input[type='hidden']").val("");
+			var $s = $this.parent("ul.inputIcons").siblings("input[type='text'],input[type='hidden']");
+			$s.val("");
+			
+			// 调用自定义的回调函数
+			$s = $s.filter("input[type='text']");//主配置元素
+			if($s.size() > 0){
+				cfg = $s.data("cfg");
+				if(cfg && (typeof cfg.callback == "string")){
+					var callback = bc.getNested(cfg.callback);
+					if(typeof callback != "function"){
+						alert("没有定义的回调函数：callback=" + cfg.callback);
+					}else{
+						callback.apply(this,arguments);
+					}
+				}
+			}
 			
 			//alert("没有配置dom元素data-cfg属性的值，无法处理！");
 		}else{

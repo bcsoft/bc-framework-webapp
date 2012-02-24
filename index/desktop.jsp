@@ -26,6 +26,10 @@
 <s:else>
 	<link rel="stylesheet" type="text/css" href="<s:url value='/bc/libs/themes/default/bc.css' ><s:param name='ts' value='ts'/></s:url>" />
 </s:else>
+<!-- 额外加载的css文件 -->
+<s:if test='%{"app.index.css" != getText("app.index.css")}'>
+	<link rel="stylesheet" type="text/css" href="<s:url value='%{getText("app.index.css")}' ><s:param name='ts' value='ts'/></s:url>" />
+</s:if>
 </head>
 <body style='font-size:<s:property value="personalConfig.font" />px;' class="bc">
 <!-- 整个桌面 -->
@@ -126,7 +130,7 @@
 	bc.sid = '<s:property value="sid" />';
 	
 	//一定要使用location.host获取真实的url地址，否则safari在初始化WebSocket时会重置session导致信息丢失
-	bc.wsurl = (location.protocol == "https" ? "wss://" : "ws://") + location.host + bc.root + "/ws";
+	bc.wsurl = <s:text name="app.ws.url"/>;
 	
 	bc.ts = '<s:property value="ts" />';//系统编译发布的时间
 	if (bc.debug) {
