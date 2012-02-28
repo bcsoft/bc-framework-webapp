@@ -307,7 +307,7 @@
 						pmid = new Date();
 					}
 					if(logger.debugEnabled)logger.debug("pmid=" + pmid);
-					$tabBCPage.attr("data-mid",pmid + ".tab" + index);
+					$tabBCPage.attr("data-mid",pmid + ".tab" + index).attr("data-isTabContent","true");
 				}
 				
 				//抛出加载完毕事件

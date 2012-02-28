@@ -156,10 +156,14 @@ bc.page = {
 				if(typeof option.from == "string"){//直接传入来源窗口的mid
 					$dom.attr("data-from",option.from);
 				}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
+					logger.info("option.from instanceof jQuery == true");
 					$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
 				}else{
 					alert("不支持的from对象类型！");
 				}
+			}
+			if(option.fromType){
+				$dom.attr("data-fromType",option.fromType);
 			}
 			
 			var dataType = $dom.attr("data-type");
@@ -596,6 +600,7 @@ bc.page = {
 			bc.page.newWin({
 				url:url, data: data || null,
 				from: fromMID,
+				fromType: $page.is("[data-isTabContent='true']") ? "tab" : null,
 				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
 				title: $tds.attr("data-name"),

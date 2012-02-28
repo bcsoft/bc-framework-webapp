@@ -164,11 +164,18 @@ bc.grid = {
 		var fromMID = $page.attr("data-from");
 		logger.info("grid.reloadData:fromMID=" + fromMID);
 		if(fromMID){
-			// 获取原始的$page对象
-			$page = $(".bc-ui-dialog>.bc-page[data-mid='" + fromMID + "']");
-			if($page.size() == 0){
-				logger.info("找不到相应的原始对话框，忽略不作处理！fromMID=" + fromMID);
-				return;
+			if($page.is("[data-fromType='tab']")){// $page来源于页签内的视图
+				$page = $(".bc-ui-dialog>.bc-page .bc-page[data-mid='" + fromMID + "']");
+				if($page.size() == 0){
+					logger.info("找不到相应的原始页签，忽略不作处理！fromMID=" + fromMID);
+					return;
+				}
+			}else{// $page来源于对话框视图
+				$page = $(".bc-ui-dialog>.bc-page[data-mid='" + fromMID + "']");
+				if($page.size() == 0){
+					logger.info("找不到相应的原始对话框，忽略不作处理！fromMID=" + fromMID);
+					return;
+				}
 			}
 		}
 		
