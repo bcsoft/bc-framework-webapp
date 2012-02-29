@@ -205,6 +205,35 @@ bc.page = {
 				});
 			}
 			
+			// 窗口帮助的处理
+			if(cfg.help){
+				var helpWin=[];
+				$dom.bind("dialoghelp",function(event,clickDom){
+					var helpKey = $(clickDom).attr("data-help");
+					if(logger.infoEnabled)logger.info("--help=" + helpKey);
+					try {
+						//打开帮助窗口
+						if (!helpWin[helpKey]) {
+							helpWin[helpKey] = window.open(bc.root + "/help?key=" + helpKey + "&ts=" + bc.ts, "_blank");
+						} else {
+							helpWin[helpKey].document.location.reload(true);
+							helpWin[helpKey].focus();
+						}
+					} catch (e) {
+						helpWin[helpKey] = null;
+					}
+					return false;
+				});
+			}
+			
+			// 窗口打印的处理
+			if(cfg.print){
+				$dom.bind("dialogprint",function(event,clickDom){
+					if(logger.infoEnabled)logger.info("--print=" + $(clickDom).attr("data-print"));
+					bc.msg.alert("功能开发中");
+				});
+			}
+			
 			//通知任务栏模块加载完毕
 			bc.page.quickbar.loaded(option.mid);
 			
