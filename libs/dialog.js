@@ -27,6 +27,8 @@ $.extend($.ui.dialog.prototype.options, {
 	closable: true,//关闭按钮
 	minimizable: false,//最小化按钮
 	maximizable: false,//最大化按钮
+	help: false,//帮助按钮
+	print: false,//打印按钮
 	appendTo: "body",
 	dragLimit: [0,80,35,40]//上,右,下,左
 });
@@ -119,6 +121,28 @@ $.extend($.ui.dialog.prototype, {
 		
 		// 添加右上角的按钮容器
 		var $topRightButtons = $('<div class="ui-dialog-titlebar-buttons"></div>').appendTo( uiDialogTitlebar );
+		
+		// 添加打印按钮：
+		if (options.print) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-print">print</span></a>')
+			.appendTo($topRightButtons)
+			.attr("data-print",options.print)
+			.click(function( event ) {
+				event.preventDefault();
+				self.print( event,this );
+			});
+		}
+		
+		// 添加帮助按钮：
+		if (options.help) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-help">help</span></a>')
+			.appendTo($topRightButtons)
+			.attr("data-help",options.help)
+			.click(function( event ) {
+				event.preventDefault();
+				self.help( event,this );
+			});
+		}
 		
 		// 添加最小化按钮：
 		if (options.minimizable) {
@@ -360,6 +384,18 @@ $.extend($.ui.dialog.prototype, {
 	minimize: function(event) {
 		var self = this;
 		self._trigger('minimize', event);
+		return self;
+	},
+	/** 点击帮助按钮 */
+	help: function(event,clickDom) {
+		var self = this;
+		self._trigger('help', event,clickDom);
+		return self;
+	},
+	/** 点击打印按钮 */
+	print: function(event,clickDom) {
+		var self = this;
+		self._trigger('print', event,clickDom);
 		return self;
 	}
 });

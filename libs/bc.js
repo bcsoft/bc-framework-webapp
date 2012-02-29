@@ -648,7 +648,9 @@ bc.validator = {
 		var msg = ((cfg && cfg.msg) ? cfg.msg : bc.validator.messages[validateType]);
 		if($.isArray(args))
 			msg = msg.format.apply(msg,args);
-		bc.boxPointer.show({of:element, content:msg});
+		
+		
+		bc.boxPointer.show({of:$el.closest(":visible"), content:msg});
 	},
 	messages:{
 		required:"这里必须填写哦！",
@@ -826,10 +828,14 @@ bc.page = {
 				if(typeof option.from == "string"){//直接传入来源窗口的mid
 					$dom.attr("data-from",option.from);
 				}else if(option.from instanceof jQuery){//传入的是来源窗口的jQuery对象
+					logger.info("option.from instanceof jQuery == true");
 					$dom.attr("data-from",option.from.attr("data-from") || option.from.attr("data-mid"));
 				}else{
 					alert("不支持的from对象类型！");
 				}
+			}
+			if(option.fromType){
+				$dom.attr("data-fromType",option.fromType);
 			}
 			
 			var dataType = $dom.attr("data-type");
@@ -1266,6 +1272,7 @@ bc.page = {
 			bc.page.newWin({
 				url:url, data: data || null,
 				from: fromMID,
+				fromType: $page.is("[data-isTabContent='true']") ? "tab" : null,
 				mid: fromMID + "." + $tds.attr("data-id"),
 				name: $tds.attr("data-name") || "未定义",
 				title: $tds.attr("data-name"),
@@ -1671,6 +1678,9 @@ bc.toolbar = {
 		if(extras){
 			delete extras.search4advance;
 		}
+		
+		// 重新加载列表数据
+		bc.grid.reloadData($conditionsFrom.closest(".bc-page"));
 	}
 };
 	
@@ -2452,11 +2462,18 @@ bc.grid = {
 		var fromMID = $page.attr("data-from");
 		logger.info("grid.reloadData:fromMID=" + fromMID);
 		if(fromMID){
-			// 获取原始的$page对象
-			$page = $(".bc-ui-dialog>.bc-page[data-mid='" + fromMID + "']");
-			if($page.size() == 0){
-				logger.info("找不到相应的原始对话框，忽略不作处理！fromMID=" + fromMID);
-				return;
+			if($page.is("[data-fromType='tab']")){// $page来源于页签内的视图
+				$page = $(".bc-ui-dialog>.bc-page .bc-page[data-mid='" + fromMID + "']");
+				if($page.size() == 0){
+					logger.info("找不到相应的原始页签，忽略不作处理！fromMID=" + fromMID);
+					return;
+				}
+			}else{// $page来源于对话框视图
+				$page = $(".bc-ui-dialog>.bc-page[data-mid='" + fromMID + "']");
+				if($page.size() == 0){
+					logger.info("找不到相应的原始对话框，忽略不作处理！fromMID=" + fromMID);
+					return;
+				}
 			}
 		}
 		
@@ -5141,7 +5158,7 @@ $("ul.browsers>li.browser").live("mouseover", function() {
 						pmid = new Date();
 					}
 					if(logger.debugEnabled)logger.debug("pmid=" + pmid);
-					$tabBCPage.attr("data-mid",pmid + ".tab" + index);
+					$tabBCPage.attr("data-mid",pmid + ".tab" + index).attr("data-isTabContent","true");
 				}
 				
 				//抛出加载完毕事件

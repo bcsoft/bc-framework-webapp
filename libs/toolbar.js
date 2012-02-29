@@ -194,6 +194,9 @@ bc.toolbar = {
 		if(extras){
 			delete extras.search4advance;
 		}
+		
+		// 重新加载列表数据
+		bc.grid.reloadData($conditionsFrom.closest(".bc-page"));
 	}
 };
 	

@@ -242,7 +242,9 @@ bc.validator = {
 		var msg = ((cfg && cfg.msg) ? cfg.msg : bc.validator.messages[validateType]);
 		if($.isArray(args))
 			msg = msg.format.apply(msg,args);
-		bc.boxPointer.show({of:element, content:msg});
+		
+		
+		bc.boxPointer.show({of:$el.closest(":visible"), content:msg});
 	},
 	messages:{
 		required:"这里必须填写哦！",
