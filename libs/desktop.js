@@ -206,24 +206,47 @@
 			});
 
 			// 帮助
-			var clWin;
+			var clWin=[];
 			$top.find("#bchelp,#bcmail").click(function() {
-				var $helpDlg = bc.msg.info('点击 <a href="#" id="clClick">这里</a> 查看系统更新日志！',bc.title);
-				$helpDlg.find("#clClick").click(function showChangelog(){
+				var $helpDlg = bc.msg.info('<a href="#" id="clClick_help">查看帮助</a>&nbsp;&nbsp;<a href="#" id="clClick_changelog">查看更新日志</a>',bc.title);
+				
+				// 帮助
+				$helpDlg.find("#clClick_help").click(function showHelp(){
 					try {
 						//打开查看更新日志的窗口
-						if (!clWin) {
-							clWin = window.open(bc.root
-									+ "/changelog/changelog.html?ts=" + bc.ts, "_blank");
+						if (!clWin["help"] || clWin["help"].closed) {
+							clWin["help"] = window.open(bc.root
+									+ "/help/index.htm#xitongzhuye", "_blank");
 						} else {
-							clWin.document.location.reload(true);
-							clWin.focus();
+							//clWin["help"].document.location.reload(true);
+							clWin["help"].focus();
 						}
 						
 						//关闭对话框
 						$helpDlg.dialog("close");
 					} catch (e) {
-						clWin = null;
+						clWin["help"] = null;
+						showHelp();
+					}
+					return false;
+				});
+				
+				// 日志
+				$helpDlg.find("#clClick_changelog").click(function showChangelog(){
+					try {
+						//打开查看更新日志的窗口
+						if (!clWin["changelog"] || clWin["changelog"].closed) {
+							clWin["changelog"] = window.open(bc.root
+									+ "/changelog/changelog.html?ts=" + bc.ts, "_blank");
+						} else {
+							clWin["changelog"].document.location.reload(true);
+							clWin["changelog"].focus();
+						}
+						
+						//关闭对话框
+						$helpDlg.dialog("close");
+					} catch (e) {
+						clWin["changelog"] = null;
 						showChangelog();
 					}
 					return false;

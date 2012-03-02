@@ -208,19 +208,20 @@ bc.page = {
 			// 窗口帮助的处理
 			if(cfg.help){
 				var helpWin=[];
-				$dom.bind("dialoghelp",function(event,clickDom){
-					var helpKey = $(clickDom).attr("data-help");
-					if(logger.infoEnabled)logger.info("--help=" + helpKey);
+				$dom.bind("dialoghelp",function showHelp(event,clickDom){
+					var helpAnchor = $(clickDom).attr("data-help");
+					if(logger.infoEnabled)logger.info("--help=" + helpAnchor);
 					try {
 						//打开帮助窗口
-						if (!helpWin[helpKey]) {
-							helpWin[helpKey] = window.open(bc.root + "/help?key=" + helpKey + "&ts=" + bc.ts, "_blank");
+						if (!helpWin[helpAnchor] || helpWin[helpAnchor].closed) {
+							helpWin[helpAnchor] = window.open(bc.root + "/help/index.htm#" + helpAnchor, "_blank");
 						} else {
-							helpWin[helpKey].document.location.reload(true);
-							helpWin[helpKey].focus();
+							//helpWin[helpAnchor].document.location.reload(true);
+							helpWin[helpAnchor].focus();
 						}
 					} catch (e) {
-						helpWin[helpKey] = null;
+						helpWin[helpAnchor] = null;
+						showHelp(event,clickDom);
 					}
 					return false;
 				});
