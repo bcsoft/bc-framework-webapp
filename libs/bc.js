@@ -877,6 +877,36 @@ bc.page = {
 				});
 			}
 			
+			// 窗口帮助的处理
+			if(cfg.help){
+				var helpWin=[];
+				$dom.bind("dialoghelp",function showHelp(event,clickDom){
+					var helpAnchor = $(clickDom).attr("data-help");
+					if(logger.infoEnabled)logger.info("--help=" + helpAnchor);
+					try {
+						//打开帮助窗口
+						if (!helpWin[helpAnchor] || helpWin[helpAnchor].closed) {
+							helpWin[helpAnchor] = window.open(bc.root + "/help/index.htm#" + helpAnchor, "_blank");
+						} else {
+							//helpWin[helpAnchor].document.location.reload(true);
+							helpWin[helpAnchor].focus();
+						}
+					} catch (e) {
+						helpWin[helpAnchor] = null;
+						showHelp(event,clickDom);
+					}
+					return false;
+				});
+			}
+			
+			// 窗口打印的处理
+			if(cfg.print){
+				$dom.bind("dialogprint",function(event,clickDom){
+					if(logger.infoEnabled)logger.info("--print=" + $(clickDom).attr("data-print"));
+					bc.msg.alert("功能开发中");
+				});
+			}
+			
 			//通知任务栏模块加载完毕
 			bc.page.quickbar.loaded(option.mid);
 			
@@ -4713,24 +4743,47 @@ $(".bc-imageEditor").live("click",function(e){
 			});
 
 			// 帮助
-			var clWin;
+			var clWin=[];
 			$top.find("#bchelp,#bcmail").click(function() {
-				var $helpDlg = bc.msg.info('点击 <a href="#" id="clClick">这里</a> 查看系统更新日志！',bc.title);
-				$helpDlg.find("#clClick").click(function showChangelog(){
+				var $helpDlg = bc.msg.info('<a href="#" id="clClick_help">查看帮助</a>&nbsp;&nbsp;<a href="#" id="clClick_changelog">查看更新日志</a>',bc.title);
+				
+				// 帮助
+				$helpDlg.find("#clClick_help").click(function showHelp(){
 					try {
 						//打开查看更新日志的窗口
-						if (!clWin) {
-							clWin = window.open(bc.root
-									+ "/changelog/changelog.html?ts=" + bc.ts, "_blank");
+						if (!clWin["help"] || clWin["help"].closed) {
+							clWin["help"] = window.open(bc.root
+									+ "/help/index.htm#xitongzhuye", "_blank");
 						} else {
-							clWin.document.location.reload(true);
-							clWin.focus();
+							//clWin["help"].document.location.reload(true);
+							clWin["help"].focus();
 						}
 						
 						//关闭对话框
 						$helpDlg.dialog("close");
 					} catch (e) {
-						clWin = null;
+						clWin["help"] = null;
+						showHelp();
+					}
+					return false;
+				});
+				
+				// 日志
+				$helpDlg.find("#clClick_changelog").click(function showChangelog(){
+					try {
+						//打开查看更新日志的窗口
+						if (!clWin["changelog"] || clWin["changelog"].closed) {
+							clWin["changelog"] = window.open(bc.root
+									+ "/changelog/changelog.html?ts=" + bc.ts, "_blank");
+						} else {
+							clWin["changelog"].document.location.reload(true);
+							clWin["changelog"].focus();
+						}
+						
+						//关闭对话框
+						$helpDlg.dialog("close");
+					} catch (e) {
+						clWin["changelog"] = null;
 						showChangelog();
 					}
 					return false;
@@ -5322,6 +5375,8 @@ $.extend($.ui.dialog.prototype.options, {
 	closable: true,//关闭按钮
 	minimizable: false,//最小化按钮
 	maximizable: false,//最大化按钮
+	help: false,//帮助按钮
+	print: false,//打印按钮
 	appendTo: "body",
 	dragLimit: [0,80,35,40]//上,右,下,左
 });
@@ -5414,6 +5469,28 @@ $.extend($.ui.dialog.prototype, {
 		
 		// 添加右上角的按钮容器
 		var $topRightButtons = $('<div class="ui-dialog-titlebar-buttons"></div>').appendTo( uiDialogTitlebar );
+		
+		// 添加打印按钮：
+		if (options.print) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-print">print</span></a>')
+			.appendTo($topRightButtons)
+			.attr("data-print",options.print)
+			.click(function( event ) {
+				event.preventDefault();
+				self.print( event,this );
+			});
+		}
+		
+		// 添加帮助按钮：
+		if (options.help) {
+			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-help">help</span></a>')
+			.appendTo($topRightButtons)
+			.attr("data-help",options.help)
+			.click(function( event ) {
+				event.preventDefault();
+				self.help( event,this );
+			});
+		}
 		
 		// 添加最小化按钮：
 		if (options.minimizable) {
@@ -5655,6 +5732,18 @@ $.extend($.ui.dialog.prototype, {
 	minimize: function(event) {
 		var self = this;
 		self._trigger('minimize', event);
+		return self;
+	},
+	/** 点击帮助按钮 */
+	help: function(event,clickDom) {
+		var self = this;
+		self._trigger('help', event,clickDom);
+		return self;
+	},
+	/** 点击打印按钮 */
+	print: function(event,clickDom) {
+		var self = this;
+		self._trigger('print', event,clickDom);
 		return self;
 	}
 });
