@@ -65,6 +65,8 @@ bc.feedbackForm = {
 					
 					// 滚动到底部
 					$page.animate({scrollTop: $page[0].scrollHeight - $page.height()}, 200);
+					
+					$page.data("data-status","saved");
 				}else{
 					bc.msg.alert(json.msg);
 				}
