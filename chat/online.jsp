@@ -17,7 +17,7 @@
 			</s:iterator>
 		</ul>
 		<div class="bottom ui-widget-header">
-			<div class="info">双击在线用户打开聊天窗口！</div>
+			<div class="info">(<span id="count"><s:property value="users.size()"/></span>) 双击在线用户打开聊天窗口！</div>
 		</div>
 	</div>
 </div>
