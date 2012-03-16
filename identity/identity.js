@@ -234,7 +234,7 @@ bc.identity = {
 			option.data.multiple = true;
 		
 		option = jQuery.extend({
-			url: bc.root + "/bc/selectUser",
+			url: bc.root + "/bc/selectUsers",
 			name: "选择用户信息",
 			mid: "selectUser",
 			history: true,

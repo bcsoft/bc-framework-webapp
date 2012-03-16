@@ -1,33 +1,38 @@
-bc.selectUser = {
-	init : function() {
-		var $page = $(this);
-		//绑定双击事件
-		$page.find("select").dblclick(function(){
-			bc.selectUser.clickOk.call($page[0]);
-		});
-	},
+if(!window['bc'])window['bc']={};
+bc.userSelectDialog = {
+	/** 点击确认按钮后的处理函数 */
 	clickOk : function() {
 		var $page = $(this);
-		var select = $page.find("select")[0];
-		if(select.selectedIndex == -1){
-			alert("必须先选择用户信息！");
+		
+		// 获取选中的行的id单元格
+		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
+		if($tds.length == 0){
+			alert("请先选择！");
 			return false;
 		}
-		var item;
-		if(select.multiple){//多选
-			item=[];
-			// 循环选定的每一个项目，将该项添加到列表中
-			for (var i = 0; i < select.length; i++){
-				if (select.options[i].selected){
-					var value = select.options[i].value.split(",");
-					item.push({id: value[0],name: value[1],fname: select.options[i].text});
-				}
-			}
-		}else{//单选
-			var value = select.value.split(",");
-			item={id: value[0],name: value[1],fname: select.options[select.selectedIndex].text};
+
+		// 获取选中的数据
+		var data;
+		var $grid = $page.find(".bc-grid");
+		if($grid.hasClass("singleSelect")){//单选
+			data = {};
+			data.id = $tds.attr("data-id");
+			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
+			data.name = $trs.find("td:eq(0)").attr("data-value");
+		}else{//多选
+			data = [];
+			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
+			$tds.each(function(i){
+				data.push({
+					id: $(this).attr("data-id"),
+					name:$($trs.get(i)).find("td:eq(0)").attr("data-value"),
+				});
+			});
 		}
-		$page.data("data-status",item);
+		logger.info($.toJSON(data));
+		
+		// 返回
+		$page.data("data-status", data);
 		$page.dialog("close");
 	}
-}
+};
