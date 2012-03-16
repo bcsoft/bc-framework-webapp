@@ -222,7 +222,8 @@ bc.identity = {
 	selectUser : function(option) {
 		option.data = jQuery.extend({
 			multiple: false,
-			history: true
+			history: true,
+			status: "0,1"
 		},option.data);
 		if(option.selecteds)
 			option.data.selecteds = option.selecteds;
@@ -232,6 +233,8 @@ bc.identity = {
 			option.data.history = false;
 		if(option.multiple === true)
 			option.data.multiple = true;
+		if(option.status)
+			option.data.status = option.status;
 		
 		option = jQuery.extend({
 			url: bc.root + "/bc/selectUsers",
