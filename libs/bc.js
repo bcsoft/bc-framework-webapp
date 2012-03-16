@@ -3095,7 +3095,7 @@ bc.form = {
 			});
 		}else{
 			//只读表单的处理
-			$form.find(":input:visible").each(function(){
+			$form.find(":input:visible:not('.custom')").each(function(){
 				logger.debug("disabled:" + this.name);
 				if(this.nodeName.toLowerCase() == "select")
 					this.disabled=true;
@@ -5948,6 +5948,8 @@ bc.chat = {
 			ip: json.ip
 		};
 		$page.find("ul.items").prepend(bc.chat.userItemTpl.format(json.sid,$.toJSON(user),json.uid,json.time,json.name,json.ip));
+		var $count = $page.find("#count");
+		$count.text(parseInt($count.text()) + 1);
 	},
 	/**删除离线用户*/
 	removeUser:function($page,sid){
@@ -5956,6 +5958,8 @@ bc.chat = {
 		}else{				// 别人离线
 			$page.find("li.item[data-sid='" + sid + "']").remove();
 		}
+		var $count = $page.find("#count");
+		$count.text(parseInt($count.text()) - 1);
 	},
 	/** 手动重新登录 */
 	relogin:function(sid,title){
