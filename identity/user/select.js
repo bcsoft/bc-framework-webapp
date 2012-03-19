@@ -18,7 +18,7 @@ bc.userSelectDialog = {
 			data = {};
 			data.id = $tds.attr("data-id");
 			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
-			data.name = $trs.find("td:eq(0)").attr("data-value");
+			data.name = $trs.find("td:eq(1)").attr("data-value");
 		}else{//多选
 			data = [];
 			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
