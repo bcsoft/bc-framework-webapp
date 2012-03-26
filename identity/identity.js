@@ -237,7 +237,7 @@ bc.identity = {
 			option.data.status = option.status;
 		
 		option = jQuery.extend({
-			url: bc.root + "/bc/selectUsers",
+			url: bc.root + "/bc/selectUsers/paging",
 			name: "选择用户信息",
 			mid: "selectUser",
 			history: true,
