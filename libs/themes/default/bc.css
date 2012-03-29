@@ -1355,6 +1355,7 @@ td.label{
 	min-width: 6em;
 	width: 6em;
 	_width: 6em;
+	font-weight: normal;
 }
 
 td.label .little{
@@ -1368,6 +1369,7 @@ td.topLabel{
 	vertical-align: top;
 	min-width: 6em;
 	_width: 6em;
+	font-weight: normal;
 }
 
 td.top{
@@ -1376,6 +1378,7 @@ td.top{
 
 td.value{
 	text-align: left;
+	font-weight: normal;
 }
 
 td.value input,td.value textarea,td.value div.input{
