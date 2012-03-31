@@ -107,6 +107,10 @@ ul.bc-menubar,ul.bc-menubar>li.ui-menubar-item,ul.bc-menubar>li.ui-menubar-item>
 	{
 	height: 100%;
 }
+ul.bc-menubar>li.ui-menubar-item>a {
+	height: 100%;
+	background: none;
+}
 
 ul.bc-menubar>li.ui-menubar-item>a.ui-menubar-link>span.ui-button-text {
 	padding-left: 0.4em;

@@ -182,7 +182,12 @@
 							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_swanky_purse.png" />'>
 							<div>时髦包包</div>
 						</td>
-						<td>&nbsp;</td>
+						<td class="theme ui-corner-all" data-theme="bootstrap"
+							data-css='<s:url value="/ui-libs/jquery-ui/1.8.16/themes/bootstrap/jquery.ui.theme.css" />'>
+							<img
+							src='<s:url value="/ui-libs/jquery-ui/themeSwitcher/images/theme_90_bootstrap.png" />'>
+							<div>Bootstrap</div>
+						</td>
 					</tr>
 				</tbody>
 			</table>
