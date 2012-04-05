@@ -13,7 +13,7 @@
 		// 放置图表的容器
 		renderTo: this.find(".chartContainer")[0],
 		// 图表类型line, spline, area, areaspline, column, bar, pie , scatter
-		defaultSeriesType: 'line',
+		defaultSeriesType: 'area',
 		// 左右显示，默认上下正向
 		inverted: false
 	},
