@@ -334,6 +334,8 @@ bc.page = {
 					btn.click = bc.page.edit;
 				}else if(btn.action == "open"){//打开
 					btn.click = bc.page.open;
+				}else if(btn.action == "print"){//打印
+					btn.click = bc.page.print;
 				}else if(btn.action == "preview"){//预览xheditor的内容
 					btn.click = bc.page.preview;
 				}else if(btn.action == "more"){//带下拉菜单的按钮
@@ -651,6 +653,58 @@ bc.page = {
 	/**预览xheditor的内容，上下文为dialog对象*/
 	preview: function(){
 		$(this).find(".bc-editor").xheditor({tools:'mini'}).exec("Preview");
+	},
+	/**打印表单*/
+	print: function(){
+		var $form = $(this).find(">form");
+		if($form.size() == 0){
+			alert("没有找到可打印的表单内容！");
+			return;
+		}
+		
+		var origParent = $form.parent()[0],
+			origDisplay = [],
+			body = document.body,
+			childNodes = body.childNodes;
+
+		// 避免重复打印
+		if ($form.data("isPrinting")) {
+			return;
+		}
+		$form.data("isPrinting",true);
+
+		// 隐藏body下的所有一级子节点
+		var node;
+		for(var i=0;i<childNodes.length;i++){
+			node = childNodes[i];
+			if (node.nodeType === 1) {
+				origDisplay[i] = node.style.display;
+				node.style.display = "none";
+			}
+		}
+
+		// 将要打印的元素插入到body下
+		var formEl = $form[0];
+		body.appendChild(formEl);
+
+		// 执行打印
+		window.print();
+
+		// allow the browser to prepare before reverting
+		setTimeout(function () {
+			// 将要打印的元素放回原处
+			origParent.appendChild(formEl);
+
+			// 恢复body下的所有一级子节点原来的显示状态
+			for(var i=0;i<childNodes.length;i++){
+				node = childNodes[i];
+				if (node.nodeType === 1) {
+					node.style.display = origDisplay[i];
+				}
+			}
+
+			$form.data("isPrinting",false);
+		}, 1000);
 	}
 };
 
