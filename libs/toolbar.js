@@ -311,10 +311,40 @@ $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 					var $conditionsForm = $(html);
 					$conditionsForm.appendTo($conditionsFormParent);
 					
-					//绑定日期选择
-					bc.form.initCalendarSelect($conditionsForm);
+					// 加载额外的js、css文件
+					function _init(){
+						//绑定日期选择
+						bc.form.initCalendarSelect($conditionsForm);
 
-					bc.toolbar.initAdvanceSearchFrom($this,$conditionsForm);
+						bc.toolbar.initAdvanceSearchFrom($this,$conditionsForm);
+					}
+					var dataJs = $conditionsForm.attr("data-js");
+					if(dataJs && dataJs.length > 0){
+						//先加载js文件后执行模块指定的初始化方法
+						dataJs = dataJs.split(",");//逗号分隔多个文件
+						
+						// 处理预定义的js、css文件
+						var t;
+						for(var i=0;i<dataJs.length;i++){
+							if(dataJs[i].indexOf("js:") == 0){//预定义的js文件
+								t = bc.loader.preconfig.js[dataJs[i].substr(3)];
+								if(t){
+									t = bc.root + t;
+									logger.debug(dataJs[i] + "=" +  t);
+									dataJs[i] = t;
+								}else{
+									alert("没有预定义“" + dataJs[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
+								}
+							}else if(dataJs[i].indexOf("css:") == 0){//预定义的css文件
+								
+							}
+						}
+						
+						dataJs.push(_init);
+						bc.load(dataJs);
+					}else{
+						_init();
+					}
 				}
 			});
 		}else{//自定义的条件窗口
