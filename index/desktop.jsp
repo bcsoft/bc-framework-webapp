@@ -8,6 +8,7 @@
 <head>
 <title><s:text name="app.title" /></title>
 <script type="text/javascript">var ts = '<s:property value="ts" />';</script>
+<link rel="shortcut icon" type="image/x-icon" href="<s:url value='/bc/libs/themes/default/images/favicon.png'><s:param name='ts' value='ts'/></s:url>"/>
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.9pre/themes/base/jquery-ui.css' />" />	
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.8.16/themes/%{personalConfig.theme}/jquery-ui.css' />" />	
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.css' />" />
