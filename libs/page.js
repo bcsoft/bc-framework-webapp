@@ -231,7 +231,8 @@ bc.page = {
 			if(cfg.print){
 				$dom.bind("dialogprint",function(event,clickDom){
 					if(logger.infoEnabled)logger.info("--print=" + $(clickDom).attr("data-print"));
-					bc.msg.alert("功能开发中");
+					bc.page.print.call($(clickDom).closest(".bc-ui-dialog").children(".bc-page"),cfg.print);
+					//bc.msg.alert("功能开发中");
 				});
 			}
 			
@@ -655,8 +656,15 @@ bc.page = {
 		$(this).find(".bc-editor").xheditor({tools:'mini'}).exec("Preview");
 	},
 	/**打印表单*/
-	print: function(){
-		var $form = $(this).find(">form");
+	print: function(key){
+		var $this = $(this);
+		var type = $this.attr("data-type");
+		var $form = $this;
+		if("form" == type){
+			$form = $this.find(">form");
+			if($form.size() == 0)
+				$form = $this;
+		}
 		if($form.size() == 0){
 			alert("没有找到可打印的表单内容！");
 			return;
@@ -665,7 +673,7 @@ bc.page = {
 		var origParent = $form.parent()[0],
 			origDisplay = [],
 			body = document.body,
-			childNodes = body.childNodes;
+			childNodes = $(body).children("div");
 
 		// 避免重复打印
 		if ($form.data("isPrinting")) {
@@ -675,13 +683,11 @@ bc.page = {
 
 		// 隐藏body下的所有一级子节点
 		var node;
-		for(var i=0;i<childNodes.length;i++){
-			node = childNodes[i];
-			if (node.nodeType === 1) {
-				origDisplay[i] = node.style.display;
-				node.style.display = "none";
-			}
-		}
+		logger.info("childNodes.length=" + childNodes.length);
+		childNodes.each(function(i){
+			origDisplay[i] = this.style.display;
+			this.style.display = "none";
+		});
 
 		// 将要打印的元素插入到body下
 		var formEl = $form[0];
@@ -696,12 +702,9 @@ bc.page = {
 			origParent.appendChild(formEl);
 
 			// 恢复body下的所有一级子节点原来的显示状态
-			for(var i=0;i<childNodes.length;i++){
-				node = childNodes[i];
-				if (node.nodeType === 1) {
-					node.style.display = origDisplay[i];
-				}
-			}
+			childNodes.each(function(i){
+				this.style.display = origDisplay[i];
+			});
 
 			$form.data("isPrinting",false);
 		}, 1000);
