@@ -35,12 +35,16 @@ bc.templateForm = {
 			}
 		});
 	},
-	/*
-	 *文件上传
+	/**
+	 *文件上传完毕后
 	 */
-	upload : function(){
-		var $form = $(this);
-		alert($form.parent().html());
+	afterUploadfile : function(json){
+		logger.info($.toJSON(json));
+		if(json.success){
+			this.closest(".bc-page").find(':input[name="e.templateFileName"]').val(json.to);
+		}else{
+			bc.msg.alert(json.msg);
+		}
 	}
 	/**
 	 * 保存
