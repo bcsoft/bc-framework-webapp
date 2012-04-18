@@ -12,18 +12,23 @@ bc.file={
 		if($file.size())
 			$file[0].outerHTML=$file[0].outerHTML;
 	},
+	
 	/** 在线打开附件 */
-	inline: function(attachEl,callback){
+	inline: function(option){
 		//在新窗口中打开文件
-		var url = bc.root + "/bc/file/inline?f=" + $(attachEl).attr("data-id");
-		var to = $(attachEl).attr("data-to");
-		if(to && to.length > 0)
-			url += "&to=" + to;
-		window.open(url, "_blank");
+		var url = bc.root + "/bc/file/inline?f=" + option.f;
+		if(option.n) url += "&n=" + option.n;
+		if(option.to) url += "&to=" + option.to;
+		var win = window.open(url, "_blank");
+		if(typeof option.callback == "function")
+			option.callback.call(this,option,win)
 	},
+	
 	/** 下载附件 */
 	download: function(attachEl,callback){
-		window.open(bc.root + "/bc/attach/download?id=" + $(attachEl).attr("data-id"), "blank");
+		var url = bc.root + "/bc/file/download?f=" + option.f;
+		if(option.n) url += "&n=" + option.n;
+		window.open(url, "blank");
 	},
 	
     /**将字节单位的数值转换为较好看的文字*/
@@ -34,7 +39,6 @@ bc.file={
 			return bc.formatNumber(size/1024,"#.#") + "KB";
 		else
 			return bc.formatNumber(size/1024/1024,"#.#") + "MB";
-		
     },
     
 	/**
@@ -135,18 +139,18 @@ bc.file={
 	    	bc.file.xhrs[key] = xhr;
 			if($.browser.safari){//Chrome12、Safari5
 				xhr.upload.onprogress=function(e){
-					if(option.infoField){
+					if(option.source){
 						var progressbarValue = Math.round((e.loaded / e.total) * 100);
 						logger.info(i + ":upload.onprogress:" + progressbarValue + "%");
-						$file.closest(".bc-page").find(option.infoField).val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
+						$file.closest(".bc-page").find(option.source).val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
 					}
 				};
 			}else if($.browser.mozilla){//Firefox4
 				xhr.onuploadprogress=function(e){
-					if(option.infoField){
+					if(option.source){
 						var progressbarValue = Math.round((e.loaded / e.total) * 100);
 						logger.info(i + ":upload.onprogress:" + progressbarValue + "%");
-						option.infoField.val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
+						option.source.val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
 					}
 				};
 			}

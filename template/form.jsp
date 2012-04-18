@@ -46,11 +46,11 @@
 					<td class="label">*<s:text name="template.tfpath"/>:</td>
 					<td class="value" colspan="3" >
 						<div class="relative">
-							<s:textfield name="e.path" cssClass="ui-widget-content" readonly="true"/>
+							<s:textfield name="e.subject" cssClass="ui-widget-content" readonly="true"/>
 							<ul class="inputIcons" style="padding-right:8px">
 								<li id="upLoadFileId" class="inputIcon ui-icon ui-icon-circle-arrow-n" style="position: relative;">
 									<input type="file" class="auto uploadFile" id="uploadFile" name="uploadFile" title="点击上传文件"
-										data-cfg='{"callback":"bc.templateForm.afterUploadfile","infoField":":input[name=\"e.path\"]","subdir":"template"}'
+										data-cfg='{"callback":"bc.templateForm.afterUploadfile","subdir":"template","source":":input[name=\"e.subject\"]","to":":input[name=\"e.path\"]"}'
 										style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
 								</li>
 								<li class="clearSelect inputIcon ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></li>
@@ -74,6 +74,7 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.author.id" />
+		<s:hidden name="e.path" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>
