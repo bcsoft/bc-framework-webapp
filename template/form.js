@@ -29,7 +29,7 @@ bc.templateForm = {
 	afterUploadfile : function(json){
 		logger.info($.toJSON(json));
 		if(json.success){
-			this.closest(".bc-page").find(':input[name="e.templateFileName"]').val(json.to);
+			this.closest(".bc-page").find(':input[name="e.path"]').val(json.to);
 		}else{
 			bc.msg.alert(json.msg);
 		}

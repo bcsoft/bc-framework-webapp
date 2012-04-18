@@ -26,8 +26,8 @@
 				<tr>
 					<td class="label">*<s:text name="template.code"/>:</td>
 					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate="required" /></td>
-					<td class="label">*<s:text name="template.order"/>:</td>
-					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" data-validate="required"/></td>
+					<td class="label"><s:text name="template.order"/>:</td>
+					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" /></td>
 				</tr>
 				<!-- 名称 -->
 				<tr>
@@ -46,11 +46,11 @@
 					<td class="label">*<s:text name="template.tfpath"/>:</td>
 					<td class="value" colspan="3" >
 						<div class="relative">
-							<s:textfield name="e.templateFileName" cssClass="ui-widget-content" readonly="true"/>
+							<s:textfield name="e.path" cssClass="ui-widget-content" readonly="true"/>
 							<ul class="inputIcons" style="padding-right:8px">
 								<li id="upLoadFileId" class="inputIcon ui-icon ui-icon-circle-arrow-n" style="position: relative;">
 									<input type="file" class="auto uploadFile" id="uploadFile" name="uploadFile" title="点击上传文件"
-										data-cfg='{"callback":"bc.templateForm.afterUploadfile","infoField":":input[name=\"e.templateFileName\"]","subdir":"template"}'
+										data-cfg='{"callback":"bc.templateForm.afterUploadfile","infoField":":input[name=\"e.path\"]","subdir":"template"}'
 										style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
 								</li>
 								<li class="clearSelect inputIcon ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></li>
