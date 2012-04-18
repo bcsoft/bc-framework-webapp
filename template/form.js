@@ -35,9 +35,7 @@ bc.templateForm = {
 			}
 		});
 	},
-	/**
-	 *文件上传完毕后
-	 */
+	/** 文件上传完毕后 */
 	afterUploadfile : function(json){
 		logger.info($.toJSON(json));
 		if(json.success){
@@ -45,11 +43,11 @@ bc.templateForm = {
 		}else{
 			bc.msg.alert(json.msg);
 		}
-	}
+	},
 	/**
 	 * 保存
 	 */
-	,save : function(){
+	save : function(){
 		var $form = $(this);
 		//验证表单
 		if(!bc.validator.validate($form)) return;
