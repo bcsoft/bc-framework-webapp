@@ -18,14 +18,14 @@
 				<tr>
 					<td class="label">*<s:text name="template.type"/>:</td>
 					<td  colspan="3" >
-						<s:radio name='e.type' list="#{'1':'Excel','2':'Word','3':'文本文件','4':'Html文件','5':'其它文件'}"
+						<s:radio name='e.type' list="#{'1':'Excel模板','2':'Word模板','3':'纯文本模板','4':'其它附件','5':'自定义文本'}"
 							   cssStyle="width:auto;"/>
 					</td>
 				</tr>
 				<!-- 编码   排序号-->
 				<tr>
 					<td class="label">*<s:text name="template.code"/>:</td>
-					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate="required" readonly="true"/></td>
+					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate="required" /></td>
 					<td class="label">*<s:text name="template.order"/>:</td>
 					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" data-validate="required"/></td>
 				</tr>

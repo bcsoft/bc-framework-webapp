@@ -6,8 +6,8 @@ bc.templateList = {
 		if($tds.length == 1){
 			//取类型列data-value的值
 			var type= $view.find(".bc-grid>.data>.right tr.ui-state-highlight>td:eq(2)").attr("data-value");
-			if(type==3||type==4){
-				bc.msg.slide("文本文件或html文件，请直接双击表格查看！");
+			if(type==5){
+				bc.msg.slide("自定义文本，请直接双击查看！");
 			}else{
 				//在新窗口中打开文件
 				window.open(bc.root + "/bc/template/inline?to=pdf&id=" + $tds.attr("data-id"), "_blank");
@@ -28,8 +28,8 @@ bc.templateList = {
 		if($tds.length == 1){
 			//取类型列data-value的值
 			var type= $view.find(".bc-grid>.data>.right tr.ui-state-highlight>td:eq(2)").attr("data-value");
-			if(type==3||type==4){
-				bc.msg.slide("文本文件或html文件，请直接双击表格查看！");
+			if(type==5){
+				bc.msg.slide("自定义文本，请直接双击查看内容！");
 			}else{
 				window.open(bc.root + "/bc/template/download?id=" + $tds.attr("data-id"), "blank");
 			}
@@ -49,7 +49,7 @@ bc.templateList = {
 			//取内置列data-value的值
 			var inner= $view.find(".bc-grid>.data>.right tr.ui-state-highlight>td:eq(5)").attr("data-value");
 			//内置
-            if(inner=='0'){
+            if(inner=='t'){
             	bc.msg.alert("内置模板不能删除！");
     			return;
             }else{
