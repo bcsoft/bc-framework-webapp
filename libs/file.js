@@ -139,18 +139,18 @@ bc.file={
 	    	bc.file.xhrs[key] = xhr;
 			if($.browser.safari){//Chrome12、Safari5
 				xhr.upload.onprogress=function(e){
-					if(option.infoField){
+					if(option.source){
 						var progressbarValue = Math.round((e.loaded / e.total) * 100);
 						logger.info(i + ":upload.onprogress:" + progressbarValue + "%");
-						$file.closest(".bc-page").find(option.infoField).val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
+						$file.closest(".bc-page").find(option.source).val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
 					}
 				};
 			}else if($.browser.mozilla){//Firefox4
 				xhr.onuploadprogress=function(e){
-					if(option.infoField){
+					if(option.source){
 						var progressbarValue = Math.round((e.loaded / e.total) * 100);
 						logger.info(i + ":upload.onprogress:" + progressbarValue + "%");
-						option.infoField.val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
+						option.source.val("(" + (i+1) + "/" + files.length + ") " + progressbarValue + "%");
 					}
 				};
 			}
