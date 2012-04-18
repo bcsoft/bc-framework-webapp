@@ -26,8 +26,8 @@
 				<tr>
 					<td class="label">*<s:text name="template.code"/>:</td>
 					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate="required" /></td>
-					<td class="label">*<s:text name="template.order"/>:</td>
-					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" data-validate="required"/></td>
+					<td class="label"><s:text name="template.order"/>:</td>
+					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" /></td>
 				</tr>
 				<!-- 名称 -->
 				<tr>
