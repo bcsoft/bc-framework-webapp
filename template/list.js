@@ -13,15 +13,13 @@ bc.templateList = {
 				var n = $tr.find(">td:eq(3)").attr("data-value");// 获取文件名
 				var f = "template/" + $tr.find(">td:eq(4)").attr("data-value");// 获取附件相对路径
 				
-				//在新窗口中预览文件
+				// 预览文件
 				var option = {f: f, n: n};
 				var ext = f.substr(f.lastIndexOf("."));
 				if(type==2 && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
 					option.from="docx";
 				}
 				bc.file.inline(option);
-				
-				//window.open(bc.root + "/bc/template/inline?to=pdf&id=" + $tds.attr("data-id"), "_blank");
 			}
 		}else if($tds.length > 1){
 			bc.msg.slide("一次只可以预览一个模板，请确认您只选择了一个模板！");
@@ -47,7 +45,6 @@ bc.templateList = {
 				
 				// 下载文件
 				bc.file.download({f: f, n: n});
-				//window.open(bc.root + "/bc/template/download?id=" + $tds.attr("data-id"), "blank");
 			}
 		}else if($tds.length > 1){
 			bc.msg.slide("一次只可以下载一个模板，请确认您只选择了一个模板！");
@@ -78,7 +75,5 @@ bc.templateList = {
 			bc.msg.slide("请先选择要删除的模板！");
 			return;
 		}
-		
-		
 	}
 };
