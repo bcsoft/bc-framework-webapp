@@ -29,10 +29,28 @@
 					<td class="label"><s:text name="template.order"/>:</td>
 					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" /></td>
 				</tr>
-				<!-- 名称 -->
+				<!-- 标题  -->
 				<tr>
-					<td class="label">*<s:text name="template.name"/>:</td>
-					<td class="value" colspan="3"><s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/></td>
+					<td class="label">*<s:text name="template.tfsubject"/>:</td>
+					<td class="value" colspan="3" >
+						<div class="relative">
+							<s:textfield name="e.subject" cssClass="ui-widget-content" data-validate="required"/>
+							<ul class="tplFile inputIcons" style="padding-right:8px">
+								<li id="upLoadFileId" class="inputIcon ui-icon ui-icon-circle-arrow-n" style="position: relative;">
+									<input type="file" class="auto uploadFile" id="uploadFile" name="uploadFile" title="点击上传文件"
+										data-cfg='{"callback":"bc.templateForm.afterUploadfile","subdir":"template","source":":input[name=\"e.subject\"]","to":":input[name=\"e.path\"]"}'
+										style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
+								</li>
+								<li id="cleanFileId" class="clearSelect inputIcon ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+				<tr class="tplFile">
+					<td class="label">*<s:text name="template.tfpath"/>:</td>
+					<td class="value" colspan="3" >
+							<s:textfield name="e.path" cssClass="ui-widget-content" readonly="true"/>
+					</td>
 				</tr>
 				<!-- 模板内容 -->
 				<tr id="idTplContent">
@@ -41,28 +59,17 @@
 						<s:textarea rows="5" name="e.content"  cssClass="ui-widget-content noresize" />
 					</td>
 				</tr>
-				<!-- 模板文件  -->
-				<tr id="idTplFile">
-					<td class="label">*<s:text name="template.tfpath"/>:</td>
-					<td class="value" colspan="3" >
-						<div class="relative">
-							<s:textfield name="e.subject" cssClass="ui-widget-content" readonly="true"/>
-							<ul class="inputIcons" style="padding-right:8px">
-								<li id="upLoadFileId" class="inputIcon ui-icon ui-icon-circle-arrow-n" style="position: relative;">
-									<input type="file" class="auto uploadFile" id="uploadFile" name="uploadFile" title="点击上传文件"
-										data-cfg='{"callback":"bc.templateForm.afterUploadfile","subdir":"template","source":":input[name=\"e.subject\"]","to":":input[name=\"e.path\"]"}'
-										style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
-								</li>
-								<li class="clearSelect inputIcon ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></li>
-							</ul>
-							<!--  <input id="upfile" type="file" style="visibility:hidden;width:0px" />-->
-						</div>
+				<!-- 备注-->
+				<tr>
+					<td class="topLabel">备注:</td>
+					<td class="value" colspan="3">
+						<s:textarea rows="3" name="e.desc"  cssClass="ui-widget-content noresize" />
 					</td>
 				</tr>
 				<tr>
 					<td class="label" colspan="4">
 						<div class="formTopInfo">
-							登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
+							创建：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
 							<s:if test="%{e.modifier != null}">
 							最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
 							</s:if>
@@ -74,7 +81,6 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.author.id" />
-		<s:hidden name="e.path" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>
