@@ -19,16 +19,24 @@ bc.file={
 		var url = bc.root + "/bc/file/inline?f=" + option.f;
 		if(option.n) url += "&n=" + option.n;
 		if(option.to) url += "&to=" + option.to;
+		if(option.from) url += "&from=" + option.from;
 		var win = window.open(url, "_blank");
-		if(typeof option.callback == "function")
-			option.callback.call(this,option,win)
+		if(typeof option.callback == "function"){
+			option.callback.call(this,option,win);
+		}
+		return win;
 	},
 	
 	/** 下载附件 */
-	download: function(attachEl,callback){
+	download: function(option){
+		//在新窗口中打开文件
 		var url = bc.root + "/bc/file/download?f=" + option.f;
 		if(option.n) url += "&n=" + option.n;
-		window.open(url, "blank");
+		var win = window.open(url, "blank");
+		if(typeof option.callback == "function"){
+			option.callback.call(this,option,win);
+		}
+		return win;
 	},
 	
     /**将字节单位的数值转换为较好看的文字*/

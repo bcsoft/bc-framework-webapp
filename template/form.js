@@ -21,6 +21,7 @@ bc.templateForm = {
 				$tplFile.show();
 				$tplContent.hide();
 				$form.find(":input[name='e.subject']").val('');
+				$form.find(":input[name='e.path']").val('');
 				$form.find(":input[name='e.content']").val('');
 			}else{
 				$tplFile.hide();
