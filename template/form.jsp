@@ -22,12 +22,19 @@
 							   cssStyle="width:auto;"/>
 					</td>
 				</tr>
-				<!-- 编码   排序号-->
+				<!-- 所属分类  排序号-->
+				<tr>
+					<td class="label">*<s:text name="template.category"/>:</td>
+					<td class="value"><s:textfield name="e.category" cssClass="ui-widget-content" data-validate="required" /></td>
+					<td class="label"><s:text name="template.order"/>:</td>
+					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" /></td>
+				</tr>
+				<!-- 编码   版本号-->
 				<tr>
 					<td class="label">*<s:text name="template.code"/>:</td>
 					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate="required" /></td>
-					<td class="label"><s:text name="template.order"/>:</td>
-					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" /></td>
+					<td class="label">*<s:text name="template.version"/>:</td>
+					<td class="value"><s:textfield name="e.version" cssClass="ui-widget-content" data-validate="required" /></td>
 				</tr>
 				<!-- 标题  -->
 				<tr>
@@ -49,14 +56,13 @@
 				<tr class="tplFile">
 					<td class="label">*<s:text name="template.tfpath"/>:</td>
 					<td class="value" colspan="3" >
+						<div class="relative">
 							<s:textfield name="e.path" cssClass="ui-widget-content" readonly="true"/>
-					</td>
-				</tr>
-				<!-- 模板内容 -->
-				<tr id="idTplContent">
-					<td class="topLabel"><s:text name="template.content"/>:</td>
-					<td class="value" colspan="3">
-						<s:textarea rows="5" name="e.content"  cssClass="ui-widget-content noresize" />
+							<ul class="inputIcons" style="padding-right:8px">
+											<li class="inputIcon ui-icon ui-icon-lightbulb loadTplConfig"
+											 title='<s:text name="template.configuration.tips"/>' >
+							</ul>
+						</div>
 					</td>
 				</tr>
 				<!-- 备注-->
@@ -65,6 +71,36 @@
 					<td class="value" colspan="3">
 						<s:textarea rows="3" name="e.desc"  cssClass="ui-widget-content noresize" />
 					</td>
+				</tr>
+				<!-- 模板内容 -->
+				<tr id="idTplContent">
+					<td class="topLabel">
+							<div>
+								<s:text name="template.content"/>:
+							</div>
+							<div style="position : relative;">
+								<ul class="inputIcons" style="top:5px;">
+											<li class="inputIcon ui-icon ui-icon-lightbulb loadTplConfig"
+											 title='<s:text name="template.configuration.tips"/>' >
+								</ul>	
+							</div>
+					<td class="value" colspan="3">
+						<s:textarea rows="5" name="e.content"  cssClass="ui-widget-content noresize" />
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td class="label" colspan="2">*<s:text name="template.status"/>:<s:radio name="e.status" list="#{'0':'在案','1':'禁用'}" cssStyle="width:auto;"/></td>
+				</tr>
+				<tr>
+					<td class="label"><s:text name="template.configuration"/>:</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="value" colspan="4">配置参数占用行</td>
 				</tr>
 				<tr>
 					<td class="label" colspan="4">
