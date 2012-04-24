@@ -53,6 +53,33 @@ bc.templateForm = {
 	 */
 	save : function(){
 		var $form = $(this);
+		
+		//定义函数
+		//excel文件
+		function isExcelSuffix(suffix){
+			if(suffix=='xls'||suffix=='xlsx'||suffix=='xml')
+				return true;
+			
+			bc.msg.alert('后缀名错误，保存后缀名应为xls、xlsx、xml文件');
+			return false;
+		}
+		//word文件
+		function isWordSuffix(suffix){
+			if(suffix=='doc'||suffix=='docx'||suffix=='xml')
+				return true;
+			
+			bc.msg.alert('后缀名错误，保存后缀名应为doc、docx、xml文件');
+			return false;
+		}
+		//文本文件
+		function isTextSuffix(suffix){
+			if(suffix=='txt')
+				return true;
+			
+			bc.msg.alert('后缀名错误，保存后缀名应为txt文件');
+			return false;
+		}
+		
 		//验证表单
 		if(!bc.validator.validate($form)) return;
 		
@@ -60,8 +87,9 @@ bc.templateForm = {
 		var subject=$form.find(":input[name='e.subject']").val();
 		var path=$form.find(":input[name='e.path']").val();
 		var code=$form.find(":input[name='e.code']").val();
+		var version=$form.find(":input[name='e.version']").val();
 		var id=$form.find(":input[name='e.id']").val();
-		var url=bc.root+"/bc/template/isUniqueCode";
+		var url=bc.root+"/bc/template/isUniqueCodeAndVersion";
 		
 		//自定义文本
 		if(type==5){
@@ -91,51 +119,73 @@ bc.templateForm = {
 		//转为小写
 		suffix=suffix.toLocaleLowerCase();
 		
-		if(type==1&&bc.templateForm.isExcelSuffix(suffix)){
-			bc.templateForm.saveInfo($form,url,code,id);
+		if(type==1&&isExcelSuffix(suffix)){
+			saveInfo();
 		}else if(type==2&&bc.templateForm.isWordSuffix(suffix)){
-			bc.templateForm.saveInfo($form,url,code,id);
-		}else if(type==3&&bc.templateForm.isTextSuffix(suffix)){
-			bc.templateForm.saveInfo($form,url,code,id);
+			saveInfo();
+		}else if(type==3&&isTextSuffix(suffix)){
+			saveInfo();
 		}else if(type==4){
-			bc.templateForm.saveInfo($form,url,code,id);
+			saveInfo();
 		} 
-	},
-	isExcelSuffix:function(suffix){
-		if(suffix=='xls'||suffix=='xlsx'||suffix=='xml')
-			return true;
 		
-		bc.msg.alert('后缀名错误，保存后缀名应为xls、xlsx、xml文件');
-		return false;
-	},
-	isWordSuffix:function(suffix){
-		if(suffix=='doc'||suffix=='docx'||suffix=='xml')
-			return true;
+		//保存
+		function saveInfo(){
+			$.ajax({
+				url:url,
+				data:{tid:id,code:code,version:version},
+				dataType:"json",
+				success:function(json){
+					var result=json.result;
+					if(result=='save'){
+						bc.page.save.call($form);
+					}else{
+						//系统中已有此编码
+						bc.msg.alert("此编码、版本号已被其它模板使用，请修改编码或版本号！");
+					}
+				}
+			});
+		}
 		
-		bc.msg.alert('后缀名错误，保存后缀名应为doc、docx、xml文件');
-		return false;
 	},
-	isTextSuffix:function(suffix){
-		if(suffix=='txt')
-			return true;
+	/** 查看历史版本号 **/
+	showVersion : function(){
+		var $form = $(this);
+		var url=bc.root+"/bc/showTemplateVersion/list";
+		var id=$form.find(":input[name='e.id']").val();
+		var code=$form.find(":input[name='e.code']").val();
 		
-		bc.msg.alert('后缀名错误，保存后缀名应为txt文件');
-		return false;
-	},
-	saveInfo:function($form,url,code,id){
-		$.ajax({
-			url:url,
-			data:{tid:id,code:code},
-			dataType:"json",
-			success:function(json){
-				var result=json.result;
-				if(result=='save'){
-					bc.page.save.call($form);
-				}else{
-					//系统中已有此编码
-					bc.msg.alert(result);
+		if(code==''){
+			bc.msg.slide('编码为空不能查看历史版本');
+			return;
+		}
+		
+		option={};
+		
+		// 构建默认参数
+		option = jQuery.extend({
+			mid: 'showTemplateVersion',
+			paging: true,
+			title: '模板管理编码'+code+'的版本历史'
+		},option);
+		
+		// 将一些配置参数放到data参数内(这些参数是提交到服务器的参数)
+		option.data = jQuery.extend({
+			multiple: false,
+			code: code,
+			tid: id
+		},option.data);
+	
+		//弹出选择对话框
+		bc.page.newWin(jQuery.extend({
+			url: url,
+			name: option.title,
+			mid: option.mid,
+			afterClose: function(status){
+				if(status && typeof(option.onOk) == "function"){
+					option.onOk(status);
 				}
 			}
-		});
+		},option));
 	}
 };
