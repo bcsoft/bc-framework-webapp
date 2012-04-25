@@ -6,12 +6,12 @@ bc.templateList = {
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var type= $tr.find(">td:eq(2)").attr("data-value");//类型
+			var type= $tr.find(">td:eq(5)").attr("data-value");//类型
 			if(type==5){
 				bc.msg.slide("自定义文本，请直接双击查看！");
 			}else{
-				var n = $tr.find(">td:eq(3)").attr("data-value");// 获取文件名
-				var f = "template/" + $tr.find(">td:eq(4)").attr("data-value");// 获取附件相对路径
+				var n = $tr.find(">td:eq(6)").attr("data-value");// 获取文件名
+				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径
 				
 				// 预览文件
 				var option = {f: f, n: n};
@@ -36,13 +36,12 @@ bc.templateList = {
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var type= $tr.find(">td:eq(2)").attr("data-value");//类型
+			var type= $tr.find(">td:eq(5)").attr("data-value");//类型
 			if(type==5){
 				bc.msg.slide("自定义文本，请直接双击查看内容！");
 			}else{
-				var n = $tr.find(">td:eq(3)").attr("data-value");// 获取文件名
-				var f = "template/" + $tr.find(">td:eq(4)").attr("data-value");// 获取附件相对路径
-				
+				var n = $tr.find(">td:eq(6)").attr("data-value");// 获取文件名
+				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			
 				// 下载文件
 				bc.file.download({f: f, n: n});
 			}

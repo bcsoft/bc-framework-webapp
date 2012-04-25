@@ -89,18 +89,15 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="topLabel"><s:text name="template.configuration"/>:</td>
+					<td class="value" colspan="3">
+							<s:textarea rows="3" readonly="true" cssClass="ui-widget-content noresize configParam" />
+					</td>
+				</tr>
+				<tr>
 					<td></td>
 					<td></td>
 					<td class="label" colspan="2">*<s:text name="template.status"/>:<s:radio name="e.status" list="#{'0':'在案','1':'禁用'}" cssStyle="width:auto;"/></td>
-				</tr>
-				<tr>
-					<td class="label"><s:text name="template.configuration"/>:</td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td class="value" colspan="4">配置参数占用行</td>
 				</tr>
 				<tr>
 					<td class="label" colspan="4">
