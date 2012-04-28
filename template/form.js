@@ -131,7 +131,7 @@ bc.templateForm = {
 		suffix=suffix.toLocaleLowerCase();
 		if(type==1&&isExcelSuffix(suffix)){
 			saveInfo();
-		}else if(type==2&&bc.templateForm.isWordSuffix(suffix)){
+		}else if(type==2&&isWordSuffix(suffix)){
 			saveInfo();
 		}else if(type==3&&isTextSuffix(suffix)){
 			saveInfo();
