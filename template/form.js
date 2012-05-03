@@ -18,6 +18,17 @@ bc.templateForm = {
 			var content=$form.find(":input[name='e.content']").val();
 			var path=$form.find(":input[name='e.path']").val();
 			
+			if(type==1||type==2||type==3||type==4){
+				if(path==''){
+					bc.msg.slide("模板路径不能为空！");
+					return;
+				}
+			}else{
+				if(content==''){
+					bc.msg.slide("模板内容不能为空！");
+					return;
+				}	
+			}
 			$.ajax({
 				url:url,
 				data:{type:type,content:content,path:path},
@@ -94,7 +105,7 @@ bc.templateForm = {
 		}
 		//文本文件
 		function isTextSuffix(suffix){
-			if(suffix=='txt')
+			if(suffix=='txt'||suffix=='xml'||suffix=='cvs'||suffix=='log')
 				return true;
 			bc.msg.alert('后缀名错误，保存后缀名应为txt文件');
 			return false;
@@ -195,8 +206,65 @@ bc.templateForm = {
 	inline : function(){
 		var $form = $(this);
 		var param=$form.find(".configParam").val();
+		var tid=$form.find("input[name='e.id']").val();
 		if(param==''){
 			bc.msg.slide('配置参数为空，不能预览，请先点击灯泡获取配置参数!');
+			return;
 		}
+		
+		//生成对话框的html代码
+		
+		var html = [];
+		html.push('<div class="bc-page" data-type="dialog">');
+		html.push('<div style="margin: 4px;">');
+		html.push('<table id="inlineTemplates" style="width:100%;height:100%;">');
+		html.push('<tbody>');
+		var arrParam=param.split(",");
+		for(var i=0; i<arrParam.length; i++){
+			html.push('<tr>')
+			html.push('<td class="label">'+arrParam[i]+'</td>');
+			html.push('<td class="value">');
+			html.push('<input type="text" class="ui-widget-content">');
+			html.push('</td>');
+			html.push('</tr>')
+		}
+		html.push('</tbody>');
+		html.push('</table>');
+		html.push('</div>');
+		html.push('</div>');
+		html = $(html.join("")).appendTo("body");
+		
+		//绑定双击事件
+		function onClick(){
+			var $trs=paramsEl.find("tr");
+			var dataObj;
+			var dataArr=[];
+			$trs.each(function(){
+				dataObj={}
+				var key= $(this).find(".label").html();
+				var value= $(this).find("input").val();
+				dataObj.key=key;
+				dataObj.value=value;
+				dataArr.push(dataObj);
+			});
+
+			var url =bc.root+"/bc/template/inline?tid=" + tid
+			url+="&markerValueJsons="+$.toJSON(dataArr);
+			var win = window.open(url, "_blank");
+			return win;
+			//销毁对话框
+			html.dialog("destroy").remove();
+		}
+		var paramsEl = html.find("#inlineTemplates");
+		
+		//弹出对话框让用户选择司机
+		html.dialog({
+			id: "inlineTemplateParams",
+			title: "请输入模板配置参数对应的值",
+			dialogClass: 'bc-ui-dialog ui-widget-header',
+			width:300,modal:false,
+			minWidth:300,
+			buttons:[{text:"确定",click: onClick}]
+		});	
 	}
 };

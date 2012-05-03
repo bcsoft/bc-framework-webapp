@@ -38,7 +38,10 @@ bc.templateList = {
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
 			var type= $tr.find(">td:eq(5)").attr("data-value");//类型
 			if(type==5){
-				bc.msg.slide("自定义文本，请直接双击查看内容！");
+				var tid=$tds.attr("data-id");
+				var url =bc.root+"/bc/template/download?tid=" + tid
+				var win = window.open(url, "blank");
+				return win;
 			}else{
 				var n = $tr.find(">td:eq(6)").attr("data-value");// 获取文件名
 				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			
