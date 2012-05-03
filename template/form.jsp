@@ -27,7 +27,7 @@
 					<td class="label">*<s:text name="template.category"/>:</td>
 					<td class="value"><s:textfield name="e.category" cssClass="ui-widget-content" data-validate="required" /></td>
 					<td class="label"><s:text name="template.order"/>:</td>
-					<td class="value"><s:textfield name="e.order" cssClass="ui-widget-content" /></td>
+					<td class="value"><s:textfield name="e.orderNo" cssClass="ui-widget-content" /></td>
 				</tr>
 				<!-- 编码   版本号-->
 				<tr>
