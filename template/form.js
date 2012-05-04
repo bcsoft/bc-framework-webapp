@@ -17,13 +17,14 @@ bc.templateForm = {
 			var type=$form.find(":radio[name='e.type']:checked").val();
 			var content=$form.find(":input[name='e.content']").val();
 			var path=$form.find(":input[name='e.path']").val();
+			var tid=$form.find("input[name='e.id']").val();
 			
-			if(type==1||type==2||type==3||type==4){
-				if(path==''){
-					bc.msg.slide("模板路径不能为空！");
-					return;
-				}
-			}else{
+			if(tid==''){
+				bc.msg.slide('请先保存模板！');
+				return;
+			}
+			
+			if(type==5){
 				if(content==''){
 					bc.msg.slide("模板内容不能为空！");
 					return;
@@ -31,14 +32,14 @@ bc.templateForm = {
 			}
 			$.ajax({
 				url:url,
-				data:{type:type,content:content,path:path},
+				data:{tid:tid,type:type,content:content,path:path},
 				dataType:"json",
 				success:function(json){
 					if(json.value){
 						$form.find(".configParam").val(json.value);
 					}
 				}
-			});
+			});	
 		});
 		
 		
@@ -205,15 +206,46 @@ bc.templateForm = {
 	/** 预览 **/
 	inline : function(){
 		var $form = $(this);
+		var url=bc.root+"/bc/template/loadTplConfigParam";
+		var type=$form.find(":radio[name='e.type']:checked").val();
+		var content=$form.find(":input[name='e.content']").val();
+		var path=$form.find(":input[name='e.path']").val();	
+		var tid=$form.find("input[name='e.id']").val();
+		
+		if(tid==''){
+			bc.msg.slide('请先保存模板！');
+			return;
+		}
+		
+		if(type==5){
+			if(content==''){
+				bc.msg.slide("模板内容不能为空！");
+				return;
+			}	
+		}
+		
+		//先加载一次配置参数
+		$.ajax({
+			url:url,
+			data:{tid:tid,type:type,content:content,path:path},
+			dataType:"json",
+			success:function(json){
+				if(json.value){
+					$form.find(".configParam").val(json.value);
+					bc.templateForm.inlineSub($form);
+				}
+			}
+		});	
+	},
+	/** 预览子方法 **/
+	inlineSub : function($form){
 		var param=$form.find(".configParam").val();
 		var tid=$form.find("input[name='e.id']").val();
 		if(param==''){
 			bc.msg.slide('配置参数为空，不能预览，请先点击灯泡获取配置参数!');
 			return;
 		}
-		
 		//生成对话框的html代码
-		
 		var html = [];
 		html.push('<div class="bc-page" data-type="dialog">');
 		html.push('<div style="margin: 4px;">');
@@ -247,7 +279,10 @@ bc.templateForm = {
 				dataObj.value=value;
 				dataArr.push(dataObj);
 			});
-
+			if(tid==''){
+				bc.msg.slide('请先保存模板！');
+				return;
+			}
 			var url =bc.root+"/bc/template/inline?tid=" + tid
 			url+="&markerValueJsons="+$.toJSON(dataArr);
 			var win = window.open(url, "_blank");
@@ -262,7 +297,7 @@ bc.templateForm = {
 			id: "inlineTemplateParams",
 			title: "请输入模板配置参数对应的值",
 			dialogClass: 'bc-ui-dialog ui-widget-header',
-			width:300,modal:false,
+			width:300,modal:true,
 			minWidth:300,
 			buttons:[{text:"确定",click: onClick}]
 		});	
