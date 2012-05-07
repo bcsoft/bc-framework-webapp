@@ -10,14 +10,14 @@
 			<tbody>
 				<tr class="widthMarker">
 					<td style="width: 80px;"></td>
-					<td style="width: 230px;"></td>
-					<td style="width: 80px;"></td>
 					<td >&nbsp;</td>
 				</tr>
 				<!-- 名称 所属分类 -->
 				<tr>
 					<td class="label">*<s:text name="reportTemplate.name"/>:</td>
 					<td class="value"><s:textfield name="e.name" cssClass="ui-widget-content" data-validate="required" /></td>
+				</tr>
+				<tr>
 					<td class="label">*<s:text name="reportTemplate.category"/>:</td>
 					<td class="value"><s:textfield name="e.category" cssClass="ui-widget-content" data-validate="required" /></td>
 				</tr>
@@ -25,51 +25,44 @@
 				<tr>
 					<td class="label">*<s:text name="reportTemplate.code"/>:</td>
 					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate="required" /></td>
+				</tr>
+				<tr>	
 					<td class="label"><s:text name="reportTemplate.order"/>:</td>
 					<td class="value"><s:textfield name="e.orderNo" cssClass="ui-widget-content" /></td>
 				</tr>
 				<!-- 使用人-->
 				<tr>
 					<td class="topLabel">*<s:text name="reportTemplate.user"/>:</td>
-					<td class="value" colspan="3">
-						<div id="assignUsers" class="ui-widget-content" 
+					<td class="value relative" >
+						<div id="assignUsers" style="position:relative;margin: 0;padding: 0;" class="input ui-widget-content" 
 							data-removeTitle='<s:text name="title.click2remove"/>'>
-							<div class="ui-state-active title" style="position:relative;">
-								<span class="text">
-									<s:if test="%{ownedUsers == null || ownedUsers.isEmpty()}"><s:text name="label.empty"/></s:if>
-									<s:if test="%{ownedUsers != null && !ownedUsers.isEmpty()}">&nbsp;</s:if>
-								</span>
-								<s:if test="!readonly">
-								<span id="addUsers" class="verticalMiddle ui-icon ui-icon-circle-plus" title='<s:text name="group.title.click2addUsers"/>'></span>
-								</s:if>
-							</div>
+							<span id="addUsers" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" style="" title='<s:text name="group.title.click2addUsers"/>'></span>
 							<s:if test="%{ownedUsers != null && !ownedUsers.isEmpty()}">
-							<ul class="horizontal">
-							<s:iterator value="ownedUsers">
-								<li class="horizontal ui-widget-content ui-corner-all" data-id='<s:property value="id" />'>
-									<span class="text"><s:property value="name" /></span>
-									<s:if test="!readonly">
-									<span class="click2remove verticalMiddle ui-icon ui-icon-close" title='<s:text name="title.click2remove"/>'></span>
-									</s:if>
+								<ul class="horizontal" style="padding: 0;">
+								<s:iterator value="ownedUsers">
+								<li class="horizontal" style="position: relative;margin:0 2px;float: left;padding: 0;"
+									data-id=<s:property value="['id']"/>>
+								<span class="text" ><s:property value="['name']" /></span>
+								<s:if test="!isReadonly()">
+									<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title='<s:text name="title.click2remove"/>'></span>
+								</s:if>
 								</li>
-							</s:iterator>
-							</ul>
+								</s:iterator>
+								</ul>
 							</s:if>	
-						</div>
+						</div>					
 					</td>
 				</tr>
 				<!-- 备注-->
 				<tr>
 					<td class="topLabel">备注:</td>
-					<td class="value" colspan="3">
+					<td class="value" >
 						<s:textarea rows="3" name="e.desc"  cssClass="ui-widget-content noresize" />
 					</td>
 				</tr>
 				
 				<tr>
-					<td></td>
-					<td></td>
-					<td class="label" colspan="2">*<s:text name="reportTemplate.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
+					<td class="label" colspan="2"><s:text name="reportTemplate.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
 				</tr>
 				<!-- 详细配置-->
 				<tr>

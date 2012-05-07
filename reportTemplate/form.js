@@ -5,11 +5,12 @@ bc.reportTemplateForm = {
 		//只读权限控制
 		if(readonly) return;
 		
-		var liTpl = '<li class="horizontal ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}">'+
+		var liTpl = '<li class="horizontal ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
+		'style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">'+
 		'<span class="text">{1}</span>'+
-		'<span class="click2remove verticalMiddle ui-icon ui-icon-close" title={2}></span></li>';
+		'<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title={2}></span></li>';
 		var ulTpl = '<ul class="horizontal"></ul>';
-		var title = $form.find("#assignRoles").attr("data-removeTitle");
+		var title = $form.find("#assignUsers").attr("data-removeTitle");
 		
 		//绑定添加用户的按钮事件处理
 		$form.find("#addUsers").click(function(){
@@ -17,22 +18,22 @@ bc.reportTemplateForm = {
 			var $lis = $ul.find("li");
 			var selecteds="";
 			$lis.each(function(i){
-				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//已选择的岗位id
+				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
 			});
 			bc.identity.selectUser({
 				multiple: true,//可多选
 				history: false,
 				selecteds: selecteds,
-				onOk: function(roles){
-					//添加当前没有分派的岗位
-					$.each(roles,function(i,role){
-						if($lis.filter("[data-id='" + role.id + "']").size() > 0){//已存在
-							logger.info("duplicate select: id=" + role.id + ",name=" + role.name);
+				onOk: function(users){
+					var usersInfo = $form.find(":hidden[name='e.users']").val();
+					$.each(users,function(i,user){
+						if($lis.filter("[data-id='" + user.id + "']").size() > 0){//已存在
+							logger.info("duplicate select: id=" + user.id + ",name=" + user.name);
 						}else{//新添加的
 							if(!$ul.size()){//先创建ul元素
 								$ul = $(ulTpl).appendTo($form.find("#assignUsers"));
 							}
-							$(liTpl.format(role.id,role.name,title))
+							$(liTpl.format(user.id,user.name,title))
 							.appendTo($ul).find("span.click2remove")
 							.click(function(){
 								$(this).parent().remove();
