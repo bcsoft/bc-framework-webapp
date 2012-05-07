@@ -3077,7 +3077,8 @@ bc.grid.export2Excel = function($grid,el) {
 		data.exportFormat="xls";
 		
 		//导出范围
-		data.exportScope = boxPointer.find(":radio:checked[name='exportScope']").val();
+		var exportScope = boxPointer.find(":radio:checked[name='exportScope']").val();
+		if(exportScope) data.exportScope=exportScope;
 		
 		//分页参数
 		var $pager_seek = $page.find("ul.pager>li.seek");
