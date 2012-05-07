@@ -50,7 +50,7 @@ bc.reportTemplateForm = {
 	},
 	/**保存的处理*/
 	save:function(){
-		$page = $(this);
+		var $page = $(this);
 		//将角色的id合并到隐藏域
 		var ids=[];
 		$page.find("#assignRoles li").each(function(){
@@ -94,6 +94,13 @@ bc.reportTemplateForm = {
 	},
 	/**执行的处理**/
 	execute:function(){
-		
+		var $form = $(this);
+		var code = $form.find(":input[name='e.code']").val();;
+		//弹出选择对话框
+		bc.page.newWin({
+			url: bc.root + "/bc/report/run?code=" + code,
+			name: $form.find(":input[name='e.name']").val(),
+			mid: code			
+		});
 	}
 };
