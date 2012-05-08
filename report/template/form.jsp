@@ -32,15 +32,19 @@
 				</tr>
 				<!-- 使用人-->
 				<tr>
-					<td class="label">*<s:text name="reportTemplate.user"/>:</td>
+					<td class="topLabel">*<s:text name="reportTemplate.user"/>:</td>
 					<td class="value relative" >
-						<div id="assignUsers" style="position:relative;margin: 0;padding: 0;" class="input ui-widget-content" 
+						<div id="assignUsers" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;width: 98%;" class="ui-widget-content" 
 							data-removeTitle='<s:text name="title.click2remove"/>'>
-							<span id="addUsers" class="selectButton verticalMiddle ui-icon ui-icon-circle-plus" style="" title='<s:text name="group.title.click2addUsers"/>'></span>
+							<ul class="inputIcons" style="top:10px">
+								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
+								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addGroups">
+								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
+							</ul>
 							<s:if test="%{ownedUsers != null && !ownedUsers.isEmpty()}">
-								<ul class="horizontal" style="padding: 0;">
+								<ul class="horizontal reportUserUl" style="padding: 0 50px 0 0;">
 								<s:iterator value="ownedUsers">
-								<li class="horizontal" style="position: relative;margin:0 2px;float: left;padding: 0;"
+								<li class="horizontal reportUserLi" style="position: relative;margin:0 2px;float: left;padding: 0;"
 									data-id=<s:property value="['id']"/>>
 								<span class="text" ><s:property value="['name']" /></span>
 								<s:if test="!isReadonly()">
