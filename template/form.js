@@ -276,7 +276,10 @@ bc.templateForm = {
 				var key= $(this).find(".label").html();
 				var value= $(this).find("input").val();
 				dataObj.key=key;
-				dataObj.value=value;
+				if(value && (value.indexOf("[") == 0 || value.indexOf("{") == 0))
+					dataObj.value=$.evalJSON(value);
+				else
+					dataObj.value=value;
 				dataArr.push(dataObj);
 			});
 			if(tid==''){
