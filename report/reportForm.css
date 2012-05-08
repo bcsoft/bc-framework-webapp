@@ -1,0 +1,17 @@
+/**
+ * 表单样式
+ *
+ *lbj	
+ * @date 2011-05-20
+ */
+.test_box {
+    min-height: 120px; 
+    max-height: 300px;
+    _height: 120px; 
+    padding: 3px; 
+    outline: 0; 
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width:98%;
+}
