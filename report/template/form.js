@@ -113,6 +113,10 @@ bc.reportTemplateForm = {
 	/**保存的处理*/
 	save:function(){
 		var $page = $(this);
+		
+		//详细配置赋值
+		$page.find(":input[name='e.config']").val($page.find("#reportTemplateConfig").text());
+		
 		//将用户的id合并到隐藏域
 		ids=[];
 		$page.find("#assignUsers .reportUserLi").each(function(){
@@ -142,9 +146,6 @@ bc.reportTemplateForm = {
 				}
 			}
 		});
-		
-		
-		
 	},
 	/**执行的处理**/
 	execute:function(){

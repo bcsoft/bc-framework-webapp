@@ -44,8 +44,16 @@ bc.reportTaskForm = {
 			});
 		
 	},
-	/**保存的处理*/
+	/**保存处理**/
 	save:function(){
+		var $page = $(this);
+		//详细配置赋值
+		$page.find(":input[name='e.config']").val($page.find("#reportTaskConfig").text());
+		//调用标准的方法执行保存
+		bc.page.save.call($page);
+	},
+	/**查看执行记录**/
+	viewExcuteRecode:function(){
 		
 	}
 };
