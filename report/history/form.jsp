@@ -69,6 +69,7 @@
 			</tbody>
 		</table>
 		<s:hidden name="e.id" />
+		<s:hidden name="e.taskId" />
 		<s:hidden name="e.author.id" />
 	</s:form>
 </div>
