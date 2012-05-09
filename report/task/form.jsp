@@ -19,7 +19,7 @@
 					<td class="value" colspan="3" ><s:textfield name="e.name" cssClass="ui-widget-content" data-validate="required" /></td>
 				</tr>
 				<tr>
-					<td class="label">*<s:text name="report.category"/>:</td>
+					<td class="label">*<s:text name="reportTask.template"/>:</td>
 					<td class="value" colspan="3" >
 						<div style="position: relative;display:block;" >
 							<s:textfield name="category"  value="%{e.template.category+'/'+e.template.name}"  readonly="true" 

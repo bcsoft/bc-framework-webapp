@@ -1,0 +1,31 @@
+bc.reportTemplateList = {
+	/**执行的处理**/
+	execute:function(){
+		var $view=$(this);
+		var $tds = $view.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
+		if($tds.length == 1){
+			//获取选中的行
+			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
+			var status=$tr.find(">td:eq(0)").attr("data-value");
+			if(status==1){
+				bc.msg.slide("禁用状态不能够执行！");
+				return;
+			}
+			
+			var code = $tr.find(">td:eq(4)").attr("data-value");
+			var name = $tr.find(">td:eq(3)").attr("data-value");
+			//弹出选择对话框
+			bc.page.newWin({
+				url: bc.root + "/bc/report/run?code=" + code,
+				name: name,
+				mid: code			
+			});
+		}else if($tds.length > 1){
+			bc.msg.slide("一次只可以执行一个，请确认您只选择了一个！");
+			return;
+		}else{
+			bc.msg.slide("请先选择要执行的报表模板！");
+			return;
+		}
+	}
+};

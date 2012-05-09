@@ -10,9 +10,9 @@ bc.reportTaskForm = {
 				var url = bc.root + "/bc/selectReportTemplate/paging";
 				// 构建默认参数
 				var option = jQuery.extend({
-					mid : 'selectSuperiorPlace',
+					mid : 'selectReportTemplate',
 					paging : true,
-					title : '选择上级信息',
+					title : '选择报表模板信息',
 				}, option);
 
 				// 将一些配置参数放到data参数内(这些参数是提交到服务器的参数)

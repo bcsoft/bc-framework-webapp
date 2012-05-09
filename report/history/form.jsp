@@ -61,7 +61,7 @@
 					</td>
 				</tr>
 				<tr id="idReportMsgError">
-					<td class="topLabel"><s:text name="reportHistory.msg.error"/></td>
+					<td class="topLabel"><s:text name="reportHistory.msg.error"/>:</td>
 					<td class="value" colspan="3">
 						<s:textarea rows="5" name="e.msg" readonly="true" cssClass="ui-widget-content noresize" />
 					</td>
