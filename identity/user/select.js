@@ -25,7 +25,7 @@ bc.userSelectDialog = {
 			$tds.each(function(i){
 				data.push({
 					id: $(this).attr("data-id"),
-					name:$($trs.get(i)).find("td:eq(0)").attr("data-value"),
+					name:$($trs.get(i)).find("td:eq(1)").attr("data-value"),
 				});
 			});
 		}
