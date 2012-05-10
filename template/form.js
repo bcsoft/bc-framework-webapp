@@ -9,39 +9,7 @@ bc.templateForm = {
 			$tplFile.hide();
 		}else{
 			$tplContent.hide();
-		}
-		
-		//绑定加载配置参数事件
-		$form.find(".loadTplConfig").click(function(){
-			var url=bc.root+"/bc/template/loadTplConfigParam";
-			var type=$form.find(":radio[name='e.type']:checked").val();
-			var content=$form.find(":input[name='e.content']").val();
-			var path=$form.find(":input[name='e.path']").val();
-			var tid=$form.find("input[name='e.id']").val();
-			
-			if(tid==''){
-				bc.msg.slide('请先保存模板！');
-				return;
-			}
-			
-			if(type==5){
-				if(content==''){
-					bc.msg.slide("模板内容不能为空！");
-					return;
-				}	
-			}
-			$.ajax({
-				url:url,
-				data:{tid:tid,type:type,content:content,path:path},
-				dataType:"json",
-				success:function(json){
-					if(json.value){
-						$form.find(".configParam").val(json.value);
-					}
-				}
-			});	
-		});
-		
+		}		
 		
 		if(readonly) return;
 		
@@ -61,14 +29,37 @@ bc.templateForm = {
 				$form.find(":input[name='e.path']").val('');
 				$form.find(":input[name='e.subject']").val('');
 			}
-			$form.find(".configParam").val('');
 		});
 		
 		//绑定清除按钮事件
 		$form.find("#cleanFileId").click(function(){
 			$form.find(":input[name='e.path']").val('');
 			$form.find(":input[name='e.subject']").val('');
-			$form.find(".configParam").val('');
+		});
+		
+		//绑定下载按钮事件
+		$form.find(".downLoadFileId").click(function(){
+			var type=$form.find(":radio[name='e.type']:checked").val();
+			var subject=$form.find(":input[name='e.subject']").val();
+			var path=$form.find(":input[name='e.path']").val();
+			var id=$form.find(":input[name='e.id']").val();
+			if(id==""){
+				bc.msg.slide('请先保存模板！');
+				return;
+			}
+			
+			if(type==5){
+				var url =bc.root+"/bc/template/download?tid=" +id
+				var win = window.open(url, "blank");
+				return win;
+			}else{
+				if(!bc.validator.validate($form)) return;
+				
+				var n =  subject;// 获取文件名
+				var f = "template/" + path;// 获取附件相对路径			
+				// 下载文件
+				bc.file.download({f: f, n: n});
+			}
 		});
 		
 	},
@@ -171,36 +162,23 @@ bc.templateForm = {
 	/** 查看历史版本号 **/
 	showVersion : function(){
 		var $form = $(this);
-		var url=bc.root+"/bc/showTemplateVersion/list";
-		var id=$form.find(":input[name='e.id']").val();
+		var url=bc.root+"/bc/templates/list";
 		var code=$form.find(":input[name='e.code']").val();
 		if(code==''){
-			bc.msg.slide('编码为空不能查看历史版本');
+			bc.msg.slide('编码不能为空');
 			return;
 		}
 		option={};
-		// 构建默认参数
-		option = jQuery.extend({
-			mid: 'showTemplateVersion',
-			paging: true,
-			title: '模板管理编码'+code+'的版本历史'
-		},option);
 		// 将一些配置参数放到data参数内(这些参数是提交到服务器的参数)
 		option.data = jQuery.extend({
-			multiple: false,
 			code: code,
-			tid: id
 		},option.data);
 		//弹出选择对话框
 		bc.page.newWin(jQuery.extend({
+			mid: code,
 			url: url,
-			name: option.title,
-			mid: option.mid,
-			afterClose: function(status){
-				if(status && typeof(option.onOk) == "function"){
-					option.onOk(status);
-				}
-			}
+			name: '模板编码:'+code+'的版本历史',
+			title: '模板编码:'+code+'的版本历史'
 		},option));
 	},
 	/** 预览 **/
@@ -208,8 +186,7 @@ bc.templateForm = {
 		var $form = $(this);
 		var url=bc.root+"/bc/template/loadTplConfigParam";
 		var type=$form.find(":radio[name='e.type']:checked").val();
-		var content=$form.find(":input[name='e.content']").val();
-		var path=$form.find(":input[name='e.path']").val();	
+		var path=$form.find("input[name='e.path']").val();
 		var tid=$form.find("input[name='e.id']").val();
 		
 		if(tid==''){
@@ -217,38 +194,40 @@ bc.templateForm = {
 			return;
 		}
 		
-		if(type==5){
-			if(content==''){
-				bc.msg.slide("模板内容不能为空！");
-				return;
-			}	
-		}
-		
 		//先加载一次配置参数
 		$.ajax({
 			url:url,
-			data:{tid:tid,type:type,content:content,path:path},
+			data:{tid:tid},
 			dataType:"json",
 			success:function(json){
-				if(json.value){
-					$form.find(".configParam").val(json.value);
-					bc.templateForm.inlineSub($form);
+				if(json.value){//有配置参数打开配置参数窗口
+					bc.templateForm.openConfigWindow($form,tid,json.value);
+				}else{//无配置参数调用默认的方法
+					if(type==5){//自定义文本类型调用自定义的预览方法
+						var url =bc.root+"/bc/template/inline?tid=" + tid
+						var win = window.open(url, "_blank");
+						return win;
+					}
+					if(!bc.validator.validate($form)) return;
+					var n = $form.find(":input[name='e.subject']").val();// 获取文件名
+					var f = "template/" +path;// 获取附件相对路径
+					// 预览文件
+					var option = {f: f, n: n};
+					var ext = f.substr(f.lastIndexOf("."));
+					if(type==2 && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
+						option.from="docx";
+					}
+					bc.file.inline(option);
 				}
 			}
 		});	
 	},
-	/** 预览子方法 **/
-	inlineSub : function($form){
-		var param=$form.find(".configParam").val();
-		var tid=$form.find("input[name='e.id']").val();
-		if(param==''){
-			bc.msg.slide('配置参数为空，不能预览，请先点击灯泡获取配置参数!');
-			return;
-		}
+	/** 配置参数窗口 **/
+	openConfigWindow : function($form,tid,param){	
 		//生成对话框的html代码
 		var html = [];
-		html.push('<div class="bc-page" data-type="dialog">');
-		html.push('<div style="margin: 4px;">');
+		html.push('<div class="bc-page" data-type="dialog" style="overflow-y:auto;">');
+		html.push('<div style="margin: 4px;max-height: 400px;">');
 		html.push('<table id="inlineTemplates" style="width:100%;height:100%;">');
 		html.push('<tbody>');
 		var arrParam=param.split(",");
@@ -256,10 +235,11 @@ bc.templateForm = {
 			html.push('<tr>')
 			html.push('<td class="label">'+arrParam[i]+'</td>');
 			html.push('<td class="value">');
-			html.push('<input type="text" class="ui-widget-content">');
+			html.push('<input type="text" class="ui-widget-content" style="width:180px">');
 			html.push('</td>');
 			html.push('</tr>')
 		}
+	
 		html.push('</tbody>');
 		html.push('</table>');
 		html.push('</div>');
