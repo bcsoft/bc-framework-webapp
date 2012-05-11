@@ -109,13 +109,19 @@ bc.reportTemplateForm = {
 		$form.find("span.click2remove").click(function(){
 			$(this).parent().remove();
 		});
+		
+		$form.find(":input[name='e.config']").tah({
+		    moreSpace:1,   // 输入框底部预留的空白, 默认15, 单位像素
+		    maxHeight:400,  // 指定Textarea的最大高度, 默认600, 单位像素
+		    animateDur:10  // 调整高度时的动画过渡时间, 默认200, 单位毫秒
+		});
 	},
 	/**保存的处理*/
 	save:function(){
 		var $page = $(this);
 		
 		//详细配置赋值
-		$page.find(":input[name='e.config']").val($page.find("#reportTemplateConfig").text());
+		//$page.find(":input[name='e.config']").val($page.find("#reportTemplateConfig").text());
 		
 		//将用户的id合并到隐藏域
 		ids=[];

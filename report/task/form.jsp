@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="reportTask.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/reportTask/save" />'
-	data-js='<s:url value="/bc/report/task/form.js" />,<s:url value="/bc/report/reportForm.css" />'
+	data-js='<s:url value="/bc/report/task/form.js" />,<s:url value="/bc/report/textareaAutoHeight.js" />'
 	data-initMethod='bc.reportTaskForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportTaskForm" theme="simple" >
@@ -35,20 +35,20 @@
 					<td class="value"  colspan="3"><s:textfield name="e.orderNo" cssClass="ui-widget-content" /></td>
 				</tr>
 				<tr>
-					<td class="label"><s:text name="reportTask.cron"/>:</td>
+					<td class="label">*<s:text name="reportTask.cron"/>:</td>
 					<td class="value relative">
-						<s:textfield name="e.cron" cssClass="ui-widget-content"/>
+						<s:textfield name="e.cron" cssClass="ui-widget-content" data-validate="required"/>
 						<ul class="inputIcons" >
 							<li class="inputIcon ui-icon ui-icon-wrench" title='<s:text name="title.click2select"/>' id="addCron">
 						</ul>
 					</td>
 					<td class="label">*<s:text name="reportTask.startDate"/>:</td>
 					<td class="value">
-						<div style="position : relative; display: block">
+						<div style="position : relative; display: block;padding-right:7px;">
 							<input type="text" name="e.startDate" data-validate='{"type":"datetime","required":true}'
 							value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.startDate" />'
 							class="bc-datetime ui-widget-content" data-cfg='{changeYear:true,showSecond:true,timeFormat:"hh:mm:ss"}'/>
-							<ul class="inputIcons">
+							<ul class="inputIcons" style="padding-right:7px;">
 								<li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg='e.startDate'></li>
 							</ul>
 						</div>
@@ -61,22 +61,17 @@
 						<s:textarea rows="3" name="e.desc"  cssClass="ui-widget-content noresize" />
 					</td>
 				</tr>
-				<tr>
-					<td class="label" colspan="4"><s:text name="report.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
-				</tr>
 				<!-- 详细配置-->
 				<tr>
 					<td class="topLabel"><s:text name="report.config"/>:</td>
 					<td class="value" colspan="3">
-						<div id="reportTaskConfig" class="test_box ui-widget-content" contenteditable="true">
-							<s:if test="e.isNew()">
-							</s:if><s:else>
-								<s:text name="e.config"/>
-							</s:else>
-						</div>
-						<%-- <s:textarea name="e.config"  cssClass="ui-widget-content noresize" /> --%>
+						<s:textarea name="e.config"  cssClass="ui-widget-content noresize"  />
 					</td>
 				</tr>
+				<tr>
+					<td class="label" colspan="4" style="padding-right:10px"><s:text name="report.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
+				</tr>
+				
 				<tr>
 					<td class="label" colspan="4">
 						<div class="formTopInfo">

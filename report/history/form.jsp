@@ -41,7 +41,7 @@
 							class="ui-widget-content" />
 					</td>
 					<td class="label"><s:text name="report.author"/>:</td>
-					<td class="value">
+					<td class="value" style="padding-right:7px">
 						<s:textfield name="e.author.name" cssClass="ui-widget-content" readonly="true" />
 					</td>
 				</tr>

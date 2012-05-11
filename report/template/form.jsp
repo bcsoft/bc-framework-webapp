@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="reportTemplate.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/reportTemplate/save" />'
-	data-js='<s:url value="/bc/report/template/form.js" />,js:bc_identity,<s:url value="/bc/report/reportForm.css" />'
+	data-js='<s:url value="/bc/report/template/form.js" />,js:bc_identity,<s:url value="/bc/report/textareaAutoHeight.js" />'
 	data-initMethod='bc.reportTemplateForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportTemplateForm" theme="simple" >
@@ -64,23 +64,16 @@
 						<s:textarea rows="3" name="e.desc"  cssClass="ui-widget-content noresize" />
 					</td>
 				</tr>
-				<tr>
-					<td class="label" colspan="2"><s:text name="reportTemplate.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
-				</tr>
 				<!-- 详细配置-->
 				<tr>
 					<td class="topLabel"><s:text name="reportTemplate.config"/>:</td>
-					<td class="value" colspan="3">
-						<div id="reportTemplateConfig" class="test_box ui-widget-content" contenteditable="true">
-							<s:if test="e.isNew()">
-							</s:if><s:else>
-								<s:text name="e.config"/>
-							</s:else>
-						</div>
-						<%-- <s:textarea name="e.config"  cssClass="ui-widget-content noresize" /> --%>
+					<td class="value" colspan="3" style="padding-right:2px">
+						 <s:textarea name="e.config"  cssClass="ui-widget-content noresize"  /> 
 					</td>
 				</tr>
-				
+				<tr>
+					<td class="label" colspan="2" style="padding-right:10px"><s:text name="reportTemplate.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
+				</tr>
 				<tr>
 					<td class="label" colspan="4">
 						<div class="formTopInfo">
@@ -96,7 +89,6 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.author.id" />
 		<s:hidden name="assignUserIds" />
-		<s:hidden name="e.config"/>
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>
