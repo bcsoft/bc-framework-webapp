@@ -2,15 +2,15 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="reportHistory.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/reportHistory/save" />'
-	data-js='<s:url value="/bc/report/history/form.js" />'
+	data-js='<s:url value="/bc/report/history/form.js" />,<s:url value="/bc/report/textareaAutoHeight.js" />'
 	data-initMethod='bc.reportHistoryForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportHistoryForm" theme="simple" >
-		<table  cellspacing="2" cellpadding="0" style="width:645px;"  >
+		<table  cellspacing="2" cellpadding="0" style="width:500px;"  >
 			<tbody>
 				<tr class="widthMarker">
 					<td style="width: 80px;"></td>
-					<td style="width: 230px;"></td>
+					<td style="width: 150px;"></td>
 					<td style="width: 80px;"></td>
 					<td >&nbsp;</td>
 				</tr>
@@ -35,14 +35,13 @@
 				    </td>
 				</tr>
 				<tr>
-					<td class="label"><s:text name="report.fileDate"/>:</td>
+					<td class="label"><s:text name="reportHistory.source"/>:</td>
 					<td class="value">
-						<input type="text" name="e.fileDate" readonly="readonly" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'
-							class="ui-widget-content" />
+						<s:textfield name="e.sourceType" readonly="readonly" class="ui-widget-content" />
 					</td>
-					<td class="label"><s:text name="report.author"/>:</td>
-					<td class="value" style="padding-right:7px">
-						<s:textfield name="e.author.name" cssClass="ui-widget-content" readonly="true" />
+					<td class="label"><s:text name="reportHistory.sourceId"/>:</td>
+					<td class="value" style="padding-right:5px">
+						<s:textfield name="e.sourceId" cssClass="ui-widget-content" readonly="true" />
 					</td>
 				</tr>
 				<tr>
@@ -51,19 +50,27 @@
 						<s:if test="%{e.success}">
 							<s:text name="reportHistory.status.success"/>
 						</s:if><s:else>
-							<div style="position: relative;display:block;" >
-								<s:text name="reportHistory.status.lost"/>
-								<ul class="inputIcons" style="padding-right:185px;">
-									<li class="inputIcon ui-icon ui-icon-triangle-1-s" title='<s:text name="reportHistory.title.error"/>' id="showReportMsgError">
-								</ul>
-							</div>
+							<s:text name="reportHistory.status.lost"/>
 						</s:else>
+					</td>
+					<td class="label" colspan="2">
+						<div class="formTopInfo">
+							<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/> 由
+							<s:if test="%{e.sourceType=='用户生成'}">
+								<s:property value="e.author.name" />
+							</s:if><s:elseif test="%{e.sourceType=='报表任务'}">
+									报表任务
+							</s:elseif><s:else>
+								<s:property value="e.sourceType" />	
+							</s:else>
+							生成
+						</div>
 					</td>
 				</tr>
 				<tr id="idReportMsgError">
 					<td class="topLabel"><s:text name="reportHistory.msg.error"/>:</td>
 					<td class="value" colspan="3">
-						<s:textarea rows="5" name="e.msg" readonly="true" cssClass="ui-widget-content noresize" />
+						<s:textarea name="e.msg" cssClass="ui-widget-content noresize" readonly="true"/>
 					</td>
 				</tr>
 			</tbody>
@@ -71,5 +78,6 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.taskId" />
 		<s:hidden name="e.author.id" />
+		<s:hidden name="e.success" />
 	</s:form>
 </div>

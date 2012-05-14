@@ -30,10 +30,7 @@
 						</div>
 				    </td>
 				</tr>
-				<tr>
-					<td class="label"><s:text name="report.order"/>:</td>
-					<td class="value"  colspan="3"><s:textfield name="e.orderNo" cssClass="ui-widget-content" /></td>
-				</tr>
+				
 				<tr>
 					<td class="label">*<s:text name="reportTask.cron"/>:</td>
 					<td class="value relative">
@@ -42,17 +39,24 @@
 							<li class="inputIcon ui-icon ui-icon-wrench" title='<s:text name="title.click2select"/>' id="addCron">
 						</ul>
 					</td>
-					<td class="label">*<s:text name="reportTask.startDate"/>:</td>
-					<td class="value">
-						<div style="position : relative; display: block;padding-right:7px;">
+					<td class="label"><s:text name="reportTask.startDate"/>:</td>
+					<td class="value" style="padding-right:7px;">
+						<s:textfield name="e.startDate" cssClass="ui-widget-content" readonly="true" />
+						<%--  <div style="position : relative; display: block;padding-right:7px;">
 							<input type="text" name="e.startDate" data-validate='{"type":"datetime","required":true}'
 							value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.startDate" />'
 							class="bc-datetime ui-widget-content" data-cfg='{changeYear:true,showSecond:true,timeFormat:"hh:mm:ss"}'/>
 							<ul class="inputIcons" style="padding-right:7px;">
 								<li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg='e.startDate'></li>
 							</ul>
-						</div>
+						</div>  --%>
 					</td>
+				</tr>
+				<tr>
+					<td class="label"><s:text name="report.order"/>:</td>
+					<td class="value" ><s:textfield name="e.orderNo" cssClass="ui-widget-content" /></td>
+					<td class="label"><s:text name="reportTask.ignoreError"/>:</td>
+					<td class="value"><s:radio name="e.ignoreError" list="#{'false':'否','true':'是'}" cssStyle="width:auto;"/></td>
 				</tr>
 				<!-- 备注-->
 				<tr>
@@ -61,17 +65,12 @@
 						<s:textarea rows="3" name="e.desc"  cssClass="ui-widget-content noresize" />
 					</td>
 				</tr>
-				<!-- 详细配置-->
 				<tr>
 					<td class="topLabel"><s:text name="report.config"/>:</td>
 					<td class="value" colspan="3">
 						<s:textarea name="e.config"  cssClass="ui-widget-content noresize"  />
 					</td>
 				</tr>
-				<tr>
-					<td class="label" colspan="4" style="padding-right:10px"><s:text name="report.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
-				</tr>
-				
 				<tr>
 					<td class="label" colspan="4">
 						<div class="formTopInfo">
@@ -87,7 +86,7 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.template.id" />
 		<s:hidden name="e.author.id" />
-		<s:hidden name="e.config"/>
+		<s:hidden name="e.status"/>
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>

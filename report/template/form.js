@@ -2,6 +2,12 @@ bc.reportTemplateForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
 		
+		$form.find(":input[name='e.config']").tah({
+		    moreSpace:1,   // 输入框底部预留的空白, 默认15, 单位像素
+		    maxHeight:400,  // 指定Textarea的最大高度, 默认600, 单位像素
+		    animateDur:10  // 调整高度时的动画过渡时间, 默认200, 单位毫秒
+		}).keydown();
+		
 		//只读权限控制
 		if(readonly) return;
 		
@@ -108,12 +114,6 @@ bc.reportTemplateForm = {
 		//绑定删除角色、用户的按钮事件处理
 		$form.find("span.click2remove").click(function(){
 			$(this).parent().remove();
-		});
-		
-		$form.find(":input[name='e.config']").tah({
-		    moreSpace:1,   // 输入框底部预留的空白, 默认15, 单位像素
-		    maxHeight:400,  // 指定Textarea的最大高度, 默认600, 单位像素
-		    animateDur:10  // 调整高度时的动画过渡时间, 默认200, 单位毫秒
 		});
 	},
 	/**保存的处理*/

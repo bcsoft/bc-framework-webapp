@@ -6,8 +6,8 @@ bc.reportHistoryList = {
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var n = $tr.find(">td:eq(3)").attr("data-value");// 获取文件名
-			var f = "report/history/" + $tr.find(">td:eq(4)").attr("data-value");// 获取附件相对路径
+			var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
+			var f = "report/history/" + $tr.find(">td:eq(5)").attr("data-value");// 获取附件相对路径
 			
 			// 预览文件
 			var option = {f: f, n: n};
@@ -31,8 +31,8 @@ bc.reportHistoryList = {
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var n = $tr.find(">td:eq(3)").attr("data-value");// 获取文件名
-			var f = "report/history/" + $tr.find(">td:eq(4)").attr("data-value");// 获取附件相对路径			
+			var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
+			var f = "report/history/" + $tr.find(">td:eq(5)").attr("data-value");// 获取附件相对路径			
 			// 下载文件
 			bc.file.download({f: f, n: n});
 		}else if($tds.length > 1){

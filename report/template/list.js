@@ -27,5 +27,17 @@ bc.reportTemplateList = {
 			bc.msg.slide("请先选择要执行的报表模板！");
 			return;
 		}
+	},
+	/** 查看历史报表 **/
+	viewReportHistory:function(){
+		var $view=$(this);
+		var mid=$view.attr("data-mid");
+		bc.page.newWin({
+			url:bc.root + "/bc/myReportHistorys/paging",
+			name:"我的历史报表",
+			mid:"myReportHistory"+mid
+		});
+
+		
 	}
 };

@@ -12,22 +12,21 @@
 					<td style="width: 80px;"></td>
 					<td >&nbsp;</td>
 				</tr>
-				<!-- 名称 所属分类 -->
 				<tr>
-					<td class="label">*<s:text name="reportTemplate.name"/>:</td>
-					<td class="value"><s:textfield name="e.name" cssClass="ui-widget-content" data-validate="required" /></td>
+					<td class="label">*<s:text name="report.category"/>:</td>
+					<td class="value"><s:textfield name="e.category" cssClass="ui-widget-content" data-validate="required" /></td>
 				</tr>
 				<tr>
-					<td class="label">*<s:text name="reportTemplate.category"/>:</td>
-					<td class="value"><s:textfield name="e.category" cssClass="ui-widget-content" data-validate="required" /></td>
+					<td class="label">*<s:text name="report.name"/>:</td>
+					<td class="value"><s:textfield name="e.name" cssClass="ui-widget-content" data-validate="required" /></td>
 				</tr>
 				<!-- 编码 排序号 -->
 				<tr>
-					<td class="label">*<s:text name="reportTemplate.code"/>:</td>
+					<td class="label">*<s:text name="report.code"/>:</td>
 					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate="required" /></td>
 				</tr>
 				<tr>	
-					<td class="label"><s:text name="reportTemplate.order"/>:</td>
+					<td class="label"><s:text name="report.order"/>:</td>
 					<td class="value"><s:textfield name="e.orderNo" cssClass="ui-widget-content" /></td>
 				</tr>
 				<!-- 使用人-->
@@ -72,7 +71,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="label" colspan="2" style="padding-right:10px"><s:text name="reportTemplate.status"/>:<s:radio name="e.status" list="#{'0':'启用','1':'禁用'}" cssStyle="width:auto;"/></td>
+					<td class="label" colspan="2" style="padding-right:10px"><s:text name="report.status"/>:<s:radio name="e.status" list="#{'0':'正常','1':'禁用'}" cssStyle="width:auto;"/></td>
 				</tr>
 				<tr>
 					<td class="label" colspan="4">
