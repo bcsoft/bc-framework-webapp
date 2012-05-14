@@ -6,9 +6,17 @@ bc.reportHistoryForm = {
 		$form.find("#idReportMsgError").hide();
 		
 		//绑定显示异常信息按钮事件
-		$form.find("#showReportMsgError").click(function(){
+		var msg=$form.find(":input[name='e.msg']").val();
+		var success=$form.find(":input[name='e.success']").val();
+		if(msg!=''&&success=='false'){
 			$form.find("#idReportMsgError").show();
-		});
+			$form.find(":input[name='e.msg']").tah({
+			    moreSpace:1,   // 输入框底部预留的空白, 默认15, 单位像素
+			    maxHeight:400,  // 指定Textarea的最大高度, 默认600, 单位像素
+			    animateDur:10  // 调整高度时的动画过渡时间, 默认200, 单位毫秒
+			}).keydown();	
+		}
+
 		
 		//绑定下载按钮事件
 		$form.find("#reportHistoryDownLoad").click(function(){
@@ -44,5 +52,7 @@ bc.reportHistoryForm = {
 			}
 			bc.file.inline(option);
 		});
+		
+		
 	}
 };

@@ -2,6 +2,12 @@ bc.reportTaskForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
 		
+		$form.find(":input[name='e.config']").tah({
+		    moreSpace:1,   // 输入框底部预留的空白, 默认15, 单位像素
+		    maxHeight:400,  // 指定Textarea的最大高度, 默认600, 单位像素
+		    animateDur:10  // 调整高度时的动画过渡时间, 默认200, 单位毫秒
+		}).keydown();
+		
 		//只读权限控制
 		if(readonly) return;
 		
@@ -43,20 +49,6 @@ bc.reportTaskForm = {
 			}, option));
 		});
 		
-		$form.find(":input[name='e.config']").tah({
-		    moreSpace:1,   // 输入框底部预留的空白, 默认15, 单位像素
-		    maxHeight:400,  // 指定Textarea的最大高度, 默认600, 单位像素
-		    animateDur:10  // 调整高度时的动画过渡时间, 默认200, 单位毫秒
-		});
-		
-	},
-	/**保存处理**/
-	save:function(){
-		var $page = $(this);
-		//详细配置赋值
-		$page.find(":input[name='e.config']").val($page.find("#reportTaskConfig").text());
-		//调用标准的方法执行保存
-		bc.page.save.call($page);
 	},
 	/**查看执行记录**/
 	viewExcuteRecode:function(){
@@ -75,7 +67,8 @@ bc.reportTaskForm = {
 		// 将一些配置参数放到data参数内(这些参数是提交到服务器的参数)
 		option.data = jQuery.extend({
 			success : 'true',
-			taskId:id,
+			sourceId: id,
+			sourceType: '报表任务'
 		}, option.data);
 
 		// 弹出选择对话框
