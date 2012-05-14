@@ -302,6 +302,7 @@ $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 				url: conditionsFormUrl,
 				type: "POST",
 				dataType: "html",
+				data: $this.closest(".bc-page").data("extras"),
 				success: function(html){
 					logger.info("finish loaded conditionsForm");
 					//先清空可能的条件窗口
