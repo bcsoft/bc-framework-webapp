@@ -2,11 +2,12 @@ bc.reportTemplateForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
 		
-		$form.find(":input[name='e.config']").tah({
-		    moreSpace:1,   // 输入框底部预留的空白, 默认15, 单位像素
-		    maxHeight:400,  // 指定Textarea的最大高度, 默认600, 单位像素
-		    animateDur:10  // 调整高度时的动画过渡时间, 默认200, 单位毫秒
-		}).keydown();
+		// 让详细配自动高度
+		var $cfg = $form.find(":input[name='e.config']");
+		var cfgEl = $cfg.get(0);
+		if(cfgEl.scrollHeight > 170){
+			cfgEl.style.height = cfgEl.scrollHeight + "px";
+		}
 		
 		//只读权限控制
 		if(readonly) return;
