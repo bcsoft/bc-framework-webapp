@@ -4,17 +4,34 @@
 <form class="bc-conditionsForm draggable ui-widget-content ui-state-highlight">
 	<ul class="conditions" style="min-width:15.3em;">
 		<li class="condition">
-			<div class="label">所属分类</div>
 			<div class="value">
-				<input type="text" class="bc-select ui-widget-content" readonly="readonly"
-					data-maxHeight="150px"
-					data-source='<s:property value="categorys"/>'>
-				<input type="hidden" data-condition='{"type":"string","ql":"a.category=?"}'>
-				<ul class="inputIcons">
-					<li class="bc-select inputIcon ui-icon ui-icon-triangle-1-s" title='<s:text name="title.click2select"/>'></li>
-					<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
-				</ul>
+				<div class="bc-dateContainer">
+					<div class="label">分类</div>
+					<div class="value bc-dateContainer">
+						<input type="text" class="bc-select ui-widget-content" readonly="readonly"
+							data-maxHeight="150px" style="width:9em;"
+							data-source='<s:property value="categorys"/>'>
+						<input type="hidden" data-condition='{"type":"string","ql":"a.category=?"}'>
+						<ul class="inputIcons">
+							<li class="bc-select inputIcon ui-icon ui-icon-triangle-1-s" title='<s:text name="title.click2select"/>'></li>
+							<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
+						</ul>
+					</div>
+				</div><div style="width:12px;display:inline-block;"></div><div class="bc-dateContainer">
+					<div class="label">来源</div>
+					<div class="value bc-dateContainer">
+						<input type="text" class="bc-select ui-widget-content" readonly="readonly"
+							data-maxHeight="150px" style="width:9em;"
+							data-source='<s:property value="sources"/>'>
+						<input type="hidden" data-condition='{"type":"string","ql":"a.source_type=?"}'>
+						<ul class="inputIcons">
+							<li class="bc-select inputIcon ui-icon ui-icon-triangle-1-s" title='<s:text name="title.click2select"/>'></li>
+							<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
+						</ul>
+					</div>
+				</div>
 			</div>
+			<div class="clear"></div>
 		</li>
 		<li class="condition">
 			<div class="label">创建日期</div>
