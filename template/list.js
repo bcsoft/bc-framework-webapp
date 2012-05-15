@@ -80,5 +80,14 @@ bc.templateList = {
 			bc.msg.slide("请先选择要删除的模板！");
 			return;
 		}
+	},
+	/** 配置模板类型 **/
+	configType : function(){
+		bc.page.newWin({
+			url : bc.root+"/bc/templateTypes/list",
+			name: "模板类型配置管理",
+			mid : "templateTypeViews"		
+		});
 	}
+	
 };
