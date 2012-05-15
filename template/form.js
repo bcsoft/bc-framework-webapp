@@ -2,35 +2,18 @@ bc.templateForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
 		//根据模板类型显示模板文件或模板内容
-		var tplType=$form.find(":radio[name='e.type']:checked").val();
+		var tplType=$form.find("#templateTypeCode").val();
 		var $tplContent=$form.find("#idTplContent");
 		var $tplFile=$form.find(".tplFile");
-		if(tplType=='5'){
+		if(tplType=='custom'){
 			$tplFile.hide();
+			$form.find(":input[name='e.path']").removeAttr("data-validate");
 		}else{
 			$tplContent.hide();
 		}		
 		
 		if(readonly) return;
-		
-		//绑定模板类型选择事件
-		$form.find(":radio[name='e.type']").change(function(){
-			bc.file.clearFileSelect($form.find("#uploadFile"));
-			var type=$(this).val();
-			if(type!='5'){
-				$tplFile.show();
-				$tplContent.hide();
-				$form.find(":input[name='e.subject']").val('');
-				$form.find(":input[name='e.path']").val('');
-				$form.find(":input[name='e.content']").val('');
-			}else{
-				$tplFile.hide();
-				$tplContent.show();
-				$form.find(":input[name='e.path']").val('');
-				$form.find(":input[name='e.subject']").val('');
-			}
-		});
-		
+			
 		//绑定清除按钮事件
 		$form.find("#cleanFileId").click(function(){
 			$form.find(":input[name='e.path']").val('');
@@ -39,7 +22,7 @@ bc.templateForm = {
 		
 		//绑定下载按钮事件
 		$form.find(".downLoadFileId").click(function(){
-			var type=$form.find(":radio[name='e.type']:checked").val();
+			var type=$form.find("#templateTypeCode").val();
 			var subject=$form.find(":input[name='e.subject']").val();
 			var path=$form.find(":input[name='e.path']").val();
 			var id=$form.find(":input[name='e.id']").val();
@@ -48,7 +31,7 @@ bc.templateForm = {
 				return;
 			}
 			
-			if(type==5){
+			if(type=='custom'){
 				var url =bc.root+"/bc/template/download?tid=" +id
 				var win = window.open(url, "blank");
 				return win;
@@ -60,6 +43,36 @@ bc.templateForm = {
 				// 下载文件
 				bc.file.download({f: f, n: n});
 			}
+		});
+		
+		//绑定选择模板类型事件
+		$form.find("select[name='e.templateType.id']").change(function(){
+			bc.file.clearFileSelect($form.find("#uploadFile"));
+			var id=$(this).val();
+			bc.ajax({
+				url : bc.root+"/bc/templateType/loadOneById",
+				data : {tid:id},
+				dataType : "json",
+				success : function(json){
+					$form.find("#templateTypeCode").val(json.code);
+					$form.find("#templateTypeExt").val(json.ext);
+					//自定义文本类型显示模板内容，隐藏附件
+					if(json.code!='custom'){
+						$tplFile.show();
+						$tplContent.hide();
+						$form.find(":input[name='e.subject']").val('');
+						$form.find(":input[name='e.path']").val('');
+						$form.find(":input[name='e.content']").val('');
+						$form.find(":input[name='e.path']").attr("data-validate","required");
+					}else{
+						$tplFile.hide();
+						$tplContent.show();
+						$form.find(":input[name='e.path']").val('');
+						$form.find(":input[name='e.subject']").val('');
+						$form.find(":input[name='e.path']").removeAttr("data-validate");
+					}
+				}
+			});
 		});
 		
 	},
@@ -80,69 +93,11 @@ bc.templateForm = {
 	save : function(){
 		var $form = $(this);
 		//定义函数
-		//excel文件
-		function isExcelSuffix(suffix){
-			if(suffix=='xls'||suffix=='xlsx'||suffix=='xml')
-				return true;
-			bc.msg.alert('后缀名错误，保存后缀名应为xls、xlsx、xml文件');
-			return false;
-		}
-		//word文件
-		function isWordSuffix(suffix){
-			if(suffix=='doc'||suffix=='docx'||suffix=='xml')
-				return true;
-			
-			bc.msg.alert('后缀名错误，保存后缀名应为doc、docx、xml文件');
-			return false;
-		}
-		//文本文件
-		function isTextSuffix(suffix){
-			if(suffix=='txt'||suffix=='xml'||suffix=='cvs'||suffix=='log')
-				return true;
-			bc.msg.alert('后缀名错误，保存后缀名应为txt文件');
-			return false;
-		}
-		//验证表单
-		if(!bc.validator.validate($form)) return;
-		var type=$form.find(":radio[name='e.type']:checked").val();
-		var subject=$form.find(":input[name='e.subject']").val();
-		var path=$form.find(":input[name='e.path']").val();
-		var code=$form.find(":input[name='e.code']").val();
-		var version=$form.find(":input[name='e.version']").val();
-		var id=$form.find(":input[name='e.id']").val();
-		var url=bc.root+"/bc/template/isUniqueCodeAndVersion";
-		//自定义文本
-		if(type==5){
-			bc.page.save.call($form);
-			return;
-		}
-		//模板路径和模板文本
-		if(path==''){
-			bc.msg.alert('没有上传文件，请点击文本框右侧的上传按钮！');
-			return;
-		}
-		//验证后缀名
-		$.trim(path);
-		var arrp=path.split(".");
-		if(arrp.length!=2){
-			bc.msg.alert('上传的文件后缀名错误！');
-			return;
-		}
-		//后缀名
-		var suffix=arrp[1];
-		//转为小写
-		suffix=suffix.toLocaleLowerCase();
-		if(type==1&&isExcelSuffix(suffix)){
-			saveInfo();
-		}else if(type==2&&isWordSuffix(suffix)){
-			saveInfo();
-		}else if(type==3&&isTextSuffix(suffix)){
-			saveInfo();
-		}else if(type==4){
-			saveInfo();
-		} 
-		//保存
 		function saveInfo(){
+			var id=$form.find(":input[name='e.id']").val();
+			var code=$form.find(":input[name='e.code']").val();
+			var version=$form.find(":input[name='e.version']").val();
+			var url=bc.root+"/bc/template/isUniqueCodeAndVersion";
 			$.ajax({
 				url:url,
 				data:{tid:id,code:code,version:version},
@@ -157,6 +112,35 @@ bc.templateForm = {
 					}
 				}
 			});
+		}
+		
+		//验证表单
+		if(!bc.validator.validate($form)) return;
+		
+		//模板类型编码
+		var typeCode=$form.find("#templateTypeCode").val();
+		//模板类型后缀名
+		var typeExt = $form.find("#templateTypeExt").val();
+		var path=$form.find(":input[name='e.path']").val();
+		
+		//自定义文本
+		if(typeCode == "custom"){saveInfo();return;}
+		//其它附件不需检测上传文件的后缀名
+		if(typeCode == "other"){saveInfo();return;}
+		//验证后缀名
+		var arrp=path.split(".");
+		if(arrp.length!=2){
+			bc.msg.alert('上传的文件后缀名错误！');
+			return;
+		}
+		//后缀名
+		var ext=arrp[1];
+		
+		//判断上传文件的后缀名是否与模板类型的后缀名相同
+		if(ext == typeExt){
+			saveInfo();
+		}else{
+			bc.msg.alert("这种模板类型需要保存后缀名为"+typeExt+"!");
 		}
 	},
 	/** 查看历史版本号 **/
@@ -185,7 +169,7 @@ bc.templateForm = {
 	inline : function(){
 		var $form = $(this);
 		var url=bc.root+"/bc/template/loadTplConfigParam";
-		var type=$form.find(":radio[name='e.type']:checked").val();
+		var type=$form.find("#templateTypeCode").val();
 		var path=$form.find("input[name='e.path']").val();
 		var tid=$form.find("input[name='e.id']").val();
 		
@@ -203,7 +187,7 @@ bc.templateForm = {
 				if(json.value){//有配置参数打开配置参数窗口
 					bc.templateForm.openConfigWindow($form,tid,json.value);
 				}else{//无配置参数调用默认的方法
-					if(type==5){//自定义文本类型调用自定义的预览方法
+					if(type=="custom"){//自定义文本类型调用自定义的预览方法
 						var url =bc.root+"/bc/template/inline?tid=" + tid
 						var win = window.open(url, "_blank");
 						return win;
@@ -214,7 +198,7 @@ bc.templateForm = {
 					// 预览文件
 					var option = {f: f, n: n};
 					var ext = f.substr(f.lastIndexOf("."));
-					if(type==2 && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
+					if(type=="xls" && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
 						option.from="docx";
 					}
 					bc.file.inline(option);

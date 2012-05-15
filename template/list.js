@@ -1,13 +1,13 @@
 bc.templateList = {
-	/** 在线预览 */
+	/** 在线查看 */
 	inline: function(){
 		var $view=$(this);
 		var $tds = $view.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var type= $tr.find(">td:eq(3)").attr("data-value");//类型
-			if(type==5){
+			var type=$tr.data("hidden").typeCode;
+			if(type=='custom'){
 				var tid=$tds.attr("data-id"); 
 				var url =bc.root+"/bc/template/inline?tid=" + tid
 				var win = window.open(url, "_blank");
@@ -19,7 +19,7 @@ bc.templateList = {
 				// 预览文件
 				var option = {f: f, n: n};
 				var ext = f.substr(f.lastIndexOf("."));
-				if(type==2 && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
+				if(type=='xls' && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
 					option.from="docx";
 				}
 				bc.file.inline(option);
@@ -40,7 +40,7 @@ bc.templateList = {
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
 			var type= $tr.find(">td:eq(3)").attr("data-value");//类型
-			if(type==5){
+			if(type=='custom'){
 				var tid=$tds.attr("data-id");
 				var url =bc.root+"/bc/template/download?tid=" + tid
 				var win = window.open(url, "blank");
@@ -65,7 +65,7 @@ bc.templateList = {
 		var $tds = $view.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			//取内置列data-value的值
-			var inner= $view.find(".bc-grid>.data>.right tr.ui-state-highlight>td:eq(5)").attr("data-value");
+			var inner= $view.find(".bc-grid>.data>.right tr.ui-state-highlight>td:eq(9)").attr("data-value");
 			//内置
             if(inner=='true'){
             	bc.msg.alert("内置模板不能删除！");

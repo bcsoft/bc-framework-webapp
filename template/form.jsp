@@ -14,10 +14,10 @@
 				</tr>
 				<!-- 类型 -->
 				<tr>
-					<td class="label"><s:text name="template.type"/>:</td>
+					<td class="label">*<s:text name="template.type"/>:</td>
 					<td >
-						<s:radio name='e.type' list="#{'1':'Excel模板','2':'Word模板','3':'纯文本模板','4':'其它附件','5':'自定义文本'}"
-							   cssStyle="width:auto;"/>
+						<s:select name="e.templateType.id" list="typeList" listKey="key" listValue="value" data-validate="required" 
+								cssClass="ui-widget-content "></s:select>
 					</td>
 				</tr>
 				<!-- 所属分类  排序号-->
@@ -49,15 +49,15 @@
 					<td class="label">*<s:text name="template.tfpath"/>:</td>
 					<td class="value"  >
 						<div class="relative">
-							<s:textfield name="e.path" cssClass="ui-widget-content" readonly="true"/>
+							<s:textfield name="e.path" cssClass="ui-widget-content" readonly="true" data-validate="required"/>
 							<ul class="inputIcons" style="padding-right:8px">
 								<li id="upLoadFileId" class="inputIcon ui-icon ui-icon-circle-arrow-n" style="position: relative;">
 									<input type="file" class="auto uploadFile" id="uploadFile" name="uploadFile" title="点击上传文件"
 										data-cfg='{"callback":"bc.templateForm.afterUploadfile","subdir":"template","source":":input[name=\"e.subject\"]","to":":input[name=\"e.path\"]"}'
 										style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
 								</li>
-								<li id="cleanFileId" class="clearSelect inputIcon ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></li>
-								<li class="downLoadFileId inputIcon ui-icon ui-icon-arrowthickstop-1-s" title='<s:text name="template.download"/>' >					 
+								<li class="downLoadFileId inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="template.download"/>' >
+								<li id="cleanFileId" class="clearSelect inputIcon ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></li>				 
 							</ul>
 						</div>
 					</td>
@@ -77,7 +77,7 @@
 							</div>
 							<div style="position : relative;">
 								<ul class="inputIcons" style="top:5px;">
-									<li class="downLoadFileId inputIcon ui-icon ui-icon-arrowthickstop-1-s" title='<s:text name="template.download"/>' >
+									<li class="downLoadFileId inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="template.download"/>' >
 								</ul>	
 							</div>
 					<td class="value">
@@ -105,5 +105,7 @@
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.author.id" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
+		<input type="hidden" id="templateTypeCode" value='<s:property value="e.templateType.code" />'/>
+		<input type="hidden" id="templateTypeExt" value='<s:property value="e.templateType.extension" />'/>
 	</s:form>
 </div>
