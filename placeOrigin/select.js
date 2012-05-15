@@ -22,6 +22,27 @@ bc.superiorPlaceSelectDialog = {
 			data.core= $tr.find("td:eq(1)").text();
 			data.name = $tr.find("td:eq(2)").text();
 			data.fullname = $tr.find("td:eq(3)").text();
+		}else{
+			data=[];
+			var $right = $($tds[0]).closest(".left").siblings();
+			$tds.each(function(i){
+				var $this = $(this);
+				var index = $this.parent().index();
+				var $row = $right.find("tr.row:eq("+index+")");
+				var id=$this.attr("data-id");
+				var	level= $row.find("td:eq(0)").text();
+				var core = $row.find("td:eq(1)").text();
+				var name = $row.find("td:eq(2)").text();
+				var fullname = $row.find("td:eq(3)").text();
+
+				data.push({
+					id: id,
+					level:level,
+					core:core,
+					name:name,
+					fullname:fullname
+				});
+			});	
 		}
 		logger.info($.toJSON(data));
 
