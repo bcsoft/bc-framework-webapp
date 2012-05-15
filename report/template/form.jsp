@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="reportTemplate.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/reportTemplate/save" />'
-	data-js='<s:url value="/bc/report/template/form.js" />,js:bc_identity,<s:url value="/bc/report/textareaAutoHeight.js" />'
+	data-js='<s:url value="/bc/report/template/form.js" />,js:bc_identity'
 	data-initMethod='bc.reportTemplateForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportTemplateForm" theme="simple" >
@@ -31,7 +31,7 @@
 				</tr>
 				<!-- 使用人-->
 				<tr>
-					<td class="topLabel">*<s:text name="reportTemplate.user"/>:</td>
+					<td class="topLabel"><s:text name="reportTemplate.user"/>:</td>
 					<td class="value relative" >
 						<div id="assignUsers" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;width: 98%;" class="ui-widget-content" 
 							data-removeTitle='<s:text name="title.click2remove"/>'>
@@ -66,8 +66,8 @@
 				<!-- 详细配置-->
 				<tr>
 					<td class="topLabel"><s:text name="reportTemplate.config"/>:</td>
-					<td class="value" colspan="3" style="padding-right:2px">
-						 <s:textarea name="e.config"  cssClass="ui-widget-content noresize"  /> 
+					<td class="value" style="padding-right:2px">
+						 <s:textarea name="e.config"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/> 
 					</td>
 				</tr>
 				<tr>
