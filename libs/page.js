@@ -456,19 +456,23 @@ bc.page = {
 			bc.ajax({
 				url: url, data: data, dataType: "json",
 				success: function(json) {
-					if(logger.debugEnabled)logger.debug("delete success.json=" + jQuery.param(json));
-					//调用回调函数
-					var showMsg = true;
-					if(typeof option.callback == "function"){
-						//返回false将禁止保存提示信息的显示
-						if(option.callback.call($page[0],json) === false)
-							showMsg = false;
+					if(logger.debugEnabled)logger.debug("delete success.json=" + $.toJSON(json));
+					if(json.success === false){
+						bc.msg.alert(json.msg);// 仅显示失败信息
+					}else{
+						//调用回调函数
+						var showMsg = true;
+						if(typeof option.callback == "function"){
+							//返回false将禁止保存提示信息的显示
+							if(option.callback.call($page[0],json) === false)
+								showMsg = false;
+						}
+						if(showMsg)
+							bc.msg.slide(json.msg);
+						
+						//重新加载列表
+						bc.grid.reloadData($page);
 					}
-					if(showMsg)
-						bc.msg.slide(json.msg);
-					
-					//重新加载列表
-					bc.grid.reloadData($page);
 				}
 			});
 		});
