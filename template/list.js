@@ -9,9 +9,20 @@ bc.templateList = {
 			var type=$tr.data("hidden").typeCode;
 			if(type=='custom'){
 				var tid=$tds.attr("data-id"); 
-				var url =bc.root+"/bc/template/inline?tid=" + tid
-				var win = window.open(url, "_blank");
-				return win;
+				bc.ajax({
+					url:bc.root+"/bc/template/isContent",
+					data:{tid:tid},
+					dataType:"json",
+					success:function(json){
+						if(!json.result){
+							var url =bc.root+"/bc/template/inline?tid=" + tid
+							var win = window.open(url, "_blank");
+							return win;
+						}else{
+							bc.msg.slide("模板内容为空！")
+						}
+					}
+				});
 			}else{
 				var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
 				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径
@@ -39,12 +50,23 @@ bc.templateList = {
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var type= $tr.find(">td:eq(3)").attr("data-value");//类型
+			var type=$tr.data("hidden").typeCode;//类型
 			if(type=='custom'){
 				var tid=$tds.attr("data-id");
-				var url =bc.root+"/bc/template/download?tid=" + tid
-				var win = window.open(url, "blank");
-				return win;
+				bc.ajax({
+					url:bc.root+"/bc/template/isContent",
+					data:{tid:tid},
+					dataType:"json",
+					success:function(json){
+						if(!json.result){
+							var url =bc.root+"/bc/template/download?tid=" + tid
+							var win = window.open(url, "blank");
+							return win;
+						}else{
+							bc.msg.slide("模板内容为空！")
+						}
+					}
+				});
 			}else{
 				var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
 				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			

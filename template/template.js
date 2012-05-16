@@ -1,7 +1,7 @@
 /**
  * 选择模板信息
  * @param {Object} option 配置参数
- * @option {String} category [可选]分类可选	默认为null，例如'经济合同'					
+ * @option {String} category [可选]分类可选	默认为null，例如'经济合同',逗号连接多个分类 如'经济合同,劳动合同'					
  * @option {Boolean} multiple [可选]是否允许多选，默认false
  * @option {Boolean} paging [可选]是否分页，默认true
  * @option {String} status [可选]车辆保单险种的状态，默认在案，设为空则代表所有状态

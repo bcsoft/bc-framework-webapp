@@ -26,13 +26,16 @@ bc.templateForm = {
 			var subject=$form.find(":input[name='e.subject']").val();
 			var path=$form.find(":input[name='e.path']").val();
 			var id=$form.find(":input[name='e.id']").val();
+			var content=$form.find(":input[name='e.content']").val();
 			if(id==""){
 				bc.msg.slide('请先保存模板！');
 				return;
 			}
 			
 			if(type=='custom'){
+				if(content==""){bc.msg.slide('模板内容为空！');return;}
 				var url =bc.root+"/bc/template/download?tid=" +id
+				url+="&content="+content;
 				var win = window.open(url, "blank");
 				return win;
 			}else{
@@ -170,25 +173,32 @@ bc.templateForm = {
 		var $form = $(this);
 		var url=bc.root+"/bc/template/loadTplConfigParam";
 		var type=$form.find("#templateTypeCode").val();
-		var path=$form.find("input[name='e.path']").val();
-		var tid=$form.find("input[name='e.id']").val();
+		var path=$form.find(":input[name='e.path']").val();
+		var tid=$form.find(":input[name='e.id']").val();
+		var content=$form.find(":input[name='e.content']").val();
 		
 		if(tid==''){
 			bc.msg.slide('请先保存模板！');
 			return;
 		}
 		
+		if(type=="custom"&&content==""){
+			bc.msg.slide('模板内容为空！');
+			return;
+		}
+		
 		//先加载一次配置参数
 		$.ajax({
 			url:url,
-			data:{tid:tid},
+			data:{tid:tid,content:content},
 			dataType:"json",
 			success:function(json){
 				if(json.value){//有配置参数打开配置参数窗口
-					bc.templateForm.openConfigWindow($form,tid,json.value);
+					bc.templateForm.openConfigWindow($form,tid,json.value,content);
 				}else{//无配置参数调用默认的方法
 					if(type=="custom"){//自定义文本类型调用自定义的预览方法
 						var url =bc.root+"/bc/template/inline?tid=" + tid
+						url+="&content="+content;
 						var win = window.open(url, "_blank");
 						return win;
 					}
@@ -207,7 +217,7 @@ bc.templateForm = {
 		});	
 	},
 	/** 配置参数窗口 **/
-	openConfigWindow : function($form,tid,param){	
+	openConfigWindow : function($form,tid,param,content){	
 		//生成对话框的html代码
 		var html = [];
 		html.push('<div class="bc-page" data-type="dialog" style="overflow-y:auto;">');
@@ -246,12 +256,10 @@ bc.templateForm = {
 					dataObj.value=value;
 				dataArr.push(dataObj);
 			});
-			if(tid==''){
-				bc.msg.slide('请先保存模板！');
-				return;
-			}
+
 			var url =bc.root+"/bc/template/inline?tid=" + tid
 			url+="&markerValueJsons="+$.toJSON(dataArr);
+			url+="&content="+content;
 			var win = window.open(url, "_blank");
 			return win;
 			//销毁对话框
