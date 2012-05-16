@@ -14,7 +14,7 @@ bc.reportTaskForm = {
 		
 		// 点击选择报表模板小按钮弹出选择视图
 		$form.find("#selectReportTemplate").click(function() {
-			bc.selectReportTemplate({
+			bc.selectReportTemplateInfo({
 				onOk: function(template){
 					if (template) {
 						$form.find(":input[name='e.template.id']").val(template.id);
