@@ -20,7 +20,7 @@ bc.attach={
 		var to = $(attachEl).attr("data-to");
 		if(to && to.length > 0)
 			url += "&to=" + to;
-		window.open(url, "_blank");
+		return window.open(url, "_blank");
 	},
 	/** 下载附件 */
 	download: function(attachEl,callback){
@@ -144,6 +144,7 @@ bc.attach={
     operationsTpl:[
 		'<a href="#" class="operation" data-action="inline">在线查看</a>',
 		'<a href="#" class="operation" data-action="download">下载</a>',
+		'<a href="#" class="operation" data-action="print">打印</a>',
 		'<a href="#" class="operation" data-action="delete">删除</a>'
 	].join(""),
     /**判断浏览器是否可使用html5上传文件*/
@@ -200,6 +201,15 @@ $(".attachs .operation").live("click",function(e){
 		break;
 	case "download"://下载附件
 		bc.attach.download($attach[0],callback);
+		break;
+	case "print"://打印附件
+		var win = bc.attach.inline($attach[0],callback);
+		setTimeout(function(){
+			win.print();
+			setTimeout(function(){
+				win.close();
+			},100);
+		},1000);
 		break;
 	case "downloadAll"://打包下载所有附件
 		bc.attach.downloadAll($this.parents(".attachs")[0],callback);
