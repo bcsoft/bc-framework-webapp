@@ -14,12 +14,17 @@ bc.reportTemplateList = {
 			
 			var code = $tr.find(">td:eq(4)").attr("data-value");
 			var name = $tr.find(">td:eq(3)").attr("data-value");
-			//弹出选择对话框
-			bc.page.newWin({
-				url: bc.root + "/bc/report/run?code=" + code,
-				name: name,
-				mid: code			
+			
+			bc.msg.confirm("确定要执行选定的 <b>"+name+"</b> 项吗？",function(){
+				//弹出选择对话框
+				bc.page.newWin({
+					url: bc.root + "/bc/report/run?code=" + code,
+					name: name,
+					mid: code			
+				});
 			});
+			
+			
 		}else if($tds.length > 1){
 			bc.msg.slide("一次只可以执行一个，请确认您只选择了一个！");
 			return;

@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="reportTask.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/reportTask/save" />'
-	data-js='<s:url value="/bc/report/task/form.js" />,<s:url value="/bc/report/textareaAutoHeight.js" />'
+	data-js='<s:url value="/bc/report/task/form.js" />,<s:url value="/bc/report/template/reportTemplate.js" />,<s:url value="/bc/report/textareaAutoHeight.js" />'
 	data-initMethod='bc.reportTaskForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportTaskForm" theme="simple" >
@@ -41,7 +41,7 @@
 					</td>
 					<td class="label"><s:text name="reportTask.startDate"/>:</td>
 					<td class="value" style="padding-right:7px;">
-						<s:textfield name="e.startDate" cssClass="ui-widget-content" readonly="true" />
+						<input type="text" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.startDate" />' readonly="readonly" class="ui-widget-content" />
 						<%--  <div style="position : relative; display: block;padding-right:7px;">
 							<input type="text" name="e.startDate" data-validate='{"type":"datetime","required":true}'
 							value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.startDate" />'
@@ -68,7 +68,7 @@
 				<tr>
 					<td class="topLabel"><s:text name="report.config"/>:</td>
 					<td class="value" colspan="3">
-						<s:textarea name="e.config"  cssClass="ui-widget-content noresize"  />
+						<s:textarea name="e.config"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/>
 					</td>
 				</tr>
 				<tr>

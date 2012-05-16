@@ -7,16 +7,18 @@ bc.reportTaskList = {
 			bc.msg.slide("请先选择要处理的任务！");
 			return;
 		}
-		bc.ajax({
-			url: bc.root + "/bc/reportTask/start",
-			data:{ids:ids.join(",")},
-			dataType:"json",
-			success: function(json) {
-				//重新加载列表
-				bc.grid.reloadData($page);
-				//显示提示信息
-				bc.msg.slide(json.msg);
-			}
+		bc.msg.confirm("确定启用或重置任务？",function(){
+			bc.ajax({
+				url: bc.root + "/bc/reportTask/start",
+				data:{ids:ids.join(",")},
+				dataType:"json",
+				success: function(json) {
+					//重新加载列表
+					bc.grid.reloadData($page);
+					//显示提示信息
+					bc.msg.slide(json.msg);
+				}
+			});
 		});
 		
 	},
@@ -28,16 +30,19 @@ bc.reportTaskList = {
 			bc.msg.slide("请先选择要处理的任务！");
 			return;
 		}
-		bc.ajax({
-			url: bc.root + "/bc/reportTask/stop",
-			data:{ids:ids.join(",")},
-			dataType:"json",
-			success: function(json) {
-				//重新加载列表
-				bc.grid.reloadData($page);
-				//显示提示信息
-				bc.msg.slide(json.msg);
-			}
+		
+		bc.msg.confirm("确定停止任务？",function(){
+			bc.ajax({
+				url: bc.root + "/bc/reportTask/stop",
+				data:{ids:ids.join(",")},
+				dataType:"json",
+				success: function(json) {
+					//重新加载列表
+					bc.grid.reloadData($page);
+					//显示提示信息
+					bc.msg.slide(json.msg);
+				}
+			});
 		});
 	}
 };

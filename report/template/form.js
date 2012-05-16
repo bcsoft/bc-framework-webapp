@@ -157,12 +157,15 @@ bc.reportTemplateForm = {
 	/**执行的处理**/
 	execute:function(){
 		var $form = $(this);
-		var code = $form.find(":input[name='e.code']").val();;
-		//弹出选择对话框
-		bc.page.newWin({
-			url: bc.root + "/bc/report/run?code=" + code,
-			name: $form.find(":input[name='e.name']").val(),
-			mid: code			
+		var code = $form.find(":input[name='e.code']").val();
+		var name = $form.find(":input[name='e.name']").val();
+		bc.msg.confirm("确定要执行<b>"+name+"</b>吗？",function(){
+			//弹出选择对话框
+			bc.page.newWin({
+				url: bc.root + "/bc/report/run?code=" + code,
+				name: name,
+				mid: code			
+			});
 		});
 	}
 };

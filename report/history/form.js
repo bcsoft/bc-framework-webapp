@@ -1,7 +1,15 @@
 bc.reportHistoryForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
-
+		
+		// 让详细配自动高度
+		var $cfg = $form.find(":input[name='e.msg']");
+		var cfgEl = $cfg.get(0);
+		if(cfgEl.scrollHeight > 170){
+			cfgEl.style.height = cfgEl.scrollHeight + "px";
+		}
+		
+		
 		//隐藏信息
 		$form.find("#idReportMsgError").hide();
 		

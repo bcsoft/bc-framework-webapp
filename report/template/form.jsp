@@ -66,7 +66,7 @@
 				<!-- 详细配置-->
 				<tr>
 					<td class="topLabel"><s:text name="reportTemplate.config"/>:</td>
-					<td class="value" style="padding-right:2px">
+					<td class="value" >
 						 <s:textarea name="e.config"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/> 
 					</td>
 				</tr>
