@@ -15,10 +15,10 @@
  * 					}
  * 如果为多选则返回的是对象集合，[对象1,对象2]。
  */
-bc.selectReportTemplateInfo = function(option) {
+bc.selectReportTemplate = function(option) {
 	// 构建默认参数
 	var option = jQuery.extend({
-		mid : 'selectReportTemplateInfo',
+		mid : 'selectReportTemplate',
 		paging : false,
 		title : '选择报表模板信息',
 	}, option);
