@@ -6,12 +6,12 @@
 	data-initMethod='bc.reportHistoryForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportHistoryForm" theme="simple" >
-		<table  cellspacing="2" cellpadding="0" style="width:500px;"  >
+		<table  cellspacing="2" cellpadding="0" style="width:36.7em;"  >
 			<tbody>
 				<tr class="widthMarker">
-					<td style="width: 80px;"></td>
-					<td style="width: 150px;"></td>
-					<td style="width: 80px;"></td>
+					<td style="width: 5.7em;"></td>
+					<td style="width: 11.7em;"></td>
+					<td style="width: 5.7em;"></td>
 					<td >&nbsp;</td>
 				</tr>
 				<tr>
@@ -70,7 +70,7 @@
 				<tr id="idReportMsgError">
 					<td class="topLabel"><s:text name="reportHistory.msg.error"/>:</td>
 					<td class="value" colspan="3">
-						<s:textarea name="e.msg" cssClass="ui-widget-content noresize" readonly="true"/>
+						<s:textarea name="e.msg"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/>
 					</td>
 				</tr>
 			</tbody>
