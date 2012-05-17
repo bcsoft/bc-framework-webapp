@@ -130,14 +130,15 @@ bc.templateForm = {
 		if(typeCode == "custom"){saveInfo();return;}
 		//其它附件不需检测上传文件的后缀名
 		if(typeCode == "other"){saveInfo();return;}
+		
 		//验证后缀名
-		var arrp=path.split(".");
-		if(arrp.length!=2){
+		var lastIndex=path.lastIndexOf(".");
+		if(lastIndex==-1){
 			bc.msg.alert('上传的文件后缀名错误！');
 			return;
 		}
 		//后缀名
-		var ext=arrp[1];
+		var ext=path.substr(lastIndex+1);
 		
 		//判断上传文件的后缀名是否与模板类型的后缀名相同
 		if(ext == typeExt){
@@ -151,6 +152,7 @@ bc.templateForm = {
 		var $form = $(this);
 		var url=bc.root+"/bc/templates/list";
 		var code=$form.find(":input[name='e.code']").val();
+		var subject=$form.find(":input[name='e.subject']").val();
 		if(code==''){
 			bc.msg.slide('编码不能为空');
 			return;
@@ -164,8 +166,8 @@ bc.templateForm = {
 		bc.page.newWin(jQuery.extend({
 			mid: code,
 			url: url,
-			name: '模板编码:'+code+'的版本历史',
-			title: '模板编码:'+code+'的版本历史'
+			name: subject+'的版本历史',
+			title: subject+'的版本历史'
 		},option));
 	},
 	/** 预览 **/

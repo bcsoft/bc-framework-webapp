@@ -22,7 +22,7 @@ bc.templateSelectDialog = {
 			data.path = $tr.find("td:eq(5)").text();
 			data.code = $tr.find("td:eq(3)").text();
 			data.version = $tr.find("td:eq(4)").text();
-			data.formated = $tr.find("td:eq(6)").attr("data-value");
+			data.formatted = $tr.find("td:eq(6)").attr("data-value");
 			data.size = $tr.find("td:eq(7)").text();
 			data.desc = $tr.find("td:eq(8)").text();
 			data.typeCode = $tr.data("hidden").typeCode;
@@ -40,7 +40,7 @@ bc.templateSelectDialog = {
 				var path = $row.find("td:eq(5)").text();
 				var code = $row.find("td:eq(3)").text();
 				var version = $row.find("td:eq(4)").text();
-				var formated = $row.find("td:eq(6)").attr("data-value");
+				var formatted = $row.find("td:eq(6)").attr("data-value");
 				var size = $row.find("td:eq(7)").text();
 				var desc = $row.find("td:eq(8)").text();
 				//模板类型编码
@@ -54,7 +54,7 @@ bc.templateSelectDialog = {
 					version:version,
 					desc:desc,
 					typeCode:typeCode,
-					formated:formated,
+					formatted:formatted,
 					size:size
 				});
 			});	
