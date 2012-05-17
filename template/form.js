@@ -178,6 +178,89 @@ bc.templateForm = {
 		var path=$form.find(":input[name='e.path']").val();
 		var tid=$form.find(":input[name='e.id']").val();
 		var content=$form.find(":input[name='e.content']").val();
+		var formatted=$form.find(":radio[name='e.formatted']:checked").val();
+		
+		// 无配置参数的预览方法 
+		function notConfigInline(){
+			if(type=="custom"){//自定义文本类型调用自定义的预览方法
+				var url =bc.root+"/bc/template/inline?tid=" + tid
+				url+="&content="+content;
+				var win = window.open(url, "_blank");
+				return win;
+			}
+			if(!bc.validator.validate($form)) return;
+			var n = $form.find(":input[name='e.subject']").val();// 获取文件名
+			var f = "template/" +path;// 获取附件相对路径
+			// 预览文件
+			var option = {f: f, n: n};
+			var ext = f.substr(f.lastIndexOf("."));
+			if(type=="xls" && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
+				option.from="docx";
+			}
+			bc.file.inline(option);
+		}
+		
+		// 配置参数窗口 
+		function openConfigWindow(param){	
+			//生成对话框的html代码
+			var html = [];
+			html.push('<div class="bc-page" data-type="dialog" style="overflow-y:auto;">');
+			html.push('<div style="margin: 4px;max-height: 400px;">');
+			html.push('<table id="inlineTemplates" style="width:100%;height:100%;">');
+			html.push('<tbody>');
+			var arrParam=param.split(",");
+			for(var i=0; i<arrParam.length; i++){
+				html.push('<tr>')
+				html.push('<td class="label">'+arrParam[i]+'</td>');
+				html.push('<td class="value">');
+				html.push('<input type="text" class="ui-widget-content" style="width:180px">');
+				html.push('</td>');
+				html.push('</tr>')
+			}
+		
+			html.push('</tbody>');
+			html.push('</table>');
+			html.push('</div>');
+			html.push('</div>');
+			html = $(html.join("")).appendTo("body");
+			
+			//绑定双击事件
+			function onClick(){
+				var $trs=paramsEl.find("tr");
+				var dataObj;
+				var dataArr=[];
+				$trs.each(function(){
+					dataObj={}
+					var key= $(this).find(".label").html();
+					var value= $(this).find("input").val();
+					dataObj.key=key;
+					if(value && (value.indexOf("[") == 0 || value.indexOf("{") == 0))
+						dataObj.value=$.evalJSON(value);
+					else
+						dataObj.value=value;
+					dataArr.push(dataObj);
+				});
+
+				var url =bc.root+"/bc/template/inline?tid=" + tid
+				url+="&markerValueJsons="+$.toJSON(dataArr);
+				url+="&content="+content;
+				var win = window.open(url, "_blank");
+				return win;
+				//销毁对话框
+				html.dialog("destroy").remove();
+			}
+			var paramsEl = html.find("#inlineTemplates");
+			
+			//弹出对话框让用户选择司机
+			html.dialog({
+				id: "inlineTemplateParams",
+				title: "请输入模板配置参数对应的值",
+				dialogClass: 'bc-ui-dialog ui-widget-header',
+				width:300,modal:true,
+				minWidth:300,
+				buttons:[{text:"确定",click: onClick}]
+			});	
+		}
 		
 		if(tid==''){
 			bc.msg.slide('请先保存模板！');
@@ -189,6 +272,12 @@ bc.templateForm = {
 			return;
 		}
 		
+		//不允许格式化 直接预览文件
+		if(formatted=='false'){
+			notConfigInline();
+			return;
+		}
+		
 		//先加载一次配置参数
 		$.ajax({
 			url:url,
@@ -196,87 +285,11 @@ bc.templateForm = {
 			dataType:"json",
 			success:function(json){
 				if(json.value){//有配置参数打开配置参数窗口
-					bc.templateForm.openConfigWindow($form,tid,json.value,content);
+					openConfigWindow(json.value);
 				}else{//无配置参数调用默认的方法
-					if(type=="custom"){//自定义文本类型调用自定义的预览方法
-						var url =bc.root+"/bc/template/inline?tid=" + tid
-						url+="&content="+content;
-						var win = window.open(url, "_blank");
-						return win;
-					}
-					if(!bc.validator.validate($form)) return;
-					var n = $form.find(":input[name='e.subject']").val();// 获取文件名
-					var f = "template/" +path;// 获取附件相对路径
-					// 预览文件
-					var option = {f: f, n: n};
-					var ext = f.substr(f.lastIndexOf("."));
-					if(type=="xls" && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
-						option.from="docx";
-					}
-					bc.file.inline(option);
+					notConfigInline();
 				}
 			}
-		});	
-	},
-	/** 配置参数窗口 **/
-	openConfigWindow : function($form,tid,param,content){	
-		//生成对话框的html代码
-		var html = [];
-		html.push('<div class="bc-page" data-type="dialog" style="overflow-y:auto;">');
-		html.push('<div style="margin: 4px;max-height: 400px;">');
-		html.push('<table id="inlineTemplates" style="width:100%;height:100%;">');
-		html.push('<tbody>');
-		var arrParam=param.split(",");
-		for(var i=0; i<arrParam.length; i++){
-			html.push('<tr>')
-			html.push('<td class="label">'+arrParam[i]+'</td>');
-			html.push('<td class="value">');
-			html.push('<input type="text" class="ui-widget-content" style="width:180px">');
-			html.push('</td>');
-			html.push('</tr>')
-		}
-	
-		html.push('</tbody>');
-		html.push('</table>');
-		html.push('</div>');
-		html.push('</div>');
-		html = $(html.join("")).appendTo("body");
-		
-		//绑定双击事件
-		function onClick(){
-			var $trs=paramsEl.find("tr");
-			var dataObj;
-			var dataArr=[];
-			$trs.each(function(){
-				dataObj={}
-				var key= $(this).find(".label").html();
-				var value= $(this).find("input").val();
-				dataObj.key=key;
-				if(value && (value.indexOf("[") == 0 || value.indexOf("{") == 0))
-					dataObj.value=$.evalJSON(value);
-				else
-					dataObj.value=value;
-				dataArr.push(dataObj);
-			});
-
-			var url =bc.root+"/bc/template/inline?tid=" + tid
-			url+="&markerValueJsons="+$.toJSON(dataArr);
-			url+="&content="+content;
-			var win = window.open(url, "_blank");
-			return win;
-			//销毁对话框
-			html.dialog("destroy").remove();
-		}
-		var paramsEl = html.find("#inlineTemplates");
-		
-		//弹出对话框让用户选择司机
-		html.dialog({
-			id: "inlineTemplateParams",
-			title: "请输入模板配置参数对应的值",
-			dialogClass: 'bc-ui-dialog ui-widget-header',
-			width:300,modal:true,
-			minWidth:300,
-			buttons:[{text:"确定",click: onClick}]
 		});	
 	}
 };
