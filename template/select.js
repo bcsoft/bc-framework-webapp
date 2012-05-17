@@ -26,6 +26,7 @@ bc.templateSelectDialog = {
 			data.category = $tr.find("td:eq(4)").text();
 			//模板类型编码
 			data.typeCode = $tr.data("hidden").typeCode;
+			data.path = $tr.data("hidden").path;
 		}else{
 			data=[];
 			var $right = $($tds[0]).closest(".left").siblings();
@@ -43,6 +44,7 @@ bc.templateSelectDialog = {
 				var category = $row.find("td:eq(4)").text();
 				//模板类型编码
 				var typeCode = $row.data("hidden").typeCode;
+				var path = $row.data("hidden").path;
 				data.push({
 					id: id,
 					typeName:typeName,
@@ -52,7 +54,8 @@ bc.templateSelectDialog = {
 					typeCode:typeCode,
 					formatted:formatted,
 					size:size,
-					category:category
+					category:category,
+					path:path
 				});
 			});	
 		}

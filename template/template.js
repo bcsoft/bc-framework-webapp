@@ -14,8 +14,9 @@
  * 					version:[version],		--模板版本号
  * 					typeCode:[typeCode],	--模板类型编码
  * 					formatted:[formatted],	--允许格式化，值为true或false
- * 					size:[size],			--文件大小
+ * 					size:[size],			--文件大小 int类型
  * 					category:[category],	--模板分类
+ * 					path:[path]				--附件路径
  * 					}
  * 如果为多选则返回的是对象集合，[对象1,对象2]。
  */
