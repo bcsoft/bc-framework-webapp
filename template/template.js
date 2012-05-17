@@ -14,7 +14,9 @@
  * 					code:[code],			--模板编码
  * 					version:[version],		--模板版本号
  * 					desc:[desc],			--描述
- * 					typeCode:[typeCode]		--模板类型编码
+ * 					typeCode:[typeCode],	--模板类型编码
+ * 					formated:[formated],	--允许格式化，值为true或false
+ * 					size:[size]				--文件大小
  * 					}
  * 如果为多选则返回的是对象集合，[对象1,对象2]。
  */
