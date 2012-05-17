@@ -180,11 +180,12 @@ if(bc.attach.isHtml5Upload()){
 
 //单个附件的操作按钮
 $(".attachs .operation").live("click",function(e){
-	$this = $(this);
+	var $this = $(this);
 	var action = $this.attr("data-action");//内定的操作
 	var callback = $this.attr("data-callback");//回调函数
 	callback = callback ? bc.getNested(callback) : undefined;//转换为函数
-	$attach = $this.parents(".attach");
+	var $attach = $this.closest(".attach");//每个附件的容器
+	if($attach.size() == 0) $attach = $this.closest(".attachs");//整个附件的容器
 	switch (action){
 	case "abort"://取消附件的上传
 		if(bc.attach.isHtml5Upload($attach[0])){
@@ -221,9 +222,9 @@ $(".attachs .operation").live("click",function(e){
 		var click = $this.attr("data-click");
 		if(typeof click == "string"){
 			var clickFn = bc.getNested(click);//将函数名称转换为函数
-			if(typeof clickFn == "function")
+			if(typeof clickFn == "function"){
 				clickFn.call($attach[0],callback);
-			else
+			}else
 				alert("没有定义'" + click + "'函数");
 		}else{
 			alert("没有定义的action：" + action);
