@@ -71,9 +71,9 @@ bc.attach.html5={
 	    	f=files[i];
 	    	var key = batchNo + i;
 			//上传进度显示
-			var fileName = f.fileName || f.name;
+			var fileName = f.name || f.fileName;
 			var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
-			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.fileSize),extend,fileName);
+			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.size || f.fileSize),extend,fileName);
 			$(attach).attr("data-xhr",key).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
 	    }
 
@@ -132,7 +132,7 @@ bc.attach.html5={
 					
 					//附件总大小添加该附件的部分
 					var $totalSize = $atm.find("#totalSize");
-					var newSize = parseInt($totalSize.attr("data-size")) + f.fileSize;
+					var newSize = parseInt($totalSize.attr("data-size")) + (f.size || f.fileSize);
 					$totalSize.attr("data-size",newSize).text(bc.attach.getSizeInfo(newSize));
 					
 					//删除进度条、显示附件操作按钮（延时1秒后执行）
