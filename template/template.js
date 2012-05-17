@@ -10,13 +10,12 @@
  * 					id:[id],				--模板id
  * 					typeName:[typeName],	--模板类型名称
  * 					subject:[subject],		--模板标题
- * 					path:[path],			--模板附件
  * 					code:[code],			--模板编码
  * 					version:[version],		--模板版本号
- * 					desc:[desc],			--描述
  * 					typeCode:[typeCode],	--模板类型编码
  * 					formatted:[formatted],	--允许格式化，值为true或false
- * 					size:[size]				--文件大小
+ * 					size:[size],			--文件大小
+ * 					category:[category],	--模板分类
  * 					}
  * 如果为多选则返回的是对象集合，[对象1,对象2]。
  */
