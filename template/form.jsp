@@ -85,6 +85,9 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="label" colspan="2" style="padding-right:8px"><s:text name="template.file.formated"/>:<s:radio name="e.formated" list="#{'true':'是','false':'否'}" cssStyle="width:auto;"/></td>
+				</tr>
+				<tr>
 					<td class="label" colspan="2" style="padding-right:8px"><s:text name="template.status"/>:<s:radio name="e.status" list="#{'0':'正常','1':'禁用'}" cssStyle="width:auto;"/></td>
 				</tr>
 				<tr>

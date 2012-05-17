@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="reportHistory.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/reportHistory/save" />'
-	data-js='<s:url value="/bc/report/history/form.js" />,<s:url value="/bc/report/textareaAutoHeight.js" />'
+	data-js='<s:url value="/bc/report/history/form.js" />'
 	data-initMethod='bc.reportHistoryForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportHistoryForm" theme="simple" >

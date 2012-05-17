@@ -1,4 +1,4 @@
-bc.selectReportTemplate = {
+bc.reportTemplateSelectDialog = {
 	/** 点击确认按钮后的处理函数 */
 	clickOk : function() {
 		var $page = $(this);

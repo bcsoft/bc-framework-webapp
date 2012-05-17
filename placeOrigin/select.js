@@ -18,8 +18,8 @@ bc.superiorPlaceSelectDialog = {
 			data = {};
 			data.id = $tds.attr("data-id");
 			var $tr = $grid.find(">.data>.right tr.ui-state-highlight");
-			data.level= $tr.find("td:eq(0)").text();
-			data.core= $tr.find("td:eq(1)").text();
+			data.type= $tr.find("td:eq(0)").text();
+			data.code= $tr.find("td:eq(1)").text();
 			data.name = $tr.find("td:eq(2)").text();
 			data.fullname = $tr.find("td:eq(3)").text();
 		}else{
@@ -30,15 +30,14 @@ bc.superiorPlaceSelectDialog = {
 				var index = $this.parent().index();
 				var $row = $right.find("tr.row:eq("+index+")");
 				var id=$this.attr("data-id");
-				var	level= $row.find("td:eq(0)").text();
-				var core = $row.find("td:eq(1)").text();
+				var	type = $row.find("td:eq(0)").text();
+				var code = $row.find("td:eq(1)").text();
 				var name = $row.find("td:eq(2)").text();
 				var fullname = $row.find("td:eq(3)").text();
-
 				data.push({
 					id: id,
-					level:level,
-					core:core,
+					type:type,
+					code:code,
 					name:name,
 					fullname:fullname
 				});
