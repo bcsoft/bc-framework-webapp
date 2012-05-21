@@ -86,25 +86,32 @@ bc.addAttachFromTemplate = function($atm,id,action,option) {
 		    var $newAttachs = $atm.find(".attach[data-tpl]");//含有data-tpl属性的代表还没处理
 		    var $totalCount = $atm.find("#totalCount");
 			var $totalSize = $atm.find("#totalSize");
-		    for(var i=0;i<tpls.length;i++){
-		    	var $attach = $newAttachs.filter("[data-tpl='" + batchNo+i + "']");
-		    	var $progressbar = $attach.find(".progressbar");
-		    	f=tpls[i];
+		    var i = 0;
+			function startUpload(key,tpl){
+				logger.info("startUpload:key=" + key);
 				bc.ajax({
 					url: action,
 					dataType: "json",
-					data: {id: id, tpl:f.code + ":" + f.version},
+					data: {id: id, tpl:tpl.code + ":" + tpl.version},
 					success: function(json){
-						logger.info("addAttachFromTemplate result=" + $.toJSON(json));
+						logger.info("finished:key=" + key + ",result=" + $.toJSON(json));
+						
+						var $attach = $newAttachs.filter("[data-tpl='" + key + "']");
+						
 						//附件总数加一
 						$totalCount.text(parseInt($totalCount.text()) + 1);
 						
 						//附件总大小添加该附件的部分
-						var newSize = parseInt($totalSize.attr("data-size")) + f.size;
+						var newSize = parseInt($totalSize.attr("data-size")) + json.size;
+						logger.info("s=" + $totalSize.attr("data-size") + ",a=" + json.size+ ",n=" + newSize);
 						$totalSize.attr("data-size",newSize).text(bc.attach.getSizeInfo(newSize));
 						
-						//删除进度条、显示附件操作按钮（延时1秒后执行）
+						// 更新附件的实际大小
+						$attach.find(".size").text(bc.attach.getSizeInfo(json.size));
+						
+						//删除进度条、显示附件操作按钮（延时后执行）
 						setTimeout(function(){
+					    	var $progressbar = $attach.find(".progressbar");
 							var tds = $progressbar.parent();
 							var $operations = tds.next();
 							tds.remove();
@@ -115,11 +122,17 @@ bc.addAttachFromTemplate = function($atm,id,action,option) {
 								.attr("data-url",bc.root + "/bc/attach/download?id=" + json.id)
 								.removeAttr("data-tpl");
 						},200);
-
-						return false;
+						
+						i++;
+				    	if(i >= tpls.length){//全部上传完毕
+				    		return;
+				    	}else{// 继续下一个附件的处理
+				    		startUpload(batchNo + i,tpls[i]);
+				    	}
 					}
 				});
-		    }
+			}
+			startUpload(batchNo + i,tpls[0]);
 		}
 	}));
 }
