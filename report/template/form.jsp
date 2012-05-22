@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="reportTemplate.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/reportTemplate/save" />'
-	data-js='<s:url value="/bc/report/template/form.js" />,js:bc_identity'
+	data-js='js:bc_identity,<s:url value="/ui-libs/codeMirror/2.24/lib/codemirror.css" />,<s:url value="/ui-libs/codeMirror/2.24/lib/codemirror.js" />,<s:url value="/ui-libs/codeMirror/2.24/mode/javascript/javascript.js" />,<s:url value="/ui-libs/codeMirror/2.24/theme/eclipse.css" />,<s:url value="/bc/report/template/form.js" />'
 	data-initMethod='bc.reportTemplateForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="reportTemplateForm" theme="simple" >
@@ -67,7 +67,7 @@
 				<tr>
 					<td class="topLabel"><s:text name="reportTemplate.config"/>:</td>
 					<td class="value" >
-						 <s:textarea name="e.config"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/> 
+						<div class="ui-widget-content" style="height: auto;width:545px;"><s:textarea name="e.config"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/> </div>
 					</td>
 				</tr>
 				<tr>

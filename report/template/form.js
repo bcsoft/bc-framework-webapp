@@ -116,13 +116,21 @@ bc.reportTemplateForm = {
 		$form.find("span.click2remove").click(function(){
 			$(this).parent().remove();
 		});
+		
+		// 将详细配置变为代码高亮编辑器
+		bc.reportTemplateForm.editor = CodeMirror.fromTextArea($form.find("textarea[name='e.config']")[0], {
+			json: true,
+			lineNumbers: true,
+			matchBrackets: true,
+			theme: "eclipse"
+		});
 	},
 	/**保存的处理*/
 	save:function(){
 		var $page = $(this);
 		
 		//详细配置赋值
-		//$page.find(":input[name='e.config']").val($page.find("#reportTemplateConfig").text());
+		if(bc.reportTemplateForm.editor)bc.reportTemplateForm.editor.save();
 		
 		//将用户的id合并到隐藏域
 		ids=[];
