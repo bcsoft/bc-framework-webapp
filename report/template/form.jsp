@@ -66,8 +66,11 @@
 				<!-- 详细配置-->
 				<tr>
 					<td class="topLabel"><s:text name="reportTemplate.config"/>:</td>
-					<td class="value" >
-						<div class="ui-widget-content" style="height: auto;width:545px;"><s:textarea name="e.config"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/> </div>
+					<td class="value" >(使用json格式)</td>
+				</tr>
+				<tr>
+					<td class="value" colspan="2">
+						<div class="ui-widget-content" style="height: auto;width:625px;"><s:textarea name="e.config"  cssClass="ui-widget-content" style="overflow-y: visible;height:170px;"/> </div>
 					</td>
 				</tr>
 				<tr>
