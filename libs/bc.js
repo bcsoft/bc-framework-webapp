@@ -2640,6 +2640,7 @@ bc.grid = {
 				sort += (i == 0 ? "" : ",") + $t.attr("data-id") + ($t.hasClass("asc") ? " asc" : " desc");
 			});
 			data["sort"] = sort;
+			extras.sort = sort;
 		}
 		
 		//附加分页参数
@@ -2653,7 +2654,13 @@ bc.grid = {
 		var $search = $page.find(".bc-toolbar #searchText");
 		if($search.size()){
 			var searchText = $search.val();
-			if(searchText && searchText.length > 0)data.search = searchText;
+			if(searchText && searchText.length > 0){
+				data.search = searchText;
+				extras.search = searchText;
+			}else{
+				delete data.search;
+				if(extras) delete extras.search;
+			}
 		}
 		
 		//记住原来的水平滚动参数
@@ -4148,9 +4155,9 @@ bc.attach.html5={
 	    	f=files[i];
 	    	var key = batchNo + i;
 			//上传进度显示
-			var fileName = f.fileName || f.name;
+			var fileName = f.name || f.fileName;
 			var extend = fileName.substr(fileName.lastIndexOf(".")+1).toLowerCase();
-			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.fileSize),extend,fileName);
+			var attach = bc.attach.tabelTpl.format(f.fileSize,bc.attach.getSizeInfo(f.size || f.fileSize),extend,fileName);
 			$(attach).attr("data-xhr",key).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
 	    }
 
@@ -4209,7 +4216,7 @@ bc.attach.html5={
 					
 					//附件总大小添加该附件的部分
 					var $totalSize = $atm.find("#totalSize");
-					var newSize = parseInt($totalSize.attr("data-size")) + f.fileSize;
+					var newSize = parseInt($totalSize.attr("data-size")) + (f.size || f.fileSize);
 					$totalSize.attr("data-size",newSize).text(bc.attach.getSizeInfo(newSize));
 					
 					//删除进度条、显示附件操作按钮（延时1秒后执行）
