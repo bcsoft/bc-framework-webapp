@@ -36,9 +36,9 @@
 						<div id="assignUsers" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;width: 98%;" class="ui-widget-content" 
 							data-removeTitle='<s:text name="title.click2remove"/>'>
 							<ul class="inputIcons" style="top:10px">
-								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
-								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addGroups">
-								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
+								 	<li class="inputIcon ui-icon ui-icon-person" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
+								 	<li class="inputIcon ui-icon ui-icon-contact" title='<s:text name="actor.title.click2addGroups"/>' id="addGroups">
+								 	<li class="inputIcon ui-icon ui-icon-home" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
 							</ul>
 							<s:if test="%{ownedUsers != null && !ownedUsers.isEmpty()}">
 								<ul class="horizontal reportUserUl" style="padding: 0 50px 0 0;">

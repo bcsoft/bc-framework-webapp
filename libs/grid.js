@@ -220,6 +220,7 @@ bc.grid = {
 				sort += (i == 0 ? "" : ",") + $t.attr("data-id") + ($t.hasClass("asc") ? " asc" : " desc");
 			});
 			data["sort"] = sort;
+			extras.sort = sort;
 		}
 		
 		//附加分页参数
@@ -233,7 +234,13 @@ bc.grid = {
 		var $search = $page.find(".bc-toolbar #searchText");
 		if($search.size()){
 			var searchText = $search.val();
-			if(searchText && searchText.length > 0)data.search = searchText;
+			if(searchText && searchText.length > 0){
+				data.search = searchText;
+				extras.search = searchText;
+			}else{
+				delete data.search;
+				if(extras) delete extras.search;
+			}
 		}
 		
 		//记住原来的水平滚动参数
