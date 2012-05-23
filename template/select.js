@@ -21,9 +21,10 @@ bc.templateSelectDialog = {
 			data.subject= $tr.find("td:eq(0)").text();
 			data.code = $tr.find("td:eq(1)").text();
 			data.version = $tr.find("td:eq(2)").text();
-			data.formatted = $tr.find("td:eq(6)").attr("data-value");
-			data.size = parseInt($tr.find("td:eq(5)").attr("data-value"));
-			data.category = $tr.find("td:eq(4)").text();
+			data.formatted = $tr.find("td:eq(7)").attr("data-value");
+			data.size = parseInt($tr.find("td:eq(6)").attr("data-value"));
+			data.desc = $tr.find("td:eq(3)").text();
+			data.category = $tr.find("td:eq(5)").text();
 			//模板类型编码
 			data.typeCode = $tr.data("hidden").typeCode;
 			data.path = $tr.data("hidden").path;
@@ -39,9 +40,10 @@ bc.templateSelectDialog = {
 				var subject= $row.find("td:eq(0)").text();
 				var code = $row.find("td:eq(1)").text();
 				var version = $row.find("td:eq(2)").text();
-				var formatted = $row.find("td:eq(6)").attr("data-value");
-				var size = parseInt($row.find("td:eq(5)").attr("data-value"));
-				var category = $row.find("td:eq(4)").text();
+				var formatted = $row.find("td:eq(7)").attr("data-value");
+				var size = parseInt($row.find("td:eq(6)").attr("data-value"));
+				var category = $row.find("td:eq(5)").text();
+				var desc = $row.find("td:eq(3)").text();
 				//模板类型编码
 				var typeCode = $row.data("hidden").typeCode;
 				var path = $row.data("hidden").path;
@@ -55,7 +57,8 @@ bc.templateSelectDialog = {
 					formatted:formatted,
 					size:size,
 					category:category,
-					path:path
+					path:path,
+					desc:desc
 				});
 			});	
 		}

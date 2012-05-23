@@ -85,19 +85,21 @@ bc.templateList = {
 	deleteone: function(){
 		var $view=$(this);
 		var $tds = $view.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
-		if($tds.length == 1){
+		if($tds.length > 0){
 			//取内置列data-value的值
-			var inner= $view.find(".bc-grid>.data>.right tr.ui-state-highlight>td:eq(9)").attr("data-value");
+			var $inner = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
+			var flag=false;
+			$inner.each(function(index){	
+				if($(this).find("td:eq(11)").attr("data-value")=='true'){
+					flag=true;
+				}	
+			});
 			//内置
-            if(inner=='true'){
+           if(flag){
             	bc.msg.alert("内置模板不能删除！");
     			return;
             }
-            
-            bc.page.delete_.call($view);
-		}else if($tds.length > 1){
-			bc.msg.slide("一次只可以删除一个模板，请确认您只选择了一个模板！");
-			return;
+			bc.page.delete_.call($view);
 		}else{
 			bc.msg.slide("请先选择要删除的模板！");
 			return;

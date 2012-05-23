@@ -19,6 +19,7 @@ bc.reportTaskForm = {
 					if (template) {
 						$form.find(":input[name='e.template.id']").val(template.id);
 						$form.find(":input[name='category']").val(template.category+'/'+template.name);
+						$form.find(":input[name='e.name']").val(template.name);
 					}
 				}
 			});	
