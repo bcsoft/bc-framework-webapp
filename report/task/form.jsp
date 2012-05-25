@@ -74,7 +74,11 @@
 				<tr>
 					<td class="label" colspan="4">
 						<div class="formTopInfo">
-							创建：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
+							状态：<s:if test="e.status = 0">已启用
+								</s:if><s:elseif test="e.status = 1">
+									已停止
+								</s:elseif>
+							，创建：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
 							<s:if test="%{e.modifier != null}">
 							最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
 							</s:if>
