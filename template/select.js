@@ -17,13 +17,13 @@ bc.templateSelectDialog = {
 			data = {};
 			data.id = $tds.attr("data-id");
 			var $tr = $grid.find(">.data>.right tr.ui-state-highlight");
-			data.typeName= $tr.find("td:eq(3)").text();
+			data.typeName= $tr.find("td:eq(4)").text();
 			data.subject= $tr.find("td:eq(0)").text();
-			data.code = $tr.find("td:eq(1)").text();
+			data.code = $tr.find("td:eq(3)").text();
 			data.version = $tr.find("td:eq(2)").text();
 			data.formatted = $tr.find("td:eq(7)").attr("data-value");
 			data.size = parseInt($tr.find("td:eq(6)").attr("data-value"));
-			data.desc = $tr.find("td:eq(3)").text();
+			data.desc = $tr.find("td:eq(1)").text();
 			data.category = $tr.find("td:eq(5)").text();
 			//模板类型编码
 			data.typeCode = $tr.data("hidden").typeCode;
@@ -36,14 +36,14 @@ bc.templateSelectDialog = {
 				var index = $this.parent().index();
 				var $row = $right.find("tr.row:eq("+index+")");
 				var id=$this.attr("data-id");
-				var typeName= $row.find("td:eq(3)").text();
+				var typeName= $row.find("td:eq(4)").text();
 				var subject= $row.find("td:eq(0)").text();
-				var code = $row.find("td:eq(1)").text();
+				var code = $row.find("td:eq(3)").text();
 				var version = $row.find("td:eq(2)").text();
 				var formatted = $row.find("td:eq(7)").attr("data-value");
 				var size = parseInt($row.find("td:eq(6)").attr("data-value"));
 				var category = $row.find("td:eq(5)").text();
-				var desc = $row.find("td:eq(3)").text();
+				var desc = $row.find("td:eq(1)").text();
 				//模板类型编码
 				var typeCode = $row.data("hidden").typeCode;
 				var path = $row.data("hidden").path;
@@ -62,6 +62,7 @@ bc.templateSelectDialog = {
 				});
 			});	
 		}
+		
 		
 		logger.info($.toJSON(data));
 		// 返回
