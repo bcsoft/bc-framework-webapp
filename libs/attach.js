@@ -210,7 +210,7 @@ $(".attachs .operation").live("click",function(e){
 			setTimeout(function(){
 				win.close();
 			},100);
-		},1000);
+		},2000);
 		break;
 	case "downloadAll"://打包下载所有附件
 		bc.attach.downloadAll($this.parents(".attachs")[0],callback);

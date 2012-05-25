@@ -2640,7 +2640,7 @@ bc.grid = {
 				sort += (i == 0 ? "" : ",") + $t.attr("data-id") + ($t.hasClass("asc") ? " asc" : " desc");
 			});
 			data["sort"] = sort;
-			extras.sort = sort;
+			if(extras)extras.sort = sort;
 		}
 		
 		//附加分页参数
@@ -2656,7 +2656,7 @@ bc.grid = {
 			var searchText = $search.val();
 			if(searchText && searchText.length > 0){
 				data.search = searchText;
-				extras.search = searchText;
+				if(extras) extras.search = searchText;
 			}else{
 				delete data.search;
 				if(extras) delete extras.search;
@@ -4056,7 +4056,7 @@ $(".attachs .operation").live("click",function(e){
 			setTimeout(function(){
 				win.close();
 			},100);
-		},1000);
+		},2000);
 		break;
 	case "downloadAll"://打包下载所有附件
 		bc.attach.downloadAll($this.parents(".attachs")[0],callback);

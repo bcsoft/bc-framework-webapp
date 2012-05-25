@@ -220,7 +220,7 @@ bc.grid = {
 				sort += (i == 0 ? "" : ",") + $t.attr("data-id") + ($t.hasClass("asc") ? " asc" : " desc");
 			});
 			data["sort"] = sort;
-			extras.sort = sort;
+			if(extras)extras.sort = sort;
 		}
 		
 		//附加分页参数
@@ -236,7 +236,7 @@ bc.grid = {
 			var searchText = $search.val();
 			if(searchText && searchText.length > 0){
 				data.search = searchText;
-				extras.search = searchText;
+				if(extras) extras.search = searchText;
 			}else{
 				delete data.search;
 				if(extras) delete extras.search;
