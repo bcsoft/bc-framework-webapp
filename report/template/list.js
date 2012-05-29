@@ -15,18 +15,19 @@ bc.reportTemplateList = {
 			var code = $tr.find(">td:eq(4)").attr("data-value");
 			var name = $tr.find(">td:eq(3)").attr("data-value");
 			
-			bc.msg.confirm("确定要执行选定的 <b>"+name+"</b> 项吗？",function(){
+			bc.msg.confirm("确定要执行报表 <b>"+name+"</b> 吗？",function(){
 				//弹出选择对话框
 				bc.page.newWin({
 					url: bc.root + "/bc/report/run?code=" + code,
 					name: name,
+					title: name,
 					mid: code			
 				});
 			});
 			
 			
 		}else if($tds.length > 1){
-			bc.msg.slide("一次只可以执行一个，请确认您只选择了一个！");
+			bc.msg.slide("一次只可以执行一个报表，请确认您只选择了一个报表！");
 			return;
 		}else{
 			bc.msg.slide("请先选择要执行的报表模板！");
