@@ -80,7 +80,7 @@ bc.addAttachFromTemplate = function($atm,id,action,option) {
 		    	f=tpls[i];
 				//上传进度显示
 				var attach = bc.attach.tabelTpl.format(f.size,bc.attach.getSizeInfo(f.size),f.path.substr(f.path.lastIndexOf(".")+1).toLowerCase(),f.subject);
-				$(attach).attr("data-tpl",batchNo+i).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
+				$(attach).attr("data-tpl",batchNo+i).appendTo($atm.find(".header")).find(".progressbar").progressbar();
 		    }
 		    
 		    //逐一处理模板
