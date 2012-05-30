@@ -10,9 +10,11 @@
   * 单选返回一个对象 格式为{
  * 					id:[id],				--区域id
  * 					type:[type],			--区域类型
+ * 					pname:[pname],			--区域上级
  * 					code:[code],			--区域编码
  * 					name:[name],			--区域名称
- * 					fullname:[fullname]		--区域全名称
+ * 					fullname:[fullname],	--区域全名称
+ * 					desc:[desc]				--区域描述
  * 					}
  * 如果为多选则返回的是对象集合，[对象1,对象2]。
  */
