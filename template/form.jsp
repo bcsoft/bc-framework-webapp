@@ -53,7 +53,7 @@
 							<ul class="inputIcons" style="padding-right:8px">
 								<li id="upLoadFileId" class="inputIcon ui-icon ui-icon-circle-arrow-n" style="position: relative;">
 									<input type="file" class="auto uploadFile" id="uploadFile" name="uploadFile" title="点击上传文件"
-										data-cfg='{"callback":"bc.templateForm.afterUploadfile","subdir":"template","source":":input[name=\"e.subject\"]","to":":input[name=\"e.path\"]"}'
+										data-cfg='{"callback":"bc.templateForm.afterUploadfile","subdir":"template","source":":input[name=\"e.subject\"]","to":":input[name=\"e.path\"]","ptype":"Template","puid":"<s:property value="e.uid"/>"}'
 										style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;filter: alpha(opacity = 10);opacity: 0;cursor: pointer;">
 								</li>
 								<li class="downLoadFileId inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="template.download"/>' >
@@ -105,6 +105,7 @@
 			
 		</table>
 		<s:hidden name="e.id" />
+		<s:hidden name="e.uid" />
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.author.id" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>

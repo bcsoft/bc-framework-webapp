@@ -35,6 +35,8 @@ bc.templateForm = {
 			if(type=='custom'){
 				if(content==""){bc.msg.slide('模板内容为空！');return;}
 				var url =bc.root+"/bc/template/download?tid=" +id
+				url+="&ptype=Template";
+				url+="&puid="+$form.find(":input[name='e.uid']").val();
 				url+="&content="+content;
 				var win = window.open(url, "blank");
 				return win;
@@ -42,9 +44,9 @@ bc.templateForm = {
 				if(!bc.validator.validate($form)) return;
 				
 				var n =  subject;// 获取文件名
-				var f = "template/" + path;// 获取附件相对路径			
+				var f = "template" + path;// 获取附件相对路径			
 				// 下载文件
-				bc.file.download({f: f, n: n});
+				bc.file.download({f: f, n: n,ptype:"Template",puid:$form.find(":input[name='e.uid']").val()});
 			}
 		});
 		

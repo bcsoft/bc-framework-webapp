@@ -2,14 +2,14 @@ bc.attachList = {
 	/** 打开附件访问日志视图*/
 	visitHistory : function() {
 		bc.page.newWin({
-			url: bc.root + "/bc/attachHistory/paging",
+			url: bc.root + "/bc/attachHistorys/paging",
 			mid: "attachHistory.paging",
 			name: "附件操作日志"
 		});
 	},
 	/** 在线预览附件 */
 	inline: function(){
-		var $tds = $(this).find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $(this).find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			//在新窗口中打开文件
 			window.open(bc.root + "/bc/attach/inline?to=pdf&id=" + $tds.attr("data-id"), "_blank");
@@ -24,7 +24,7 @@ bc.attachList = {
 	},
 	/** 下载选择的附件*/
 	download: function(){
-		var $tds = $(this).find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $(this).find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			window.open(bc.root + "/bc/attach/download?id=" + $tds.attr("data-id"), "blank");
 		}else if($tds.length > 1){
@@ -39,7 +39,7 @@ bc.attachList = {
 	downloadZip: function(){
 		var $this = $(this);
 		var url=$this.attr("data-deleteUrl");
-		var $tds = $this.find(".bc-grid>.data>.left tr.ui-state-focus>td.id");
+		var $tds = $this.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 0){
 			bc.msg.slide("请先选择要下载的附件！");
 			return;
