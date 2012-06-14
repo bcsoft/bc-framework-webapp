@@ -20,6 +20,8 @@ bc.file={
 		if(option.n) url += "&n=" + option.n;
 		if(option.to) url += "&to=" + option.to;
 		if(option.from) url += "&from=" + option.from;
+		if(option.ptype) url += "&ptype=" + option.ptype;
+		if(option.puid) url += "&puid=" + option.puid;
 		var win = window.open(url, "_blank");
 		if(typeof option.callback == "function"){
 			option.callback.call(this,option,win);
@@ -32,6 +34,8 @@ bc.file={
 		//在新窗口中打开文件
 		var url = bc.root + "/bc/file/download?f=" + option.f;
 		if(option.n) url += "&n=" + option.n;
+		if(option.ptype) url += "&ptype=" + option.ptype;
+		if(option.puid) url += "&puid=" + option.puid;
 		var win = window.open(url, "blank");
 		if(typeof option.callback == "function"){
 			option.callback.call(this,option,win);
@@ -61,6 +65,8 @@ bc.file={
 		//用户选择的文件(name、fileName、type、size、fileSize、lastModifiedDate)
 	    var url = option.url || bc.file.uploadUrl;
 	    if(option.subdir) url+="&subdir=" + option.subdir;
+	    if(option.ptype) url+="&ptype=" + option.ptype;
+	    if(option.puid) url+="&puid=" + option.puid;
 	    
 	    //检测文件数量的限制
 	    var maxCount = option.maxCount;

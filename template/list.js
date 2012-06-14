@@ -6,7 +6,8 @@ bc.templateList = {
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var type=$tr.data("hidden").typeCode;
+			var $hidden = $tr.data("hidden");
+			var type=$hidden.typeCode;
 			if(type=='custom'){
 				var tid=$tds.attr("data-id"); 
 				bc.ajax({
@@ -15,7 +16,9 @@ bc.templateList = {
 					dataType:"json",
 					success:function(json){
 						if(!json.result){
-							var url =bc.root+"/bc/template/inline?tid=" + tid
+							var url =bc.root+"/bc/template/inline?tid=" + tid;
+							url += "&ptype=Template";
+							url += "&puid=" + $hidden.uid;
 							var win = window.open(url, "_blank");
 							return win;
 						}else{
@@ -28,7 +31,7 @@ bc.templateList = {
 				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径
 				
 				// 预览文件
-				var option = {f: f, n: n};
+				var option = {f: f, n: n,ptype:"Template",puid:$hidden.uid};
 				var ext = f.substr(f.lastIndexOf("."));
 				if(type=='xls' && ext==".xml"){// Microsoft Word 2003 XML格式特殊处理
 					option.from="docx";
@@ -50,7 +53,8 @@ bc.templateList = {
 		if($tds.length == 1){
 			//获取选中的行
 			var $tr = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var type=$tr.data("hidden").typeCode;//类型
+			var $hidden = $tr.data("hidden");
+			var type=$hidden.typeCode;//类型
 			if(type=='custom'){
 				var tid=$tds.attr("data-id");
 				bc.ajax({
@@ -59,7 +63,9 @@ bc.templateList = {
 					dataType:"json",
 					success:function(json){
 						if(!json.result){
-							var url =bc.root+"/bc/template/download?tid=" + tid
+							var url =bc.root+"/bc/template/download?tid=" + tid;
+							url += "&ptype=Template";
+							url += "&puid=" + $hidden.uid;
 							var win = window.open(url, "blank");
 							return win;
 						}else{
@@ -69,9 +75,9 @@ bc.templateList = {
 				});
 			}else{
 				var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
-				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			
+				var f = "template" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			
 				// 下载文件
-				bc.file.download({f: f, n: n});
+				bc.file.download({f: f, n: n,ptype:"Template",puid:$hidden.uid});
 			}
 		}else if($tds.length > 1){
 			bc.msg.slide("一次只可以下载一个模板，请确认您只选择了一个模板！");

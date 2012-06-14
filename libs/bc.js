@@ -1225,9 +1225,11 @@ bc.page = {
 			data = $.extend(data, extras);
 		}
 		
+		var fromMID = $page.attr("data-mid");
 		bc.page.newWin({
 			url: url,
-			mid: $page.attr("data-mid") + ".0",
+			from: fromMID,
+			mid: fromMID + ".0",
 			name: "新建" + ($page.attr("data-name") || "未定义"),
 			afterClose: function(status){
 				if(status)bc.grid.reloadData($page);
