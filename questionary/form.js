@@ -116,12 +116,28 @@ bc.questionaryForm = {
 			
 			//添加选项
 			$form.find("#testTable").delegate("#addOption","click",function(){
+				//当前选项
+				var thisOption=$(this).parent().parent().parent();
+				//判断当前项是否为最后一项，若是则在添加下一项目时本身也添加可以下移按钮
+				if(thisOption.next().size()==0){
+					//如果存在就不添加
+					if($(this).parent().find("#downOption").size()==0){
+						//插在添加按钮前
+						$(bc.questionaryForm.li4DownOption).insertBefore($(this).parent().find("#addOption"));
+					}
+				}
+				
 				$(bc.questionaryForm.option).insertAfter($(this).parent().parent().parent());
 				//查找新加入的项目的下一个过元素是否存在，如果不存在就删除下移按钮
-				var newOption=$(this).parent().parent().parent().next();
+				var newOption=$(this).parent().parent().parent().next();//插入的新选项
 				if(newOption.next().size()==0){
 					newOption.children(".value").children(".inputIcons").children().remove("#downOption");
 				}
+			});
+			
+			//删除选项
+			$form.find("#testTable").delegate("#deleteOption","click",function(){
+				$(this).parent().parent().parent().remove();
 			});
 
 		},
@@ -185,11 +201,16 @@ bc.questionaryForm = {
 	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="addUsers"></li>',
 	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
 	 							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
-	 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="addUnitOrDepartments"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="deleteOption"></li>',
 							'</ul>',
 						'</td>',
 					'</tr>'
 		                   ].join(""),
+	                   //下移按钮模板：
+                   li4DownOption : [
+                                    '<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="在此选项下添加新选项" id="downOption"></li>'
+                                    ].join(""), 
+		                   
 };
 
 

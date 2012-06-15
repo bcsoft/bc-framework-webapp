@@ -105,7 +105,7 @@
 							<ul class="inputIcons" style="top:12px;right: 19px;">
 							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="downOption">
 							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addOption">
-							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
+							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="deleteOption">
 							</ul>
 						</td>
 					</tr>
