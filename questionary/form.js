@@ -108,9 +108,88 @@ bc.questionaryForm = {
 			$form.find("span.click2remove").click(function(){
 				$(this).parent().remove();
 			});
+			//添加题目
+			
+			$form.find("#testTable").delegate("#addTopic","click",function(){
+				$(bc.questionaryForm.topic).appendTo($form.find("#testTable"));
+			});
+			
+			//添加选项
+			$form.find("#testTable").delegate("#addOption","click",function(){
+				$(bc.questionaryForm.option).insertAfter($(this).parent().parent().parent());
+				//查找新加入的项目的下一个过元素是否存在，如果不存在就删除下移按钮
+				var newOption=$(this).parent().parent().parent().next();
+				if(newOption.next().size()==0){
+					newOption.children(".value").children(".inputIcons").children().remove("#downOption");
+				}
+			});
 
-
-		}
+		},
+		//一条题目的模板
+		topic : [
+		         '<tr>',
+		         	'<td class="label">题型:</td>',
+		         	'<td class="value">',
+		         		'<input type="radio" name="type" id="questionary_create_type0" value="0" style="width:auto;">',
+		         		'<label for="questionary_create_type0">单选</label>',
+		         		'<input type="radio" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:3px">',
+		         		'<label for="questionary_create_type1">多选</label>',
+		         		'<input type="radio" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:3px">',
+		         		'<label for="questionary_create_type2">填空</label>',
+		         		'<input type="radio" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:3px">',
+		         		'<label for="questionary_create_type3">简答</label>',
+		         		'<div style="position:relative;right:-198px; display: inline-block;">选项布局：',
+		         			'<input type="radio" name="config" id="questionary_create_configvertical" value="vertical" style="width:auto;">',
+		         			'<label for="questionary_create_configvertical">垂直</label>',
+		         			'<input type="radio" name="config" id="questionary_create_confighorizontal" value="horizontal" style="width:auto;margin-left:3px">',
+		         			'<label for="questionary_create_confighorizontal">水平</label>',
+	         			'</div>',
+         			'</td>',
+     			'</tr>',
+     			'<tr>',
+     				'<td class="label">题目:</td>',
+     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+     				'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content">',
+     				'<ul class="inputIcons" style="top:12px;right: 19px;">',
+     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此问题" id="addUsers"></li>',
+     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此问题" id="addUsers"></li>',
+     					'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此问题下添加新问题" id="addTopic"></li>',
+     					'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此问题" id="addUnitOrDepartments"></li>',
+ 					'</ul>',
+ 					'</td>',
+					'</tr>',
+     			'<tr>',
+     				'<td class="label">选项:</td>',
+ 					'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+ 						'<input type="checkbox" name="" value="true" id="questionary_create_" style="width:1em;">',
+ 						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" value="true">',
+ 						'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:496px;margin-left:4px;">',
+ 						'<ul class="inputIcons" style="top:12px;right: 19px;">',
+ 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="addUsers"></li>',
+ 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
+ 							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
+ 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="addUnitOrDepartments"></li>',
+							'</ul>',
+					'</td>',
+				'</tr>'
+		         ].join(""),
+		         //一个选项的模板：
+		         option : [
+                    '<tr>',
+                    	'<td class="label"> </td>',
+	 					'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+	 						'<input type="checkbox" name="" value="true" id="questionary_create_" style="width:1em;">',
+	 						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" value="true">',
+	 						'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:496px;margin-left:4px;">',
+	 						'<ul class="inputIcons" style="top:12px;right: 19px;">',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="addUsers"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="addUnitOrDepartments"></li>',
+							'</ul>',
+						'</td>',
+					'</tr>'
+		                   ].join(""),
 };
 
 

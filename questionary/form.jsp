@@ -19,7 +19,7 @@
 					</tr>
 					<tr>
 		               	<td class="label"><s:text name="questionary.Deadline"/>:</td>
-						<td class="value">
+						<td class="value" >
 							<div style="position : relative; display: inline-block">
 								&nbsp;从<input type="text" name="e.startDate"  data-validate='{"type":"date","required":true}' 
 									value='<s:date format="yyyy-MM-dd" name="e.startDate" />' 
@@ -35,9 +35,11 @@
 									<ul class="inputIcons" style="right : 0px;">
 										<li class="selectCalendar inputIcon ui-icon ui-icon-calendar" data-cfg='e.endDate' ></li>
 									</ul>
-							</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					       <s:checkbox name="e.permitted" cssStyle="width:1em;" />
-					       <s:text name="questionary.permitted"/>
+							</div>
+							<div style="position:relative;right:-120px; display: inline-block;">
+						       <s:checkbox name="e.permitted" cssStyle="width:1em;" />
+						       <s:text name="questionary.permitted" />
+							</div>
 						</td>
 					</tr>
 					<!-- 限制参与人为-->
@@ -71,7 +73,7 @@
 			</table>
 		</div>
 		<div id="div2">
-			<table class="formFields" cellspacing="2" cellpadding="0">
+			<table id="testTable" class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
 					<tr class="widthMarker">
 						<td style="width: 100px;">&nbsp;</td>
@@ -81,14 +83,16 @@
 					<tr>
 		               	<td class="label">题型:</td>
 						<td class="value"><s:radio name="type" value="type" list="#{'0':'单选','1':'多选','2':'填空','3':'简答'}" cssStyle="width:auto;"/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;选项布局：<s:radio name="config" value="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/></td>
+							<div style="position:relative;right:-190px; display: inline-block;">选项布局：<s:radio name="config" value="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+							</div>
+						</td>
 					</tr>
 					<tr>
 						<td class="label">题目:</td>
 						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;"><s:textfield name="e.subject" cssClass="ui-widget-content"/>
 							<ul class="inputIcons" style="top:12px;right: 19px;">
 							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
-							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addGroups">
+							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addTopic">
 							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
 							</ul>
 						</td>
@@ -99,8 +103,8 @@
 						    <s:checkbox name="" cssStyle="width:1em;"/>
 							<s:textfield name="e.subject" cssClass="ui-widget-content" cssStyle="width:496px;"/>
 							<ul class="inputIcons" style="top:12px;right: 19px;">
-							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
-							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addGroups">
+							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="downOption">
+							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addOption">
 							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
 							</ul>
 						</td>
