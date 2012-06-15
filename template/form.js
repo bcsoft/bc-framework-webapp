@@ -44,7 +44,7 @@ bc.templateForm = {
 				if(!bc.validator.validate($form)) return;
 				
 				var n =  subject;// 获取文件名
-				var f = "template" + path;// 获取附件相对路径			
+				var f = "template/" + path;// 获取附件相对路径			
 				// 下载文件
 				bc.file.download({f: f, n: n,ptype:"Template",puid:$form.find(":input[name='e.uid']").val()});
 			}

@@ -75,7 +75,7 @@ bc.templateList = {
 				});
 			}else{
 				var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
-				var f = "template" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			
+				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			
 				// 下载文件
 				bc.file.download({f: f, n: n,ptype:"Template",puid:$hidden.uid});
 			}
