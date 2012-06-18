@@ -73,7 +73,7 @@
 			</table>
 		</div>
 		<div id="testArea">
-			<table class="formFields" cellspacing="2" cellpadding="0" style="border-top: 1px;border-top-style: solid;">
+			<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
 				<tbody>
 					<tr class="widthMarker">
 						<td style="width: 100px;">&nbsp;</td>
@@ -91,37 +91,41 @@
 						<td class="label">题目:</td>
 						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;"><s:textfield name="e.subject" cssClass="ui-widget-content"/>
 							<ul class="inputIcons" style="top:12px;right: 19px;">
-							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="downTopic">
-							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addTopic">
-							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="deleteTopic">
+								<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upTopic"/>' id="upTopic"></li>
+							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downTopic"/>' id="downTopic">
+							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addTopic"/>' id="addTopic">
+							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteTopic"/>' id="deleteTopic">
 							</ul>
 						</td>
 					</tr>
-					<tr>
-						<td class="label">选项:</td>
-						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
-						    <s:checkbox name="" cssStyle="width:1em;"/>
-							<s:textfield name="e.subject" cssClass="ui-widget-content" cssStyle="width:496px;"/>
-							<ul class="inputIcons" style="top:12px;right: 19px;">
-							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="downOption">
-							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addOption">
-							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="deleteOption">
-							</ul>
+					<tr class="option">
+						<td class="topLabel">选项:</td>
+						<td class="value" >
+							<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
+							    <s:checkbox name="" cssStyle="width:1em;"/>
+								<s:textfield name="e.subject" cssClass="ui-widget-content" cssStyle="width:496px;"/>
+								<ul class="inputIcons" style="top:12px;right: 19px;">
+									<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upOption"/>' id="upOption"></li>
+								 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downOption"/>' id="downOption">
+								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addOption"/>' id="addOption">
+								 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteOption"/>' id="deleteOption">
+								</ul>
+							</div>
 						</td>
 					</tr>
 					</s:if><s:else>
 						<s:iterator var="b" value="">
 						</s:iterator>
 					</s:else>
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 			<div class="formTopInfo">
 				状态：<s:property value="%{statusesValue[e.status]}" />&nbsp;&nbsp;&nbsp;&nbsp;登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				<s:if test="%{e.modifier != null}">
 				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				</s:if>
 			</div>
-		</div>
 		<s:hidden name="e.id" />
 		<s:hidden name="e.author.id" />
 		<s:hidden name="e.type" />

@@ -133,36 +133,74 @@ bc.questionaryForm = {
 			});
 			
 			//下移问题
+			$form.find("#testArea").delegate("#downTopic","click",function(){
+				//当前问题
+				var thisTopic=$(this).parent().parent().parent().parent().parent();
+				//当前问题为最后一条问题不能再下移
+				if(thisTopic.next().size()==0){
+					bc.msg.slide("当前问题为最后一条问题不能再下移！");
+				}else{
+					thisTopic.insertAfter(thisTopic.next());
+				}
+
+			});
+			
 			//添加选项
 			$form.find("#testArea").delegate("#addOption","click",function(){
 				//当前选项
-				var thisOption=$(this).parent().parent().parent();
-				//判断当前项是否为最后一项，若是则在添加下一项目时本身也添加可以下移按钮
-				if(thisOption.next().size()==0){
-					//如果存在就不添加
-					if($(this).parent().find("#downOption").size()==0){
-						//插在添加按钮前
-						$(bc.questionaryForm.li4DownOption).insertBefore($(this).parent().find("#addOption"));
-					}
-				}
+				var thisOption=$(this).parent().parent();
+//				//判断当前项是否为最后一项，若是则在添加下一项目时本身也添加可以下移按钮
+//				if(thisOption.next().size()==0){
+//					//如果存在就不添加
+//					if($(this).parent().find("#downOption").size()==0){
+//						//插在添加按钮前
+//						$(bc.questionaryForm.li4DownOption).insertBefore($(this).parent().find("#addOption"));
+//					}
+//				}
 				
-				$(bc.questionaryForm.option).insertAfter($(this).parent().parent().parent());
-				//查找新加入的项目的下一个过元素是否存在，如果不存在就删除下移按钮
-				var newOption=$(this).parent().parent().parent().next();//插入的新选项
-				if(newOption.next().size()==0){
-					newOption.children(".value").children(".inputIcons").children().remove("#downOption");
+				$(bc.questionaryForm.option).insertAfter(thisOption);
+//				//查找新加入的项目的下一个过元素是否存在，如果不存在就删除下移按钮
+//				var newOption=$(this).parent().parent().parent().next();//插入的新选项
+//				if(newOption.next().size()==0){
+//					newOption.children(".value").children(".inputIcons").children().remove("#downOption");
+//				}
+			});
+			
+			//上移选项
+			$form.find("#testArea").delegate("#upOption","click",function(){
+				//当前选项
+				var thisOption=$(this).parent().parent();
+				//当前选项为第一条选项不能再上移
+				if(thisOption.prev().size()==0){
+					bc.msg.slide("当前选项为第一条选项不能再上移！");
+				}else{
+					thisOption.insertBefore(thisOption.prev());
 				}
+
+			});
+			
+			//下移选项
+			$form.find("#testArea").delegate("#downOption","click",function(){
+				//当前选项
+				var thisOption=$(this).parent().parent();
+				//当前问题为最后一条问题不能再下移
+				if(thisOption.next().size()==0){
+					bc.msg.slide("当前选项为最后一条选项不能再下移！");
+				}else{
+					thisOption.insertAfter(thisOption.next());
+				}
+
 			});
 			
 			//删除选项
 			$form.find("#testArea").delegate("#deleteOption","click",function(){
-				$(this).parent().parent().parent().remove();
+				$(this).parent().parent().remove();
 			});
 
 		},
 		//一条题目的模板
 		topic : [
-         '<table class="formFields" cellspacing="2" cellpadding="0" style="border-top: 1px;border-top-style: solid;">',
+         '<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">',
          	'<tbody>',
          		'<tr class="widthMarker">',
          			'<td style="width: 100px;"> </td>',
@@ -199,18 +237,20 @@ bc.questionaryForm = {
  					'</ul>',
  					'</td>',
 					'</tr>',
-     			'<tr>',
+     			'<tr class="option">',
      				'<td class="label">选项:</td>',
- 					'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
- 						'<input type="checkbox" name="" value="true" id="questionary_create_" style="width:1em;">',
- 						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" value="true">',
- 						'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:496px;margin-left:4px;">',
- 						'<ul class="inputIcons" style="top:12px;right: 19px;">',
- 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="upOption"></li>',
- 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
- 							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
- 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="deleteOption"></li>',
+ 					'<td class="value">',
+ 						'<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+ 							'<input type="checkbox" name="" value="true" id="questionary_create_" style="width:1em;">',
+ 							'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" value="true">',
+ 							'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:496px;margin-left:4px;">',
+ 							'<ul class="inputIcons" style="top:12px;right: 19px;">',
+ 								'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="upOption"></li>',
+ 								'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
+ 								'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
+ 								'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="deleteOption"></li>',
 							'</ul>',
+						'</div>',
 					'</td>',
 				'</tr>',
 			'</tbody>',
@@ -218,9 +258,7 @@ bc.questionaryForm = {
 		         ].join(""),
 		         //一个选项的模板：
 		         option : [
-                    '<tr>',
-                    	'<td class="label"> </td>',
-	 					'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+	 					'<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
 	 						'<input type="checkbox" name="" value="true" id="questionary_create_" style="width:1em;">',
 	 						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" value="true">',
 	 						'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:496px;margin-left:4px;">',
@@ -230,8 +268,7 @@ bc.questionaryForm = {
 	 							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
 	 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="deleteOption"></li>',
 							'</ul>',
-						'</td>',
-					'</tr>'
+						'</div>',
 		                   ].join(""),
 	                   //下移按钮模板：
                    li4DownOption : [
