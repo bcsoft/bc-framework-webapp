@@ -108,14 +108,33 @@ bc.questionaryForm = {
 			$form.find("span.click2remove").click(function(){
 				$(this).parent().remove();
 			});
-			//添加题目
+			//添加问题
 			
-			$form.find("#testTable").delegate("#addTopic","click",function(){
-				$(bc.questionaryForm.topic).appendTo($form.find("#testTable"));
+			$form.find("#testArea").delegate("#addTopic","click",function(){
+				$(bc.questionaryForm.topic).insertAfter($(this).parent().parent().parent().parent().parent());
+			});
+			//删除问题
+			
+			$form.find("#testArea").delegate("#deleteTopic","click",function(){
+				$(this).parent().parent().parent().parent().parent().remove();
 			});
 			
+			//上移问题
+			$form.find("#testArea").delegate("#upTopic","click",function(){
+				//当前问题
+				var thisTopic=$(this).parent().parent().parent().parent().parent();
+				//当前问题为第一条问题不能再上移
+				if(thisTopic.prev().size()==0){
+					bc.msg.slide("当前问题为第一条问题不能再上移！");
+				}else{
+					thisTopic.insertBefore(thisTopic.prev());
+				}
+
+			});
+			
+			//下移问题
 			//添加选项
-			$form.find("#testTable").delegate("#addOption","click",function(){
+			$form.find("#testArea").delegate("#addOption","click",function(){
 				//当前选项
 				var thisOption=$(this).parent().parent().parent();
 				//判断当前项是否为最后一项，若是则在添加下一项目时本身也添加可以下移按钮
@@ -136,14 +155,20 @@ bc.questionaryForm = {
 			});
 			
 			//删除选项
-			$form.find("#testTable").delegate("#deleteOption","click",function(){
+			$form.find("#testArea").delegate("#deleteOption","click",function(){
 				$(this).parent().parent().parent().remove();
 			});
 
 		},
 		//一条题目的模板
 		topic : [
-		         '<tr>',
+         '<table class="formFields" cellspacing="2" cellpadding="0" style="border-top: 1px;border-top-style: solid;">',
+         	'<tbody>',
+         		'<tr class="widthMarker">',
+         			'<td style="width: 100px;"> </td>',
+         			'<td> </td>',
+     			'</tr>',
+		        '<tr>',
 		         	'<td class="label">题型:</td>',
 		         	'<td class="value">',
 		         		'<input type="radio" name="type" id="questionary_create_type0" value="0" style="width:auto;">',
@@ -167,10 +192,10 @@ bc.questionaryForm = {
      				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
      				'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content">',
      				'<ul class="inputIcons" style="top:12px;right: 19px;">',
-     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此问题" id="addUsers"></li>',
-     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此问题" id="addUsers"></li>',
+     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此问题" id="upTopic"></li>',
+     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此问题" id="downTopic"></li>',
      					'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此问题下添加新问题" id="addTopic"></li>',
-     					'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此问题" id="addUnitOrDepartments"></li>',
+     					'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此问题" id="deleteTopic"></li>',
  					'</ul>',
  					'</td>',
 					'</tr>',
@@ -181,13 +206,15 @@ bc.questionaryForm = {
  						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" value="true">',
  						'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:496px;margin-left:4px;">',
  						'<ul class="inputIcons" style="top:12px;right: 19px;">',
- 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="addUsers"></li>',
+ 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="upOption"></li>',
  							'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
  							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
- 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="addUnitOrDepartments"></li>',
+ 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="deleteOption"></li>',
 							'</ul>',
 					'</td>',
-				'</tr>'
+				'</tr>',
+			'</tbody>',
+		'</table>'
 		         ].join(""),
 		         //一个选项的模板：
 		         option : [
@@ -198,7 +225,7 @@ bc.questionaryForm = {
 	 						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" value="true">',
 	 						'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:496px;margin-left:4px;">',
 	 						'<ul class="inputIcons" style="top:12px;right: 19px;">',
-	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="addUsers"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="upOption"></li>',
 	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
 	 							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
 	 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="deleteOption"></li>',

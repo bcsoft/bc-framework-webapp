@@ -72,8 +72,8 @@
 				</tbody>
 			</table>
 		</div>
-		<div id="div2">
-			<table id="testTable" class="formFields" cellspacing="2" cellpadding="0">
+		<div id="testArea">
+			<table class="formFields" cellspacing="2" cellpadding="0" style="border-top: 1px;border-top-style: solid;">
 				<tbody>
 					<tr class="widthMarker">
 						<td style="width: 100px;">&nbsp;</td>
@@ -91,9 +91,9 @@
 						<td class="label">题目:</td>
 						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;"><s:textfield name="e.subject" cssClass="ui-widget-content"/>
 							<ul class="inputIcons" style="top:12px;right: 19px;">
-							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
+							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="group.title.click2addUsers"/>' id="downTopic">
 							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="actor.title.click2addGroups"/>' id="addTopic">
-							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
+							 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="deleteTopic">
 							</ul>
 						</td>
 					</tr>
