@@ -209,13 +209,19 @@ bc.questionaryForm = {
 				var type = $(this).val();
 				//当前题目
 				var thisTopic=$(this).parent().parent().parent().parent();
-
+				//获取索引
+				var index = thisTopic.index();
 				//填空题
 				if(type==2){
 					//先插入
 					$(bc.questionaryForm.completion).insertAfter(thisTopic);
 					//用填空题替换当前的题目
 					thisTopic.replaceWith(thisTopic.next());
+					//初始化题目序号
+					bc.questionaryForm.getSerialNumber($form);
+					$($form.find("#testArea").children()[index]).find(":input[name='type']").eq(type).attr("checked","checked");
+
+					
 				}
 				//简答题
 				if(type==3){
@@ -223,6 +229,9 @@ bc.questionaryForm = {
 					$(bc.questionaryForm.jquiz).insertAfter(thisTopic);
 					//用填空题替换当前的题目
 					thisTopic.replaceWith(thisTopic.next());
+					//初始化题目序号
+					bc.questionaryForm.getSerialNumber($form);
+					$($form.find("#testArea").children()[index]).find(":input[name='type']").eq(type).attr("checked","checked");
 				}
 				//单选或多选时
 				if(type==0||type==1){
@@ -230,10 +239,11 @@ bc.questionaryForm = {
 					$(bc.questionaryForm.topic).insertAfter(thisTopic);
 					//用填空题替换当前的题目
 					thisTopic.replaceWith(thisTopic.next());
+					//初始化题目序号
+					bc.questionaryForm.getSerialNumber($form);
+					$($form.find("#testArea").children()[index]).find(":input[name='type']").eq(type).attr("checked","checked");
 					
 				}
-				//初始化题目序号
-				bc.questionaryForm.getSerialNumber($form);
 
 				
 			});
@@ -291,7 +301,7 @@ bc.questionaryForm = {
 					'</tr>',
      			'<tr class="option">',
      				'<td>&nbsp;</td>',
-     				'<td style="font-weight: normal;text-align: right;">选项:</td>',
+     				'<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>',
  					'<td class="value">',
  						'<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
  							'<input type="checkbox" name="" value="true" id="questionary_create_" style="width:1em;">',

@@ -108,7 +108,7 @@
 					</tr>
 					<tr class="option">
 						<td>&nbsp;</td>
-						<td style="font-weight: normal;text-align: right;">选项:</td>
+						<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>
 						<td class="value" >
 							<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
 							    <s:checkbox name="" cssStyle="width:1em;"/>
