@@ -204,10 +204,42 @@ bc.questionaryForm = {
 				$(this).parent().parent().remove();
 			});
 			
-			
+			//切换题型
+			$form.find("#testArea").delegate(":input[name='type']","change",function(){
+				var type = $(this).val();
+				//当前题目
+				var thisTopic=$(this).parent().parent().parent().parent();
+
+				//填空题
+				if(type==2){
+					//先插入
+					$(bc.questionaryForm.completion).insertAfter(thisTopic);
+					//用填空题替换当前的题目
+					thisTopic.replaceWith(thisTopic.next());
+				}
+				//简答题
+				if(type==3){
+					//先插入
+					$(bc.questionaryForm.jquiz).insertAfter(thisTopic);
+					//用填空题替换当前的题目
+					thisTopic.replaceWith(thisTopic.next());
+				}
+				//单选或多选时
+				if(type==0||type==1){
+					//先插入
+					$(bc.questionaryForm.topic).insertAfter(thisTopic);
+					//用填空题替换当前的题目
+					thisTopic.replaceWith(thisTopic.next());
+					
+				}
+				//初始化题目序号
+				bc.questionaryForm.getSerialNumber($form);
+
+				
+			});
 
 		},
-		//一条题目的模板
+		//一条选择题目的模板
 		topic : [
          '<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">',
          	'<tbody>',
@@ -276,6 +308,114 @@ bc.questionaryForm = {
 				'</tr>',
 			'</tbody>',
 		'</table>'
+		         ].join(""),		
+		         //一条填空题目的模板
+		         completion : [
+		 		         '<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">',
+		 		         	'<tbody>',
+		 		         		'<tr class="widthMarker">',
+		 		         			'<td style="width: 40px;">&nbsp;</td>',
+		 		         			'<td style="width: 60px;">&nbsp;</td>',
+		 		         			'<td>&nbsp;</td>',
+		 		     			'</tr>',
+		 				        '<tr>',
+		 				        	'<td style="font-weight: normal;text-align: left;">第<span style="color: red;"></span>题</td>',
+		 				         	'<td style="font-weight: normal;text-align: right;">题型:</td>',
+		 				         	'<td class="value">',
+		 				         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">',
+		 				         			'<input type="checkbox" name="e.innerFix" value="true" id="questionary_create_e_innerFix" style="width:1em;">',
+		 				         			'<label style="width:auto;margin-left:4px;">必选题</label>',
+		 			         			'</div>',
+		 				         		'<input type="radio" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
+		 				         		'<label for="questionary_create_type0">单选</label>',
+		 				         		'<input type="radio" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		 				         		'<label for="questionary_create_type1">多选</label>',
+		 				         		'<input type="radio" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		 				         		'<label for="questionary_create_type2">填空</label>',
+		 				         		'<input type="radio" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">简答</label>',
+		 		         			'</td>',
+		 		     			'</tr>',
+		 		     			'<tr>',
+		 		     				'<td>&nbsp;</td>',
+		 		     				'<td style="font-weight: normal;text-align: right;">题目:</td>',
+		 		     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+		 		     				'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content">',
+		 		     				'<ul class="inputIcons" style="top:12px;right: 19px;">',
+		 		     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此问题" id="upTopic"></li>',
+		 		     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此问题" id="downTopic"></li>',
+		 		     					'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此问题下添加新问题" id="addTopic"></li>',
+		 		     					'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此问题" id="deleteTopic"></li>',
+		 		 					'</ul>',
+		 		 					'</td>',
+		 							'</tr>',
+		 		     			'<tr>',
+		 		     				'<td>&nbsp;</td>',
+		 		     				'<td style="font-weight: normal;text-align: right;vertical-align: top;">内容:</td>',
+		 		     				'<td class="value">',
+		 		     					'<textarea name="e.description" cols="" rows="3" id="questionary_create_e_description" class="ui-widget-content noresize" style="width: 98%;">',
+		 		     					'</textarea>',
+	 		     					'</td>',
+		 						'</tr>',
+		 						'<tr>',
+		 							'<td>&nbsp;</td>',
+		 							'<td style="font-weight: normal;text-align: right;vertical-align: top;">答案:</td>',
+		 							'<td class="value"><textarea name="e.description" cols="" rows="3" id="questionary_create_e_description" class="ui-widget-content noresize" style="width: 98%;"></textarea>',
+		 							'</td>',
+	 							'</tr>',
+		 					'</tbody>',
+		 				'</table>'
+		 				         ].join(""),
+			         //一条简答题目的模板
+			         jquiz : [
+		 				 		         '<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">',
+		 				 		         	'<tbody>',
+		 				 		         		'<tr class="widthMarker">',
+		 				 		         			'<td style="width: 40px;">&nbsp;</td>',
+		 				 		         			'<td style="width: 60px;">&nbsp;</td>',
+		 				 		         			'<td>&nbsp;</td>',
+		 				 		     			'</tr>',
+		 				 				        '<tr>',
+		 				 				        	'<td style="font-weight: normal;text-align: left;">第<span style="color: red;"></span>题</td>',
+		 				 				         	'<td style="font-weight: normal;text-align: right;">题型:</td>',
+		 				 				         	'<td class="value">',
+		 				 				         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">',
+		 				 				         			'<input type="checkbox" name="e.innerFix" value="true" id="questionary_create_e_innerFix" style="width:1em;">',
+		 				 				         			'<label style="width:auto;margin-left:4px;">必选题</label>',
+		 				 			         			'</div>',
+		 				 				         		'<input type="radio" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
+		 				 				         		'<label for="questionary_create_type0">单选</label>',
+		 				 				         		'<input type="radio" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		 				 				         		'<label for="questionary_create_type1">多选</label>',
+		 				 				         		'<input type="radio" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		 				 				         		'<label for="questionary_create_type2">填空</label>',
+		 				 				         		'<input type="radio" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		 				 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">简答</label>',
+		 				 		         			'</td>',
+		 				 		     			'</tr>',
+		 				 		     			'<tr>',
+		 				 		     				'<td>&nbsp;</td>',
+		 				 		     				'<td style="font-weight: normal;text-align: right;">题目:</td>',
+		 				 		     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+		 				 		     				'<input type="text" name="e.subject" value="" id="questionary_create_e_subject" class="ui-widget-content">',
+		 				 		     				'<ul class="inputIcons" style="top:12px;right: 19px;">',
+		 				 		     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此问题" id="upTopic"></li>',
+		 				 		     					'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此问题" id="downTopic"></li>',
+		 				 		     					'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此问题下添加新问题" id="addTopic"></li>',
+		 				 		     					'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此问题" id="deleteTopic"></li>',
+		 				 		 					'</ul>',
+		 				 		 					'</td>',
+		 				 							'</tr>',
+		 				 		     			'<tr>',
+		 				 		     				'<td>&nbsp;</td>',
+		 				 		     				'<td style="font-weight: normal;text-align: right;vertical-align: top;">内容:</td>',
+		 				 		     				'<td class="value">',
+		 				 		     					'<textarea name="e.description" cols="" rows="3" id="questionary_create_e_description" class="ui-widget-content noresize" style="width: 98%;">',
+		 				 		     					'</textarea>',
+		 			 		     					'</td>',
+		 				 						'</tr>',
+		 				 					'</tbody>',
+		 				 				'</table>'
 		         ].join(""),
          //一个选项的模板：
          option : [
@@ -295,6 +435,7 @@ bc.questionaryForm = {
            li4DownOption : [
                                     '<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="在此选项下添加新选项" id="downOption"></li>'
             ].join(""), 
+            
             //初始化题目数
             getSerialNumber : function (form){
             	var $form = form;
