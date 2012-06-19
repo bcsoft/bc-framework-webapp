@@ -76,19 +76,27 @@
 			<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
 				<tbody>
 					<tr class="widthMarker">
-						<td style="width: 100px;">&nbsp;</td>
+						<td style="width: 40px;">&nbsp;</td>
+						<td style="width: 60px;">&nbsp;</td>
 						<td >&nbsp;</td>
 					</tr>
 					<s:if test="%{e.isNew()}">
 					<tr>
-		               	<td class="label">题型:</td>
-						<td class="value"><s:radio name="type" value="type" list="#{'0':'单选','1':'多选','2':'填空','3':'简答'}" cssStyle="width:auto;"/>
-							<div style="position:relative;right:-190px; display: inline-block;">选项布局：<s:radio name="config" value="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+						<td style="font-weight: normal;text-align: left;">第<span style="color: red;">1</span>题</td>
+		               	<td style="font-weight: normal;text-align: right;">题型:</td>
+						<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
+							<s:checkbox name="e.innerFix" cssStyle="width:1em;" /><label>必选题</label></div>
+							<s:radio name="type" value="type" list="#{'0':'单选','1':'多选','2':'填空','3':'简答'}" cssStyle="width:auto;"/>
+							<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
+							<s:checkbox name="e.innerFix" cssStyle="width:1em;" /><label>全对方有分</label></div>
+							<div style="position:relative;right:-30px; display: inline-block;">选项布局：
+								<s:radio name="config" value="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="label">题目:</td>
+						<td>&nbsp;</td>
+						<td style="font-weight: normal;text-align: right;">题目:</td>
 						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;"><s:textfield name="e.subject" cssClass="ui-widget-content"/>
 							<ul class="inputIcons" style="top:12px;right: 19px;">
 								<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upTopic"/>' id="upTopic"></li>
@@ -99,7 +107,8 @@
 						</td>
 					</tr>
 					<tr class="option">
-						<td class="topLabel">选项:</td>
+						<td>&nbsp;</td>
+						<td style="font-weight: normal;text-align: right;">选项:</td>
 						<td class="value" >
 							<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
 							    <s:checkbox name="" cssStyle="width:1em;"/>
