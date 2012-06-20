@@ -297,13 +297,13 @@ bc.questionaryForm = {
 		         			'<input type="checkbox" name="required" id="questionary_create_e_innerFix" style="width:1em;">',
 		         			'<label style="width:auto;margin-left:4px;">必选题</label>',
 	         			'</div>',
-		         		'<input type="radio" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
+		         		'<input type="radio" class="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
 		         		'<label for="questionary_create_type0">单选</label>',
-		         		'<input type="radio" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		         		'<input type="radio" class="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
 		         		'<label for="questionary_create_type1">多选</label>',
-		         		'<input type="radio" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		         		'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
 		         		'<label for="questionary_create_type2">填空</label>',
-		         		'<input type="radio" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		         		'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
 		         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">简答</label>',
 		         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">',
 		         			'<input type="checkbox" name="seperateScore" id="questionary_create_e_innerFix" style="width:1em;">',
@@ -367,13 +367,13 @@ bc.questionaryForm = {
 		 				         			'<input type="checkbox" name="required" id="questionary_create_e_innerFix" style="width:1em;">',
 		 				         			'<label style="width:auto;margin-left:4px;">必选题</label>',
 		 			         			'</div>',
-		 				         		'<input type="radio" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
+		 				         		'<input type="radio" class="type" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
 		 				         		'<label for="questionary_create_type0">单选</label>',
-		 				         		'<input type="radio" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		 				         		'<input type="radio" class="type" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
 		 				         		'<label for="questionary_create_type1">多选</label>',
-		 				         		'<input type="radio" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		 				         		'<input type="radio" class="type" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
 		 				         		'<label for="questionary_create_type2">填空</label>',
-		 				         		'<input type="radio" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		 				         		'<input type="radio" class="type" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
 		 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">简答</label>',
 		 		         			'</td>',
 		 		     			'</tr>',
@@ -424,13 +424,13 @@ bc.questionaryForm = {
 		 				 				         			'<input type="checkbox" name="required" id="questionary_create_e_innerFix" style="width:1em;">',
 		 				 				         			'<label style="width:auto;margin-left:4px;">必选题</label>',
 		 				 			         			'</div>',
-		 				 				         		'<input type="radio" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
+		 				 				         		'<input type="radio" class="type" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
 		 				 				         		'<label for="questionary_create_type0">单选</label>',
-		 				 				         		'<input type="radio" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		 				 				         		'<input type="radio" class="type" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
 		 				 				         		'<label for="questionary_create_type1">多选</label>',
-		 				 				         		'<input type="radio" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		 				 				         		'<input type="radio" class="type" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
 		 				 				         		'<label for="questionary_create_type2">填空</label>',
-		 				 				         		'<input type="radio" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		 				 				         		'<input type="radio" class="type" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
 		 				 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">简答</label>',
 		 				 		         			'</td>',
 		 				 		     			'</tr>',
@@ -499,17 +499,19 @@ bc.questionaryForm = {
         		$page.find("#testArea").children().each(function(){
         			//table的tr
         			var tr = $(this).children().children();
+        			//题目项
+        			var question = tr.eq(1).children().eq(2);
         			//排序号
         			var orderNo = tr.eq(1).children().first().children().text();
         			alert("序号：" +orderNo);
         			//是否必选
-        			var required = tr.eq(1).children().eq(2).find(":input[name='required']").val();
+        			var required = question.find(":input[name='required']")[0].checked;
         			alert("是否必选：" +required);
         			//题型
-        			var type = tr.eq(1).children().eq(2).find(":input[type='radio']").val();
-        			alert("题型：" +type);
+        			var type = question.find("input[type='radio'][class='type']:checked").val();
+        			alert("题型：" +question.find("input[type='radio'][class='type']").size());
         			//布局
-        			var config = tr.eq(1).children().eq(2).find(":input[name='config']").val();
+        			var config = question.find(":input[name='config']").val();
         			alert("布局：" +config);
         			//题目
         			var subject = tr.eq(2).children().eq(2).find(":input[name='subject']").val();

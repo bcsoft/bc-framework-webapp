@@ -86,7 +86,7 @@
 		               	<td style="font-weight: normal;text-align: right;">题型:</td>
 						<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 							<s:checkbox name="required" cssStyle="width:1em;" /><label>必选题</label></div>
-							<s:radio name="type" value="type" list="#{'0':'单选','1':'多选','2':'填空','3':'简答'}" cssStyle="width:auto;"/>
+							<s:radio cssClass="type" name="type1" value="type" list="#{'0':'单选','1':'多选','2':'填空','3':'简答'}" cssStyle="width:auto;"/>
 							<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
 							<s:checkbox name="seperateScore" cssStyle="width:1em;" /><label>全对方有分</label></div>
 							<div style="position:relative;right:-30px; display: inline-block;">选项布局：
