@@ -5,7 +5,7 @@
 	data-js='js:bc_identity,<s:url value="/bc/questionary/form.js"/>'
 	data-initMethod='bc.questionaryForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
-	<s:form name="questionaryForm" theme="simple">
+	<s:form name="questionaryForm" theme="simple" cssStyle="width:630px;">
 		<div id="div1">
 			<table class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
@@ -86,19 +86,23 @@
 		               	<td style="font-weight: normal;text-align: right;">题型:</td>
 						<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 							<s:checkbox name="required" cssStyle="width:1em;" /><label>必选题</label></div>
-							<s:radio cssClass="type" name="type1" value="type" list="#{'0':'单选','1':'多选','2':'填空','3':'简答'}" cssStyle="width:auto;"/>
+							<s:radio cssClass="type" name="type1" value="0" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
 							<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
 							<s:checkbox name="seperateScore" cssStyle="width:1em;" /><label>全对方有分</label></div>
-							<div style="position:relative;right:-30px; display: inline-block;">选项布局：
-								<s:radio name="config" value="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+							<div style="position:relative;right:-20px; display: inline-block;">选项布局：
+								<s:radio name="config" value="%{'vertical'}" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
 						<td style="font-weight: normal;text-align: right;">题目:</td>
-						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;"><s:textfield name="subject" cssClass="ui-widget-content"/>
-							<ul class="inputIcons" style="top:12px;right: 19px;">
+						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
+							<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;"/>
+							<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+								<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+							</div>
+							<ul class="inputIcons" style="top:12px;right: 62px;">
 								<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upTopic"/>' id="upTopic"></li>
 							 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downTopic"/>' id="downTopic">
 							 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addTopic"/>' id="addTopic">
@@ -110,14 +114,17 @@
 						<td>&nbsp;</td>
 						<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>
 						<td class="value" >
-							<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
-							    <s:checkbox name="standard" cssStyle="width:1em;"/>
-								<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:496px;"/>
-								<ul class="inputIcons" style="top:12px;right: 19px;">
+							<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
+								<s:radio cssClass="standard" name="standard1" value="true" list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
+								<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:446px;"/>
+								<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+									<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+								</div>
+								<ul class="inputIcons" style="top:12px;right: 49px;">
 									<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upOption"/>' id="upOption"></li>
-								 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downOption"/>' id="downOption">
-								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addOption"/>' id="addOption">
-								 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteOption"/>' id="deleteOption">
+								 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downOption"/>' id="downOption"></li>
+								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addOption"/>' id="addOption"></li>
+								 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteOption"/>' id="deleteOption"></li>
 								</ul>
 							</div>
 						</td>
