@@ -114,7 +114,7 @@ bc.questionaryForm = {
 				//当前题目：
 				var thisTopic = $(this).parent().parent().parent().parent().parent();
 				//插入题目
-				$(bc.questionaryForm.topic).insertAfter(thisTopic);
+				$(bc.questionaryForm.radioTopic).insertAfter(thisTopic);
 				
 				//初始化题目序号
 				bc.questionaryForm.getSerialNumber($form);
@@ -126,10 +126,15 @@ bc.questionaryForm = {
 				var thirdTd = newTopic.children().children().eq(1).children().eq(2);
 				//题目类型
 				var newType = "type" + (newTopic.index()+1);
-				thirdTd.find("input[type='radio']").slice(0,4).attr("name", newType);
+				thirdTd.find("input[type='radio'][class='type']").attr("name", newType);
 				//布局
-				var newScore = "seperateScore" + (thisTopic.next().index()+1);
-				thirdTd.find("input[type='radio']").slice(4,6).attr("name", newScore);
+				var newConfig = "config" + (thisTopic.next().index()+1);
+				thirdTd.find("input[type='radio'][class='config']").attr("name", newConfig);
+				//选项的标准答案
+				var fourTd = newTopic.children().children().eq(3).children().eq(2);
+				var newStandard = "standard" + (newTopic.index()+1);
+				fourTd.find("input[type='radio']").attr("name", newStandard);
+				
 				
 			});
 			//删除问题
@@ -174,7 +179,30 @@ bc.questionaryForm = {
 				//当前选项
 				var thisOption=$(this).parent().parent();
 				
-				$(bc.questionaryForm.option).insertAfter(thisOption);
+				var tr = thisOption.parent().parent();
+				//索引
+				var table = tr.parent().parent();
+				var index = table.index();
+				
+				//获取题型
+				
+				var td=tr.prev().prev().children().eq(2);
+				var type = td.find("input[type='radio'][class='type']:checked").val();
+				//多选
+				if(type==1){
+					$(bc.questionaryForm.option).insertAfter(thisOption);
+					//标识
+					var k = "standard" + (index + 1);
+					thisOption.next().find("input[type='checkbox'][class='standard']").attr("name",k);
+				}
+				//单选
+				if(type==0){
+					$(bc.questionaryForm.radinOption).insertAfter(thisOption);
+					//标识
+					var k = "standard" + (index + 1);
+					thisOption.next().find("input[type='radio'][class='standard']").attr("name",k);
+				}
+				
 			});
 			
 			//上移选项
@@ -209,9 +237,24 @@ bc.questionaryForm = {
 			});
 			
 			//切换题型
-			$form.find("#testArea").delegate(":input[type='radio']","change",function(){
-				var type = $(this).val();
+			$form.find("#testArea").delegate(":input[type='radio'][class='type']","change",function(){
+				//td
+				var td = $(this).parent();
 				//当前题目
+				var type = $(this).val();
+				//是否必选
+				var requiredValue = td.find(":input[name='required']")[0].checked;
+				//是否全对方得分
+				var seperateScoreCheck = td.find(":input[name='seperateScore']");
+				if(!(seperateScoreCheck[0]===undefined)){
+					var seperateScoreValue =seperateScoreCheck[0].checked;
+				}
+				//布局
+				var configRadio = td.find("input[type='radio'][class='config']");
+				if(!configRadio===undefined){
+					var configValue = td.find("input[type='radio'][class='config']:checked").val();
+				}
+				
 				var thisTopic=$(this).parent().parent().parent().parent();
 				//获取索引
 				var index = thisTopic.index();
@@ -229,13 +272,16 @@ bc.questionaryForm = {
 					var thirdTd = thisCompletion.children().children().eq(1).children().eq(2);
 					//题目类型
 					var newType = "type" + (index+1);
-					thirdTd.find("input[type='radio']").slice(0,4).attr("name", newType);
-
-					thisCompletion.find(":input[type='radio']").eq(type).attr("checked","checked");
-
+					thirdTd.find("input[type='radio'][class='type']").attr("name", newType);
+					thisCompletion.find(":input[type='radio'][class='type']").eq(type).attr("checked","checked");
+					//是否必填
+					if(requiredValue){
+						//thisCompletion.find(":input[name='required']").val(requiredValue);
+						thisCompletion.find(":input[name='required']").attr("checked","checked");
+					}
 					
 				}
-				//c
+				//简答题
 				if(type==3){
 					//先插入
 					$(bc.questionaryForm.jquiz).insertAfter(thisTopic);
@@ -249,14 +295,19 @@ bc.questionaryForm = {
 					var thirdTd = thisJquiz.children().children().eq(1).children().eq(2);
 					//题目类型
 					var newType = "type" + (index+1);
-					thirdTd.find("input[type='radio']").slice(0,4).attr("name", newType);
-					
+					thirdTd.find("input[type='radio'][class='type']").attr("name", newType);
 					thisJquiz.find(":input[type='radio']").eq(type).attr("checked","checked");
+					//是否必填
+					if(requiredValue){
+						//thisCompletion.find(":input[name='required']").val(requiredValue);
+						thisJquiz.find(":input[name='required']").attr("checked","checked");
+					}
+
 				}
-				//单选或多选时
-				if(type==0||type==1){
+				//单选
+				if(type==0){
 					//先插入
-					$(bc.questionaryForm.topic).insertAfter(thisTopic);
+					$(bc.questionaryForm.radioTopic).insertAfter(thisTopic);
 					//用填空题替换当前的题目
 					thisTopic.replaceWith(thisTopic.next());
 					//初始化题目序号
@@ -273,6 +324,43 @@ bc.questionaryForm = {
 					thirdTd.find("input[type='radio']").slice(4,6).attr("name", newScore);
 
 					newTopic.find(":input[type='radio']").eq(type).attr("checked","checked");
+					//是否必填
+					if(requiredValue){
+						//thisCompletion.find(":input[name='required']").val(requiredValue);
+						newTopic.find(":input[name='required']").attr("checked","checked");
+					}
+
+					
+				}
+				
+				//多选
+				if(type==1){
+					//先插入
+					$(bc.questionaryForm.topic).insertAfter(thisTopic);
+					//用填空题替换当前的题目
+					thisTopic.replaceWith(thisTopic.next());
+					//初始化题目序号
+					bc.questionaryForm.getSerialNumber($form);
+					//新题目
+					var newTopic = $($form.find("#testArea").children()[index]);
+					//包含题目类型的td
+					var thirdTd = newTopic.children().children().eq(1).children().eq(2);
+					//题目类型
+					var newType = "type" + (index+1);
+					thirdTd.find("input[type='radio']").slice(0,4).attr("name", newType);
+					//布局
+					var newScore = "seperateScore" + (index+1);
+					thirdTd.find("input[type='radio']").slice(4,6).attr("name", newScore);
+					newTopic.find(":input[type='radio']").eq(type).attr("checked","checked");
+					//是否必填
+					if(requiredValue){
+						//thisCompletion.find(":input[name='required']").val(requiredValue);
+						newTopic.find(":input[name='required']").attr("checked","checked");
+					}
+					//是否全对方得分
+					if(seperateScoreValue){
+						newTopic.find(":input[name='seperateScore']").attr("checked","checked");
+					}
 					
 				}
 
@@ -310,9 +398,9 @@ bc.questionaryForm = {
 		         			'<label style="width:auto;margin-left:4px;">全对方有分</label>',
 	         			'</div>',
 		         		'<div style="position:relative;right:-24px; display: inline-block;">选项布局：',
-		         			'<input type="radio" name="config" id="questionary_create_configvertical" value="vertical" style="width:auto;margin-left:4px">',
+		         			'<input type="radio" name="config" checked="checked" class="config" id="questionary_create_configvertical" value="vertical" style="width:auto;margin-left:4px">',
 		         			'<label for="questionary_create_configvertical">垂直</label>',
-		         			'<input type="radio" name="config" id="questionary_create_confighorizontal" value="horizontal" style="width:auto;margin-left:4px">',
+		         			'<input type="radio" name="config" class="config" id="questionary_create_confighorizontal" value="horizontal" style="width:auto;margin-left:4px">',
 		         			'<label for="questionary_create_confighorizontal">水平</label>',
 	         			'</div>',
          			'</td>',
@@ -338,7 +426,7 @@ bc.questionaryForm = {
      				'<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>',
  					'<td class="value">',
  						'<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
- 							'<input type="checkbox" name="standard" value="true" id="questionary_create_" style="width:1em;">',
+ 							'<input type="checkbox" name="standard" value="true" class="standard" id="questionary_create_" style="width:1em;">',
  							'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" >',
  							'<input type="text" name="subject" value id="questionary_create_e_subject" class="ui-widget-content" style="width:446px;margin-left:6px;">',
  							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
@@ -386,9 +474,9 @@ bc.questionaryForm = {
 		 		         			'<label style="width:auto;margin-left:4px;">全对方有分</label>',
 		 	         			'</div>',
 		 		         		'<div style="position:relative;right:-24px; display: inline-block;">选项布局：',
-		 		         			'<input type="radio" name="config" id="questionary_create_configvertical" value="vertical" style="width:auto;margin-left:4px">',
+		 		         			'<input type="radio" name="config" class="config" id="questionary_create_configvertical" value="vertical" checked="checked" style="width:auto;margin-left:4px">',
 		 		         			'<label for="questionary_create_configvertical">垂直</label>',
-		 		         			'<input type="radio" name="config" id="questionary_create_confighorizontal" value="horizontal" style="width:auto;margin-left:4px">',
+		 		         			'<input type="radio" name="config" class="config" id="questionary_create_confighorizontal" value="horizontal" style="width:auto;margin-left:4px">',
 		 		         			'<label for="questionary_create_confighorizontal">水平</label>',
 		 	         			'</div>',
 		          			'</td>',
@@ -414,7 +502,7 @@ bc.questionaryForm = {
 		      				'<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>',
 		  					'<td class="value">',
 		  						'<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
-		  							'<input type="checkbox" name="standard" value="true" id="questionary_create_" style="width:1em;">',
+		  							'<input type="radio" name="standard" checked="checked" id="questionary_create_standard1true" class="standard" style="width:auto;width:1em;">',
 		  							'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" >',
 		  							'<input type="text" name="subject" value id="questionary_create_e_subject" class="ui-widget-content" style="width:446px;margin-left:6px;">',
 		  							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
@@ -552,10 +640,10 @@ bc.questionaryForm = {
 		 				 					'</tbody>',
 		 				 				'</table>'
 		         ].join(""),
-         //一个选项的模板：
+         //多选题选项的模板：
          option : [
 	 					'<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
-	 						'<input type="checkbox" name="standard" value="true" id="questionary_create_" style="width:1em;margin-left:1px;">',
+	 						'<input type="checkbox" name="standard" value="true" class="standard" id="questionary_create_" style="width:1em;margin-left:1px;">',
 	 						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" >',
 	 						'<input type="text" name="subject" value id="questionary_create_e_subject" class="ui-widget-content" style="width:446px;margin-left:4px;">',
  							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
@@ -569,6 +657,23 @@ bc.questionaryForm = {
 							'</ul>',
 						'</div>',
            ].join(""),
+           //单选题选项模板：
+           radinOption : [
+	 					'<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+	 						'<input type="radio" name="standard1" class="standard" id="questionary_create_standard1true" class="standard" style="width:auto;width:1em;">',
+	 						'<input type="hidden" id="__checkbox_questionary_create_" name="__checkbox_" >',
+	 						'<input type="text" name="subject" value id="questionary_create_e_subject" class="ui-widget-content" style="width:446px;margin-left:4px;">',
+							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
+								'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
+							'</div>',
+	 						'<ul class="inputIcons" style="top:12px;right: 60px;">',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="upOption"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
+	 							'<li class="inputIcon ui-icon ui-icon-circle-close" title="删除此选项" id="deleteOption"></li>',
+							'</ul>',
+						'</div>',
+        ].join(""),
            //下移按钮模板：
            li4DownOption : [
                                     '<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="在此选项下添加新选项" id="downOption"></li>'
