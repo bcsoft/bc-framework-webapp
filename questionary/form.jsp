@@ -73,6 +73,7 @@
 			</table>
 		</div>
 		<div id="testArea">
+			<s:if test="%{e.isNew()}">
 			<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
 				<tbody>
 					<tr class="widthMarker">
@@ -80,7 +81,6 @@
 						<td style="width: 60px;">&nbsp;</td>
 						<td >&nbsp;</td>
 					</tr>
-					<s:if test="%{e.isNew()}">
 					<tr>
 						<td style="font-weight: normal;text-align: left;">第<span style="color: red;">1</span>题</td>
 		               	<td style="font-weight: normal;text-align: right;">题型:</td>
@@ -90,7 +90,7 @@
 							<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
 							<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
 							<div style="position:relative;right:-20px; display: inline-block;">选项布局：
-								<s:radio name="config" cssClass="config" value="%{'vertical'}" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+								<s:radio name="config1" cssClass="config" value="%{'vertical'}" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
 							</div>
 						</td>
 					</tr>
@@ -129,12 +129,233 @@
 							</div>
 						</td>
 					</tr>
-					</s:if><s:else>
-						<s:iterator var="b" value="">
-						</s:iterator>
-					</s:else>
 					</tbody>
 				</table>
+					</s:if><s:else>
+						<s:iterator var="b" value="e.questions">
+						<!-- 单选题 -->
+						<s:if test="type==0">
+							<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+								<tbody>
+									<tr class="widthMarker">
+										<td style="width: 40px;">&nbsp;</td>
+										<td style="width: 60px;">&nbsp;</td>
+										<td >&nbsp;</td>
+									</tr>
+									<tr>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+						               	<td style="font-weight: normal;text-align: right;">题型:</td>
+										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
+											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
+											<s:radio cssClass="type" name="%{'type'+orderNo}" value="%{type}" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
+											<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
+											<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
+											<div style="position:relative;right:-20px; display: inline-block;">选项布局：
+												<s:radio name="%{'config'+orderNo}" value="%{config}" cssClass="config"  list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;">题目:</td>
+										<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
+											<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;"/>
+											<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+												<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+											</div>
+											<ul class="inputIcons" style="top:12px;right: 62px;">
+												<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upTopic"/>' id="upTopic"></li>
+											 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downTopic"/>' id="downTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addTopic"/>' id="addTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteTopic"/>' id="deleteTopic">
+											</ul>
+										</td>
+									</tr>
+									<tr class="option">
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>
+										<td class="value" >
+											<s:iterator var="c" value="items">
+											<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
+												<s:radio cssClass="standard" name="%{'standard'+orderNo}" value="%{standard}" list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
+												<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:446px;"/>
+												<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+													<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+												</div>
+												<ul class="inputIcons" style="top:12px;right: 49px;">
+													<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upOption"/>' id="upOption"></li>
+												 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downOption"/>' id="downOption"></li>
+												 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addOption"/>' id="addOption"></li>
+												 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteOption"/>' id="deleteOption"></li>
+												</ul>
+											</div>
+											</s:iterator>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</s:if><s:elseif test="type==1">
+							<!-- 多选 -->
+							<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+								<tbody>
+									<tr class="widthMarker">
+										<td style="width: 40px;">&nbsp;</td>
+										<td style="width: 60px;">&nbsp;</td>
+										<td >&nbsp;</td>
+									</tr>
+									<tr>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+						               	<td style="font-weight: normal;text-align: right;">题型:</td>
+										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
+											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
+											<s:radio cssClass="type" name="%{'type'+orderNo}" value="%{type}" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
+											<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
+											<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
+											<div style="position:relative;right:-20px; display: inline-block;">选项布局：
+												<s:radio name="%{'config'+orderNo}" value="%{config}" cssClass="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;">题目:</td>
+										<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
+											<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;"/>
+											<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+												<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+											</div>
+											<ul class="inputIcons" style="top:12px;right: 62px;">
+												<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upTopic"/>' id="upTopic"></li>
+											 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downTopic"/>' id="downTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addTopic"/>' id="addTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteTopic"/>' id="deleteTopic">
+											</ul>
+										</td>
+									</tr>
+									<tr class="option">
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>
+										
+										<td class="value" >
+											<s:iterator var="c" value="items">
+											<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
+												<s:checkbox cssClass="standard" name="standard" cssStyle="width:1em;"/>
+												<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:446px;"/>
+												<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+													<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+												</div>
+												<ul class="inputIcons" style="top:12px;right: 49px;">
+													<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upOption"/>' id="upOption"></li>
+												 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downOption"/>' id="downOption"></li>
+												 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addOption"/>' id="addOption"></li>
+												 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteOption"/>' id="deleteOption"></li>
+												</ul>
+											</div>
+											</s:iterator>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</s:elseif><s:elseif test="type==2">
+							<!-- 填空 -->
+							<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+								<tbody>
+									<tr class="widthMarker">
+										<td style="width: 40px;">&nbsp;</td>
+										<td style="width: 60px;">&nbsp;</td>
+										<td >&nbsp;</td>
+									</tr>
+									<tr>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+						               	<td style="font-weight: normal;text-align: right;">题型:</td>
+										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
+											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
+											<s:radio cssClass="type" name="%{'type'+orderNo}" value="%{type}" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
+											<div style="position:relative;right:-180px;width: 100px;display: inline-block;">
+												<label>默认行数:</label><s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;">题目:</td>
+										<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
+											<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;"/>
+											<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+												<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+											</div>
+											<ul class="inputIcons" style="top:12px;right: 62px;">
+												<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upTopic"/>' id="upTopic"></li>
+											 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downTopic"/>' id="downTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addTopic"/>' id="addTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteTopic"/>' id="deleteTopic">
+											</ul>
+										</td>
+									</tr>
+									<tr class="option">
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;vertical-align: top;">内容:</td>
+										<td class="value" >
+											<s:textarea name="subject" value="%{items.iterator().next().subject}" rows="3" cssClass="ui-widget-content noresize"/>
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;vertical-align: top;">答案:</td>
+										<td class="value" >
+											<s:textarea name="config" value="%{items.iterator().next().config}" rows="3" cssClass="ui-widget-content noresize"/>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</s:elseif><s:elseif test="type==3">
+							<!-- 简答 -->
+							<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+								<tbody>
+									<tr class="widthMarker">
+										<td style="width: 40px;">&nbsp;</td>
+										<td style="width: 60px;">&nbsp;</td>
+										<td >&nbsp;</td>
+									</tr>
+									<tr>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+						               	<td style="font-weight: normal;text-align: right;">题型:</td>
+										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
+											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
+											<s:radio cssClass="type" name="%{'type'+orderNo}" value="%{type}" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
+											<div style="position:relative;right:-180px;width: 100px;display: inline-block;">
+												<label>默认行数:</label><s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;">题目:</td>
+										<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
+											<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;"/>
+											<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
+												<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
+											</div>
+											<ul class="inputIcons" style="top:12px;right: 62px;">
+												<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title='<s:text name="questionary.title.click2upTopic"/>' id="upTopic"></li>
+											 	<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="questionary.title.click2downTopic"/>' id="downTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="questionary.title.click2addTopic"/>' id="addTopic">
+											 	<li class="inputIcon ui-icon ui-icon-circle-close" title='<s:text name="questionary.title.click2deleteTopic"/>' id="deleteTopic">
+											</ul>
+										</td>
+									</tr>
+									<tr class="option">
+										<td>&nbsp;</td>
+										<td style="font-weight: normal;text-align: right;vertical-align: top;">内容:</td>
+										<td class="value" >
+											<s:textarea name="subject" value="%{items.iterator().next().subject}" rows="3" cssClass="ui-widget-content noresize"/>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</s:elseif>
+						</s:iterator>
+					</s:else>
 			</div>
 			<div class="formTopInfo">
 				状态：<s:property value="%{statusesValue[e.status]}" />&nbsp;&nbsp;&nbsp;&nbsp;登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
@@ -145,6 +366,7 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.author.id" />
 		<s:hidden name="e.type" />
+		<s:hidden name="topics" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		
 	</s:form>
