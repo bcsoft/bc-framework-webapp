@@ -29,7 +29,11 @@
 </s:else>
 <!-- 额外加载的css文件 -->
 <s:if test='%{"app.index.css" != getText("app.index.css")}'>
-	<link rel="stylesheet" type="text/css" href="<s:url value='%{getText("app.index.css")}' ><s:param name='ts' value='ts'/></s:url>" />
+	<s:generator separator="," val="%{getText('app.index.css')}">
+		<s:iterator var="extraCss">
+			<link rel="stylesheet" type="text/css" href="<s:url value='%{extraCss}' ><s:param name='ts' value='ts'/></s:url>" />
+		</s:iterator>
+	</s:generator>
 </s:if>
 </head>
 <body style='font-size:<s:property value="personalConfig.font" />px;' class="bc">
@@ -92,9 +96,7 @@
 		</div>
 		
 		<!-- 右边栏 -->
-		<div id="right">
-			<div class="item" id="indexCalendar"></div>
-			<div class="item" id="bulletinBoard"></div>
+		<div id="right" class="ui-widget-content">
 		</div>
 	</div>
 	
@@ -186,6 +188,14 @@
 	}
 	</script>
 </s:else>
+<!-- 额外加载的js文件 -->
+<s:if test='%{"app.index.js" != getText("app.index.js")}'>
+	<s:generator separator="," val="%{getText('app.index.js')}">
+		<s:iterator var="extraJs">
+			<script type="text/javascript" src="<s:url value='%{extraJs}' ><s:param name='ts' value='ts'/></s:url>"></script>
+		</s:iterator>
+	</s:generator>
+</s:if>
 <script type="text/javascript">
 jQuery(function() {
 	$("#desktop").bcdesktop();
