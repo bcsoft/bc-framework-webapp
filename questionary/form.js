@@ -127,16 +127,16 @@ bc.questionaryForm = {
 				var thirdTd = newTopic.children().children().eq(1).children().eq(2);
 				//题目类型
 				//var newType = "type" + (newTopic.index()+1);
-				var newType = "type" +bc.questionaryForm.changeTimeToString();
+				var newType = "type" +bc.nextId(1000);
 				thirdTd.find("input[type='radio'][class='type']").attr("name", newType);
 				//布局
 				//var newConfig = "config" + (thisTopic.next().index()+1);
-				var newConfig = "config" + bc.questionaryForm.changeTimeToString();
+				var newConfig = "config" + bc.nextId(1000);
 				thirdTd.find("input[type='radio'][class='config']").attr("name", newConfig);
 				//选项的标准答案
 				var fourTd = newTopic.children().children().eq(3).children().eq(2);
 				//var newStandard = "standard" + (newTopic.index()+1);
-				var newStandard = "standard" + bc.questionaryForm.changeTimeToString();
+				var newStandard = "standard" + bc.nextId(1000);
 				fourTd.find("input[type='radio']").attr("name", newStandard);
 				
 				
@@ -189,16 +189,18 @@ bc.questionaryForm = {
 				var index = table.index();
 				
 				//获取题型
-				
 				var td=tr.prev().prev().children().eq(2);
 				var type = td.find("input[type='radio'][class='type']:checked").val();
+				
+				//获取选择题中单选或多选按钮组的name属性
+				var standardName = $(this).parent().siblings("input[class='standard']").attr("name");
 				//多选
 				if(type==1){
 					$(bc.questionaryForm.option).insertAfter(thisOption);
 					//标识
 					//var k = "standard" + (index + 1);
-					var k = "standard" + bc.questionaryForm.changeTimeToString();
-					thisOption.next().find("input[type='checkbox'][class='standard']").attr("name",k);
+					//var k = "standard" + bc.nextId(1000);
+					thisOption.next().find("input[type='checkbox'][class='standard']").attr("name",standardName);
 				}
 				//未完成
 				//单选
@@ -206,8 +208,8 @@ bc.questionaryForm = {
 					$(bc.questionaryForm.radinOption).insertAfter(thisOption);
 					//标识
 					//var k = "standard" + (index + 1);
-					var k = "standard" + bc.questionaryForm.changeTimeToString();
-					thisOption.next().find("input[type='radio'][class='standard']").attr("name",k);
+				//	var k = "standard" + bc.nextId(1000);
+					thisOption.next().find("input[type='radio'][class='standard']").attr("name",standardName);
 				}
 				
 			});
@@ -279,7 +281,7 @@ bc.questionaryForm = {
 					var thirdTd = thisCompletion.children().children().eq(1).children().eq(2);
 					//题目类型
 					//var newType = "type" + (index+1);
-					var newType = "type" + bc.questionaryForm.changeTimeToString();
+					var newType = "type" + bc.nextId(1000);
 					thirdTd.find("input[type='radio'][class='type']").attr("name", newType);
 					thisCompletion.find(":input[type='radio'][class='type']").eq(type).attr("checked","checked");
 					//是否必填
@@ -303,7 +305,7 @@ bc.questionaryForm = {
 					var thirdTd = thisJquiz.children().children().eq(1).children().eq(2);
 					//题目类型
 					//var newType = "type" + (index+1);
-					var newType = "type" + bc.questionaryForm.changeTimeToString();
+					var newType = "type" + bc.nextId(1000);
 					thirdTd.find("input[type='radio'][class='type']").attr("name", newType);
 					thisJquiz.find(":input[type='radio']").eq(type).attr("checked","checked");
 					//是否必填
@@ -327,11 +329,11 @@ bc.questionaryForm = {
 					var thirdTd = newTopic.children().children().eq(1).children().eq(2);
 					//题目类型
 					//var newType = "type" + (index+1);
-					var newType = "type" + bc.questionaryForm.changeTimeToString();
+					var newType = "type" + bc.nextId(1000);
 					thirdTd.find("input[type='radio']").slice(0,4).attr("name", newType);
 					//布局
 					//var newScore = "seperateScore" + (index+1);
-					var newScore = "seperateScore" + bc.questionaryForm.changeTimeToString();
+					var newScore = "seperateScore" + bc.nextId(1000);
 					thirdTd.find("input[type='radio']").slice(4,6).attr("name", newScore);
 
 					newTopic.find(":input[type='radio']").eq(type).attr("checked","checked");
@@ -340,6 +342,9 @@ bc.questionaryForm = {
 						//thisCompletion.find(":input[name='required']").val(requiredValue);
 						newTopic.find(":input[name='required']").attr("checked","checked");
 					}
+					//题目选项的按钮组的name属性值
+					var standardName = "standard" + bc.nextId(1000);
+					 newTopic.children().find(".option").find(".standard").attr("name",standardName);
 
 					
 				}
@@ -358,11 +363,11 @@ bc.questionaryForm = {
 					var thirdTd = newTopic.children().children().eq(1).children().eq(2);
 					//题目类型
 					//var newType = "type" + (index+1);
-					var newType = "type" + bc.questionaryForm.changeTimeToString();
+					var newType = "type" + bc.nextId(1000);
 					thirdTd.find("input[type='radio']").slice(0,4).attr("name", newType);
 					//布局
 					//var newScore = "seperateScore" + (index+1);
-					var newScore = "seperateScore" + bc.questionaryForm.changeTimeToString();
+					var newScore = "seperateScore" + bc.nextId(1000);
 					thirdTd.find("input[type='radio']").slice(4,6).attr("name", newScore);
 					newTopic.find(":input[type='radio']").eq(type).attr("checked","checked");
 					//是否必填
@@ -374,7 +379,9 @@ bc.questionaryForm = {
 					if(seperateScoreValue){
 						newTopic.find(":input[name='seperateScore']").attr("checked","checked");
 					}
-					
+					//题目选项的按钮组的name属性值
+					var standardName = "standard" + bc.nextId(1000);
+					 newTopic.children().find(".option").find(".standard").attr("name",standardName);
 				}
 
 				
@@ -718,31 +725,29 @@ bc.questionaryForm = {
         			var question = tr.eq(1).children().eq(2);
         			//排序号
         			var orderNo = tr.eq(1).children().first().children().text();
-        			alert("序号：" +orderNo);
+        			//alert("序号：" +orderNo);
         			//是否必选
         			var required = question.find(":input[name='required']")[0].checked;
-        			alert("是否必选：" +required);
+        			//alert("是否必选：" +required);
         			//题型
         			var type = question.find("input[type='radio'][class='type']:checked").val();
-        			alert("题型：" +type);
-//        			//全对方得分
-//        			alert("qq 选组： "+question.find(":input[name='seperateScore']")[0]);
-//        			var seperateScore = question.find(":input[name='seperateScore']")[0].checked;
-//        			
-//        			alert("全对方得分"+seperateScore);
+        			//alert("题型：" +type);
     				//是否全对方得分
     				var seperateScoreCheck = question.find(":input[name='seperateScore']");
     				if(!(seperateScoreCheck[0]===undefined)){
     					var seperateScore =seperateScoreCheck[0].checked;
-    					alert("全对方得分"+seperateScore);
+    					//alert("全对方得分"+seperateScore);
     				}
 
         			//布局
         			var config = question.find(":input[type='radio'][class='config']:checked").val();
-        			alert("布局：" +config);
+        			//alert("布局：" +config);
         			//题目
         			var subject = tr.eq(2).children().eq(2).find(":input[name='subject']").val();
-        			alert("题目：" +subject);
+        			//alert("题目：" +subject);
+        			//分数
+        			var score = tr.eq(2).children().eq(2).find(":input[name='score']").val();
+        			//alert("分数： "+score);
         			
         			var optionItem = {};
         			var optionItems = [];
@@ -752,33 +757,40 @@ bc.questionaryForm = {
         				if(type==0){
             				//答案
             				var standard = $(this).find(":input[type='radio'][class='standard']:checked").val();
-        					//var isChecked = $(this).find(":input[type='radio'][class='standard']:checked");
-        					//alert("isChecked: "+isChecked);
         					if(standard!=null){
         						standard=true;
         					}else{
         						standard=false;
         					}
-            				alert("答案：" +standard);
+            				//alert("答案：" +standard);
             				//标题
             				var subject = $(this).find(":input[name='subject']").val();
-            				alert("标题：" +subject);
-
+            				//alert("标题：" +subject);
+            				
+                			//分数
+                			var itemScore = $(this).find(":input[name='score']").val();
+                			//alert("选项分数： "+itemScore);
+         
         				}
         				//多选题的答案
         				if(type==1){
             				//答案
             				var standard = $(this).find(":input[class='standard']")[0].checked;
-            				alert("答案：" +standard);
+            				//alert("答案：" +standard);
             				//标题
             				var subject = $(this).find(":input[name='subject']").val();
-            				alert("标题：" +subject);
+            				//alert("标题：" +subject);
        					
+                			//分数
+                			var itemScore = $(this).find(":input[name='score']").val();
+                			//alert("选项分数： "+itemScore);
+
         				}
         				
         				optionItem = {
         					 standard : standard,
-        					 subject : subject
+        					 subject : subject,
+        					 score : (itemScore ? itemScore : 0)
         				};
         				optionItems.push(optionItem);
         			}); 
@@ -788,11 +800,11 @@ bc.questionaryForm = {
         				//答案
         				var config = $(this).find(":input[name='config']").val();
         				optionItem.config = config;
-        				alert("答案：" +config);
+        				//alert("答案：" +config);
         				//内容
         				var ItemSubject = $(this).find(".option").find(":input[name='subject']").val();
         				optionItem.subject = ItemSubject;
-        				alert("填空内容：" +subject);
+        				//alert("填空内容：" +subject);
         				//optionItems.push(optionItem);
     				}
     				//简答题的答案
@@ -800,11 +812,11 @@ bc.questionaryForm = {
         				//内容
         				var ItemSubject = $(this).find(".option").find(":input[name='subject']").val();
         				optionItem.subject = ItemSubject;
-        				alert("简答内容：" +subject);
+        				//alert("简答内容：" +subject);
         				//alert("optionItems0" +$.toJSON(optionItems));
         				//optionItems.push(optionItem);
     				}
-    				alert("optionItems" +$.toJSON(optionItems));
+    				//alert("optionItems" +$.toJSON(optionItems));
     				//第条题目的问题项：
     				var optionItemsValue = $.toJSON(optionItems);
         			
@@ -815,6 +827,7 @@ bc.questionaryForm = {
     					seperateScore: seperateScore,
     					config: config,
     					subject: subject,
+    					score : (score ? score : 0),
     					optionItemsValue: optionItemsValue
         			};
         			var id = $(this).attr("data-id");
@@ -822,7 +835,7 @@ bc.questionaryForm = {
         				json.id = id;
         			topics.push(json);
         		});
-        		alert("topics ： "+$.toJSON(topics));
+        		//alert("topics ： "+$.toJSON(topics));
         		
         		$page.find(":input[name='topics']").val($.toJSON(topics));
 //        		//表单验证
@@ -848,20 +861,22 @@ bc.questionaryForm = {
         		}});
 
             },
-        	//将当前时间转化为字符串
-        	changeTimeToString:function(){
-        		var hours=0;
-        		var minutes=0;
-        		var seconds=0;
-        		var currentDate="";
-        		var now =new Date();
-        		hours=now.getHours();
-        		minutes=now.getMinutes();
-        		seconds=now.getSeconds();
-        		currentDate=hours+""+minutes+""+seconds;
-        		return currentDate;
-        	}
-                    
+            //预览
+            preview : function(){
+            	var $form = $(this);
+            	var id =$form.find(":input[name='e.id']").val();
+    			bc.page.newWin({
+    				name: "预览" + $form.find(":input[name='e.subject']").val(),
+    				mid: "questionary" + id,
+    				url: bc.root + "/bc/questionary/preview",
+    				data: {id:id},
+    				afterClose: function(status){
+    					if(status) bc.grid.reloadData($page);
+    				}
+    			});
+
+            }
+
 		                   
 };
 

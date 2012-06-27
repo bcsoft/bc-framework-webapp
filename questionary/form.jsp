@@ -151,7 +151,7 @@
 											<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
 											<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
 											<div style="position:relative;right:-20px; display: inline-block;">选项布局：
-												<s:radio name="%{'config'+orderNo}" value="%{config}" cssClass="config"  list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+												<s:radio name="%{'config'+orderNo}" value="%{configJson.get('layout_orientation')}" cssClass="config"  list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
 											</div>
 										</td>
 									</tr>
@@ -177,7 +177,7 @@
 										<td class="value" >
 											<s:iterator var="c" value="items">
 											<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
-												<s:radio cssClass="standard" name="%{'standard'+orderNo}" value="%{standard}" list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
+												<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
 												<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:446px;"/>
 												<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
 													<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
@@ -212,7 +212,7 @@
 											<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
 											<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
 											<div style="position:relative;right:-20px; display: inline-block;">选项布局：
-												<s:radio name="%{'config'+orderNo}" value="%{config}" cssClass="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
+												<s:radio name="%{'config'+orderNo}" value="%{configJson.get('layout_orientation')}" cssClass="config" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
 											</div>
 										</td>
 									</tr>
@@ -235,7 +235,6 @@
 									<tr class="option">
 										<td>&nbsp;</td>
 										<td style="font-weight: normal;text-align: right;vertical-align: top;">选项:</td>
-										
 										<td class="value" >
 											<s:iterator var="c" value="items">
 											<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
