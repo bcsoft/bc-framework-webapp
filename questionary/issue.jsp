@@ -24,20 +24,15 @@
 			<s:if test="type==0">
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
 					<tbody>
-						<tr class="widthMarker">
-							<td style="width: 10px;">&nbsp;</td>
-							<td >&nbsp;</td>
-						</tr>
 						<tr>
-							<td style="font-weight: normal;text-align: left;"><span style="color: red;"><s:text name="orderNo"/>.</span></td>
-			               	<td style="font-weight: normal;text-align: left;"width="140xp;"><s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
+			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
 		               		</td>
 						</tr>
 						<s:iterator var="c" value="items" >
 							<tr class="option">
-								<td>&nbsp;</td>
-								<td class="value" >
+								<td class="value" style="padding-left: 30px;">
 									<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
 										<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
 										<s:text name="subject"/>
@@ -51,20 +46,15 @@
 				<!-- 多选 -->
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
 					<tbody>
-						<tr class="widthMarker">
-							<td style="width: 10px;">&nbsp;</td>
-							<td >&nbsp;</td>
-						</tr>
 						<tr>
-							<td style="font-weight: normal;text-align: left;"><span style="color: red;"><s:text name="orderNo"/>.</span></td>
-			               	<td style="font-weight: normal;text-align: left;"width="140xp;"><s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
+			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
 		               		</td>
 						</tr>
 						<s:iterator var="c" value="items">
 						<tr class="option">
-							<td>&nbsp;</td>
-							<td class="value" >
+							<td class="value" style="padding-left: 30px;">
 								<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
 									<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" cssStyle="width:1em;"/>
 									<s:text name="subject" />
@@ -78,19 +68,14 @@
 				<!-- 填空 -->
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
-						<tr class="widthMarker">
-							<td style="width: 10px;">&nbsp;</td>
-							<td >&nbsp;</td>
-						</tr>
 						<tr>
-							<td style="font-weight: normal;text-align: left;"><span style="color: red;"><s:text name="orderNo"/>.</span></td>
-			               	<td style="font-weight: normal;text-align: left;"width="140xp;"><s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
+			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
 		               		</td>
 						</tr>
 						<tr class="option">
-							<td>&nbsp;</td>
-							<td class="value" >
+							<td class="value" style="padding-left: 30px;">
 							<s:property value="%{formatCompletionValue(items.iterator().next().subject,items.iterator().next().config)}" escapeHtml="false"/>
 							</td>
 						</tr>
@@ -100,19 +85,14 @@
 				<!-- 简答 -->
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
 					<tbody>
-						<tr class="widthMarker">
-							<td style="width: 10px;">&nbsp;</td>
-							<td >&nbsp;</td>
-						</tr>
 						<tr>
-							<td style="font-weight: normal;text-align: left;"><span style="color: red;"><s:text name="orderNo"/>.</span></td>
-			               	<td style="font-weight: normal;text-align: left;"width="140xp;"><s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
+			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
 			               	</td>
 						</tr>
 						<tr class="option">
-							<td>&nbsp;</td>
-							<td class="value" >
+							<td class="value" style="padding-left: 30px;">
 								<textarea name="subject" placeholder='<s:property value="%{items.iterator().next().subject}"/>' rows="3" class="ui-widget-content noresize"></textarea>
 							</td>
 						</tr>
