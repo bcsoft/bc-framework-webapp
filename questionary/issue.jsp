@@ -39,7 +39,7 @@
 								<td>&nbsp;</td>
 								<td class="value" >
 									<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
-										<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}"  list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
+										<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
 										<s:text name="subject"/>
 									</div>
 								</td>
@@ -66,7 +66,7 @@
 							<td>&nbsp;</td>
 							<td class="value" >
 								<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
-									<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" cssStyle="width:1em;"/>
+									<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" cssStyle="width:1em;"/>
 									<s:text name="subject" />
 								</div>
 							</td>
@@ -91,7 +91,7 @@
 						<tr class="option">
 							<td>&nbsp;</td>
 							<td class="value" >
-							<s:property value="%{formatCompletion(items.iterator().next().subject)}" escapeHtml="false"/>
+							<s:property value="%{formatCompletionValue(items.iterator().next().subject,items.iterator().next().config)}" escapeHtml="false"/>
 							</td>
 						</tr>
 						</tbody>
@@ -124,7 +124,13 @@
 			<div class="formTopInfo">
 				状态：<s:property value="%{statusesValue[e.status]}" />&nbsp;&nbsp;&nbsp;&nbsp;登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				<s:if test="%{e.modifier != null}">
-				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
+				</s:if>
+				<s:if test="%{e.issuer!=null}">
+				发布人：<s:property value="e.issuer.name" />(<s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				</s:if>
+				<s:if test="%{e.pigeonholer!=null}">
+				归档人：<s:property value="e.pigeonholer.name" />(<s:date name="e.pigeonholeDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				</s:if>
 			</div>
 		<s:hidden name="e.id" />

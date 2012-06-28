@@ -865,18 +865,63 @@ bc.questionaryForm = {
             preview : function(){
             	var $form = $(this);
             	var id =$form.find(":input[name='e.id']").val();
+            	if(id==""){
+            		bc.msg.alert("请先保存！");
+            	}else{
     			bc.page.newWin({
     				name: "预览" + $form.find(":input[name='e.subject']").val(),
     				mid: "questionary" + id,
     				url: bc.root + "/bc/questionary/preview",
     				data: {id:id},
     				afterClose: function(status){
-    					if(status) bc.grid.reloadData($page);
-    				}
-    			});
-
-            }
-
+    					if(status) bc.grid.reloadData($form);
+    					}
+    				});
+            	}
+            },
+            
+            //发布:将问卷的状态由草稿改为已发布
+            issue : function(){
+            	var $form = $(this);
+            	var id = $form.find(":input[name='e.id']").val();
+            	if(id==""){
+            		bc.msg.alert("请先保存！");
+            	}else{
+				//执行发布
+				bc.ajax({
+					url: bc.root + "/bc/questionary/issue",
+					data: {id:id},
+					dataType: "json",
+					success: function(json){
+						//完成后提示用户
+						bc.msg.info("发布成功！");
+						$form.data("data-status","saved");
+						$form.dialog("close");
+						return false;
+						}
+					}); 
+            	}
+				},
+				
+	           //归档:将问卷的状态由草稿改为已发布
+				archiving : function(){
+	            	var $form = $(this);
+	            	var id = $form.find(":input[name='e.id']").val();
+					//执行发布
+					bc.ajax({
+						url: bc.root + "/bc/questionary/archiving",
+						data: {id:id},
+						dataType: "json",
+						success: function(json){
+							//完成后提示用户
+							bc.msg.info("归档成功！");
+							$form.data("data-status","saved");
+							$form.dialog("close");
+							return false;
+						}
+					});    		
+					}
+				
 		                   
 };
 

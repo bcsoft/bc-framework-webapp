@@ -359,10 +359,14 @@
 			<div class="formTopInfo">
 				状态：<s:property value="%{statusesValue[e.status]}" />&nbsp;&nbsp;&nbsp;&nbsp;登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				<s:if test="%{e.modifier != null}">
-				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
+				</s:if>
+				<s:if test="%{e.status==0}">
+				发布人：<s:property value="e.issuer.name" />(<s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				</s:if>
 			</div>
 		<s:hidden name="e.id" />
+		<s:hidden name="e.status"/>
 		<s:hidden name="e.author.id" />
 		<s:hidden name="e.type" />
 		<s:hidden name="topics" />
