@@ -19,6 +19,7 @@ bc.userSelectDialog = {
 			data.id = $tds.attr("data-id");
 			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
 			data.name = $trs.find("td:eq(1)").attr("data-value");
+			data.account = $trs.find("td:eq(2)").attr("data-value");
 		}else{//多选
 			data = [];
 			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
@@ -26,6 +27,7 @@ bc.userSelectDialog = {
 				data.push({
 					id: $(this).attr("data-id"),
 					name:$($trs.get(i)).find("td:eq(1)").attr("data-value"),
+					account:$($trs.get(i)).find("td:eq(2)").attr("data-value")
 				});
 			});
 		}
