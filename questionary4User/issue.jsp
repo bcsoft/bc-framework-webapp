@@ -22,7 +22,7 @@
 			<s:iterator var="b" value="e.questions">
 			<!-- 单选题 -->
 			<s:if test="type==0">
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>

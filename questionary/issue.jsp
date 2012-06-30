@@ -6,7 +6,7 @@
 	data-initMethod='bc.questionaryForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="questionaryForm" theme="simple" cssStyle="width:630px;">
-		<div id="div1">
+		<div id="testArea">
 			<table class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
 					<tr>
@@ -22,13 +22,18 @@
 			<s:iterator var="b" value="e.questions">
 			<!-- 单选题 -->
 			<s:if test="type==0">
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
+						<tr class="widthMarker">
+							<td style="width: 380px;">&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
 		               		</td>
+		               		<td>&nbsp</td>
 						</tr>
 						<s:iterator var="c" value="items" >
 							<tr class="option">
@@ -38,19 +43,28 @@
 										<s:text name="subject"/>
 									</div>
 								</td>
+								<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
+									&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
+									&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
+								</td>
 							</tr>
 						</s:iterator>
 						</tbody>
 					</table>
 				</s:if><s:elseif test="type==1">
 				<!-- 多选 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
+						<tr class="widthMarker">
+							<td style="width: 380px;">&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
 		               		</td>
+		               		<td>&nbsp;</td>
 						</tr>
 						<s:iterator var="c" value="items">
 						<tr class="option">
@@ -59,6 +73,10 @@
 									<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" cssStyle="width:1em;"/>
 									<s:text name="subject" />
 								</div>
+							</td>
+							<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
+								&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
+								&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
 							</td>
 						</tr>
 						</s:iterator>
@@ -83,7 +101,7 @@
 					</table>
 				</s:elseif><s:elseif test="type==3">
 				<!-- 简答 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
@@ -113,10 +131,11 @@
 				归档人：<s:property value="e.pigeonholer.name" />(<s:date name="e.pigeonholeDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				</s:if>
 			</div>
-		<s:hidden name="e.id" />
-		<s:hidden name="e.author.id" />
-		<s:hidden name="e.type" />
-		<s:hidden name="topics" />
+		<s:hidden name="e.id"/>
+		<s:hidden name="e.author.id"/>
+		<s:hidden name="e.type"/>
+		<s:hidden name="topics"/>
+		<s:hidden name="e.status"/>
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		
 	</s:form>
