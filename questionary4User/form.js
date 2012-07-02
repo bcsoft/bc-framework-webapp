@@ -134,14 +134,26 @@ bc.questionary4UserForm = {
     	if(!bc.questionary4UserForm.beforeSave($form)){
     		return;
     	}
-		//调用标准的方法执行保存
-		bc.page.save.call(this,{callback: function(json){
-			if(json.success){
-				bc.msg.slide(json.msg);
-			}else{
-				bc.msg.alert(json.msg);
-			}
-			return false;
-		}});
+		
+		//保存后重新打开表单
+		var name = $form.find("#title").text();
+		bc.page.save.call($form,{callback: function(json){
+			bc.msg.slide("提交成功成功！");
+			$form.dialog("close");
+			//如果是新建入库就重新打开表单
+				// 重新打开可编辑表单
+				bc.page.newWin({
+					name: name,
+					mid: "questionary4User" + json.id,
+					url: bc.root + "/bc/questionary4User/open",
+					data: {id: json.id},
+					afterClose: function(status){
+						if(status) bc.grid.reloadData($form);
+					}
+				});
+
+		return false;
+	}});
+		
 	}
 };

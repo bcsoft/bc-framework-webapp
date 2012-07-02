@@ -6,16 +6,11 @@ bc.questionary4StatisticsForm = {
 				$form.find("#testArea").children().each(function(){
 					var type =$(this).attr("data-type");
 					if(type==0||type==1){
-						//作答人数
-//						var count =0;
-//						$(this).find(".option").each(function(){
-//							count = count + parseInt($(this).find("span[class='respond']").text());
-//						});
-//						$(this).find(".count").text(count);
 						//显示进度条
 						$(this).find(".option").each(function(){
 							//该选项的作答人数:
 							var amount = $(this).find("span[class='respond']").text();
+							//选择项总人数
 							var all = $(this).find("span[class='count']").text();
 							//统计
 							$(this).find(".progressbar").progressbar({

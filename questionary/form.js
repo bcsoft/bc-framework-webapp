@@ -7,11 +7,6 @@ bc.questionaryForm = {
 					var type =$(this).attr("data-type");
 					if(type==0||type==1){
 						//作答人数
-//						var count =0;
-//						$(this).find(".option").each(function(){
-//							count = count + parseInt($(this).find("span[class='respond']").text());
-//						});
-//						$(this).find(".count").text(count);
 						//显示进度条
 						$(this).find(".option").each(function(){
 							//该选项的作答人数:
@@ -885,11 +880,11 @@ bc.questionaryForm = {
             	
         		//调用标准的方法执行保存
         		bc.page.save.call(this,{callback: function(json){
-        			if(json.success){
+        			//if(json.success){
         				bc.msg.slide(json.msg);
-        			}else{
-        				bc.msg.alert(json.msg);
-        			}
+        			//}else{
+        				//bc.msg.alert(json.msg);
+        			//}
         			return false;
         		}});
 

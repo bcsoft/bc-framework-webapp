@@ -6,23 +6,21 @@
 	data-initMethod='bc.questionary4StatisticsForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="questionary4StatisticsForm" theme="simple" cssStyle="width:630px;">
-		<div id="testArea">
-			<table class="formFields" cellspacing="2" cellpadding="0">
-				<tbody>
-					<tr>
-						<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;width: 160px;"><s:text name="e.subject"/></td>
-					</tr>
-					<tr>
-					<td style="position: relative;right: -390px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+		<table class="formFields ui-widget-content" cellspacing="2" cellpadding="0">
+			<tbody>
+				<tr>
+					<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;width: 160px;"><s:text name="e.subject"/></td>
+				</tr>
+				<tr>
+				<td style="position: relative;right: -390px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+				</tr>
+			</tbody>
+		</table>
 		<div id="testArea">
 			<s:iterator var="b" value="e.questions">
 			<!-- 单选题 -->
 			<s:if test="type==0">
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr class="widthMarker">
 							<td style="width: 380px;">&nbsp;</td>
@@ -36,24 +34,50 @@
 		               		<td>&nbsp</td>
 						</tr>
 						<s:iterator var="c" value="items" >
-							<tr class="option">
-								<td class="value" style="padding-left: 30px;">
-									<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;${standard ? 'color:blue;':''}">
-										<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" list="#{'true':''}" cssStyle="width:auto;width:1em;" />
-										<s:text name="subject"/>
-									</div>
-								</td>
-								<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
-									&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
-									&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
-								</td>
-							</tr>
+							<s:set name="answerItem" value="null"/>
+							<s:iterator value="e.responds" var="r" >
+								<s:if test="%{author.id==userId}">
+									<s:iterator value="answers" var="a">
+										<s:if test="%{#c.id==item.id}">
+											<s:set name="answerItem" value="1"/>
+										</s:if>
+									</s:iterator>
+								</s:if>
+							</s:iterator>
+							<s:if test="#answerItem==1">
+								<tr class="option"><s:property value="%{e.responds.iterator().next().answers.iterator().next().qid}"/>
+									<td class="value" style="padding-left: 30px;">
+										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
+											<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}" value="true" list="#{'true':''}" cssStyle="width:auto;width:1em;" />
+											<s:text name="subject"/>
+										</div>
+									</td>
+									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
+										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
+										&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
+									</td>
+								</tr>
+							</s:if><s:else>
+								<tr class="option"><s:property value="%{e.responds.iterator().next().answers.iterator().next().qid}"/>
+									<td class="value" style="padding-left: 30px;" title="${standard ? '标准答案':''}">
+										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;border: 0;" 
+											class="${standard ? 'ui-state-default':''}" >
+											<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}"  list="#{'true':''}" cssStyle="width:auto;width:1em;" />
+											<s:text name="subject"/>
+										</div>
+									</td>
+									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
+										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
+										&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
+									</td>
+								</tr>
+							</s:else>
 						</s:iterator>
 						</tbody>
 					</table>
 				</s:if><s:elseif test="type==1">
 				<!-- 多选 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr class="widthMarker">
 							<td style="width: 380px;">&nbsp;</td>
@@ -67,24 +91,50 @@
 		               		<td>&nbsp;</td>
 						</tr>
 						<s:iterator var="c" value="items">
-						<tr class="option">
-							<td class="value" style="padding-left: 30px;">
-								<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
-									<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="%{standard}" cssStyle="width:1em;"/>
-									<s:text name="subject" />
-								</div>
-							</td>
-							<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
-								&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
-								&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
-							</td>
-						</tr>
+							<s:set name="answerItem" value="null"/>
+							<s:iterator value="e.responds" var="r" >
+								<s:if test="%{author.id==userId}">
+									<s:iterator value="answers" var="a">
+										<s:if test="%{#c.id==item.id}">
+											<s:set name="answerItem" value="1"/>
+										</s:if>
+									</s:iterator>
+								</s:if>
+							</s:iterator>
+							<s:if test="#answerItem==1">
+								<tr class="option">
+									<td class="value" style="padding-left: 30px;">
+										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
+											<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="true" cssStyle="width:1em;"/>
+											<s:text name="subject" />
+										</div>
+									</td>
+									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
+										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
+										&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
+									</td>
+								</tr>
+							</s:if><s:else>
+								<tr class="option"><s:property value="%{e.responds.iterator().next().answers.iterator().next().qid}"/>
+									<td class="value" style="padding-left: 30px;" title="${standard ? '标准答案':''}">
+										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;border: 0;" 
+											class="${standard ? 'ui-state-default':''}" >
+											<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" cssStyle="width:1em;"/>
+											<s:text name="subject" />
+										</div>
+									</td>
+									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
+										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
+										&nbsp;<span class="count"><s:property value="%{getJoinCount()}" escapeHtml="false"/></span>
+									</td>
+								</tr>
+							</s:else>
 						</s:iterator>
 						</tbody>
 					</table>
 				</s:elseif><s:elseif test="type==2">
 				<!-- 填空 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
@@ -101,7 +151,7 @@
 					</table>
 				</s:elseif><s:elseif test="type==3">
 				<!-- 简答 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
