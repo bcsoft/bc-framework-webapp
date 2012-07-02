@@ -46,8 +46,9 @@
 							</s:iterator>
 							<s:if test="#answerItem==1">
 								<tr class="option"><s:property value="%{e.responds.iterator().next().answers.iterator().next().qid}"/>
-									<td class="value" style="padding-left: 30px;">
-										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
+									<td class="value" style="padding-left: 30px;" title="${standard ? '标准答案':''}">
+										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;border: 0;"
+											class="${standard ? 'ui-state-default':''}">
 											<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}" value="true" list="#{'true':''}" cssStyle="width:auto;width:1em;" />
 											<s:text name="subject"/>
 										</div>
@@ -103,8 +104,9 @@
 							</s:iterator>
 							<s:if test="#answerItem==1">
 								<tr class="option">
-									<td class="value" style="padding-left: 30px;">
-										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
+									<td class="value" style="padding-left: 30px;" title="${standard ? '标准答案':''}">
+										<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;border: 0;"
+											class="${standard ? 'ui-state-default':''}">
 											<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="true" cssStyle="width:1em;"/>
 											<s:text name="subject" />
 										</div>
