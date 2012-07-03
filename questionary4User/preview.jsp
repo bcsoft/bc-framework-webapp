@@ -10,7 +10,7 @@
 			<table class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
 					<tr>
-						<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;width: 160px;" id="title"><s:text name="e.subject"/></td>
+						<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;" id="title" title="${e.subject}"><s:text name="e.subject"/></td>
 					</tr>
 					<tr>
 					<td style="position: relative;right: -390px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
