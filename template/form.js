@@ -243,11 +243,30 @@ bc.templateForm = {
 					dataArr.push(dataObj);
 				});
 
-				var url =bc.root+"/bc/template/inline?tid=" + tid
-				url+="&markerValueJsons="+$.toJSON(dataArr);
-				url+="&content="+content;
-				var win = window.open(url, "_blank");
-				return win;
+				var url =bc.root+"/bc/template/inline"
+				
+				// Get方法打开窗口：会有url长度限制的问题
+				//url+="?tid="+tid;
+				//url+="&markerValueJsons="+$.toJSON(dataArr);
+				//url+="&content="+content;
+				//var win = window.open(url, "_blank");
+				// return win;
+				
+				// Post方法打开窗口：参数无限制
+				var $post=['<form name="templateInline" method="post">'];
+				$post.push('<input type="hidden" name="tid" value="' + tid + '">');
+				$post.push('<input type="hidden" name="content" value="">');
+				$post.push('<input type="hidden" name="markerValueJsons" value="">');
+				$post.push('</form>');
+				$post = $($post.join(""));
+				$post.children("[name='markerValueJsons']").val($.toJSON(dataArr));
+				$post.children("[name='content']").val(content ? content:"");
+				var _form = $post.get(0);
+				_form.action = url;
+				_form.target = "_blank";	// 新窗口打开
+				_form.submit();				//提交表单
+				return null;
+				
 				//销毁对话框
 				html.dialog("destroy").remove();
 			}
