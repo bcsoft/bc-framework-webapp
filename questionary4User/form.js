@@ -64,7 +64,7 @@ bc.questionary4UserForm = {
 					$input.each(function(){
 						var key = $(this).attr("name");
 						var value = $(this).val();
-						if(value.length == 0){
+						if(value.length == 0 && isRequired){
 							hadFill = false;
 							return false;
 						}

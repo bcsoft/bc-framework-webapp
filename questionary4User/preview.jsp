@@ -22,7 +22,8 @@
 			<s:iterator var="b" value="e.questions">
 			<!-- 单选题 -->
 			<s:if test="type==0">
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" data-id="<s:property value='%{#b.id}'/>" data-required='<s:property value="required"/>'>
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" 
+					data-id="<s:property value='%{#b.id}'/>" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
@@ -44,7 +45,8 @@
 					</table>
 				</s:if><s:elseif test="type==1">
 				<!-- 多选 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" data-id="<s:property value='%{#b.id}'/>">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" 
+					data-id="<s:property value='%{#b.id}'/>" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
@@ -66,7 +68,8 @@
 					</table>
 				</s:elseif><s:elseif test="type==2">
 				<!-- 填空 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" data-id="<s:property value='%{#b.id}'/>">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" 
+					data-id="<s:property value='%{#b.id}'/>" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
@@ -83,7 +86,8 @@
 					</table>
 				</s:elseif><s:elseif test="type==3">
 				<!-- 简答 -->
-				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" data-id="<s:property value='%{#b.id}'/>">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" 
+					data-id="<s:property value='%{#b.id}'/>" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
