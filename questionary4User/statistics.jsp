@@ -9,10 +9,12 @@
 		<table class="formFields ui-widget-content" cellspacing="2" cellpadding="0">
 			<tbody>
 				<tr>
-					<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;width: 160px;"><s:text name="e.subject"/></td>
+					<td style="width: 70px;">&nbsp;</td>
+					<td style="text-align: center;font-size: 30px;position: relative;left: 170px;display: inline-block;" title="${e.subject}"><s:text name="e.subject"/></td>
 				</tr>
 				<tr>
-				<td style="position: relative;right: -390px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+				<td style="font-weight: normal;text-align: left;padding-left:15px;">得分：<s:property value="%{score4User}"/></td>
+				<td style="position: relative;right: -320px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
 				</tr>
 			</tbody>
 		</table>
@@ -31,7 +33,7 @@
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
 		               		</td>
-		               		<td>&nbsp</td>
+		               		<td>&nbsp;</td>
 						</tr>
 						<s:iterator var="c" value="items" >
 							<s:set name="answerItem" value="null"/>
@@ -146,7 +148,7 @@
 						</tr>
 						<tr class="option">
 							<td class="value" style="padding-left: 30px;">
-							<s:property value="%{formatCompletionValue(items.iterator().next().subject,items.iterator().next().config)}" escapeHtml="false"/>
+							<s:property value="%{formatCompletionValue(items.iterator().next().subject,items.iterator().next().config,items.iterator().next().id)}" escapeHtml="false"/>
 							</td>
 						</tr>
 						</tbody>
