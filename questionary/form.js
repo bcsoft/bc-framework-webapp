@@ -707,7 +707,7 @@ bc.questionaryForm = {
 				'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
 					'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
 				'</div>',
-				'<ul class="inputIcons" style="top:12px;right: 60px;">',
+				'<ul class="inputIcons" style="top:12px;right: 61px;">',
 					'<li class="inputIcon ui-icon ui-icon-circle-arrow-n" title="上移此选项" id="upOption"></li>',
 					'<li class="inputIcon ui-icon ui-icon-circle-arrow-s" title="下移此选项" id="downOption"></li>',
 					'<li class="inputIcon ui-icon ui-icon-circle-plus" title="在此选项下添加新选项" id="addOption"></li>',
