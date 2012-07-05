@@ -165,7 +165,9 @@
 						</tr>
 						<tr class="option">
 							<td class="value" style="padding-left: 30px;">
-								<textarea name="subject" placeholder='<s:property value="%{items.iterator().next().subject}"/>' rows="3" class="ui-widget-content noresize"></textarea>
+								<textarea name="subject" placeholder='<s:property value="%{items.iterator().next().subject}"/>' rows="3" class="ui-widget-content noresize">
+									<s:property value="%{formatJQuizValue(items.iterator().next().id)}"/>
+								</textarea>
 							</td>
 						</tr>
 						</tbody>
