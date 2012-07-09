@@ -134,7 +134,7 @@ bc.questionary4UserForm = {
     	if(!bc.questionary4UserForm.beforeSave($form)){
     		return;
     	}
-		
+    	bc.msg.confirm("确定要提交吗？",function(){
 		//保存后重新打开表单
 		var name = $form.find("#title").text();
 		bc.page.save.call($form,{callback: function(json){
@@ -154,6 +154,6 @@ bc.questionary4UserForm = {
 
 		return false;
 	}});
-		
+	});
 	}
 };

@@ -18,7 +18,7 @@
 						<td class="value"><s:textfield name="e.subject" cssClass="ui-widget-content"/></td>
 					</tr>
 					<tr>
-		               	<td class="label"><s:text name="questionary.Deadline"/>:</td>
+		               	<td class="label">*<s:text name="questionary.Deadline"/>:</td>
 						<td class="value" >
 							<div style="position : relative; display: inline-block">
 								&nbsp;从<input type="text" name="e.startDate"  data-validate='{"type":"date","required":true}' 
@@ -85,13 +85,13 @@
 						<td style="font-weight: normal;text-align: left;">第<span style="color: red;">1</span>题</td>
 		               	<td style="font-weight: normal;text-align: right;">题型:</td>
 						<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
-							<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
+							<s:checkbox name="required" cssStyle="width:1em;" value="true" cssClass="required"/><label>必选题</label></div>
 							<s:radio cssClass="type" name="type1" value="0" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
 							<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
-							<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
-							<div style="position:relative;right:-20px; display: inline-block;">选项布局：
+							<!--<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
+							<div style="position:relative;right:-100px; display: inline-block;">选项布局：
 								<s:radio name="config1" cssClass="config" value="%{'vertical'}" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
-							</div>
+							</div>-->
 						</td>
 					</tr>
 					<tr>
