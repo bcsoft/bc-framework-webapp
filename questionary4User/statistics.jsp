@@ -14,7 +14,7 @@
 				</tr>
 				<tr>
 				<td style="font-weight: normal;text-align: left;padding-left:15px;">得分：<s:property value="%{score4User}"/></td>
-				<td style="position: relative;right: -320px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+				<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
 				</tr>
 			</tbody>
 		</table>

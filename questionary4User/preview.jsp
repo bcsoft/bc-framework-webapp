@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="questionary.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/questionary4User/save" />'
-	data-js='js:bc_identity,<s:url value="/bc/questionary4User/form.js"/>'
+	data-js='js:bc_identity,<s:url value="/bc/questionary4User/preview.js"/>'
 	data-initMethod='bc.questionary4UserForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="questionary4UserForm" theme="simple" cssStyle="width:630px;">
@@ -13,7 +13,7 @@
 						<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;" id="title" title="${e.subject}"><s:text name="e.subject"/></td>
 					</tr>
 					<tr>
-					<td style="position: relative;right: -390px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+					<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
 					</tr>
 				</tbody>
 			</table>
@@ -108,7 +108,7 @@
 			<div class="formTopInfo">
 				状态：<s:property value="%{statusesValue[e.status]}" />&nbsp;&nbsp;&nbsp;&nbsp;登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
 				<s:if test="%{e.modifier != null}">
-				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
 				</s:if>
 				<s:if test="%{e.status==0}">
 				发布人：<s:property value="e.issuer.name" />(<s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>)

@@ -25,6 +25,18 @@ bc.questionaryForm = {
 					}
 				});
 			}
+		
+		//将多选框和单选框设置为只读
+		if(readonly){
+			$form.find("input[type='radio']").each(function(){
+				this.disabled=true;
+				});
+			$form.find("input[type='checkbox']").each(function(){
+				this.disabled=true;
+				});
+			}
+		
+			//alert("readonly: "+readonly);
 
 			//只读权限控制
 			if(readonly) return;
@@ -883,11 +895,7 @@ bc.questionaryForm = {
 		bc.questionaryForm.beforeSave($form);
 		//调用标准的方法执行保存
 		bc.page.save.call(this,{callback: function(json){
-			//if(json.success){
-		bc.msg.slide(json.msg);
-		//}else{
-		//bc.msg.alert(json.msg);
-		//}
+			bc.msg.slide(json.msg);
 				return false;
 			}});
 	

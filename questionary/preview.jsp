@@ -13,7 +13,7 @@
 						<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;" title="${e.subject}"><s:text name="e.subject"/></td>
 					</tr>
 					<tr>
-					<td style="position: relative;right: -390px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+					<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
 					</tr>
 				</tbody>
 			</table>
