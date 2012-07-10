@@ -14,8 +14,8 @@
 						<td >&nbsp;</td>
 					</tr>
 					<tr>
-		               	<td class="label"><s:text name="questionary.subject"/>:</td>
-						<td class="value"><s:textfield name="e.subject" cssClass="ui-widget-content"/></td>
+		               	<td class="label">*<s:text name="questionary.subject"/>:</td>
+						<td class="value"><s:textfield name="e.subject" data-validate="required" cssClass="ui-widget-content"/></td>
 					</tr>
 					<tr>
 		               	<td class="label">*<s:text name="questionary.Deadline"/>:</td>
@@ -96,9 +96,9 @@
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
-						<td style="font-weight: normal;text-align: right;">题目:</td>
+						<td style="font-weight: normal;text-align: right;">*题目:</td>
 						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
-							<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;"/>
+							<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;" data-validate="required"/>
 							<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
 								<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
 							</div>

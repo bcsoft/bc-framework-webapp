@@ -468,9 +468,9 @@ bc.questionaryForm = {
      			'</tr>',
      			'<tr>',
      				'<td>&nbsp;</td>',
-     				'<td style="font-weight: normal;text-align: right;">题目:</td>',
+     				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
      				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
-     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;">',
+     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;" data-validate="required">',
 					'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
 						'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
 					'</div>',
@@ -544,9 +544,9 @@ bc.questionaryForm = {
 	      			'</tr>',
 	      			'<tr>',
 	      				'<td>&nbsp;</td>',
-	      				'<td style="font-weight: normal;text-align: right;">题目:</td>',
+	      				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
 	      				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
-	      				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;">',
+	      				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;" data-validate="required">',
 	 					'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
 	 						'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
 	 					'</div>',
@@ -613,9 +613,9 @@ bc.questionaryForm = {
  		     			'</tr>',
  		     			'<tr>',
  		     				'<td>&nbsp;</td>',
- 		     				'<td style="font-weight: normal;text-align: right;">题目:</td>',
+ 		     				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
  		     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
- 		     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;">',
+ 		     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;" data-validate="required">',
  							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
  								'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
  							'</div>',
@@ -629,18 +629,18 @@ bc.questionaryForm = {
  							'</tr>',
  		     			'<tr class="option">',
  		     				'<td>&nbsp;</td>',
- 		     				'<td style="font-weight: normal;text-align: right;vertical-align: top;">内容:</td>',
+ 		     				'<td style="font-weight: normal;text-align: right;vertical-align: top;">*内容:</td>',
  		     				'<td class="value">',
  		     					'<textarea name="subject" placeholder="内容的配置例子如：1+1=${key1},2+2=${key2} 预览的效果为：1+1=__,2+2=___" rows="3"',
- 		     					'id="questionary_create_e_description" class="ui-widget-content noresize" style="width: 98%;">',
+ 		     					'id="questionary_create_e_description" class="ui-widget-content noresize" style="width: 98%;" data-validate="required">',
  		     					'</textarea>',
 	     					'</td>',
  						'</tr>',
  						'<tr>',
  							'<td>&nbsp;</td>',
  							'<td style="font-weight: normal;text-align: right;vertical-align: top;">答案:</td>',
- 							'<td class="value"><textarea name="config" placeholder =\'答案的配置例子如：[{key:"key2",value:"2",score:"10"},',
- 							'{key:"key2",value:"4",score:"10"}] 说明：[{key:"占位符",value:"答案",score:"分数"}]\'',
+ 							'<td class="value"><textarea name="config" placeholder =\'答案的配置例子如：[{"key":"key2","value":"2","score":"10"},',
+ 							'{"key":"key2","value":"4","score":"10"}] 说明：[{"key":"占位符","value":"答案","score":"分数"}]\'',
  							'cols="" rows="3" id="questionary_create_e_description" class="ui-widget-content noresize" style="width: 98%;"></textarea>',
  							'</td>',
 						'</tr>',
@@ -679,9 +679,9 @@ bc.questionaryForm = {
  		     			'</tr>',
  		     			'<tr>',
  		     				'<td>&nbsp;</td>',
- 		     				'<td style="font-weight: normal;text-align: right;">题目:</td>',
+ 		     				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
  		     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
- 		     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;">',
+ 		     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" data-validate="required" style="width:464px;">',
  							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
  								'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
  							'</div>',
@@ -848,6 +848,20 @@ bc.questionaryForm = {
 		//内容
 		var ItemSubject = $(this).find(".option").find(":input[name='subject']").val();
 		optionItem.subject = ItemSubject;
+		
+		//检测是否为空和是否为全数字类型
+		if(config==''||/^\d+$/.test(config)){
+			bc.msg.alert('请填空正确的配置格式：[{"key":"占位符","value":"答案","score":"分数"}]');
+				return false;
+		}
+		//检测是否为标准的json格式
+		try{
+			$.parseJSON(config);
+		}catch(e){
+			bc.msg.alert('请填空正确的配置格式：[{"key":"占位符","value":"答案","score":"分数"}]');
+				return false;
+		}
+
 		//alert("填空内容：" +subject);
 		//optionItems.push(optionItem);
 		}
@@ -882,6 +896,7 @@ bc.questionaryForm = {
 		//alert("topics ： "+$.toJSON(topics));
 		
 		$page.find(":input[name='topics']").val($.toJSON(topics));
+		return true;
 		//        		//表单验证
 		//        		$feeDetailTables=$page.find("#feeDetailTables tr");
 		//        		
@@ -892,7 +907,9 @@ bc.questionaryForm = {
 	//保存
 	save : function(){
 		var $form = $(this);
-		bc.questionaryForm.beforeSave($form);
+		if(!bc.questionaryForm.beforeSave($form)){
+			return;
+		}
 		//调用标准的方法执行保存
 		bc.page.save.call(this,{callback: function(json){
 			bc.msg.slide(json.msg);
