@@ -36,47 +36,60 @@ bc.questionaryForm = {
 				});
 			}
 		
-			//alert("readonly: "+readonly);
+		//查看作答人
+		$form.find("#checkRespond").click(function(){
+			var id = $form.find(":input[name='e.id']").val();
+			bc.page.newWin({
+			name: "作答人",  
+			mid: "checkResponds" + id,
+			url: bc.root + "/bc/checkResponds/paging",
+					data: {pid:id},
+					afterClose: function(status){
+						if(status) bc.grid.reloadData($form);
+						}
+					});
+
+		});
 
 			//只读权限控制
-			if(readonly) return;
+		if(readonly) return;
 			
-			var liTpl = '<li class="horizontal reportUserLi ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
+		var liTpl = '<li class="horizontal reportUserLi ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
 			'style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">'+
 			'<span class="text">{1}</span>'+
 			'<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title={2}></span></li>';
-			var ulTpl = '<ul class="horizontal reportUserUl" style="padding: 0 45px 0 0;"></ul>';
-			var title = $form.find("#assignUsers").attr("data-removeTitle");
+		var ulTpl = '<ul class="horizontal reportUserUl" style="padding: 0 45px 0 0;"></ul>';
+		var title = $form.find("#assignUsers").attr("data-removeTitle");
 			
-			//绑定添加用户的按钮事件处理
-			$form.find("#addUsers").click(function(){
-				var $ul = $form.find("#assignUsers .reportUserUl");
-				var $lis = $ul.find("li");
-				var selecteds="";
-				$lis.each(function(i){
-					selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
-				});
-				bc.identity.selectUser({
-					multiple: true,//可多选
-					history: false,
-					selecteds: selecteds,
-					onOk: function(users){
-						$.each(users,function(i,user){
-							if($lis.filter("[data-id='" + user.id + "']").size() > 0){//已存在
-								logger.info("duplicate select: id=" + user.id + ",name=" + user.name);
-							}else{//新添加的
-								if(!$ul.size()){//先创建ul元素
-									$ul = $(ulTpl).appendTo($form.find("#assignUsers"));
-								}
-								$(liTpl.format(user.id,user.name,title))
-								.appendTo($ul).find("span.click2remove")
-								.click(function(){
-									$(this).parent().remove();
-								});
+		//绑定添加用户的按钮事件处理
+		$form.find("#addUsers").click(function(){
+			var $ul = $form.find("#assignUsers .reportUserUl");
+			var $lis = $ul.find("li");
+			var selecteds="";
+			$lis.each(function(i){
+				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
+			});
+			bc.identity.selectUser({
+				multiple: true,//可多选
+				history: false,
+				selecteds: selecteds,
+				onOk: function(users){
+					$.each(users,function(i,user){
+						if($lis.filter("[data-id='" + user.id + "']").size() > 0){//已存在
+							logger.info("duplicate select: id=" + user.id + ",name=" + user.name);
+						}else{//新添加的
+							if(!$ul.size()){//先创建ul元素
+								$ul = $(ulTpl).appendTo($form.find("#assignUsers"));
 							}
-						});
-					}
-				});
+							$(liTpl.format(user.id,user.name,title))
+							.appendTo($ul).find("span.click2remove")
+							.click(function(){
+								$(this).parent().remove();
+							});
+						}
+					});
+				}
+			});
 			});
 
 			//绑定添加岗位的按钮事件处理
@@ -318,6 +331,9 @@ bc.questionaryForm = {
 					bc.questionaryForm.getSerialNumber($form);
 					//当前的填空题
 					var thisCompletion = $($form.find("#testArea").children()[index]);
+					//插入题目标题
+					var tr4Topic = thisCompletion.children().children().eq(2);
+					tr4Topic.find("input[name='subject']").val(topic);
 					//包含题目类型的td
 					var thirdTd = thisCompletion.children().children().eq(1).children().eq(2);
 					//题目类型
@@ -340,6 +356,9 @@ bc.questionaryForm = {
 					bc.questionaryForm.getSerialNumber($form);
 					//当前的问答题
 					var thisJquiz = $($form.find("#testArea").children()[index]);
+					//插入题目标题
+					var tr4Topic = thisJquiz.children().children().eq(2);
+					tr4Topic.find("input[name='subject']").val(topic);
 					//包含题目类型的td
 					var thirdTd = thisJquiz.children().children().eq(1).children().eq(2);
 					//题目类型
@@ -426,7 +445,6 @@ bc.questionaryForm = {
 
 				
 			});
-			
 
 		},
 		//一条多选择题目的模板
@@ -453,7 +471,7 @@ bc.questionaryForm = {
 		         		'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
 		         		'<label for="questionary_create_type2">填空</label>',
 		         		'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
-		         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答题</label>',
+		         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
 		         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">',
 		         			'<input type="checkbox" name="seperateScore" checked = "checked" id="questionary_create_e_innerFix" style="width:1em;">',
 		         			'<label style="width:auto;margin-left:4px;">全对方有分</label>',
@@ -469,7 +487,7 @@ bc.questionaryForm = {
      			'<tr>',
      				'<td>&nbsp;</td>',
      				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
-     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+     				'<td class="value relative" style="margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
      				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;" data-validate="required">',
 					'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
 						'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
@@ -529,7 +547,7 @@ bc.questionaryForm = {
 	 		         		'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
 	 		         		'<label for="questionary_create_type2">填空</label>',
 	 		         		'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
-	 		         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答题</label>',
+	 		         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
 //	 		         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">',
 //	 		         			'<input type="checkbox" name="seperateScore" id="questionary_create_e_innerFix" style="width:1em;">',
 //	 		         			'<label style="width:auto;margin-left:4px;">全对方有分</label>',
@@ -545,7 +563,7 @@ bc.questionaryForm = {
 	      			'<tr>',
 	      				'<td>&nbsp;</td>',
 	      				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
-	      				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+	      				'<td class="value relative" style="margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
 	      				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;" data-validate="required">',
 	 					'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
 	 						'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
@@ -605,7 +623,7 @@ bc.questionaryForm = {
  				         		'<input type="radio" class="type" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
  				         		'<label for="questionary_create_type2">填空</label>',
  				         		'<input type="radio" class="type" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答题</label>',
+ 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
  								'<div style="position:relative;right:-180px;width: 100px;display: inline-block;">',
  									//'默认行数:<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">',
  								'</div>',
@@ -614,7 +632,7 @@ bc.questionaryForm = {
  		     			'<tr>',
  		     				'<td>&nbsp;</td>',
  		     				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
- 		     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+ 		     				'<td class="value relative" style="margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
  		     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" style="width:464px;" data-validate="required">',
  							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
  								'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
@@ -671,7 +689,7 @@ bc.questionaryForm = {
  				         		'<input type="radio" class="type" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
  				         		'<label for="questionary_create_type2">填空</label>',
  				         		'<input type="radio" class="type" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答题</label>',
+ 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
  								'<div style="position:relative;right:-180px;width: 100px;display: inline-block;">',
 									//'默认行数:<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">',
 								'</div>',
@@ -680,7 +698,7 @@ bc.questionaryForm = {
  		     			'<tr>',
  		     				'<td>&nbsp;</td>',
  		     				'<td style="font-weight: normal;text-align: right;">*题目:</td>',
- 		     				'<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
+ 		     				'<td class="value relative" style="margin: 0;padding: 1px 0;min-height:19px;margin: 0;">',
  		     				'<input type="text" name="subject" value="" id="questionary_create_e_subject" class="ui-widget-content" data-validate="required" style="width:464px;">',
  							'<div style="position:relative;right:-5px;width: 40px;display: inline-block;">',
  								'<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">分',
@@ -756,158 +774,143 @@ bc.questionaryForm = {
 	
 	},
             
-//保存之前的操作
+	//保存之前的操作
 	beforeSave:function($page){
-		
+		var ok = true;
 		//题目合并到隐藏域
 		var topics=[];
 		//将收费明细表中的内容添加到buyPlants里
 		$page.find("#testArea").children().each(function(){
-		//table的tr
-		var tr = $(this).children().children();
-		//题目项
-		var question = tr.eq(1).children().eq(2);
-		//排序号
-		var orderNo = tr.eq(1).children().first().children().text();
-		//alert("序号：" +orderNo);
-		//是否必选
-		var required = question.find(":input[name='required']")[0].checked;
-		//alert("是否必选：" +required);
-		//题型
-		var type = question.find("input[type='radio'][class='type']:checked").val();
-		//alert("题型：" +type);
-		//是否全对方得分
-		var seperateScoreCheck = question.find(":input[name='seperateScore']");
-		if(!(seperateScoreCheck[0]===undefined)){
-			var seperateScore =seperateScoreCheck[0].checked;
-			//alert("全对方得分"+seperateScore);
-		}
-		
-		//布局
-		var config = question.find(":input[type='radio'][class='config']:checked").val();
-		//alert("布局：" +config);
-		//题目
-		var subject = tr.eq(2).children().eq(2).find(":input[name='subject']").val();
-		//alert("题目：" +subject);
-		//分数
-		var score = tr.eq(2).children().eq(2).find(":input[name='score']").val();
-		//alert("分数： "+score);
-		
-		var optionItem = {};
-		var optionItems = [];
-		//选项
-		$(this).children().find(".option").find(".value").children().each(function(){
-		//单选题的答案
-		if(type==0){
-			//答案
-		var standard = $(this).find(":input[type='radio'][class='standard']:checked").val();
-		if(standard!=null){
-			standard=true;
-		}else{
-			standard=false;
-		}
-		//alert("答案：" +standard);
-		//标题
-		var subject = $(this).find(":input[name='subject']").val();
-		//alert("标题：" +subject);
-		
-		//分数
-		var itemScore = $(this).find(":input[name='score']").val();
-		//alert("选项分数： "+itemScore);
-		 
-						}
-						//多选题的答案
-		if(type==1){
-			//答案
-		var standard = $(this).find(":input[class='standard']")[0].checked;
-		//alert("答案：" +standard);
-		//标题
-		var subject = $(this).find(":input[name='subject']").val();
-		//alert("标题：" +subject);
-		
-		//分数
-		var itemScore = $(this).find(":input[name='score']").val();
-		//alert("选项分数： "+itemScore);
-		
+			//table的tr
+			var tr = $(this).children().children();
+			//题目项
+			var question = tr.eq(1).children().eq(2);
+			//排序号
+			var orderNo = tr.eq(1).children().first().children().text();
+			//alert("序号：" +orderNo);
+			//是否必选
+			var required = question.find(":input[name='required']")[0].checked;
+			//alert("是否必选：" +required);
+			//题型
+			var type = question.find("input[type='radio'][class='type']:checked").val();
+			//alert("题型：" +type);
+			//是否全对方得分
+			var seperateScoreCheck = question.find(":input[name='seperateScore']");
+			if(!(seperateScoreCheck[0]===undefined)){
+				var seperateScore =seperateScoreCheck[0].checked;
+				//alert("全对方得分"+seperateScore);
 			}
+			//布局
+			var config = question.find(":input[type='radio'][class='config']:checked").val();
+			//alert("布局：" +config);
+			//题目
+			var subject = tr.eq(2).children().eq(2).find(":input[name='subject']").val();
+			//alert("题目：" +subject);
+			//分数
+			var score = tr.eq(2).children().eq(2).find(":input[name='score']").val();
+			//alert("分数： "+score);
 			
+			var optionItem = {};
+			var optionItems = [];
+			//选项
+			$(this).children().find(".option").find(".value").children().each(function(){
+			//单选题的答案
+			if(type==0){
+				//答案
+				var standard = $(this).find(":input[type='radio'][class='standard']:checked").val();
+				if(standard!=null){
+					standard=true;
+				}else{
+					standard=false;
+				}
+				//alert("答案：" +standard);
+				//标题
+				var subject = $(this).find(":input[name='subject']").val();
+				//alert("标题：" +subject);
+				
+				//分数
+				var itemScore = $(this).find(":input[name='score']").val();
+				//alert("选项分数： "+itemScore);
+				 
+			}else if(type==1){//多选题的答案
+				//答案
+				var standard = $(this).find(":input[class='standard']")[0].checked;
+				//alert("答案：" +standard);
+				//标题
+				var subject = $(this).find(":input[name='subject']").val();
+				//alert("标题：" +subject);
+				//分数
+				var itemScore = $(this).find(":input[name='score']").val();
+				//alert("选项分数： "+itemScore);
+			}
 			optionItem = {
-				 standard : standard,
-				 subject : subject,
-				 score : (itemScore ? itemScore : 0)
+					 standard : standard,
+					 subject : subject,
+					 score : (itemScore ? itemScore : 0)
+				};
+				optionItems.push(optionItem);
+			}); 
+			
+			if(type==2){//填空题的答案
+				//答案
+				var config = $(this).find(":input[name='config']").val();
+				optionItem.config = config;
+				//alert("答案：" +config);
+				//内容
+				var ItemSubject = $(this).find(".option").find(":input[name='subject']").val();
+				optionItem.subject = ItemSubject;
+				
+				//检测是否为空和是否为全数字类型
+				if(config==''||/^\d+$/.test(config)){
+					alert('请填空正确的配置格式：[{"key":"占位符","value":"答案","score":"分数"}]');
+					ok = false;
+				}
+				//检测是否为标准的json格式
+				try{
+					$.parseJSON(config);
+				}catch(e){
+					alert('请填空正确的配置格式：[{"key":"占位符","value":"答案","score":"分数"}]');
+					ok = false;
+				}
+		
+				//alert("填空内容：" +subject);
+				//optionItems.push(optionItem);
+			}else if(type==3){//简答题的答案
+				//内容
+				var ItemSubject = $(this).find(".option").find(":input[name='subject']").val();
+				optionItem.subject = ItemSubject;
+				//alert("简答内容：" +subject);
+				//alert("optionItems0" +$.toJSON(optionItems));
+				//optionItems.push(optionItem);
+			}
+			//alert("optionItems" +$.toJSON(optionItems));
+			//第条题目的问题项：
+			var optionItemsValue = $.toJSON(optionItems);
+			var json = {
+				orderNo:orderNo,
+				required:required,
+				type: type,
+				seperateScore: seperateScore,
+				config: config,
+				subject: subject,
+				score : (score ? score : 0),
+				optionItemsValue: optionItemsValue
 			};
-			optionItems.push(optionItem);
-		}); 
-		
-		//填空题的答案
-		if(type==2){
-			//答案
-		var config = $(this).find(":input[name='config']").val();
-		optionItem.config = config;
-		//alert("答案：" +config);
-		//内容
-		var ItemSubject = $(this).find(".option").find(":input[name='subject']").val();
-		optionItem.subject = ItemSubject;
-		
-		//检测是否为空和是否为全数字类型
-		if(config==''||/^\d+$/.test(config)){
-			bc.msg.alert('请填空正确的配置格式：[{"key":"占位符","value":"答案","score":"分数"}]');
-				return false;
-		}
-		//检测是否为标准的json格式
-		try{
-			$.parseJSON(config);
-		}catch(e){
-			bc.msg.alert('请填空正确的配置格式：[{"key":"占位符","value":"答案","score":"分数"}]');
-				return false;
-		}
-
-		//alert("填空内容：" +subject);
-		//optionItems.push(optionItem);
-		}
-		//简答题的答案
-		if(type==3){
-			//内容
-		var ItemSubject = $(this).find(".option").find(":input[name='subject']").val();
-		optionItem.subject = ItemSubject;
-		//alert("简答内容：" +subject);
-		//alert("optionItems0" +$.toJSON(optionItems));
-		//optionItems.push(optionItem);
-		}
-		//alert("optionItems" +$.toJSON(optionItems));
-		//第条题目的问题项：
-		var optionItemsValue = $.toJSON(optionItems);
-		
-		var json = {
-			orderNo:orderNo,
-			required:required,
-			type: type,
-			seperateScore: seperateScore,
-			config: config,
-			subject: subject,
-			score : (score ? score : 0),
-			optionItemsValue: optionItemsValue
-		};
-		var id = $(this).attr("data-id");
-			if(id && id.length > 0)
-				json.id = id;
-			topics.push(json);
+			var id = $(this).attr("data-id");
+				if(id && id.length > 0)
+					json.id = id;
+				topics.push(json);
 		});
 		//alert("topics ： "+$.toJSON(topics));
-		
 		$page.find(":input[name='topics']").val($.toJSON(topics));
-		return true;
-		//        		//表单验证
-		//        		$feeDetailTables=$page.find("#feeDetailTables tr");
-		//        		
-		//        		if(!bc.validator.validate($feeDetailTables))
-		//        			return;
+		return ok;
 		
-},
+	},
 	//保存
 	save : function(){
 		var $form = $(this);
-		if(!bc.questionaryForm.beforeSave($form)){
+		var ok = bc.questionaryForm.beforeSave($form);
+		if(!ok){
 			return;
 		}
 		//调用标准的方法执行保存

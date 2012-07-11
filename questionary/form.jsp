@@ -87,8 +87,8 @@
 						<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 							<s:checkbox name="required" cssStyle="width:1em;" value="true" cssClass="required"/><label>必选题</label></div>
 							<s:radio cssClass="type" name="type1" value="0" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
-							<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
-							<!--<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
+							<!--<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
+							<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
 							<div style="position:relative;right:-100px; display: inline-block;">选项布局：
 								<s:radio name="config1" cssClass="config" value="%{'vertical'}" list="#{'vertical':'垂直','horizontal':'水平'}" cssStyle="width:auto;"/>
 							</div>-->
@@ -97,7 +97,7 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td style="font-weight: normal;text-align: right;">*题目:</td>
-						<td class="value" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
+						<td class="value relative" style="margin: 0;padding: 1px 0;min-height:19px;margin: 0;">
 							<s:textfield name="subject" cssClass="ui-widget-content" cssStyle="width:463px;" data-validate="required"/>
 							<div style="position:relative;right:-2px;width: 40px;display: inline-block;">
 								<s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>分
@@ -147,7 +147,7 @@
 						               	<td style="font-weight: normal;text-align: right;">题型:</td>
 										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
-											<s:radio cssClass="type" name="%{'type'+orderNo}" value="%{type}" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
+											<s:radio cssClass="type" name="%{'type'+orderNo}" value="%{type}" list="#{'0':'单选','1':'多选','2':'填空','3':'问答'}" cssStyle="width:auto;"/>
 											<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
 											<s:checkbox name="seperateScore" cssStyle="width:1em;" cssClass="seperateScore"/><label>全对方有分</label></div>
 											<div style="position:relative;right:-20px; display: inline-block;">选项布局：
