@@ -10,11 +10,14 @@
 			<tbody>
 				<tr>
 					<td style="width: 70px;">&nbsp;</td>
-					<td style="text-align: center;font-size: 30px;position: relative;left: 170px;display: inline-block;" title="${e.subject}"><s:text name="e.subject"/></td>
+					<td style="text-align: center;font-size: 30px;position: relative;display: inline-block;" title="${e.subject}"><s:text name="e.subject"/></td>
 				</tr>
 				<tr>
-				<td style="font-weight: normal;text-align: left;padding-left:15px;">得分：<s:property value="%{score4User}"/></td>
-				<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+				<td style="font-weight: normal;text-align: left;padding-left:15px;">总分:(<s:property value="%{totalScore()}"/>)
+					&nbsp;&nbsp;得分:(<s:property value="%{score4User}"/>)
+					&nbsp;&nbsp;作答人数:(<s:property value="%{getJoinCount()}"/>)
+				</td>
+				<td style="position: relative;text-align: right;width: 60%;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
 				</tr>
 			</tbody>
 		</table>
@@ -91,6 +94,7 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
+			               		&nbsp;<s:if test="seperateScore==true"><span style="color: red;">(全对方得分)</span></s:if>
 			               		&nbsp;<s:property value="%{score}"></s:property>分
 		               		</td>
 		               		<td>&nbsp;</td>
@@ -114,6 +118,7 @@
 											<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="true" cssStyle="width:1em;"/>
 											<s:text name="subject" />
 										</div>
+										&nbsp;&nbsp;&nbsp;<span class="ui-priority-secondary"><s:property value="%{score}"></s:property>分</span>
 									</td>
 									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
 										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
@@ -128,6 +133,7 @@
 											<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" cssStyle="width:1em;"/>
 											<s:text name="subject" />
 										</div>
+										&nbsp;&nbsp;&nbsp;<span class="ui-priority-secondary"><s:property value="%{score}"></s:property>分</span>
 									</td>
 									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
 										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>

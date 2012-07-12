@@ -10,10 +10,15 @@
 			<table class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
 					<tr>
-						<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;" id="title" title="${e.subject}"><s:text name="e.subject"/></td>
+						<td style="width: 70px;">&nbsp;</td>
+						<td style="text-align: center;font-size: 30px;position: relative;display: inline-block;" title="${e.subject}"><s:text name="e.subject"/></td>
 					</tr>
 					<tr>
-					<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+						<td style="font-weight: normal;text-align: left;padding-left:15px;">总分:(<s:property value="%{totalScore()}"/>)
+						</td>
+						<td style="position: relative;text-align: right;width: 60%;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~
+							<s:date name="e.endDate" format="yyyy-MM-dd"/> 
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -53,6 +58,7 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
+			               		&nbsp;<s:if test="seperateScore==true"><span style="color: red;">(全对方得分)</span></s:if>
 			               		&nbsp;<s:property value="%{score}"></s:property>分
 		               		</td>
 						</tr>

@@ -14,8 +14,8 @@
 						<td style="text-align: center;font-size: 30px;position: relative;display: inline-block;" title="${e.subject}"><s:text name="e.subject"/></td>
 					</tr>
 					<tr>
-						<td style="font-weight: normal;text-align: left;padding-left:15px;">总分：<s:property value="%{totalScore()}"/>
-							&nbsp;作答人数：<s:property value="%{getJoinCount()}"/>
+						<td style="font-weight: normal;text-align: left;padding-left:15px;">总分:(<s:property value="%{totalScore()}"/>)
+							&nbsp;作答人数:(<s:property value="%{getJoinCount()}"/>)
 							&nbsp;&nbsp;<s:a id="checkRespond" href="#">作答人</s:a>
 						</td>
 						<td style="position: relative;text-align: right;width: 60%;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~
