@@ -215,6 +215,7 @@ bc.identity = {
 	 * @param {Object} option 配置参数
 	 * @option {String} selecteds 已选择用户的id列表，多个值用逗号连接
 	 * @option {String} excludes 要排除显示的项的值，多个值用逗号连接
+	 * @option {String} group 所属岗位
 	 * @option {Boolean} multiple 是否允许多选，默认false
 	 * @option {Boolean} history 是否选择ActorHistory信息，默认true，设为false选择Actor信息
 	 * @option {Function} onOk 选择完毕后的回调函数，函数第一个参数为选中的用户信息(多选时数组，单选时时对象)
@@ -229,6 +230,8 @@ bc.identity = {
 			option.data.selecteds = option.selecteds;
 		if(option.excludes)
 			option.data.excludes = option.excludes;
+		if(option.group)
+			option.data.group = option.group;
 		if(option.history === false)
 			option.data.history = false;
 		if(option.multiple === true)
