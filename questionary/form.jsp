@@ -322,9 +322,12 @@
 										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
 											<s:radio cssClass="type" name="%{'type'+orderNo}" value="%{type}" list="#{'0':'单选','1':'多选','2':'填空','3':'问答题'}" cssStyle="width:auto;"/>
-											<div style="position:relative;right:-180px;width: 100px;display: inline-block;">
-												<label>默认行数:</label><s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>
+											<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">
+												<s:checkbox name="grade" cssStyle="width:1em;" cssClass="seperateScore"/><label>是否要评分</label>
 											</div>
+											<!--<div style="position:relative;right:-108px;width: 100px;display: inline-block;">
+												<label>默认行数:</label><s:textfield name="score" cssClass="ui-widget-content" cssStyle="width:25px;"/>
+											</div>-->
 										</td>
 									</tr>
 									<tr>

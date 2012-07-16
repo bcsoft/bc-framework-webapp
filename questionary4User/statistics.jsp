@@ -16,8 +16,8 @@
 					<td style="text-align: center;font-size: 30px;" title="${e.subject}" colspan="2"><s:text name="e.subject"/></td>
 				</tr>
 				<tr>
-				<td style="font-weight: normal;text-align: left;padding-left:15px;width: 40%;">总分:<s:property value="%{totalScore()}"/>
-					&nbsp;&nbsp;得分:<s:property value="%{score4User}"/>
+				<td style="font-weight: normal;text-align: left;padding-left:15px;width: 50%;">总分:<s:property value="%{totalScore()}"/>
+					&nbsp;&nbsp;得分:<s:property value="%{score4User}"/><s:if test="%{getIsNeedGrade()}"><span style="color: red;">(未完全统计)</span></s:if>
 					&nbsp;&nbsp;答卷人数:<s:property value="%{getJoinCount()}"/>
 				</td>
 				<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
@@ -173,6 +173,7 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
+			               		&nbsp;<s:if test="grade==true"><span style="color: red;">(未评分)</span></s:if>
 			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 			               	</td>
 						</tr>

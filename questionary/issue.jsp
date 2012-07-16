@@ -121,6 +121,7 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
+			               		&nbsp;<s:if test="grade==true"><span style="color: red;">(要评分)</span></s:if>
 			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 			               	</td>
 						</tr>

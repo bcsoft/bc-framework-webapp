@@ -89,13 +89,15 @@ bc.questionary4UserForm = {
     				}
 				}else if(type==3){//简答题
 					var subject = $(this).find("textarea[name='subject']").val();
+					var grade = $(this).attr("data-grade");
 					if(subject.length > 0){
 						hadAnswer=true;
 					}
 					if(hadAnswer){
 	    				optionItem = {
 	   						 itemId : itemId,
-	       					 subject : subject
+	       					 subject : subject,
+	       					grade : grade
 	       				};
 					}
 				}

@@ -108,7 +108,8 @@
 			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 			               	</td>
 						</tr>
-						<tr class="option" data-id="<s:property value='%{items.iterator().next().id}'/>">
+						<tr class="option" data-id="<s:property value='%{items.iterator().next().id}'/>" 
+							data-grade="<s:property value='%{grade}'/>">
 							<td class="value" style="padding-left: 30px;">
 								<textarea name="subject" placeholder='<s:property value="%{items.iterator().next().subject}"/>' rows="3" class="ui-widget-content noresize"></textarea>
 							</td>

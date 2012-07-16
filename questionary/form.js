@@ -690,7 +690,11 @@ bc.questionaryForm = {
  				         		'<label for="questionary_create_type2">填空</label>',
  				         		'<input type="radio" class="type" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
  				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
- 								'<div style="position:relative;right:-180px;width: 100px;display: inline-block;">',
+ 		 		         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">',
+ 		 		         			'<input type="checkbox" name="grade" checked = "checked" id="questionary_create_e_innerFix" style="width:1em;">',
+ 		 		         			'<label style="width:auto;margin-left:4px;">是否要评分</label>',
+	 	         				'</div>',
+ 								'<div style="position:relative;right:-108px;width: 100px;display: inline-block;">',
 									//'默认行数:<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">',
 								'</div>',
  		         			'</td>',
@@ -800,6 +804,12 @@ bc.questionaryForm = {
 				var seperateScore =seperateScoreCheck[0].checked;
 				//alert("全对方得分"+seperateScore);
 			}
+			//是否要评分
+			var gradeCheck = question.find(":input[name='grade']");
+			if(!(gradeCheck[0]===undefined)){
+				var grade = gradeCheck[0].checked;
+				//alert("全对方得分"+seperateScore);
+			}
 			//布局
 			var config = question.find(":input[type='radio'][class='config']:checked").val();
 			//alert("布局：" +config);
@@ -891,6 +901,7 @@ bc.questionaryForm = {
 				required:required,
 				type: type,
 				seperateScore: seperateScore,
+				grade: grade,
 				config: config,
 				subject: subject,
 				score : (score ? score : 0),
