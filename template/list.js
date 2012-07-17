@@ -111,13 +111,23 @@ bc.templateList = {
 			return;
 		}
 	},
-	/** 配置模板类型 **/
-	configType : function(){
-		bc.page.newWin({
-			url : bc.root+"/bc/templateTypes/list",
-			name: "模板类型配置管理",
-			mid : "templateTypeViews"		
-		});
+	/** 配置 **/
+	config : function(option){
+		if(option.value == "type"){
+			bc.page.newWin({
+				url : bc.root+"/bc/templateTypes/list",
+				name: "模板类型管理",
+				mid : "templateTypeViews"		
+			});
+		} else if(option.value == "param"){
+			bc.page.newWin({
+				url : bc.root+"/bc/templateParams/list",
+				name: "模板参数管理",
+				mid : "templateParamViews"		
+			});
+		}else{
+			alert("不支持的操作类型!");
+		}
 	}
 	
 };

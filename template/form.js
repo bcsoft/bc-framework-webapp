@@ -1,16 +1,18 @@
 bc.templateForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
+		
 		//根据模板类型显示模板文件或模板内容
-		var tplType=$form.find("#templateTypeCode").val();
-		var $tplContent=$form.find("#idTplContent");
-		var $tplFile=$form.find(".tplFile");
-		if(tplType=='custom'){
-			$tplFile.hide();
+		if($form.find("#templateTypeCode").val() == 'custom'){
+			$form.find(".tplFile").hide();
 			$form.find(":input[name='e.path']").removeAttr("data-validate");
-		}else{
-			$tplContent.hide();
-		}		
+		}else
+			$form.find("#idTplContent").hide();	
+	
+		//根据格式化的值，显示后隐藏参数
+		if($form.find(":input[e.formatted]:checked").val() == "false")
+			$form.find("#idTplParam").hide();
+		
 		
 		if(readonly) return;
 			
@@ -63,15 +65,15 @@ bc.templateForm = {
 					$form.find("#templateTypeExt").val(json.ext);
 					//自定义文本类型显示模板内容，隐藏附件
 					if(json.code!='custom'){
-						$tplFile.show();
-						$tplContent.hide();
+						$form.find(".tplFile").show();
+						$form.find("#idTplContent").hide();
 						$form.find(":input[name='e.subject']").val('');
 						$form.find(":input[name='e.path']").val('');
 						$form.find(":input[name='e.content']").val('');
 						$form.find(":input[name='e.path']").attr("data-validate","required");
 					}else{
-						$tplFile.hide();
-						$tplContent.show();
+						$form.find(".tplFile").hide();
+						$form.find("#idTplContent").show();
 						$form.find(":input[name='e.path']").val('');
 						$form.find(":input[name='e.subject']").val('');
 						$form.find(":input[name='e.path']").removeAttr("data-validate");
@@ -80,6 +82,61 @@ bc.templateForm = {
 			});
 		});
 		
+		//绑定格式化radio按钮组事件
+		$form.find(":input[name='e.formatted']").change(function(){
+			if($(this).val() == 'true'){
+				$form.find("#idTplParam").show();
+			}else{
+				$form.find("#idTplParam").hide();
+				$form.find(".templateParamLi").remove();
+			}
+		});
+		
+		
+		var liTpl = '<li class="horizontal templateParamLi ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
+		'style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">'+
+		'<span class="text">{1}</span>'+
+		'<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title={2}></span></li>';
+		var ulTpl = '<ul class="horizontal templateParamUl" style="padding: 0 45px 0 0;"></ul>';
+		var title = $form.find("#templateParams").attr("data-removeTitle");
+		
+		//绑定添加用户的按钮事件处理
+		$form.find("#addParam").click(function(){
+			var $ul = $form.find("#templateParams .templateParamUl");
+			var $lis = $ul.find("li");
+			var selecteds="";
+			$lis.each(function(i){
+				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
+			});
+			bc.page.newWin({
+					url: bc.root + "/bc/selectTemplateParam/list",
+					multiple: true,
+					title:'选择模板参数',
+					name: '选择模板参数',
+					mid: 'selectTemplateParams',
+					afterClose: function(params){
+						$.each(params,function(i,param){
+							if($lis.filter("[data-id='" + param.id + "']").size() > 0){//已存在
+								logger.info("duplicate select: id=" + param.id + ",name=" + param.name);
+							}else{//新添加的
+								if(!$ul.size()){//先创建ul元素
+									$ul = $(ulTpl).appendTo($form.find("#templateParams"));
+								}
+								$(liTpl.format(param.id,param.name,title))
+								.appendTo($ul).find("span.click2remove")
+								.click(function(){
+									$(this).parent().remove();
+								});
+							}
+						});
+					}
+			});
+		});
+		
+		//绑定删除参数按钮事件处理
+		$form.find("span.click2remove").click(function(){
+			$(this).parent().remove();
+		});
 	},
 	/** 文件上传完毕后 */
 	afterUploadfile : function(json){
@@ -122,6 +179,15 @@ bc.templateForm = {
 		//验证表单
 		if(!bc.validator.validate($form)) return;
 		
+		//模板参数
+		//将用户的id合并到隐藏域
+		ids=[];
+		$form.find("#templateParams .templateParamLi").each(function(){
+			ids.push($(this).attr("data-id"));
+		});
+		$form.find(":input[name='templateParamIds']").val(ids.join(","));
+		
+		
 		//模板类型编码
 		var typeCode=$form.find("#templateTypeCode").val();
 		//模板类型后缀名
@@ -145,9 +211,8 @@ bc.templateForm = {
 		//判断上传文件的后缀名是否与模板类型的后缀名相同
 		if(ext == typeExt){
 			saveInfo();
-		}else{
+		}else
 			bc.msg.alert("这种模板类型需要保存后缀名为"+typeExt+"!");
-		}
 	},
 	/** 查看历史版本号 **/
 	showVersion : function(){

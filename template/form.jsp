@@ -80,8 +80,35 @@
 									<li class="downLoadFileId inputIcon ui-icon ui-icon-circle-arrow-s" title='<s:text name="template.download"/>' >
 								</ul>	
 							</div>
+					</td>
 					<td class="value">
 						<s:textarea rows="5" name="e.content"  cssClass="ui-widget-content noresize" />
+					</td>
+				</tr>
+				<!-- 模板参数 -->
+				<tr id="idTplParam">
+					<td class="topLabel">
+								<s:text name="template.param"/>:</td>
+					<td class="value">
+						<div id="templateParams" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;width: 98%;" class="ui-widget-content" 
+							data-removeTitle='<s:text name="title.click2remove"/>'>
+							<ul class="inputIcons" style="top:10px">
+								 	<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="点击添加参数"/>' id="addParam">
+							</ul>
+							<s:if test="%{templateParams != null && !templateParams.isEmpty()}">
+								<ul class="horizontal templateParamUl" style="padding: 0 50px 0 0;">
+								<s:iterator value="templateParams">
+								<li class="horizontal templateParamLi" style="position: relative;margin:0 2px;float: left;padding: 0;"
+									data-id=<s:property value="['id']"/>>
+								<span class="text" ><s:property value="['name']" /></span>
+								<s:if test="!isReadonly()">
+									<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title='<s:text name="title.click2remove"/>'></span>
+								</s:if>
+								</li>
+								</s:iterator>
+								</ul>
+							</s:if>	
+						</div>	
 					</td>
 				</tr>
 				<tr>
@@ -108,6 +135,7 @@
 		<s:hidden name="e.uid" />
 		<s:hidden name="e.inner" />
 		<s:hidden name="e.author.id" />
+		<s:hidden name="templateParamIds" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		<input type="hidden" id="templateTypeCode" value='<s:property value="e.templateType.code" />'/>
 		<input type="hidden" id="templateTypeExt" value='<s:property value="e.templateType.extension" />'/>
