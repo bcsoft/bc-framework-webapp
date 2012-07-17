@@ -95,7 +95,7 @@ bc.templateForm = {
 		
 		var liTpl = '<li class="horizontal templateParamLi ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
 		'style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">'+
-		'<span class="text">{1}</span>'+
+		'<span class="text"><a href="#">{1}</a></span>'+
 		'<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title={2}></span></li>';
 		var ulTpl = '<ul class="horizontal templateParamUl" style="padding: 0 45px 0 0;"></ul>';
 		var title = $form.find("#templateParams").attr("data-removeTitle");
@@ -105,9 +105,7 @@ bc.templateForm = {
 			var $ul = $form.find("#templateParams .templateParamUl");
 			var $lis = $ul.find("li");
 			var selecteds="";
-			$lis.each(function(i){
-				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
-			});
+			$lis.each(function(i){selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));});
 			bc.page.newWin({
 					url: bc.root + "/bc/selectTemplateParam/list",
 					multiple: true,
@@ -119,17 +117,42 @@ bc.templateForm = {
 							if($lis.filter("[data-id='" + param.id + "']").size() > 0){//已存在
 								logger.info("duplicate select: id=" + param.id + ",name=" + param.name);
 							}else{//新添加的
-								if(!$ul.size()){//先创建ul元素
+								if(!$ul.size())//先创建ul元素
 									$ul = $(ulTpl).appendTo($form.find("#templateParams"));
-								}
-								$(liTpl.format(param.id,param.name,title))
-								.appendTo($ul).find("span.click2remove")
+								
+								var $liObj=$(liTpl.format(param.id,param.name,title))
+								.appendTo($ul);
+								
+								//绑定查看事件
+								$liObj.find("span.text").click(function(){
+									bc.page.newWin({
+										url: bc.root + "/bc/templateParam/edit?id="+param.id,
+										name: "模板参数",
+										mid:  "templateParam"+param.id
+									})
+								});
+								
+								//绑定删除事件
+								$liObj.find("span.click2remove")
 								.click(function(){
 									$(this).parent().remove();
 								});
 							}
 						});
 					}
+			});
+		});
+		
+		//绑定查看模板参数的按钮事件处理
+		var $objs = $form.find('.horizontal').children('span.text');
+		$.each($objs,function(i,obj){
+			//绑定查看
+			$(obj).click(function(){
+				bc.page.newWin({
+					url: bc.root + "/bc/templateParam/edit?id="+$(obj).parent().attr('data-id'),
+					name: "模板参数",
+					mid:  "templateParam"+$(obj).parent().attr('data-id')
+				})
 			});
 		});
 		
@@ -145,9 +168,8 @@ bc.templateForm = {
 			var $page = this.closest(".bc-page");
 			$page.find(':input[name="e.subject"]').val(json.source);
 			$page.find(':input[name="e.path"]').val(json.to);
-		}else{
+		}else
 			bc.msg.alert(json.msg);
-		}
 	},
 	/**
 	 * 保存
