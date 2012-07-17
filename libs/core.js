@@ -235,3 +235,29 @@ bc.getWasteTime = function(startTime,endTime){
 		return m + "分" + bc.formatNumber((wt - m * 1000 * 60) / 1000,"#.#") + "秒";
 	}
 };
+
+bc.getJsCss = function(cfg){
+	if(!cfg)
+		return [];
+	if(typeof cfg == "string")
+		cfg = cfg.split(",");
+	
+	var t;
+	for(var i=0;i<cfg.length;i++){
+		if(cfg[i].indexOf("js:") == 0){//预定义的js文件
+			t = bc.loader.preconfig.js[cfg[i].substr(3)];
+			if(t){
+				t = bc.root + t;
+				logger.debug(cfg[i] + "=" +  t);
+				cfg[i] = t;
+			}else{
+				alert("没有预定义“" + cfg[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
+			}
+		}else if(cfg[i].indexOf("css:") == 0){//预定义的css文件
+			alert("方法还没实现-css:");
+		}else if(cfg[i].indexOf("http") != 0 && cfg[i].indexOf("/") != 0){//相对路径的文件
+			cfg[i] = bc.root + "/" + cfg[i];
+		}
+	}
+	return cfg;
+};

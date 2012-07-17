@@ -121,7 +121,7 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/i18n/jquery-ui-timepicker-zh-CN.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.1.0/jquery.pnotify.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/easing/1.3/jquery.easing.js' />"></script>
-<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.4/jquery.mousewheel.min.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.6/jquery.mousewheel.min.js' />"></script>
 <script type="text/javascript">
 	bc={};
 	bc.title = '<s:text name="app.title"/> v<s:text name="app.version"/>';
