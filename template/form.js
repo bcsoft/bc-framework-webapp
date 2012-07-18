@@ -36,10 +36,8 @@ bc.templateForm = {
 			
 			if(type=='custom'){
 				if(content==""){bc.msg.slide('模板内容为空！');return;}
-				var url =bc.root+"/bc/template/download?tid=" +id
-				url+="&ptype=Template";
-				url+="&puid="+$form.find(":input[name='e.uid']").val();
-				url+="&content="+content;
+				var url =bc.root+"/bc/templatefile/download?id=" +id
+				url+="&custom="+true;
 				var win = window.open(url, "blank");
 				return win;
 			}else{
@@ -272,8 +270,8 @@ bc.templateForm = {
 		// 无配置参数的预览方法 
 		function notConfigInline(){
 			if(type=="custom"){//自定义文本类型调用自定义的预览方法
-				var url =bc.root+"/bc/template/inline?tid=" + tid
-				url+="&content="+content;
+				var url =bc.root+"/bc/templatefile/inline?id=" + tid
+				url+="&custom="+true;
 				var win = window.open(url, "_blank");
 				return win;
 			}
@@ -330,7 +328,7 @@ bc.templateForm = {
 					dataArr.push(dataObj);
 				});
 
-				var url =bc.root+"/bc/template/inline"
+				var url =bc.root+"/bc/templatefile/inline"
 				
 				// Get方法打开窗口：会有url长度限制的问题
 				//url+="?tid="+tid;
@@ -341,13 +339,11 @@ bc.templateForm = {
 				
 				// Post方法打开窗口：参数无限制
 				var $post=['<form name="templateInline" method="post">'];
-				$post.push('<input type="hidden" name="tid" value="' + tid + '">');
-				$post.push('<input type="hidden" name="content" value="">');
+				$post.push('<input type="hidden" name="id" value="' + tid + '">');
 				$post.push('<input type="hidden" name="markerValueJsons" value="">');
 				$post.push('</form>');
 				$post = $($post.join(""));
 				$post.children("[name='markerValueJsons']").val($.toJSON(dataArr));
-				$post.children("[name='content']").val(content ? content:"");
 				var _form = $post.get(0);
 				_form.action = url;
 				_form.target = "_blank";	// 新窗口打开
@@ -389,7 +385,7 @@ bc.templateForm = {
 		//先加载一次配置参数
 		$.ajax({
 			url:url,
-			data:{tid:tid,content:content},
+			data:{tid:tid},
 			dataType:"json",
 			success:function(json){
 				if(json.value){//有配置参数打开配置参数窗口

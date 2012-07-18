@@ -9,23 +9,15 @@ bc.templateList = {
 			var $hidden = $tr.data("hidden");
 			var type=$hidden.typeCode;
 			if(type=='custom'){
-				var tid=$tds.attr("data-id"); 
-				bc.ajax({
-					url:bc.root+"/bc/template/isContent",
-					data:{tid:tid},
-					dataType:"json",
-					success:function(json){
-						if(!json.result){
-							var url =bc.root+"/bc/template/inline?tid=" + tid;
-							url += "&ptype=Template";
-							url += "&puid=" + $hidden.uid;
-							var win = window.open(url, "_blank");
-							return win;
-						}else{
-							bc.msg.slide("模板内容为空！")
-						}
-					}
-				});
+				var id=$tds.attr("data-id");
+				if($hidden.isContent == "empty"){
+					bc.msg.slide("模板内容为空！");
+				}else{
+					var url =bc.root+"/bc/templatefile/inline?id=" +id;
+					url += "&custom=" + true;
+					var win = window.open(url, "_blank");
+					return win;
+				}
 			}else{
 				var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
 				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径
@@ -56,23 +48,15 @@ bc.templateList = {
 			var $hidden = $tr.data("hidden");
 			var type=$hidden.typeCode;//类型
 			if(type=='custom'){
-				var tid=$tds.attr("data-id");
-				bc.ajax({
-					url:bc.root+"/bc/template/isContent",
-					data:{tid:tid},
-					dataType:"json",
-					success:function(json){
-						if(!json.result){
-							var url =bc.root+"/bc/template/download?tid=" + tid;
-							url += "&ptype=Template";
-							url += "&puid=" + $hidden.uid;
-							var win = window.open(url, "blank");
-							return win;
-						}else{
-							bc.msg.slide("模板内容为空！")
-						}
-					}
-				});
+				var id=$tds.attr("data-id");
+				if($hidden.isContent == "empty"){
+					bc.msg.slide("模板内容为空！");
+				}else{
+					var url =bc.root+"/bc/templatefile/download?id=" +id;
+					url += "&custom=" + true;
+					var win = window.open(url, "blank");
+					return win;
+				}
 			}else{
 				var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
 				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径			
