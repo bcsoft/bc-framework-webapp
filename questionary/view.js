@@ -22,13 +22,12 @@ bc.questionaryView = {
 		var title = $tds4Right.children().eq(1).text();
 		var id = $tds.attr("data-id");
 		if($tds.length == 1){
-			if(logger.infoEnabled) logger.info("bc.page.delete_: data=" + data);
-			var url=bc.root +"/bc/score4Quess/paging";
+			var url=bc.root +"/bc/grades/paging";
 			var option = jQuery.extend({
 				url: url,
 				data:{id:id,title:title},
 				name:"对"+title+"的问答题进行评分",
-				mid: "score4Question" + id,
+				mid: "gradeaction" + id,
 				afterClose: function(){
 					//重新加载列表
 					bc.grid.reloadData($page);

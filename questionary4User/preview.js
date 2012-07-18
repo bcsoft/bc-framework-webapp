@@ -140,7 +140,7 @@ bc.questionary4UserForm = {
 		//保存后重新打开表单
 		var name = $form.find("#title").text();
 		bc.page.save.call($form,{callback: function(json){
-			bc.msg.slide("提交成功成功！");
+			bc.msg.slide("提交成功！");
 			$form.dialog("close");
 			//如果是新建入库就重新打开表单
 				// 重新打开可编辑表单
