@@ -113,7 +113,7 @@
 </div>
 <!-- 空白框架，通常用于下载附件 -->
 <iframe id="blank" name="blank" style="width:0; height:0; display:hidden;" src="about:blank" scrolling="no" frameborder="0"></iframe>
-<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7/jquery.min.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7.2/jquery.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/i18n/jquery.ui.datepicker-zh-CN.js' />"></script>
