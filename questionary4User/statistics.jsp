@@ -17,7 +17,7 @@
 				</tr>
 				<tr>
 				<td style="font-weight: normal;text-align: left;padding-left:15px;width: 50%;">总分:<s:property value="%{totalScore()}"/>
-					&nbsp;&nbsp;得分:<s:property value="%{score4User}"/><s:if test="%{getIsNeedGrade()}"><span style="color: red;">(未完全统计)</span></s:if>
+					&nbsp;&nbsp;得分:<s:property value="%{score4User}"/><s:if test="%{getIsNeedGrade()}"><span style="color: red;">(未完全评分)</span></s:if>
 					&nbsp;&nbsp;答卷人数:<s:property value="%{getJoinCount()}"/>
 				</td>
 				<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>

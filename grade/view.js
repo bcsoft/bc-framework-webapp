@@ -21,6 +21,8 @@ bc.gradeView = {
 		var score = hiddenJson.score;
 		//试卷标题
 		var testTitle = hiddenJson.testTitle;
+		//试卷状态
+		var status = hiddenJson.status;
 		
 		//内容
 		var $trs4Content = $grid.find(">.data>.right tr.ui-state-highlight");
@@ -41,6 +43,7 @@ bc.gradeView = {
 			aid:aid,
 			score:score,
 			testTitle:testTitle,
+			status:status,
 			answer:answer,
 			answerTime:answerTime,
 			questionTitle:questionTitle,
@@ -68,9 +71,9 @@ bc.gradeView = {
 			//调用双击方法
 			bc.gradeView.dblclick.call($page);
 		}else if($tds.length > 1){
-			alert("每次只能选择一张试卷进行问答题评分！")
+			alert("每次只能选择一条题目进行评分！")
 		}else{
-			alert("请选择需要进行问答题评分的试卷！");
+			alert("请选择需要评分的题目！");
 		}
 	
 	}

@@ -979,13 +979,13 @@ bc.questionaryForm = {
 		var $form = $(this);
 		var id = $form.find(":input[name='e.id']").val();
 		bc.msg.confirm("确定要归档吗？",function(){
-		//执行发布
+		//执行归档
 		bc.ajax({
 			url: bc.root + "/bc/questionary/archiving",
 		data: {id:id},
 		dataType: "json",
 		success: function(json){
-			//完成后提示用户
+		//完成后提示用户
 		bc.msg.info("归档成功！");
 		$form.data("data-status","saved");
 		$form.dialog("close");
@@ -993,7 +993,44 @@ bc.questionaryForm = {
 				}
 			});  
 		});
-		}
+		},
+	//归档前检查该试卷用户的考卷是否全部评分
+	checkIsGrade : function(){
+		var $form = $(this);
+		//获取试卷ID
+		var id = $form.find(":input[name='e.id']").val();
+		
+		bc.ajax({
+			url: bc.root + "/bc/questionary/checkIsGrade",
+		data: {id:id},
+		dataType: "json",
+		success: function(json){
+			//不存在需要评分的答卷
+			if(json.success){
+				bc.questionaryForm.archiving.call($form);
+			}else{
+			//存在需要评分的答卷
+				bc.msg.confirm(json.msg,function(){
+					//执行归档
+					bc.ajax({
+						url: bc.root + "/bc/questionary/archiving",
+					data: {id:id},
+					dataType: "json",
+					success: function(json){
+					//完成后提示用户
+					bc.msg.info("归档成功！");
+					$form.data("data-status","saved");
+					$form.dialog("close");
+							return false;
+							}
+						});  
+	
+				});
+			}
+		 }
+		});  
+		
+	}
 				
 };
 
