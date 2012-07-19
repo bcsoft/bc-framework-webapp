@@ -51,7 +51,7 @@
 								<ul class="inputIcons" style="top:10px">
 									 	<li class="inputIcon ui-icon ui-icon-person" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
 									 	<li class="inputIcon ui-icon ui-icon-contact" title='<s:text name="actor.title.click2addGroups"/>' id="addGroups">
-									 	<li class="inputIcon ui-icon ui-icon-home" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
+									 	<li class="inputIcon ui-icon ui-icon-home" title='<s:text name="questionary.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
 								</ul>
 								<s:if test="%{ownedUsers != null && !ownedUsers.isEmpty()}">
 									<ul class="horizontal reportUserUl" style="padding: 0 50px 0 0;">
@@ -373,6 +373,7 @@
 		<s:hidden name="e.author.id" />
 		<s:hidden name="e.type" />
 		<s:hidden name="topics" />
+		<s:hidden name="assignUserIds" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		
 	</s:form>

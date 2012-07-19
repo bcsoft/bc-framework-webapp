@@ -920,6 +920,12 @@ bc.questionaryForm = {
 	//保存
 	save : function(){
 		var $form = $(this);
+		//将用户的id合并到隐藏域
+		ids=[];
+		$form.find("#assignUsers .reportUserLi").each(function(){
+			ids.push($(this).attr("data-id"));
+		});
+		$form.find(":input[name='assignUserIds']").val(ids.join(","));
 		var ok = bc.questionaryForm.beforeSave($form);
 		if(!ok){
 			return;
