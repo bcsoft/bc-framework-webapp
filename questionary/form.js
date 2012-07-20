@@ -302,7 +302,7 @@ bc.questionaryForm = {
 				//题目
 				var topic = $tbody.children().eq(2).find("input[name='subject']").val();
 				//td
-				var td = $(this).parent();
+				var td = $(this).parent().parent();
 				//当前题目
 				var type = $(this).val();
 				//是否必选
@@ -318,15 +318,15 @@ bc.questionaryForm = {
 					var configValue = td.find("input[type='radio'][class='config']:checked").val();
 				}
 				
-				var thisTopic=$(this).parent().parent().parent().parent();
+				var thisTopic=$(this).closest("table");
 				//获取索引
 				var index = thisTopic.index();
 				
 				if(type==2){//填空题
 					//先插入
-					$(bc.questionaryForm.completion).insertAfter(thisTopic);
+					//$(bc.questionaryForm.completion).insertAfter(thisTopic);
 					//用填空题替换当前的题目
-					thisTopic.replaceWith(thisTopic.next());
+					thisTopic.replaceWith(bc.questionaryForm.completion);
 					//初始化题目序号
 					bc.questionaryForm.getSerialNumber($form);
 					//当前的填空题
@@ -464,14 +464,22 @@ bc.questionaryForm = {
 		         			'<input type="checkbox" name="required" checked = "checked" id="questionary_create_e_innerFix" style="width:1em;">',
 		         			'<label style="width:auto;margin-left:4px;">必选题</label>',
 	         			'</div>',
-		         		'<input type="radio" class="type" id="questionary_create_type0" value="0" checked="checked" style="width:auto;margin-left:4px;">',
-		         		'<label for="questionary_create_type0">单选</label>',
-		         		'<input type="radio" class="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
-		         		'<label for="questionary_create_type1">多选</label>',
-		         		'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
-		         		'<label for="questionary_create_type2">填空</label>',
-		         		'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
-		         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
+ 	         			'<label >',
+		         			'<input type="radio" class="type" id="questionary_create_type0" value="0" checked="checked" style="width:auto;margin-left:4px;">',
+		         			'单选',
+	         			'</label>',
+	         			'<label >',
+		         			'<input type="radio" class="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		         			'多选',
+	         			'</label>',
+	         			'<label >',
+		         			'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		         			'填空',
+	         			'</label>',
+	         			'<label style="width:auto;margin-right:4px;">',
+		         			'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		         			'问答',
+	         			'</label>',
 		         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">',
 		         			'<input type="checkbox" name="seperateScore" checked = "checked" id="questionary_create_e_innerFix" style="width:1em;">',
 		         			'<label style="width:auto;margin-left:4px;">全对方有分</label>',
@@ -540,14 +548,22 @@ bc.questionaryForm = {
 	 		         			'<input type="checkbox" name="required" checked = "checked" id="questionary_create_e_innerFix" style="width:1em;">',
 	 		         			'<label style="width:auto;margin-left:4px;">必选题</label>',
 	 	         			'</div>',
-	 		         		'<input type="radio" class="type" id="questionary_create_type0" value="0" checked="checked" style="width:auto;margin-left:4px;">',
-	 		         		'<label for="questionary_create_type0">单选</label>',
-	 		         		'<input type="radio" class="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
-	 		         		'<label for="questionary_create_type1">多选</label>',
-	 		         		'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
-	 		         		'<label for="questionary_create_type2">填空</label>',
-	 		         		'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
-	 		         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
+	 	         			'<label >',
+	 		         			'<input type="radio" class="type" id="questionary_create_type0" value="0" checked="checked" style="width:auto;margin-left:4px;">',
+	 		         			'单选',
+ 		         			'</label>',
+ 		         			'<label >',
+	 		         			'<input type="radio" class="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+	 		         			'多选',
+ 		         			'</label>',
+ 		         			'<label >',
+	 		         			'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+	 		         			'填空',
+ 		         			'</label>',
+ 		         			'<label style="width:auto;margin-right:4px;">',
+	 		         			'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+	 		         			'问答',
+ 		         			'</label>',
 //	 		         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">',
 //	 		         			'<input type="checkbox" name="seperateScore" id="questionary_create_e_innerFix" style="width:1em;">',
 //	 		         			'<label style="width:auto;margin-left:4px;">全对方有分</label>',
@@ -616,14 +632,22 @@ bc.questionaryForm = {
  				         			'<input type="checkbox" name="required" id="questionary_create_e_innerFix" style="width:1em;">',
  				         			'<label style="width:auto;margin-left:4px;">必选题</label>',
  			         			'</div>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type0">单选</label>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type1">多选</label>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type2">填空</label>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
+ 		 	         			'<label >',
+		 		         			'<input type="radio" class="type" id="questionary_create_type0" value="0" checked="checked" style="width:auto;margin-left:4px;">',
+		 		         			'单选',
+	 		         			'</label>',
+	 		         			'<label >',
+		 		         			'<input type="radio" class="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		 		         			'多选',
+	 		         			'</label>',
+	 		         			'<label >',
+		 		         			'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		 		         			'填空',
+	 		         			'</label>',
+	 		         			'<label style="width:auto;margin-right:4px;">',
+		 		         			'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		 		         			'问答',
+	 		         			'</label>',
  								'<div style="position:relative;right:-180px;width: 100px;display: inline-block;">',
  									//'默认行数:<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">',
  								'</div>',
@@ -682,17 +706,25 @@ bc.questionaryForm = {
  				         			'<input type="checkbox" name="required" id="questionary_create_e_innerFix" style="width:1em;">',
  				         			'<label style="width:auto;margin-left:4px;">必选题</label>',
  			         			'</div>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type0" value="0" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type0">单选</label>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type1">多选</label>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type2">填空</label>',
- 				         		'<input type="radio" class="type" name="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
- 				         		'<label for="questionary_create_type3" style="width:auto;margin-right:4px;">问答</label>',
+ 		 	         			'<label >',
+		 		         			'<input type="radio" class="type" id="questionary_create_type0" value="0" checked="checked" style="width:auto;margin-left:4px;">',
+		 		         			'单选',
+	 		         			'</label>',
+	 		         			'<label >',
+		 		         			'<input type="radio" class="type" id="questionary_create_type1" value="1" style="width:auto;margin-left:4px;">',
+		 		         			'多选',
+	 		         			'</label>',
+	 		         			'<label >',
+		 		         			'<input type="radio" class="type" id="questionary_create_type2" value="2" style="width:auto;margin-left:4px;">',
+		 		         			'填空',
+	 		         			'</label>',
+	 		         			'<label style="width:auto;margin-right:4px;">',
+		 		         			'<input type="radio" class="type" id="questionary_create_type3" value="3" style="width:auto;margin-left:4px;">',
+		 		         			'问答',
+	 		         			'</label>',
  		 		         		'<div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 1px;padding: 0 2px 0 2px;">',
  		 		         			'<input type="checkbox" name="grade" checked = "checked" id="questionary_create_e_innerFix" style="width:1em;">',
- 		 		         			'<label style="width:auto;margin-left:4px;">是否要评分</label>',
+ 		 		         			'<label style="width:auto;margin-left:4px;">需要评分</label>',
 	 	         				'</div>',
  								'<div style="position:relative;right:-108px;width: 100px;display: inline-block;">',
 									//'默认行数:<input type="text" name="score" value="" id="questionary_create_score" class="ui-widget-content" style="width:25px;">',
@@ -963,7 +995,7 @@ bc.questionaryForm = {
 		if(id==""){
 		bc.msg.alert("请先保存！");
 		}else{
-		bc.msg.confirm("确定要发布吗？",function(){
+		bc.msg.confirm("发布后将无法修改试卷的内容!确定要发布吗？",function(){
 		//执行发布
 		bc.ajax({
 			url: bc.root + "/bc/questionary/issue",
