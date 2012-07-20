@@ -28,28 +28,14 @@
 					<tr>
 						<td style="font-weight: normal;text-align: left;padding-left:15px;" colspan="2">
 							<s:text name="questionary.actors"/>:
-							<!-- <div id="assignUsers" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;border: 0px;display: inline-block;"
-								 class="ui-widget-content" 
-								data-removeTitle='<s:text name="title.click2remove"/>'> -->
-								<!--  <ul class="inputIcons" style="top:10px">
-									 	<li class="inputIcon ui-icon ui-icon-person" title='<s:text name="group.title.click2addUsers"/>' id="addUsers">
-									 	<li class="inputIcon ui-icon ui-icon-contact" title='<s:text name="actor.title.click2addGroups"/>' id="addGroups">
-									 	<li class="inputIcon ui-icon ui-icon-home" title='<s:text name="reportTemplate.title.addUnitOrDepartment"/>' id="addUnitOrDepartments">
-								</ul>-->
-								<s:if test="%{ownedUsers != null && !ownedUsers.isEmpty()}">
-									<!--<ul class="horizontal reportUserUl" style="padding: 0 50px 0 0;">-->
-									<s:iterator value="ownedUsers">
-									<!--<li class="horizontal reportUserLi" style="position: relative;margin:0 2px;float: left;padding: 0;"
-										data-id=<s:property value="['id']"/>>-->
-									<span class="text" ><s:property value="['name']" /></span>&nbsp;
-									<!--<s:if test="{}">
-										<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title='<s:text name="title.click2remove"/>'></span>
-									</s:if>-->
-									<!--</li>-->
-									</s:iterator>
-									<!--</ul>-->
-								</s:if>	
-							<!-- </div>		 -->			
+							<s:if test="%{ownedUsers != null && !ownedUsers.isEmpty()}">
+								<s:iterator value="ownedUsers">
+								<span class="text" ><s:property value="['name']" /></span>&nbsp;
+								</s:iterator>
+							</s:if>
+							<s:else>
+								<span>所有用户</span>
+							</s:else>	
 						</td>
 					</tr>
 				</tbody>
