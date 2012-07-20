@@ -8,13 +8,19 @@
 	<s:form name="questionary4StatisticsForm" theme="simple" cssStyle="width:630px;">
 		<table class="formFields ui-widget-content" cellspacing="2" cellpadding="0">
 			<tbody>
-				<tr>
-					<td style="width: 70px;">&nbsp;</td>
-					<td style="text-align: center;font-size: 30px;position: relative;left: 170px;display: inline-block;" title="${e.subject}"><s:text name="e.subject"/></td>
+				<tr class="widthMarker">
+					<td style="width:40%;">&nbsp;</td>
+					<td>&nbsp;</td>
 				</tr>
 				<tr>
-				<td style="font-weight: normal;text-align: left;padding-left:15px;">得分：<s:property value="%{score4User}"/></td>
-				<td style="position: relative;right: -320px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+					<td style="text-align: center;font-size: 30px;" title="${e.subject}" colspan="2"><s:text name="e.subject"/></td>
+				</tr>
+				<tr>
+				<td style="font-weight: normal;text-align: left;padding-left:15px;width: 50%;">总分:<s:property value="%{totalScore()}"/>
+					&nbsp;&nbsp;得分:<s:property value="%{score4User}"/><s:if test="%{getIsNeedGrade()}"><span style="color: red;">(未完全评分)</span></s:if>
+					&nbsp;&nbsp;答卷人数:<s:property value="%{getJoinCount()}"/>
+				</td>
+				<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
 				</tr>
 			</tbody>
 		</table>
@@ -22,7 +28,7 @@
 			<s:iterator var="b" value="e.questions">
 			<!-- 单选题 -->
 			<s:if test="type==0">
-				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr class="widthMarker">
 							<td style="width: 380px;">&nbsp;</td>
@@ -32,6 +38,7 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
 		               		<td>&nbsp;</td>
 						</tr>
@@ -80,7 +87,7 @@
 					</table>
 				</s:if><s:elseif test="type==1">
 				<!-- 多选 -->
-				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr class="widthMarker">
 							<td style="width: 380px;">&nbsp;</td>
@@ -90,6 +97,8 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
+			               		&nbsp;<s:if test="seperateScore==true"><span style="color: red;">(全对方得分)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
 		               		<td>&nbsp;</td>
 						</tr>
@@ -112,6 +121,7 @@
 											<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" value="true" cssStyle="width:1em;"/>
 											<s:text name="subject" />
 										</div>
+										&nbsp;&nbsp;&nbsp;<span class="ui-priority-secondary"><s:property value="%{score}"></s:property>分</span>
 									</td>
 									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
 										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
@@ -126,6 +136,7 @@
 											<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" cssStyle="width:1em;"/>
 											<s:text name="subject" />
 										</div>
+										&nbsp;&nbsp;&nbsp;<span class="ui-priority-secondary"><s:property value="%{score}"></s:property>分</span>
 									</td>
 									<td><span class="respond"><s:property value="%{getQuestItemRespondCount(id)}" escapeHtml="false"/></span>
 										&nbsp;<div class="progressbar" style="height: 15px;width: 70%;display: inline-block;"></div>
@@ -138,12 +149,13 @@
 					</table>
 				</s:elseif><s:elseif test="type==2">
 				<!-- 填空 -->
-				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
 						</tr>
 						<tr class="option">
@@ -155,17 +167,20 @@
 					</table>
 				</s:elseif><s:elseif test="type==3">
 				<!-- 简答 -->
-				<table cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
+				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>">
 					<tbody>
 						<tr>
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
+			               		&nbsp;<s:if test="%{isAlreadyScore(items.iterator().next().id)}"><span style="color: red;">(未评分)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 			               	</td>
 						</tr>
 						<tr class="option">
 							<td class="value" style="padding-left: 30px;">
-								<textarea name="subject" placeholder='<s:property value="%{items.iterator().next().subject}"/>' rows="3" class="ui-widget-content noresize"></textarea>
+								<textarea name="subject" placeholder='<s:property value="%{items.iterator().next().subject}"/>' rows="3" 
+									class="ui-widget-content noresize"><s:property value="%{formatJQuizValue(items.iterator().next().id)}"/></textarea>
 							</td>
 						</tr>
 						</tbody>
@@ -174,15 +189,15 @@
 				</s:iterator>
 			</div>
 			<div class="formTopInfo">
-				状态：<s:property value="%{statusesValue[e.status]}" />&nbsp;&nbsp;&nbsp;&nbsp;登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				状态：<s:property value="%{statusesValue[e.status]}" />,登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
 				<s:if test="%{e.modifier != null}">
-				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
+				最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
 				</s:if>
 				<s:if test="%{e.issuer!=null}">
-				发布人：<s:property value="e.issuer.name" />(<s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				发布人：<s:property value="e.issuer.name" />(<s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
 				</s:if>
 				<s:if test="%{e.pigeonholer!=null}">
-				归档人：<s:property value="e.pigeonholer.name" />(<s:date name="e.pigeonholeDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				归档人：<s:property value="e.pigeonholer.name" />(<s:date name="e.pigeonholeDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
 				</s:if>
 			</div>
 		<s:hidden name="e.id"/>

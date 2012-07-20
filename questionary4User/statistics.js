@@ -1,6 +1,17 @@
 bc.questionary4StatisticsForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
+
+		//将多选框和单选框设置为只读
+		if(readonly){
+			$form.find("input[type='radio']").each(function(){
+				this.disabled=true;
+				});
+			$form.find("input[type='checkbox']").each(function(){
+				this.disabled=true;
+				});
+			}
+		
 		//不是草稿的状态下进行统计
 		if($form.find("input[name='e.status']").val()!=-1){
 		$form.find("#testArea").children().each(function(){

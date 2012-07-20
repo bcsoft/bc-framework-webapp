@@ -2,18 +2,26 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="questionary.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/questionary4User/save" />'
-	data-js='js:bc_identity,<s:url value="/bc/questionary4User/form.js"/>'
+	data-js='js:bc_identity,<s:url value="/bc/questionary4User/preview.js"/>'
 	data-initMethod='bc.questionary4UserForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="questionary4UserForm" theme="simple" cssStyle="width:630px;">
 		<div id="div1">
 			<table class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
-					<tr>
-						<td style="text-align: center;font-size: 30px;position: relative;left: 250px;display: inline-block;" id="title" title="${e.subject}"><s:text name="e.subject"/></td>
+					<tr class="widthMarker">
+						<td style="width:40%;">&nbsp;</td>
+						<td>&nbsp;</td>
 					</tr>
 					<tr>
-					<td style="position: relative;right: -390px;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~<s:date name="e.endDate" format="yyyy-MM-dd"/> </td>
+						<td style="text-align: center;font-size: 30px;" title="${e.subject}" colspan="2"><s:text name="e.subject"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: normal;text-align: left;padding-left:15px;width: 40%;">总分:<s:property value="%{totalScore()}"/>
+						</td>
+						<td style="position: relative;text-align: right;">答卷期限：<s:date name="e.startDate" format="yyyy-MM-dd"/>~
+							<s:date name="e.endDate" format="yyyy-MM-dd"/> 
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -29,6 +37,7 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
 						</tr>
 						<s:iterator var="c" value="items" >
@@ -52,6 +61,8 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
+			               		&nbsp;<s:if test="seperateScore==true"><span style="color: red;">(全对方得分)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
 						</tr>
 						<s:iterator var="c" value="items">
@@ -75,6 +86,7 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
 						</tr>
 						<tr class="option" data-id="<s:property value='%{items.iterator().next().id}'/>">
@@ -93,9 +105,11 @@
 			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
 			               		<s:text name="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
+			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 			               	</td>
 						</tr>
-						<tr class="option" data-id="<s:property value='%{items.iterator().next().id}'/>">
+						<tr class="option" data-id="<s:property value='%{items.iterator().next().id}'/>" 
+							data-grade="<s:property value='%{grade}'/>">
 							<td class="value" style="padding-left: 30px;">
 								<textarea name="subject" placeholder='<s:property value="%{items.iterator().next().subject}"/>' rows="3" class="ui-widget-content noresize"></textarea>
 							</td>
@@ -106,9 +120,9 @@
 				</s:iterator>
 			</div>
 			<div class="formTopInfo">
-				状态：<s:property value="%{statusesValue[e.status]}" />&nbsp;&nbsp;&nbsp;&nbsp;登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				状态：<s:property value="%{statusesValue[e.status]}" />,登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
 				<s:if test="%{e.modifier != null}">
-				，最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
+				最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)<br/>
 				</s:if>
 				<s:if test="%{e.status==0}">
 				发布人：<s:property value="e.issuer.name" />(<s:date name="e.issueDate" format="yyyy-MM-dd HH:mm:ss"/>)
