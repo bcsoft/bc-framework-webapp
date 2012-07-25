@@ -563,8 +563,7 @@ div.bc-desktop>#middle>#right {
 	top: 0;
 	bottom: 0;
 	overflow: auto;
-	bottom: 0;
-	border-width: 0;
+	border-width: 0 0 0 1px;
 	text-align: center;
 }
 
