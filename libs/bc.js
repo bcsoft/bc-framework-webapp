@@ -235,6 +235,32 @@ bc.getWasteTime = function(startTime,endTime){
 		return m + "分" + bc.formatNumber((wt - m * 1000 * 60) / 1000,"#.#") + "秒";
 	}
 };
+
+bc.getJsCss = function(cfg){
+	if(!cfg)
+		return [];
+	if(typeof cfg == "string")
+		cfg = cfg.split(",");
+	
+	var t;
+	for(var i=0;i<cfg.length;i++){
+		if(cfg[i].indexOf("js:") == 0){//预定义的js文件
+			t = bc.loader.preconfig.js[cfg[i].substr(3)];
+			if(t){
+				t = bc.root + t;
+				logger.debug(cfg[i] + "=" +  t);
+				cfg[i] = t;
+			}else{
+				alert("没有预定义“" + cfg[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
+			}
+		}else if(cfg[i].indexOf("css:") == 0){//预定义的css文件
+			alert("方法还没实现-css:");
+		}else if(cfg[i].indexOf("http") != 0 && cfg[i].indexOf("/") != 0){//相对路径的文件
+			cfg[i] = bc.root + "/" + cfg[i];
+		}
+	}
+	return cfg;
+};
 /**
  * 对$.ajax的通用封装:全局ajax设置
  * 
@@ -915,28 +941,10 @@ bc.page = {
 			if(option.afterOpen) option.afterOpen.call($dom[0]);
 		}
 		//alert(html);
-		var dataJs = $dom.attr("data-js");
+		
+		// 加载js、css文件
+		var dataJs = bc.getJsCss($dom.attr("data-js"));
 		if(dataJs && dataJs.length > 0){
-			//先加载js文件后执行模块指定的初始化方法
-			dataJs = dataJs.split(",");//逗号分隔多个文件
-			
-			// 处理预定义的js、css文件
-			var t;
-			for(var i=0;i<dataJs.length;i++){
-				if(dataJs[i].indexOf("js:") == 0){//预定义的js文件
-					t = bc.loader.preconfig.js[dataJs[i].substr(3)];
-					if(t){
-						t = bc.root + t;
-						logger.debug(dataJs[i] + "=" +  t);
-						dataJs[i] = t;
-					}else{
-						alert("没有预定义“" + dataJs[i] + "”的配置，请在loader.preconfig.js文件中添加相应的配置！");
-					}
-				}else if(dataJs[i].indexOf("css:") == 0){//预定义的css文件
-					
-				}
-			}
-			
 			dataJs.push(_init);
 			bc.load(dataJs);
 		}else{
@@ -3776,7 +3784,7 @@ bc.loader.preconfig = {};
 /** 在js、css路径后添加ts=0可以避免loader组件再在其后添加系统的时间戳 */
 bc.loader.preconfig.js = {
 	/** 开源组件 */
-	jquery: '/ui-libs/jquery/1.7/jquery.min.js?ts=0',
+	jquery: '/ui-libs/jquery/1.7.2/jquery.min.js?ts=0',
 	jqueryui: '/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js?ts=0',
 	jqueryui_i18n: '/ui-libs/jquery-ui/1.9pre/ui/i18n/jquery.ui.datepicker-zh-CN.js?ts=0',
 	editor: '/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0',
@@ -4585,6 +4593,8 @@ bc.file={
 		if(option.n) url += "&n=" + option.n;
 		if(option.to) url += "&to=" + option.to;
 		if(option.from) url += "&from=" + option.from;
+		if(option.ptype) url += "&ptype=" + option.ptype;
+		if(option.puid) url += "&puid=" + option.puid;
 		var win = window.open(url, "_blank");
 		if(typeof option.callback == "function"){
 			option.callback.call(this,option,win);
@@ -4597,6 +4607,8 @@ bc.file={
 		//在新窗口中打开文件
 		var url = bc.root + "/bc/file/download?f=" + option.f;
 		if(option.n) url += "&n=" + option.n;
+		if(option.ptype) url += "&ptype=" + option.ptype;
+		if(option.puid) url += "&puid=" + option.puid;
 		var win = window.open(url, "blank");
 		if(typeof option.callback == "function"){
 			option.callback.call(this,option,win);
@@ -4626,6 +4638,8 @@ bc.file={
 		//用户选择的文件(name、fileName、type、size、fileSize、lastModifiedDate)
 	    var url = option.url || bc.file.uploadUrl;
 	    if(option.subdir) url+="&subdir=" + option.subdir;
+	    if(option.ptype) url+="&ptype=" + option.ptype;
+	    if(option.puid) url+="&puid=" + option.puid;
 	    
 	    //检测文件数量的限制
 	    var maxCount = option.maxCount;
