@@ -1016,7 +1016,7 @@ bc.questionaryForm = {
 	archiving : function(){
 		var $form = $(this);
 		var id = $form.find(":input[name='e.id']").val();
-		bc.msg.confirm("确定要归档吗？",function(){
+		bc.msg.confirm("归档后将无法对该试卷进行作答和评分！确定要归档吗？",function(){
 		//执行归档
 		bc.ajax({
 			url: bc.root + "/bc/questionary/archiving",
