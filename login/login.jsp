@@ -10,6 +10,7 @@
 <head>
 <title><s:text name="app.title" />
 </title>
+<link rel="shortcut icon" type="image/x-icon" href="<s:url value='/bc/libs/themes/default/images/favicon.png'><s:param name='ts' value='ts'/></s:url>"/>
 <link rel="stylesheet" type="text/css"
 	href="<s:url value='/bc/libs/themes/default/login.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 </head>
