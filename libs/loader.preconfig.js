@@ -18,6 +18,7 @@ bc.loader.preconfig.js = {
 	xheditor: '/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0',
 	highcharts: '/ui-libs/highcharts/2.1.8/highcharts.min.js?ts=0',
 	highcharts_exporting: '/ui-libs/highcharts/2.1.8/modules/exporting.min.js?ts=0',
+	quicksand: '/ui-libs/jquery/plugins/quicksand/1.2.2/jquery.quicksand.js?ts=0',
 	
 	/** 平台 */
 	bc_identity: '/bc/identity/identity.js'
