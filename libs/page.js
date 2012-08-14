@@ -359,6 +359,11 @@ bc.page = {
 		if(logger.infoEnabled)logger.info("saveUrl=" + url);
 		var $form = $("form",$page);
 		
+		//判断是否正在保存，若是就返回
+		if($page.data("saving")) return;
+		//设置是否正在保存的标识为true[正在保存]
+		$page.data("saving",true);
+		
 		//表单验证
 		if(!bc.validator.validate($form))
 			return;
@@ -375,6 +380,8 @@ bc.page = {
 				//记录已保存状态
 				$page.attr("data-status","saved").data("data-status","saved");
 				
+				//将正在保存标识设为false[已保存]
+				$page.data("saving",false);
 				//调用回调函数
 				var showMsg = true;
 				if(typeof option.callback == "function"){
