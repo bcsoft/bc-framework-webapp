@@ -15,9 +15,15 @@ bc.templateForm = {
 		
 		
 		if(readonly) return;
+		
+		//绑定上传按钮事件
+		$form.find("#uploadFile").click(function(){
+			bc.file.clearFileSelect($form.find("#uploadFile"));
+		});
 			
 		//绑定清除按钮事件
 		$form.find("#cleanFileId").click(function(){
+			bc.file.clearFileSelect($form.find("#uploadFile"));
 			$form.find(":input[name='e.path']").val('');
 			$form.find(":input[name='e.subject']").val('');
 		});
@@ -98,7 +104,7 @@ bc.templateForm = {
 		var ulTpl = '<ul class="horizontal templateParamUl" style="padding: 0 45px 0 0;"></ul>';
 		var title = $form.find("#templateParams").attr("data-removeTitle");
 		
-		//绑定添加用户的按钮事件处理
+		//绑定添加模板参数的按钮事件处理
 		$form.find("#addParam").click(function(){
 			var $ul = $form.find("#templateParams .templateParamUl");
 			var $lis = $ul.find("li");
