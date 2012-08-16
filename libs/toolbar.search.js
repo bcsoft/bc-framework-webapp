@@ -25,7 +25,8 @@ $.widget( "ui.bcsearch", {
 			effect: "fadeOut",
 			duration: "fast"
 		},
-		useCleanButton: false
+		useCleanButton: true,
+		cleanAfterClose: false
 	},
 	_create: function() {
 		var $this = this;
@@ -252,7 +253,8 @@ $.widget( "ui.bcsearch", {
 		this.options.trigger.show();
 		
 		// 清空搜索条件
-		bc.toolbar.doAdvanceClean.call(this,null,this.element);
+		if(this.options.cleanAfterClose)
+			bc.toolbar.doAdvanceClean.call(this,null,this.element);
 		
 		this._beforeClose();
 		this._hide( this.element, this.options.hide );
