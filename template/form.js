@@ -15,11 +15,6 @@ bc.templateForm = {
 		
 		
 		if(readonly) return;
-		
-		//绑定上传按钮事件
-		$form.find("#uploadFile").click(function(){
-			bc.file.clearFileSelect($form.find("#uploadFile"));
-		});
 			
 		//绑定清除按钮事件
 		$form.find("#cleanFileId").click(function(){
