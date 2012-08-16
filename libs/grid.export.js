@@ -70,8 +70,8 @@ bc.grid.export2Excel = function($grid,el) {
 			}else{
 				$column = $(columns[index]);
 				_ul.push('<li>'
-					+'<label for="field'+i+'">'
-					+'<input type="checkbox" id="field'+i+'" name="field" value="'+$column.attr("data-id")+'" checked>'
+					+'<label>'
+					+'<input type="checkbox" name="field" value="'+$column.attr("data-id")+'" checked>'
 					+'<span>'+$column.attr("data-label")+'</span></label></li>');
 			}
 		}
