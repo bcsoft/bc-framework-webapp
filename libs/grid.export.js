@@ -33,7 +33,8 @@ bc.grid.export2Excel = function($grid,el) {
 		+'<table class="headersTable" cellspacing="2" cellpadding="0"><tbody><tr>{0}</tr></tbody></table>'
 		+'<div class="buttons">'
 		+'<a id="continue" style="text-decoration:underline;cursor:pointer;">继续</a>&nbsp;&nbsp;'
-		+'<a id="cancel" style="text-decoration:underline;cursor:pointer;">取消</a></div>'
+		+'<a id="cancel" style="text-decoration:underline;cursor:pointer;">取消</a>&nbsp;&nbsp;'
+		+'<a id="reverse" style="text-decoration:underline;cursor:pointer;">反选</a></div>'
 		+'<input type="hidden" name="search">'
 		+'<input type="hidden" name="exportKeys">'
 		+'</form>');
@@ -70,8 +71,8 @@ bc.grid.export2Excel = function($grid,el) {
 			}else{
 				$column = $(columns[index]);
 				_ul.push('<li>'
-					+'<label for="field'+i+'">'
-					+'<input type="checkbox" id="field'+i+'" name="field" value="'+$column.attr("data-id")+'" checked>'
+					+'<label>'
+					+'<input type="checkbox" name="field" value="'+$column.attr("data-id")+'" checked>'
 					+'<span>'+$column.attr("data-label")+'</span></label></li>');
 			}
 		}
@@ -149,6 +150,10 @@ bc.grid.export2Excel = function($grid,el) {
 		
 		//附加要导出的列参数到隐藏域
 		var $fields = boxPointer.find(":checkbox:checked[name='field']");
+		if($fields.size() == 0){
+			bc.msg.slide("必须至少选择一列信息！");
+			return false;
+		}
 		if($fields.size() != columns.size()){//用户去除了部分的列没选择
 			var t="";
 			$fields.each(function(i){
@@ -173,6 +178,15 @@ bc.grid.export2Excel = function($grid,el) {
 		
 		//删除弹出的窗口
 		boxPointer.remove();
+		return false;
+	});
+	
+	//反选按钮
+	boxPointer.find("#reverse").click(function(){
+		boxPointer.find(":checkbox[name='field']").each(function(){
+			this.checked = !this.checked;
+		});
+
 		return false;
 	});
 };

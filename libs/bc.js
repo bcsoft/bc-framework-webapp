@@ -1057,6 +1057,11 @@ bc.page = {
 		if(logger.infoEnabled)logger.info("saveUrl=" + url);
 		var $form = $("form",$page);
 		
+		//判断是否正在保存，若是就返回
+		if($page.data("saving")) return;
+		//设置是否正在保存的标识为true[正在保存]
+		$page.data("saving",true);
+		
 		//表单验证
 		if(!bc.validator.validate($form))
 			return;
@@ -1073,6 +1078,8 @@ bc.page = {
 				//记录已保存状态
 				$page.attr("data-status","saved").data("data-status","saved");
 				
+				//将正在保存标识设为false[已保存]
+				$page.data("saving",false);
 				//调用回调函数
 				var showMsg = true;
 				if(typeof option.callback == "function"){
@@ -1627,7 +1634,7 @@ bc.toolbar = {
 	 * @param $advanceSearchBtn 点击的按钮
 	 * @param $conditionsForm 高级搜索窗口
 	 */
-	initAdvanceSearchFrom: function($advanceSearchBtn, $conditionsForm){
+	initAdvanceSearchForm: function($advanceSearchBtn, $conditionsForm){
 		if($conditionsForm.size() == 0) return;
 		
 		//设置窗口的最小宽度为按钮的当前宽度
@@ -1660,24 +1667,27 @@ bc.toolbar = {
 	doAdvanceSearch: function(option,target) {
 		var $page = $(this);
 		var $target = $(target);
-		var $conditionsFrom = $target.closest(".bc-conditionsForm");
-		if(logger.debugEnabled)logger.debug("doAdvanceSearch:" + $conditionsFrom.attr("class"));
+		var $conditionsForm = $target.closest(".bc-conditionsForm");
+		if(logger.debugEnabled)logger.debug("doAdvanceSearch:" + $conditionsForm.attr("class"));
 		
 		// 格式验证
-		if(!bc.validator.validate($conditionsFrom))
+		if(!bc.validator.validate($conditionsForm))
 			return
 		
 		// 组合高级查询条件
 		var conditions = [];
 		var $this,value,c;
-		$conditionsFrom.find("[data-condition]").each(function(){
+		$conditionsForm.find("[data-condition]").each(function(){
 			$this = $(this);
 			if($this.is("input[type='text'],input[type='hidden'],textarea,select")){//文本框、隐藏域、下拉选择框
 				value = $this.val();
 				c = eval("(" + $this.attr("data-condition") + ")");
 				if(logger.debugEnabled)logger.debug("c1=" + $.toJSON(c));
 				if(value && value.length > 0){
-					conditions.push({type:c.type,ql:c.ql,value:value});
+					var op = {type:c.type,ql:c.ql,value:value};
+					if(c.likeType)
+						op.likeType = c.likeType;
+					conditions.push(op);
 				}
 			}else if($this.is(".radios,.checkboxes")){//单选按钮组或多选框的容器
 				c = eval("(" + $this.attr("data-condition") + ")");
@@ -1768,20 +1778,20 @@ bc.toolbar = {
 	 */
 	doAdvanceClean: function(option,target) {
 		// 清除条件框的值
-		var $conditionsFrom = $(target).closest(".bc-conditionsForm");
-		$conditionsFrom.find("input[type='text'],input[type='hidden'],textarea,select").val("");
-		$conditionsFrom.find(":checked").each(function(){
+		var $conditionsForm = $(target).closest(".bc-conditionsForm");
+		$conditionsForm.find("input[type='text'],input[type='hidden'],textarea,select").val("");
+		$conditionsForm.find(":checked").each(function(){
 			this.checked = false;
 		});
 		
 		// 清除页面保存的条件值
-		var extras = $conditionsFrom.closest(".bc-page").data("extras");
+		var extras = $conditionsForm.closest(".bc-page").data("extras");
 		if(extras){
 			delete extras.search4advance;
 		}
 		
 		// 重新加载列表数据
-		bc.grid.reloadData($conditionsFrom.closest(".bc-page"));
+		bc.grid.reloadData($conditionsForm.closest(".bc-page"));
 	}
 };
 	
@@ -1902,7 +1912,7 @@ $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 						//绑定日期选择
 						bc.form.initCalendarSelect($conditionsForm);
 
-						bc.toolbar.initAdvanceSearchFrom($this,$conditionsForm);
+						bc.toolbar.initAdvanceSearchForm($this,$conditionsForm);
 					}
 					var dataJs = $conditionsForm.attr("data-js");
 					if(dataJs && dataJs.length > 0){
@@ -1934,7 +1944,7 @@ $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 				}
 			});
 		}else{//自定义的条件窗口
-			bc.toolbar.initAdvanceSearchFrom($this,$this.next(".bc-conditionsForm"));
+			bc.toolbar.initAdvanceSearchForm($this,$this.next(".bc-conditionsForm"));
 		}
 	}
 	return false;
@@ -2179,7 +2189,8 @@ $.widget( "ui.bcsearch", {
 			effect: "fadeOut",
 			duration: "fast"
 		},
-		useCleanButton: false
+		useCleanButton: true,
+		cleanAfterClose: false
 	},
 	_create: function() {
 		var $this = this;
@@ -2406,7 +2417,8 @@ $.widget( "ui.bcsearch", {
 		this.options.trigger.show();
 		
 		// 清空搜索条件
-		bc.toolbar.doAdvanceClean.call(this,null,this.element);
+		if(this.options.cleanAfterClose)
+			bc.toolbar.doAdvanceClean.call(this,null,this.element);
 		
 		this._beforeClose();
 		this._hide( this.element, this.options.hide );
@@ -3025,7 +3037,8 @@ bc.grid.export2Excel = function($grid,el) {
 		+'<table class="headersTable" cellspacing="2" cellpadding="0"><tbody><tr>{0}</tr></tbody></table>'
 		+'<div class="buttons">'
 		+'<a id="continue" style="text-decoration:underline;cursor:pointer;">继续</a>&nbsp;&nbsp;'
-		+'<a id="cancel" style="text-decoration:underline;cursor:pointer;">取消</a></div>'
+		+'<a id="cancel" style="text-decoration:underline;cursor:pointer;">取消</a>&nbsp;&nbsp;'
+		+'<a id="reverse" style="text-decoration:underline;cursor:pointer;">反选</a></div>'
 		+'<input type="hidden" name="search">'
 		+'<input type="hidden" name="exportKeys">'
 		+'</form>');
@@ -3062,8 +3075,8 @@ bc.grid.export2Excel = function($grid,el) {
 			}else{
 				$column = $(columns[index]);
 				_ul.push('<li>'
-					+'<label for="field'+i+'">'
-					+'<input type="checkbox" id="field'+i+'" name="field" value="'+$column.attr("data-id")+'" checked>'
+					+'<label>'
+					+'<input type="checkbox" name="field" value="'+$column.attr("data-id")+'" checked>'
 					+'<span>'+$column.attr("data-label")+'</span></label></li>');
 			}
 		}
@@ -3141,6 +3154,10 @@ bc.grid.export2Excel = function($grid,el) {
 		
 		//附加要导出的列参数到隐藏域
 		var $fields = boxPointer.find(":checkbox:checked[name='field']");
+		if($fields.size() == 0){
+			bc.msg.slide("必须至少选择一列信息！");
+			return false;
+		}
 		if($fields.size() != columns.size()){//用户去除了部分的列没选择
 			var t="";
 			$fields.each(function(i){
@@ -3165,6 +3182,15 @@ bc.grid.export2Excel = function($grid,el) {
 		
 		//删除弹出的窗口
 		boxPointer.remove();
+		return false;
+	});
+	
+	//反选按钮
+	boxPointer.find("#reverse").click(function(){
+		boxPointer.find(":checkbox[name='field']").each(function(){
+			this.checked = !this.checked;
+		});
+
 		return false;
 	});
 };
@@ -3791,6 +3817,7 @@ bc.loader.preconfig.js = {
 	xheditor: '/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0',
 	highcharts: '/ui-libs/highcharts/2.1.8/highcharts.min.js?ts=0',
 	highcharts_exporting: '/ui-libs/highcharts/2.1.8/modules/exporting.min.js?ts=0',
+	quicksand: '/ui-libs/jquery/plugins/quicksand/1.2.2/jquery.quicksand.js?ts=0',
 	
 	/** 平台 */
 	bc_identity: '/bc/identity/identity.js'

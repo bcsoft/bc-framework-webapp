@@ -42,7 +42,7 @@ bc.toolbar = {
 	 * @param $advanceSearchBtn 点击的按钮
 	 * @param $conditionsForm 高级搜索窗口
 	 */
-	initAdvanceSearchFrom: function($advanceSearchBtn, $conditionsForm){
+	initAdvanceSearchForm: function($advanceSearchBtn, $conditionsForm){
 		if($conditionsForm.size() == 0) return;
 		
 		//设置窗口的最小宽度为按钮的当前宽度
@@ -75,24 +75,27 @@ bc.toolbar = {
 	doAdvanceSearch: function(option,target) {
 		var $page = $(this);
 		var $target = $(target);
-		var $conditionsFrom = $target.closest(".bc-conditionsForm");
-		if(logger.debugEnabled)logger.debug("doAdvanceSearch:" + $conditionsFrom.attr("class"));
+		var $conditionsForm = $target.closest(".bc-conditionsForm");
+		if(logger.debugEnabled)logger.debug("doAdvanceSearch:" + $conditionsForm.attr("class"));
 		
 		// 格式验证
-		if(!bc.validator.validate($conditionsFrom))
+		if(!bc.validator.validate($conditionsForm))
 			return
 		
 		// 组合高级查询条件
 		var conditions = [];
 		var $this,value,c;
-		$conditionsFrom.find("[data-condition]").each(function(){
+		$conditionsForm.find("[data-condition]").each(function(){
 			$this = $(this);
 			if($this.is("input[type='text'],input[type='hidden'],textarea,select")){//文本框、隐藏域、下拉选择框
 				value = $this.val();
 				c = eval("(" + $this.attr("data-condition") + ")");
 				if(logger.debugEnabled)logger.debug("c1=" + $.toJSON(c));
 				if(value && value.length > 0){
-					conditions.push({type:c.type,ql:c.ql,value:value});
+					var op = {type:c.type,ql:c.ql,value:value};
+					if(c.likeType)
+						op.likeType = c.likeType;
+					conditions.push(op);
 				}
 			}else if($this.is(".radios,.checkboxes")){//单选按钮组或多选框的容器
 				c = eval("(" + $this.attr("data-condition") + ")");
@@ -183,20 +186,20 @@ bc.toolbar = {
 	 */
 	doAdvanceClean: function(option,target) {
 		// 清除条件框的值
-		var $conditionsFrom = $(target).closest(".bc-conditionsForm");
-		$conditionsFrom.find("input[type='text'],input[type='hidden'],textarea,select").val("");
-		$conditionsFrom.find(":checked").each(function(){
+		var $conditionsForm = $(target).closest(".bc-conditionsForm");
+		$conditionsForm.find("input[type='text'],input[type='hidden'],textarea,select").val("");
+		$conditionsForm.find(":checked").each(function(){
 			this.checked = false;
 		});
 		
 		// 清除页面保存的条件值
-		var extras = $conditionsFrom.closest(".bc-page").data("extras");
+		var extras = $conditionsForm.closest(".bc-page").data("extras");
 		if(extras){
 			delete extras.search4advance;
 		}
 		
 		// 重新加载列表数据
-		bc.grid.reloadData($conditionsFrom.closest(".bc-page"));
+		bc.grid.reloadData($conditionsForm.closest(".bc-page"));
 	}
 };
 	
@@ -317,7 +320,7 @@ $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 						//绑定日期选择
 						bc.form.initCalendarSelect($conditionsForm);
 
-						bc.toolbar.initAdvanceSearchFrom($this,$conditionsForm);
+						bc.toolbar.initAdvanceSearchForm($this,$conditionsForm);
 					}
 					var dataJs = $conditionsForm.attr("data-js");
 					if(dataJs && dataJs.length > 0){
@@ -349,7 +352,7 @@ $document.delegate(".bc-toolbar #advanceSearchBtn","click", function(e) {
 				}
 			});
 		}else{//自定义的条件窗口
-			bc.toolbar.initAdvanceSearchFrom($this,$this.next(".bc-conditionsForm"));
+			bc.toolbar.initAdvanceSearchForm($this,$this.next(".bc-conditionsForm"));
 		}
 	}
 	return false;
