@@ -652,6 +652,25 @@ bc.page = {
 	},
 	/**打印表单*/
 	print: function(key){
+		if(key){
+			if(key.indexOf("callback:") == 0){// 调用自定义的函数
+				var _fn = key.substr("callback:".length); 
+				var fn = bc.getNested(_fn);
+				if(typeof fn == "function"){
+					fn.call(this,key);
+				}else{
+					alert("指定的函数没有定义：" + _fn);
+				}
+				return false;
+			}else if(key.indexOf("tpl:") == 0){// 调用内定的模板格式化打印处理
+				var templateCode = key.substr("tpl:".length); // 模板的编码
+				logger.info("templateCode=" + templateCode);
+				
+				// TODO
+				
+				return false;
+			}
+		}
 		var $this = $(this);
 		var type = $this.attr("data-type");
 		var $form = $this;
