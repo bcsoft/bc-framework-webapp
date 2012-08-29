@@ -122,12 +122,20 @@ span.file-icon.docx {
 	background-position: -128px 0;
 }
 
+span.file-icon.docm {
+	background-position: -288px -32px;
+}
+
 span.file-icon.xls {
 	background-position: -160px 0;
 }
 
 span.file-icon.xlsx {
 	background-position: -192px 0;
+}
+
+span.file-icon.xlsm {
+	background-position: -288px 0;
 }
 
 span.file-icon.ppt {
