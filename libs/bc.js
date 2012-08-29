@@ -1350,6 +1350,45 @@ bc.page = {
 	},
 	/**打印表单*/
 	print: function(key){
+		if(key){
+			if(key.indexOf("callback:") == 0){// 调用自定义的函数
+				var _fn = key.substr("callback:".length); 
+				var fn = bc.getNested(_fn);
+				if(typeof fn == "function"){
+					fn.call(this,key);
+				}else{
+					alert("指定的函数没有定义：" + _fn);
+				}
+				return false;
+			}else if(key.indexOf("tpl:") == 0){// 调用内定的模板格式化打印处理
+				var templateCode = key.substring("tpl:".length,key.lastIndexOf(":")); // 模板的编码
+				logger.info("templateCode=" + templateCode);
+				var formatSqlArr = key.substring(key.lastIndexOf(":")+1).split("&");
+				var dataObj;
+				var dataArr=[];
+				for(var i = 0 ; i < formatSqlArr.length ; i++){
+					dataObj={};
+					var tempstr = formatSqlArr[i];
+					var indx = tempstr.indexOf("=");
+					if(indx > 0 && indx < tempstr.length){
+						var key = tempstr.substring(0,indx);
+						var value = tempstr.substring(indx+1);
+						dataObj.key=key;
+						dataObj.value=value;	
+						dataArr.push(dataObj);
+					}else{
+						alert("key：" + key+",格式化错误！");
+						return false;
+					}
+				}
+				var url =bc.root+"/bc/templatefile/inline?code=" + templateCode;
+				if(dataArr.length >0 ){
+					url += "&formatSqlJsons="+$.toJSON(dataArr);
+				}
+				var win = window.open(url, "_blank");
+				return false;
+			}
+		}
 		var $this = $(this);
 		var type = $this.attr("data-type");
 		var $form = $this;
