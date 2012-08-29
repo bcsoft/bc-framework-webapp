@@ -663,11 +663,31 @@ bc.page = {
 				}
 				return false;
 			}else if(key.indexOf("tpl:") == 0){// 调用内定的模板格式化打印处理
-				var templateCode = key.substr("tpl:".length); // 模板的编码
+				var templateCode = key.substring("tpl:".length,key.lastIndexOf(":")); // 模板的编码
 				logger.info("templateCode=" + templateCode);
-				
-				// TODO
-				
+				var formatSqlArr = key.substring(key.lastIndexOf(":")+1).split("&");
+				var dataObj;
+				var dataArr=[];
+				for(var i = 0 ; i < formatSqlArr.length ; i++){
+					dataObj={};
+					var tempstr = formatSqlArr[i];
+					var indx = tempstr.indexOf("=");
+					if(indx > 0 && indx < tempstr.length){
+						var key = tempstr.substring(0,indx);
+						var value = tempstr.substring(indx+1);
+						dataObj.key=key;
+						dataObj.value=value;	
+						dataArr.push(dataObj);
+					}else{
+						alert("key：" + key+",格式化错误！");
+						return false;
+					}
+				}
+				var url =bc.root+"/bc/templatefile/inline?code=" + templateCode;
+				if(dataArr.length >0 ){
+					url += "&formatSqlJsons="+$.toJSON(dataArr);
+				}
+				var win = window.open(url, "_blank");
 				return false;
 			}
 		}
