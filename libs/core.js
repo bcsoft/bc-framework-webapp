@@ -236,6 +236,12 @@ bc.getWasteTime = function(startTime,endTime){
 	}
 };
 
+/**
+ * 从配置中解析出要加载的js、css文件
+ * 
+ * @param cfg 配置，多个js、css文件间用逗号连接：js:[key],subpath/to/your.js
+ * @return
+ */
 bc.getJsCss = function(cfg){
 	if(!cfg)
 		return [];
@@ -255,6 +261,8 @@ bc.getJsCss = function(cfg){
 			}
 		}else if(cfg[i].indexOf("css:") == 0){//预定义的css文件
 			alert("方法还没实现-css:");
+		}else if(cfg[i].indexOf("wf:") == 0){//预定义的流程资源文件
+			cfg[i] = bc.root + "/bc-workflow/resource?key=" + cfg[i].substr(3);
 		}else if(cfg[i].indexOf("http") != 0 && cfg[i].indexOf("/") != 0){//相对路径的文件
 			cfg[i] = bc.root + "/" + cfg[i];
 		}
