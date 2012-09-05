@@ -488,7 +488,8 @@ $document.delegate(".bc-button.bc-menuButton",{
 });
 
 // 基于jQueryUI的下拉框
-$document.delegate(".bc-select","click", function(e) {
+$document.delegate(".bc-select:not(.ignore)","click", function(e) {
+	logger.info("click");
 	var $this = $(this);
 	if($this.is("input[type='text']")){//文本框
 		$input = $this;
@@ -500,8 +501,9 @@ $document.delegate(".bc-select","click", function(e) {
 	if($input.attr("data-bcselectInit") != "true"){
 		// 获取自定义的配置
 		var option = $.extend({
-			delay: 0,
-			minLength: 0,
+			delay: 100,		// 延时时间（毫秒）
+			minLength: 2,	// 最少输入两个字符
+			autofill: true,	// 是否自动填充选择的值
 			position: {
 				my: "left top",
 				at: "left bottom",
@@ -509,20 +511,45 @@ $document.delegate(".bc-select","click", function(e) {
 				collision: "none"
 			},
 			select: function(event, ui){
-				if(logger.debugEnabled)logger.debug("selectItem=" + $.toJSON(ui.item));
-				//设置隐藏域字段的值
-				$input.val(ui.item.label);
-				$input.next().val(ui.item.value);
+				if(logger.infoEnabled)logger.info("item2=" + $.toJSON(ui.item));
 				
-				//返回false禁止autocomplete自动填写值到$input
+				// 获取值的映射配置
+				var autofill = $input.autocomplete( "option", "autofill" );
+				var labelMapping = $input.autocomplete( "option", "labelMapping" );
+				var valueMapping = $input.autocomplete( "option", "valueMapping" );
+				if(logger.infoEnabled){
+					logger.info("autofill=" + autofill);
+					logger.info("labelMapping=" + labelMapping);
+					logger.info("valueMapping=" + valueMapping);
+				}
+				
+				if(autofill){// 自动填充值
+					// 设置显示值
+					$input.val(labelMapping ? Mustache.render(labelMapping, ui.item) : ui.item.label);
+					
+					// 设置隐藏域字段的值
+					$input.next().val(valueMapping ? Mustache.render(valueMapping, ui.item) : ui.item.value);
+				}
+				
+				// 返回false禁止autocomplete自动填写值到$input
 				return false;
 			}
 		},$input.data("cfg"));
 		
-		//获取下拉列表的数据源
+		// 获取下拉列表的数据源
 		var source = $input.data("source");
 		if(logger.debugEnabled)logger.debug("source=" + $.toJSON(source));
 		if(source) option.source = source;
+		
+		// 处理自定义的select函数
+		if(typeof option.select == "string"){
+			var select = bc.getNested(option.select);
+			if(typeof select != "function"){
+				alert("没有定义select函数：select=" + option.select);
+			}else{
+				option.select = select;
+			}
+		}
 		
 		// 合并自定义的回调函数
 		if(typeof option.callback == "string"){
@@ -537,13 +564,31 @@ $document.delegate(".bc-select","click", function(e) {
 					if(typeof originSelectFn == "function")
 						originSelectFn.apply(this,arguments);
 					
-					// 再调用自定义的回调函数
-					option.callback.apply(this,arguments);
-					
-					return false;
+					// 再调用自定义的回调函数：返回false禁止autocomplete自动填写值到$input
+					return option.callback.apply(this,arguments);
 				}
 			}
 		}
+		
+		// 处理自定义的focus函数
+		if(typeof option.focus == "string"){
+			var focus = bc.getNested(option.focus);
+			if(typeof focus != "function"){
+				alert("没有定义focus函数：focus=" + option.focus);
+			}else{
+				option.focus = focus;
+			}
+		}
+		
+		// 处理显示值的映射：如果配置了映射但有没有自定义focus函数就默认构造一个
+		//alert(Mustache.render("{{title}} spends {{calc}}", {title:"t", calc: "c"}));
+//		if(option.labelMapping && !option.focus){
+//			option.focus = function(event, ui){
+//				if(logger.infoEnabled)logger.info("item0=" + $.toJSON(ui.item));
+//				$input.val(Mustache.render(option.labelMapping, ui.item));
+//				return false;
+//			}
+//		}
 		
 		//初始化下拉列表
 		$input.autocomplete(option).autocomplete("widget").addClass("bc-condition-autocomplete");
@@ -559,12 +604,26 @@ $document.delegate(".bc-select","click", function(e) {
 			});
 		}
 		
+		// 处理下拉列表项的渲染
+		if(option.itemMapping){
+			$input.autocomplete().data("autocomplete")._renderItem = function( ul, item ) {
+				if(logger.infoEnabled)logger.info("item1=" + $.toJSON(item));
+				return $( "<li></li>" )
+					.data( "item.autocomplete", item )
+					.append(Mustache.render(option.itemMapping, item))
+					.appendTo( ul );
+			};
+		}
+		
 		// 标记为已经初始化
 		$input.attr("data-bcselectInit","true");
 	}
 	
 	// 切换列表的显示
 	$input.autocomplete("search", "");
+	
+	// 添加ignore样式，避免再执行click事件
+	if(!$input.hasClass("ignore"))$input.addClass("ignore");
 
 	return false;
 });
