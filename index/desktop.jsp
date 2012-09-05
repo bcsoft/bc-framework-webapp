@@ -125,6 +125,7 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.1.0/jquery.pnotify.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/easing/1.3/jquery.easing.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.6/jquery.mousewheel.min.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/mustache/0.6.0/mustache.js' />"></script>
 <script type="text/javascript">
 	bc={};
 	bc.title = '<s:text name="app.title"/> v<s:text name="app.version"/>';
