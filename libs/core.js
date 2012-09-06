@@ -269,3 +269,30 @@ bc.getJsCss = function(cfg){
 	}
 	return cfg;
 };
+
+/**
+ * 获取模板信息
+ * 
+ * @param source {String} 源配置，如果以字符"TPL."开头，则当作模板的key从模版库中获取，否则直接返回source
+ * @return
+ */
+bc.getTpl = function(source){
+	if(!source)
+		return null;
+	if(source.indexOf("TPL.") == 0){
+		return bc.getNested(source);
+	}else{
+		return source;
+	}
+};
+
+/**
+ * 用指定的参数格式化模板
+ * 
+ * @param source {String} 模板，如果以字符"TPL."开头，则当作模板的key从模版库中获取后再进行格式化
+ * @param params {Object|Array} 格式化参数
+ * @return
+ */
+bc.formatTpl = function(source,params){
+	return Mustache.render(bc.getTpl(source), params)
+};
