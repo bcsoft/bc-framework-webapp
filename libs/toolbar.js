@@ -488,8 +488,8 @@ $document.delegate(".bc-button.bc-menuButton",{
 });
 
 // 基于jQueryUI的下拉框
-$document.delegate(".bc-select:not(.ignore)","click", function(e) {
-	logger.info("click");
+$document.delegate(".bc-select:not(.ignore)","click", function richInputFn(e) {
+	if(logger.infoEnabled)logger.info("e.type="+e.type);
 	var $this = $(this);
 	if($this.is("input[type='text']")){//文本框
 		$input = $this;
@@ -501,9 +501,10 @@ $document.delegate(".bc-select:not(.ignore)","click", function(e) {
 	if($input.attr("data-bcselectInit") != "true"){
 		// 获取自定义的配置
 		var option = $.extend({
-			delay: 100,		// 延时时间（毫秒）
-			minLength: 2,	// 最少输入两个字符
-			autofill: true,	// 是否自动填充选择的值
+			autoFocus: false,		// 不自动聚焦
+			delay: 0,				// 延时时间（毫秒）
+			minLength: 0,			// 最少输入两个字符
+			autofill: true,			// 是否自动填充选择的值
 			position: {
 				my: "left top",
 				at: "left bottom",
@@ -511,24 +512,24 @@ $document.delegate(".bc-select:not(.ignore)","click", function(e) {
 				collision: "none"
 			},
 			select: function(event, ui){
-				if(logger.infoEnabled)logger.info("item2=" + $.toJSON(ui.item));
+				if(logger.debugEnabled)logger.debug("item2=" + $.toJSON(ui.item));
 				
 				// 获取值的映射配置
 				var autofill = $input.autocomplete( "option", "autofill" );
 				var labelMapping = $input.autocomplete( "option", "labelMapping" );
 				var valueMapping = $input.autocomplete( "option", "valueMapping" );
-				if(logger.infoEnabled){
-					logger.info("autofill=" + autofill);
-					logger.info("labelMapping=" + labelMapping);
-					logger.info("valueMapping=" + valueMapping);
+				if(logger.debugEnabled){
+					logger.debug("autofill=" + autofill);
+					logger.debug("labelMapping=" + labelMapping);
+					logger.debug("valueMapping=" + valueMapping);
 				}
 				
 				if(autofill){// 自动填充值
 					// 设置显示值
-					$input.val(labelMapping ? Mustache.render(labelMapping, ui.item) : ui.item.label);
+					$input.val(labelMapping ? bc.formatTpl(labelMapping, ui.item) : ui.item.label);
 					
 					// 设置隐藏域字段的值
-					$input.next().val(valueMapping ? Mustache.render(valueMapping, ui.item) : ui.item.value);
+					$input.next().val(valueMapping ? bc.formatTpl(valueMapping, ui.item) : ui.item.value);
 				}
 				
 				// 返回false禁止autocomplete自动填写值到$input
@@ -564,8 +565,8 @@ $document.delegate(".bc-select:not(.ignore)","click", function(e) {
 					if(typeof originSelectFn == "function")
 						originSelectFn.apply(this,arguments);
 					
-					// 再调用自定义的回调函数：返回false禁止autocomplete自动填写值到$input
-					return option.callback.apply(this,arguments);
+					// 再调用自定义的回调函数：返回非true禁止autocomplete自动填写值到$input
+					return option.callback.apply(this,arguments) === true;
 				}
 			}
 		}
@@ -582,13 +583,30 @@ $document.delegate(".bc-select:not(.ignore)","click", function(e) {
 		
 		// 处理显示值的映射：如果配置了映射但有没有自定义focus函数就默认构造一个
 		//alert(Mustache.render("{{title}} spends {{calc}}", {title:"t", calc: "c"}));
-//		if(option.labelMapping && !option.focus){
-//			option.focus = function(event, ui){
-//				if(logger.infoEnabled)logger.info("item0=" + $.toJSON(ui.item));
-//				$input.val(Mustache.render(option.labelMapping, ui.item));
-//				return false;
-//			}
-//		}
+		if(option.labelMapping && !option.focus){
+			option.focus = function(event, ui){
+				if(logger.debugEnabled)logger.debug("item0=" + $.toJSON(ui.item));
+				$input.val(bc.formatTpl(option.labelMapping, ui.item));
+				return false;
+			}
+		}
+		
+		// 处理change函数
+		if(typeof option.change == "string"){// 处理自定义的focus函数
+			var change = bc.getNested(option.change);
+			if(typeof change != "function"){
+				alert("没有定义change函数：change=" + option.change);
+			}else{
+				option.change = change;
+			}
+		}
+		if(!option.change){// 没有就自动创建一个，用于清空不合理的输入
+			option.change = function(event, ui){
+				if(!ui.item){// 证明用户没有确切的从下拉列表中选择一个，将输入框清空避免诸如ID没有设置的问题
+					$input.val("");
+				}
+			}
+		}
 		
 		//初始化下拉列表
 		$input.autocomplete(option).autocomplete("widget").addClass("bc-condition-autocomplete");
@@ -607,10 +625,10 @@ $document.delegate(".bc-select:not(.ignore)","click", function(e) {
 		// 处理下拉列表项的渲染
 		if(option.itemMapping){
 			$input.autocomplete().data("autocomplete")._renderItem = function( ul, item ) {
-				if(logger.infoEnabled)logger.info("item1=" + $.toJSON(item));
+				if(logger.debugEnabled)logger.debug("item1=" + $.toJSON(item));
 				return $( "<li></li>" )
 					.data( "item.autocomplete", item )
-					.append(Mustache.render(option.itemMapping, item))
+					.append(bc.formatTpl(option.itemMapping, item))
 					.appendTo( ul );
 			};
 		}
@@ -623,7 +641,7 @@ $document.delegate(".bc-select:not(.ignore)","click", function(e) {
 	$input.autocomplete("search", "");
 	
 	// 添加ignore样式，避免再执行click事件
-	if(!$input.hasClass("ignore"))$input.addClass("ignore");
+	//if(!$input.hasClass("ignore"))$input.addClass("ignore");
 
 	return false;
 });
