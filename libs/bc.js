@@ -1063,9 +1063,10 @@ bc.page = {
 		$page.data("saving",true);
 		
 		//表单验证
-		if(!bc.validator.validate($form))
+		if(!bc.validator.validate($form)){
+			$page.data("saving",false);
 			return;
-		
+		}
 		//使用ajax保存数据
 		var data = $form.serialize();
 		bc.ajax({

@@ -76,7 +76,7 @@ bc.loader = {
 	},
 	a: function(u,l) {
 		//logger.info("call a");
-		var s, t, m = this, n = u[0].replace(/.+\/|\.min\.js|\.js|\?.+|\W/g, ''), k = {js: {t: "script", a: "src"}, css: {t: "link", a: "href", r: "stylesheet"}, "i": {t: "img", a: "src"}}; // Clean up the name of the script for storage in the queue
+		var s, t, m = this, n = u[0].replace(/.+\/|\.min\.js|\.js|\?.+|\W/g, ''), k = {js: {t: "script", a: "src", type: "text/javascript"}, css: {t: "link", a: "href", r: "stylesheet", type: "text/css"}, "i": {t: "img", a: "src"}}; // Clean up the name of the script for storage in the queue
 		t = u[0].match(/\.(js|css).*$/i); t = (t) ? t[1] : "i";
 		n=u[0];
 		if(m.q[n] === true){
@@ -93,6 +93,8 @@ bc.loader = {
 		file = bc.addParamToUrl(file,"ts="+bc.ts);// 附加时间挫
 			
 		s.setAttribute(k[t].a, file);
+		
+		if (k[t].type) s.setAttribute("type", k[t].type);
 		// Fix: CSS links do not fire onload events - Richard Lopes
 		// Images do. Limitation: no callback function possible after CSS loads
 		if (k[t].r){
