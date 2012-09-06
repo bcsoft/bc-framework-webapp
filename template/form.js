@@ -293,7 +293,7 @@ bc.templateForm = {
 			//生成对话框的html代码
 			var html = [];
 			html.push('<div class="bc-page" data-type="dialog" style="overflow-y:auto;">');
-			html.push('<div style="margin: 4px;max-height: 400px;">');
+			html.push('<div style="margin: 4px;max-height: 400px;max-width: 400px;">');
 			html.push('<table id="inlineTemplates" style="width:100%;height:100%;">');
 			html.push('<tbody>');
 			var arrParam=param.split(",");
@@ -302,6 +302,16 @@ bc.templateForm = {
 				html.push('<td class="label">'+arrParam[i]+'</td>');
 				html.push('<td class="value">');
 				html.push('<input type="text" class="ui-widget-content" style="width:180px">');
+				html.push('</td>');
+				html.push('<td class="value">');
+				html.push('<select type="text" class="ui-widget-content" style="width:80px">');
+				html.push('<option value="string">string</option>');
+				html.push('<option value="boolean">boolean</option>');
+				html.push('<option value="int">int</option>');
+				html.push('<option value="float">float</option>');
+				html.push('<option value="jsonObj">jsonObj</option>');
+				html.push('<option value="jsonArr">jsonArr</option>');
+				html.push('</select>');
 				html.push('</td>');
 				html.push('</tr>')
 			}
@@ -315,20 +325,57 @@ bc.templateForm = {
 			//绑定双击事件
 			function onClick(){
 				var $trs=paramsEl.find("tr");
-				var dataObj;
-				var dataArr=[];
+				var dataGlobalObj={};
 				$trs.each(function(){
-					dataObj={}
 					var key= $(this).find(".label").html();
-					var value= $(this).find("input").val();
-					dataObj.key=key;
-					if(value && (value.indexOf("[") == 0 || value.indexOf("{") == 0))
-						dataObj.value=$.evalJSON(value);
-					else
-						dataObj.value=value;
-					dataArr.push(dataObj);
-				});
+					var value=$(this).find("input").val();
+					var type=$(this).find("select").val();
 
+					var dataObj=dataGlobalObj;
+					var arrk=key.split('.');
+					for(var i=0;i<arrk.length;i++){
+						var subKey=arrk[i];
+						// 如果是.后的最后一个，就设置返回
+						if(i == arrk.length-1){
+							if(type == "string"){
+								dataObj[subKey]=value;
+							}else if(type == "jsonObj" || type == "jsonArr"){
+								dataObj[subKey]=$.evalJSON(value);
+							}else if(type == "boolean"){
+								if(value == "true"){
+									dataObj[subKey]=true;
+								}else{
+									dataObj[subKey]=false;
+								}
+							}else if(type == "int"){
+								if(!isNaN(val)){
+									dataObj[subKey]=parseInt(value);
+								}else{
+									alert("输入的不是数值！");
+									return;
+								}
+							}else if(type == "faloat"){
+								if(!isNaN(val)){
+									dataObj[subKey]=parseFloat(value);
+								}else{
+									alert("输入的不是数值！");
+									return;
+								}
+							}
+							continue;
+						}
+						
+						// 如果当前key没有就初始化一个
+						if(!dataObj[subKey]){
+							dataObj[subKey]={};
+						}
+						// 设为找到的对象或最后创建的对象
+						dataObj = dataObj[subKey];
+					}
+				});
+				
+				logger.info("markerValueJsons="+$.toJSON(dataGlobalObj));
+				
 				var url =bc.root+"/bc/templatefile/inline"
 				
 				// Get方法打开窗口：会有url长度限制的问题
@@ -344,7 +391,7 @@ bc.templateForm = {
 				$post.push('<input type="hidden" name="markerValueJsons" value="">');
 				$post.push('</form>');
 				$post = $($post.join(""));
-				$post.children("[name='markerValueJsons']").val($.toJSON(dataArr));
+				$post.children("[name='markerValueJsons']").val($.toJSON(dataGlobalObj));
 				var _form = $post.get(0);
 				_form.action = url;
 				_form.target = "_blank";	// 新窗口打开
