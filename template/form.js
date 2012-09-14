@@ -165,7 +165,12 @@ bc.templateForm = {
 		logger.info($.toJSON(json));
 		if(json.success){
 			var $page = this.closest(".bc-page");
-			$page.find(':input[name="e.subject"]').val(json.source);
+			var i=json.source.lastIndexOf(".");
+			if(i != -1){
+				$page.find(':input[name="e.subject"]').val(json.source.substring(0,i));
+			}else{
+				$page.find(':input[name="e.subject"]').val(json.source);
+			}
 			$page.find(':input[name="e.path"]').val(json.to);
 		}else
 			bc.msg.alert(json.msg);
