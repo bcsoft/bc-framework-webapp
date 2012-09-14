@@ -2267,16 +2267,25 @@ $document.delegate(".bc-select:not(.ignore)","click", function richInputFn(e) {
 				option.change = change;
 			}
 		}
-		if(!option.change){// 没有就自动创建一个，用于清空不合理的输入
+		if(!option.change && option.strict){// 没有配置change事件，但又要求严格匹配就自动创建一个change事件，用于恢复原值
 			option.change = function(event, ui){
-				if(!ui.item){// 证明用户没有确切的从下拉列表中选择一个，将输入框清空避免诸如ID没有设置的问题
-					$input.val("");
+				var previous = $input.data("previous");
+				if(!ui.item && previous != $input.val()){// ui.item==null 证明用户没有确切的从下拉列表中选择一个，将输入框恢复为原来的值
+					if(logger.debugEnabled)logger.debug("restore val to "+previous);
+					$input.val(previous);// 恢复原来的值
 				}
 			}
 		}
 		
 		//初始化下拉列表
 		$input.autocomplete(option).autocomplete("widget").addClass("bc-condition-autocomplete");
+		
+		// 每次聚焦时记录当前值，方便change事件中判断如果用户没有选择，恢复原来的值
+		$input.bind( "focus.autocomplete",function(){
+			if(logger.debugEnabled)logger.debug("cur=" + $input.val());
+			$input.data("previous",$input.val());// 记录当前值
+		});
+		$input.data("previous",$input.val());// 记录当前值
 		
 		// 设置下拉列表的最大高度
 		var maxHeight = $input.attr("data-maxHeight");
