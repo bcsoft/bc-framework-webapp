@@ -1387,7 +1387,9 @@ td.value {
 }
 
 td.value input,td.value textarea,td.value div.input {
-	width: 98%;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
 	margin: 0;
 	padding: 0;
 }
@@ -1405,18 +1407,22 @@ td.value div.input .link {
 }
 
 td.value select {
-	width: 99%;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
 	margin: 0;
 	padding: 0;
 }
 
 .webkit .bc-page select {
-	height: 21px;
+	/*height: 21px;*/
 	/*webkit的select背景无法透明的模拟修正*/
 	-webkit-appearance: none;
 	background: url('images/browser/webkit_select_down.png') no-repeat right
 		center;
-	width: 98.5%;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
 	margin: 0;
 	padding: 0;
 }
