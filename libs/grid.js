@@ -345,6 +345,12 @@ $("ul li.pagerIcon").live("click", function() {
 		else
 			alert("'bc.grid.export2Excel'未定义");
 		break;
+	case "import"://导入数据
+		if(bc.grid.import)
+			bc.grid.import($page.find(".bc-grid"),this);
+		else
+			alert("'bc.grid.import'未定义");
+		break;
 	default ://调用自定义的函数
 		var click = $this.attr("data-click");
 		if(typeof click == "string")

@@ -55,6 +55,9 @@
 				<include name="grid.export.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
+				<include name="grid.import.js" />
+			</fileset>
+			<fileset dir="${bclibs.dir}">
 				<include name="form.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">

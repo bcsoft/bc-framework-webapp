@@ -160,6 +160,7 @@
 	<script type="text/javascript" src="<s:url value='/bc/libs/toolbar.search.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/grid.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/grid.export.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/libs/grid.import.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/form.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/boxPointer.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/loader.js' ><s:param name='ts' value='ts'/></s:url>"></script>

@@ -93,19 +93,19 @@ bc.msg = {
     },
     /** 信息警告框：提示框icon=warning的简化使用版 */
     warn: function(msg, title, onOk){
-    	alert("TODO");
+    	alert("TODO:warn");
     },
     /** 错误提示框：提示框icon=error的简化使用版 */
     error: function(msg, title, onOk){
-    	alert("TODO");
+    	alert("TODO:error");
     },
     /** 信息提问框：提示框icon=question的简化使用版 */
     question: function(msg, title, onOk){
-    	alert("TODO");
+    	alert("TODO:question");
     },
     /** 自动提醒框：显示在页面右下角并可以自动隐藏的消息提示框 */
     show: function(config){
-    	alert("TODO");
+    	alert("TODO:show");
     },
     /** 自动提醒框的slide简化使用版:滑出滑入效果 */
     slide: function(msg,timeout,width,height){
