@@ -109,10 +109,40 @@ td.value input,td.value textarea,td.value div.input {
 }
 
 td.value div.input {
-	height: 19px;
-	padding: 1px 0;
+	height: 1.6em;
+	padding: 0;
 	margin: 0;
 	font-weight: normal;
+}
+/*只能读*/
+.readonly {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 1.6em;
+	-webkit-user-modify: read-only;
+	-moz-user-modify: read-only;
+	user-modify: read-only;
+}
+/*可读可写*/
+.editable {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 1.6em;
+	-webkit-user-modify: read-write-plaintext-only;
+	-moz-user-modify: read-write;
+	-moz-user-modify: read-write-plaintext-only;/*firefox15 unsupport*/
+	user-modify: read-write-plaintext-only;
+}
+.richeditable {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 1.6em;
+	-webkit-user-modify: read-write;
+	-moz-user-modify: read-write;
+	user-modify: read-write;
 }
 
 td.value div.input .link {
