@@ -25,13 +25,12 @@ bc.templateSelectDialog = {
 			data.size = parseInt($tr.find("td:eq(6)").attr("data-value"));
 			data.desc = $tr.find("td:eq(2)").text();
 			data.category = $tr.find("td:eq(0)").text();
-			//模板类型编码
-			data.typeCode = $tr.data("hidden").typeCode;
-			data.path = $tr.data("hidden").path;
+			$.extend(data,$tr.data("hidden"));
 		}else{
 			data=[];
 			var $right = $($tds[0]).closest(".left").siblings();
 			$tds.each(function(i){
+				var $tr = $($trs.get(i));
 				var $this = $(this);
 				var index = $this.parent().index();
 				var $row = $right.find("tr.row:eq("+index+")");
@@ -44,10 +43,7 @@ bc.templateSelectDialog = {
 				var size = parseInt($row.find("td:eq(6)").attr("data-value"));
 				var category = $row.find("td:eq(0)").text();
 				var desc = $row.find("td:eq(2)").text();
-				//模板类型编码
-				var typeCode = $row.data("hidden").typeCode;
-				var path = $row.data("hidden").path;
-				data.push({
+				data.push($.extend({
 					id: id,
 					typeName:typeName,
 					subject:subject,
@@ -59,7 +55,7 @@ bc.templateSelectDialog = {
 					category:category,
 					path:path,
 					desc:desc
-				});
+				},$tr.data("hidden")));
 			});	
 		}
 		
