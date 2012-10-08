@@ -44,7 +44,7 @@
 		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />"
 			title='<s:text name="app.title"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:property value="#session.loginTime" />'>
 		<s:property value="startMenu" escapeHtml="false"/>
-		<s:if test='%{getText("app.produce") == "true"}'>
+		<s:if test='%{getText("app.product") != "true"}'>
 		<div style="padding-left: 600px;margin-top: -60px;"><font color="red" size="6">测试环境！</font></div>
 		</s:if>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
