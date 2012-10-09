@@ -206,7 +206,7 @@ textarea.nooutline,input.nooutline {
 	outline: none;
 }
 /** 使textarea自动内容高度：需要js的支持 */
-textarea.autoheight {
+textarea.autoHeight {
 	overflow: hidden;
 	resize: none;
 	min-height: 2em;
