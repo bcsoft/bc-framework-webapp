@@ -30,7 +30,6 @@ bc.templateSelectDialog = {
 			data=[];
 			var $right = $($tds[0]).closest(".left").siblings();
 			$tds.each(function(i){
-				var $tr = $($trs.get(i));
 				var $this = $(this);
 				var index = $this.parent().index();
 				var $row = $right.find("tr.row:eq("+index+")");
@@ -49,16 +48,13 @@ bc.templateSelectDialog = {
 					subject:subject,
 					code:code,
 					version:version,
-					typeCode:typeCode,
 					formatted:formatted,
 					size:size,
 					category:category,
-					path:path,
 					desc:desc
-				},$tr.data("hidden")));
+				},$row.data("hidden")));
 			});	
 		}
-		
 		
 		logger.info($.toJSON(data));
 		// 返回
