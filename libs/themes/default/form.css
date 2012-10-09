@@ -157,6 +157,10 @@ td.value select {
 	margin: 0;
 	padding: 0;
 }
+.borderBox {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
 
 .webkit .bc-page select {
 	/*height: 21px;*/
@@ -200,6 +204,12 @@ textarea.noresize {
 /** 使WebKit内核浏览器input、textarea聚焦时无黄色边框 */
 textarea.nooutline,input.nooutline {
 	outline: none;
+}
+/** 使textarea自动内容高度：需要js的支持 */
+textarea.autoheight {
+	overflow: hidden;
+	resize: none;
+	min-height: 2em;
 }
 
 div.bc-editor {

@@ -234,3 +234,24 @@ $document.delegate(".selectCalendar",{
 		});
 	}
 });
+//自动内容高度
+$document.delegate(".autoHeight",{
+	keyup: function() {
+		var $this = $(this);
+		$this.height(0);
+		var maxHeight = parseInt($this.css("max-height"));// 最大高度
+		var h;
+		if(maxHeight){
+			if(maxHeight < this.scrollHeight){
+				h = maxHeight;
+				$this.css("overflow", "auto");
+			}else{
+				h = this.scrollHeight;
+				$this.css("overflow", "hidden");
+			}
+		}else{
+			h = this.scrollHeight;
+		}
+		$this.height(h + ($.browser.mozilla ? 10 : 2));
+	}
+});
