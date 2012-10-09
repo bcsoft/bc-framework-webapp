@@ -35,7 +35,8 @@ bc.form = {
 			//只读表单的处理
 			$form.find(":input:visible:not('.custom')").each(function(){
 				logger.debug("disabled:" + this.name);
-				if(this.nodeName.toLowerCase() == "select")
+				var $in = $(this);
+				if($in.is("select,:checkbox,:radio"))
 					this.disabled=true;
 				else
 					this.readOnly=true;
