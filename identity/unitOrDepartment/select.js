@@ -1,5 +1,5 @@
 if(!window['bc'])window['bc']={};
-bc.groupSelectDialog = {
+bc.unitOrDepartmentSelectDialog = {
 	/** 点击确认按钮后的处理函数 */
 	clickOk : function() {
 		var $page = $(this);

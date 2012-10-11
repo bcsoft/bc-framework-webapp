@@ -56,7 +56,7 @@ bc.identity = {
 			option.data.multiple = true;
 		
 		option = jQuery.extend({
-			url: bc.root + "/bc/selectUnitOrDepartment",
+			url: bc.root + "/bc/selectUnitOrDepartments/paging",
 			name: "选择单位或部门信息",
 			mid: "selectUnitOrDepartment",
 			afterClose: function(status){
@@ -127,7 +127,7 @@ bc.identity = {
 			option.data.multiple = true;
 		
 		option = jQuery.extend({
-			url: bc.root + "/bc/selectGroup",
+			url: bc.root + "/bc/selectGroups/paging",
 			name: "选择岗位信息",
 			mid: "selectGroup",
 			afterClose: function(status){
