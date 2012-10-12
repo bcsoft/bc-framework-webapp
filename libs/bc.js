@@ -3503,7 +3503,8 @@ bc.form = {
 			//只读表单的处理
 			$form.find(":input:visible:not('.custom')").each(function(){
 				logger.debug("disabled:" + this.name);
-				if(this.nodeName.toLowerCase() == "select")
+				var $in = $(this);
+				if($in.is("select,:checkbox,:radio"))
 					this.disabled=true;
 				else
 					this.readOnly=true;
@@ -3700,6 +3701,27 @@ $document.delegate(".selectCalendar",{
 			else
 				$this.timepicker("show");
 		});
+	}
+});
+//自动内容高度
+$document.delegate(".autoHeight",{
+	keyup: function() {
+		var $this = $(this);
+		$this.height(0);
+		var maxHeight = parseInt($this.css("max-height"));// 最大高度
+		var h;
+		if(maxHeight){
+			if(maxHeight < this.scrollHeight){
+				h = maxHeight;
+				$this.css("overflow", "auto");
+			}else{
+				h = this.scrollHeight;
+				$this.css("overflow", "hidden");
+			}
+		}else{
+			h = this.scrollHeight;
+		}
+		$this.height(h + ($.browser.mozilla ? 10 : 2));
 	}
 });
 /**

@@ -1395,10 +1395,40 @@ td.value input,td.value textarea,td.value div.input {
 }
 
 td.value div.input {
-	height: 19px;
-	padding: 1px 0;
+	height: 1.6em;
+	padding: 0;
 	margin: 0;
 	font-weight: normal;
+}
+/*只能读*/
+.readonly {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 1.6em;
+	-webkit-user-modify: read-only;
+	-moz-user-modify: read-only;
+	user-modify: read-only;
+}
+/*可读可写*/
+.editable {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 1.6em;
+	-webkit-user-modify: read-write-plaintext-only;
+	-moz-user-modify: read-write;
+	-moz-user-modify: read-write-plaintext-only;/*firefox15 unsupport*/
+	user-modify: read-write-plaintext-only;
+}
+.richeditable {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 1.6em;
+	-webkit-user-modify: read-write;
+	-moz-user-modify: read-write;
+	user-modify: read-write;
 }
 
 td.value div.input .link {
@@ -1412,6 +1442,10 @@ td.value select {
 	width: 100%;
 	margin: 0;
 	padding: 0;
+}
+.borderBox {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .webkit .bc-page select {
@@ -1456,6 +1490,12 @@ textarea.noresize {
 /** 使WebKit内核浏览器input、textarea聚焦时无黄色边框 */
 textarea.nooutline,input.nooutline {
 	outline: none;
+}
+/** 使textarea自动内容高度：需要js的支持 */
+textarea.autoHeight {
+	overflow: hidden;
+	resize: none;
+	min-height: 2em;
 }
 
 div.bc-editor {
