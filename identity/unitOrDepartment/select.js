@@ -17,18 +17,18 @@ bc.unitOrDepartmentSelectDialog = {
 		if($grid.hasClass("singleSelect")){//单选
 			data = {};
 			data.id = $tds.attr("data-id");
-			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
-			data.name = $trs.find("td:eq(1)").attr("data-value");
-			data.account = $trs.find("td:eq(2)").attr("data-value");
+			var $tr = $grid.find(">.data>.right tr.ui-state-highlight");
+			data.name = $tr.find("td:eq(1)").attr("data-value");
+			$.extend(data,$tr.data("hidden"));
 		}else{//多选
 			data = [];
 			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
-			$tds.each(function(i){
-				data.push({
-					id: $(this).attr("data-id"),
-					name:$($trs.get(i)).find("td:eq(1)").attr("data-value"),
-					account:$($trs.get(i)).find("td:eq(2)").attr("data-value")
-				});
+			$trs.each(function(i){
+				$tr=$(this);
+				data.push($.extend({
+					id: $($tds[i]).attr("data-id"),
+					name:$($trs.get(i)).find("td:eq(1)").attr("data-value")
+				},$tr.data("hidden")));
 			});
 		}
 		logger.info($.toJSON(data));
