@@ -209,7 +209,7 @@ textarea.nooutline,input.nooutline {
 textarea.autoHeight {
 	overflow: hidden;
 	resize: none;
-	min-height: 2em;
+	min-height: 1.7em;
 }
 
 div.bc-editor {
