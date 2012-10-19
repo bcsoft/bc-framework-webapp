@@ -27,6 +27,9 @@
 					within : $(window)
 				},
 				select : function(event, ui) {
+					//避免a的链接跳转必须执行这句
+					event.preventDefault();
+
 					$li = ui.item;
 					$a = $li.children("a");
 					if(logger.infoEnabled)
@@ -39,11 +42,41 @@
 					option.type=$li.attr("data-type");
 					option.url=$a.attr("href");
 					option.standalone=$li.attr("data-standalone")=="true";
-					if(option.url && option.url.length>0 && option.url.indexOf("#")!=0)
-						bc.page.newWin(option);
+					option.cfg = $li.data("cfg");
+					
+//					if(option.name == "发起流程"){
+//						//option.extra.script = 'bc.msg.confirm("确定2要发起吗？",function(){alert("ss")})';
+//						option.extra.script = 'bc.msg.confirm("确定要发起<b>{{name}}</b>吗？",function(){'
+//							+'bc.ajax({'
+//							+'	url: "{{&url}}", dataType: "json",'
+//							+'	success: function(json) {'
+//							+'		if(json.success === false){'
+//							+'			bc.msg.alert(json.msg);'
+//							+'		}else{'
+//							+'			bc.sidebar.refresh();'
+//							+'			bc.page.newWin({name: "工作空间",mid: "workspace"+json.processInstance,'
+//							+'				url: bc.root+ "/bc-workflow/workspace/open?id="+json.processInstance'
+//							+'			});'
+//							+'		}'
+//							+'	}'
+//							+'});'
+//							+'})';
+//					}
+					
+					// 是否为url节点
+					var isLeaf = option.url && option.url.length>0 && option.url.indexOf("#")!=0;
+					if(isLeaf){
+						if(option.cfg && option.cfg.script){// 前置js执行的处理
+							alert("-");
+							var js = bc.formatTpl(option.cfg.script, option);
+							alert(js);
+							eval("("+js+")");
+						}else{
+							bc.page.newWin(option);
+						}
+					}
 
-					//避免a的#跳转
-					event.preventDefault();
+					return false;
 				}
 			});
 			
