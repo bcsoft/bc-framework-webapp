@@ -34,43 +34,23 @@
 					$a = $li.children("a");
 					if(logger.infoEnabled)
 						logger.info("click:name=" + $li.text() + ";href=" + $a.attr("href"));
-					var option = $li.attr("data-option");
-					if(!option || option.length == 0) option="{}";
-					option = eval("("+option+")");
+					var option = {};
 					option.mid=$li.attr("data-mid");
 					option.name=$a.text();
 					option.type=$li.attr("data-type");
 					option.url=$a.attr("href");
 					option.standalone=$li.attr("data-standalone")=="true";
-					option.cfg = $li.data("cfg");
-					
-//					if(option.name == "发起流程"){
-//						//option.extra.script = 'bc.msg.confirm("确定2要发起吗？",function(){alert("ss")})';
-//						option.extra.script = 'bc.msg.confirm("确定要发起<b>{{name}}</b>吗？",function(){'
-//							+'bc.ajax({'
-//							+'	url: "{{&url}}", dataType: "json",'
-//							+'	success: function(json) {'
-//							+'		if(json.success === false){'
-//							+'			bc.msg.alert(json.msg);'
-//							+'		}else{'
-//							+'			bc.sidebar.refresh();'
-//							+'			bc.page.newWin({name: "工作空间",mid: "workspace"+json.processInstance,'
-//							+'				url: bc.root+ "/bc-workflow/workspace/open?id="+json.processInstance'
-//							+'			});'
-//							+'		}'
-//							+'	}'
-//							+'});'
-//							+'})';
-//					}
 					
 					// 是否为url节点
 					var isLeaf = option.url && option.url.length>0 && option.url.indexOf("#")!=0;
 					if(isLeaf){
-						if(option.cfg && option.cfg.script){// 前置js执行的处理
-							alert("-");
-							var js = bc.formatTpl(option.cfg.script, option);
-							alert(js);
-							eval("("+js+")");
+						var pre = $li.find("pre");
+						if(pre.size()>0){// 前置js执行的处理
+							option.cfg = pre.html();
+							//alert(option.cfg);
+							var js = bc.formatTpl(option.cfg, option);
+							//alert(js);
+							eval("("+js+")");// 执行js脚本处理
 						}else{
 							bc.page.newWin(option);
 						}
@@ -123,9 +103,13 @@
 					tpl += ' data-iconClass="' + $this.attr("data-iconClass") + '"';
 					tpl += ' data-name="' + $this.attr("data-name") + '"';
 					tpl += ' data-url="' + $this.attr("data-url") + '"';
+					tpl += ' data-cfg="' + $this.attr("data-cfg") + '"';
 					//if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
 					tpl += '><span class="icon ' + $this.attr("data-iconClass") + '">';
-					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span></a>';
+					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span>';
+					var pre = $this.find("pre");
+					if(pre.size()>0)
+						tpl += '<pre style="display:none">'+pre.html()+'</pre>';
 					tpl += '</a>';
 					return $(tpl).appendTo("#top");
 				}
@@ -339,7 +323,16 @@
 			option.order=$this.attr("data-order");
 			option.url=$this.attr("data-url");
 			option.standalone=$this.attr("data-standalone")=="true";
-			bc.page.newWin(option);
+			var pre = $this.find("pre");
+			if(pre.size() > 0){// 前置js执行的处理
+				option.cfg = pre.html();
+				//alert(option.cfg);
+				var js = bc.formatTpl(option.cfg, option);
+				//alert(js);
+				eval("("+js+")");// 执行js脚本处理
+			}else{
+				bc.page.newWin(option);
+			}
 		}
 	});
 

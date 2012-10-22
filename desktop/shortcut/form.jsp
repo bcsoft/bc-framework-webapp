@@ -46,6 +46,7 @@
 		<s:hidden name="e.id" />
 		<s:hidden name="e.actorId" />
 		<s:hidden name="e.resourceId" />
+		<s:hidden name="e.cfg" />
 		<p class="formComment"><s:text name="shortcut.form.comment"/></p>
 	</s:form>
 </div>

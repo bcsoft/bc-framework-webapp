@@ -50,9 +50,14 @@
 			</tr>
 			<tr>
 				<td data-name="url" id="urlText" class="label" data-text='<s:text name="resource.url"/>'>*<s:text name="resource.url"/>：</td>
-				<td data-name="url" class="value"><s:textfield name="e.url" data-validate="required" cssClass="ui-widget-content"/></td>
-				<td data-name="option" class="label"><s:text name="resource.option"/>:</td>
-				<td data-name="option" class="value"><s:textfield name="e.option" cssClass="ui-widget-content"/></td>
+				<td data-name="url" class="value" colspan="3"><s:textfield name="e.url" data-validate="required" cssClass="ui-widget-content"/></td>
+			</tr>
+			<tr>
+				<td data-name="option" class="label"><s:text name="resource.option"/>：</td>
+				<td data-name="option" class="value" colspan="3">(编写标准JavaScript代码)</td>
+			</tr>
+			<tr>
+				<td data-name="option" class="value" colspan="4"><s:textarea name="e.option" cssClass="ui-widget-content autoHeight" /></td>
 			</tr>
 		</table>
 		<s:hidden name="e.status" />
