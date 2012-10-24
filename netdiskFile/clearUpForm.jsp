@@ -2,11 +2,12 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="clearUp.title"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/netdiskFile/save" />'
-	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/identity/identity.js" />'
+	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/identity/identity.js" />,<s:url value="/bc/netdiskFile/folder.js" />'
 	data-initMethod='bc.netdiskFileForm.init'
-	data-option='<s:property value="%{formPageOption}"/>' style="overflow-y:auto;">
+	data-option='{
+		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.netdiskFileForm.clickOk4clearUp"}],
+		"width":300,"minWidth":320,"minHeight":150,"modal":false}' style="overflow-y:auto;">
 	<s:form name="netdiskFileForm" theme="simple">
-		<div class="formFields ui-widget-content" >
 			<table class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
 					<tr class="widthMarker">
@@ -16,31 +17,29 @@
 					<tr>
 						<td class="label" >*<s:text name="netdisk.folderName"/>:</td>
 						<td class="value" >
-							<s:textfield name="e.vin" data-validate="required" cssClass="ui-widget-content"/>
+							<s:textfield name="title" data-validate="required" cssClass="ui-widget-content"/>
 						</td>
 					</tr>
 					<tr>
 						<td class="label" ><s:text name="netdisk.SubordinateFolder"/>:</td>
-						<td class="value" >
-							<s:textfield name="e.vin" data-validate="required" cssClass="ui-widget-content"/>
-						</td>
+						<td class="value" style="position:relative;display: block;"><s:textfield name="folder"
+				    		 cssClass="ui-widget-content" readonly="true" />
+				    		<span id="selectFolder" style="position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:22px;cursor:pointer;" 
+				    			class="selectButton ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+				    		<span id="selectFolder" style="position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:8px;cursor:pointer;"
+				    			class="selectButton verticalMiddle ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></span>
+				    	</td>
 					</tr>
 					<tr>
 						<td class="label" ><s:text name="netdisk.order"/>:</td>
 						<td class="value" >
-							<s:textfield name="e.vin" data-validate="required" cssClass="ui-widget-content"/>
+							<s:textfield name="order" cssClass="ui-widget-content"/>
 						</td>
 					</tr>
 				</tbody>
 			</table>
-		</div>
-		<s:hidden name="e.id" />
-		<s:hidden name="e.car.id" />
-		<s:hidden name="e.driver.id" />
-		<s:hidden name="e.author.id" />
-		<s:hidden name="e.startDate" />
-		<s:hidden name="e.endDate" />
-		<s:hidden name="e.pid" />
+		<s:hidden name="id" />
+		<s:hidden name="pid" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>

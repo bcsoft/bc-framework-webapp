@@ -4,7 +4,9 @@
 	data-saveUrl='<s:url value="/bc/netdiskFile/save" />'
 	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.netdiskFileForm.init'
-	data-option='<s:property value="%{formPageOption}"/>' style="overflow-y:auto;">
+	data-option='{
+		"buttons":[{"text":"<s:text name="netdisk.create"/>","action":"save"}],
+		"width":300,"minWidth":320,"minHeight":200,"modal":false}' style="overflow-y:auto;">
 	<s:form name="netdiskFileForm" theme="simple">
 		<div class="formFields ui-widget-content" >
 			<table class="formFields" cellspacing="2" cellpadding="0">
@@ -16,31 +18,29 @@
 					<tr>
 						<td class="label" >*<s:text name="netdisk.folderName"/>:</td>
 						<td class="value" >
-							<s:textfield name="e.vin" data-validate="required" cssClass="ui-widget-content"/>
+							<s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content"/>
 						</td>
 					</tr>
 					<tr>
 						<td class="label" ><s:text name="netdisk.SubordinateFolder"/>:</td>
 						<td class="value" >
-							<s:textfield name="e.vin" data-validate="required" cssClass="ui-widget-content"/>
+							<s:textfield name="e.vin" cssClass="ui-widget-content"/>
 						</td>
 					</tr>
 					<tr>
 						<td class="label" ><s:text name="netdisk.order"/>:</td>
 						<td class="value" >
-							<s:textfield name="e.vin" data-validate="required" cssClass="ui-widget-content"/>
+							<s:textfield name="e.order" data-validate="required" cssClass="ui-widget-content"/>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<s:hidden name="e.id" />
-		<s:hidden name="e.car.id" />
-		<s:hidden name="e.driver.id" />
 		<s:hidden name="e.author.id" />
-		<s:hidden name="e.startDate" />
-		<s:hidden name="e.endDate" />
-		<s:hidden name="e.pid" />
+		<s:hidden name="e.type" />
+		<s:hidden name="e.status" />
+		<s:hidden name="e.size" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>
