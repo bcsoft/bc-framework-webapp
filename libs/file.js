@@ -72,7 +72,7 @@ bc.file={
 	    var maxCount = option.maxCount;
 	    var curCount = parseInt(option.curCount);
 	    if(isNaN(curCount)) curCount = 0;
-	    logger.info("maxCount=" + maxCount + ",curCount=" + curCount);
+	    logger.info("total=" + files.length + ",maxCount=" + maxCount + ",curCount=" + curCount);
 	    if(!isNaN(maxCount) && files.length + curCount > maxCount){
 	    	alert("上传附件总数已限制为最多" + maxCount + "个，已超出上限了！");
 	    	bc.file.clearFileSelect($file);
@@ -174,8 +174,8 @@ bc.file={
 				if(xhr.readyState===4){
 					bc.file.xhrs[key] = null;
 					//累计上传的文件数
+					logger.info("onreadystatechange:i="+ i + ",responseText=" + xhr.responseText);
 					i++;
-					logger.info(i + ":" + xhr.responseText);
 					var json = eval("(" + xhr.responseText + ")");
 					
 					//附件总数加一
@@ -202,6 +202,8 @@ bc.file={
 						option.callback = bc.getNested(option.callback);
 					if(typeof option.callback == "function")
 						option.callback.call($file,json);
+					if(typeof callback == "function")
+						callback.call();
 				}
 			};
 			
