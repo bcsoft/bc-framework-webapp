@@ -218,6 +218,12 @@
 			// 注销的控制
 			$top.find("#quickLogout").click(function() {
 				bc.chat.destroy();
+				
+				//删除cookie
+				var expiresOption = {expires: 14, path: '/'};// 这个必须要与login.js中的保持一致
+				$.removeCookie(bc.syskey + '_name',expiresOption);
+				$.removeCookie(bc.syskey + '_password',expiresOption);
+				
 				window.open(bc.root + "/logout","_self");
 				return false;
 			});
