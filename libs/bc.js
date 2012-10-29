@@ -4120,6 +4120,10 @@ bc.loader.preconfig.js = {
 	jquery: '/ui-libs/jquery/1.7.2/jquery.min.js?ts=0',
 	jqueryui: '/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js?ts=0',
 	jqueryui_i18n: '/ui-libs/jquery-ui/1.9pre/ui/i18n/jquery.ui.datepicker-zh-CN.js?ts=0',
+	redactor: '/ui-libs/jquery/plugins/redactor/8.1.1/redactor.min.js?ts=0',
+	redactor_cn: '/ui-libs/jquery/plugins/redactor/8.1.1/lang/zh_cn.js?ts=0',
+	redactor_css: '/ui-libs/jquery/plugins/redactor/8.1.1/redactor.css?ts=0',
+	redactor_plugins_fullscreen: '/ui-libs/jquery/plugins/redactor/8.1.1/plugins/fullscreen/fullscreen.js?ts=0',
 	editor: '/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0',
 	xheditor: '/ui-libs/xheditor/1.1.7/xheditor-zh-cn.min.js?ts=0',
 	highcharts: '/ui-libs/highcharts/2.1.8/highcharts.min.js?ts=0',
@@ -5256,23 +5260,36 @@ $(".bc-imageEditor").live("click",function(e){
 					within : $(window)
 				},
 				select : function(event, ui) {
+					//避免a的链接跳转必须执行这句
+					event.preventDefault();
+
 					$li = ui.item;
 					$a = $li.children("a");
 					if(logger.infoEnabled)
 						logger.info("click:name=" + $li.text() + ";href=" + $a.attr("href"));
-					var option = $li.attr("data-option");
-					if(!option || option.length == 0) option="{}";
-					option = eval("("+option+")");
+					var option = {};
 					option.mid=$li.attr("data-mid");
 					option.name=$a.text();
 					option.type=$li.attr("data-type");
 					option.url=$a.attr("href");
 					option.standalone=$li.attr("data-standalone")=="true";
-					if(option.url && option.url.length>0 && option.url.indexOf("#")!=0)
-						bc.page.newWin(option);
+					
+					// 是否为url节点
+					var isLeaf = option.url && option.url.length>0 && option.url.indexOf("#")!=0;
+					if(isLeaf){
+						var pre = $li.find("pre");
+						if(pre.size()>0){// 前置js执行的处理
+							option.cfg = pre.html();
+							//alert(option.cfg);
+							var js = bc.formatTpl(option.cfg, option);
+							//alert(js);
+							eval("("+js+")");// 执行js脚本处理
+						}else{
+							bc.page.newWin(option);
+						}
+					}
 
-					//避免a的#跳转
-					event.preventDefault();
+					return false;
 				}
 			});
 			
@@ -5319,9 +5336,13 @@ $(".bc-imageEditor").live("click",function(e){
 					tpl += ' data-iconClass="' + $this.attr("data-iconClass") + '"';
 					tpl += ' data-name="' + $this.attr("data-name") + '"';
 					tpl += ' data-url="' + $this.attr("data-url") + '"';
+					tpl += ' data-cfg="' + $this.attr("data-cfg") + '"';
 					//if($this.attr("data-option"))tpl += ' data-option="' + $this.attr("data-option") + '"';
 					tpl += '><span class="icon ' + $this.attr("data-iconClass") + '">';
-					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span></a>';
+					tpl += '</span><span class="text">' + $this.attr("data-name") + '</span>';
+					var pre = $this.find("pre");
+					if(pre.size()>0)
+						tpl += '<pre style="display:none">'+pre.html()+'</pre>';
 					tpl += '</a>';
 					return $(tpl).appendTo("#top");
 				}
@@ -5430,6 +5451,12 @@ $(".bc-imageEditor").live("click",function(e){
 			// 注销的控制
 			$top.find("#quickLogout").click(function() {
 				bc.chat.destroy();
+				
+				//删除cookie
+				var expiresOption = {expires: 14, path: '/'};// 这个必须要与login.js中的保持一致
+				$.removeCookie(bc.syskey + '_name',expiresOption);
+				$.removeCookie(bc.syskey + '_password',expiresOption);
+				
 				window.open(bc.root + "/logout","_self");
 				return false;
 			});
@@ -5535,7 +5562,16 @@ $(".bc-imageEditor").live("click",function(e){
 			option.order=$this.attr("data-order");
 			option.url=$this.attr("data-url");
 			option.standalone=$this.attr("data-standalone")=="true";
-			bc.page.newWin(option);
+			var pre = $this.find("pre");
+			if(pre.size() > 0){// 前置js执行的处理
+				option.cfg = pre.html();
+				//alert(option.cfg);
+				var js = bc.formatTpl(option.cfg, option);
+				//alert(js);
+				eval("("+js+")");// 执行js脚本处理
+			}else{
+				bc.page.newWin(option);
+			}
 		}
 	});
 
