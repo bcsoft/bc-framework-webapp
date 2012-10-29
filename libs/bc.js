@@ -826,6 +826,8 @@ bc.page = {
 				cfg = {};
 			}
 			cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
+			if($dom.attr("data-type"))
+				cfg.dialogClass += " " + $dom.attr("data-type");
 			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
@@ -839,12 +841,14 @@ bc.page = {
 			$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
 				open: function(event, ui) {
 					var dataType = $dom.attr("data-type");
-					if(dataType == "list"){//视图
-						//视图聚焦到搜索框
-						$dom.find("#searchText").focus();
-					}else if(dataType == "form"){//表单
-						//聚焦到表单的第一个可输入元素
-						$dom.find(":text:eq(0)").focus();
+					if(!("ontouchend" in document)){// 触摸屏不聚焦，避免输入法框的弹出
+						if(dataType == "list"){//视图
+							//视图聚焦到搜索框
+							$dom.find("#searchText").focus();
+						}else if(dataType == "form"){//表单
+							//聚焦到表单的第一个可输入元素
+							$dom.find(":text:eq(0)").focus();
+						}
 					}
 				},
 				appendTo:"#middle",
@@ -5293,7 +5297,6 @@ $(".bc-imageEditor").live("click",function(e){
 				}
 			});
 			
-			// 双击打开桌面快捷方式
 			var $middle = this.element.find(">#middle");
 			var $center = $middle.find(">#center");
 			var $shortcuts = $center.find(">a.shortcut");
@@ -5304,7 +5307,11 @@ $(".bc-imageEditor").live("click",function(e){
 					this.setAttribute("href","#");
 				});
 			}
-			this.element.delegate("a.shortcut","dblclick",this.openModule);
+			
+			$.support.touch = 'ontouchend' in document;
+			//alert("$.support.touch=" + $.support.touch);
+			// 双击打开桌面快捷方式
+			this.element.delegate("a.shortcut","dblclick" + ($.support.touch ? " touchend" : ""),this.openModule);
 			
 			// 禁用桌面快捷方式的默认链接打开功能
 			this.element.delegate("a.shortcut","click",function(){return false;});
@@ -5550,7 +5557,8 @@ $(".bc-imageEditor").live("click",function(e){
 		},
 		
 		/**双击打开桌面快捷方式*/
-		openModule: function() {
+		openModule: function(e) {
+			//alert(e.type);
 			$this = $(this);
 			logger.debug("openModule:" + $this.attr("class"));
 			var option = $this.attr("data-option");
