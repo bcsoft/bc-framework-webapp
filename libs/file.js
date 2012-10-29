@@ -60,6 +60,7 @@ bc.file={
 	 * @param {Object} option 配置参数
 	 */
     upload: function(files,option){
+    	var batchNo = new Date().getTime();
 		var $file = $(this);
 	    //html5上传文件(不要批量异步上传，实测会乱，如Chrome后台合并为一个文件等，需逐个上传)
 		//用户选择的文件(name、fileName、type、size、fileSize、lastModifiedDate)
@@ -143,7 +144,24 @@ bc.file={
 	    	var key = batchNo + i;
 			logger.info("uploading:i=" + i);
 			//继续上传下一个附件
-			uploadOneFile(key,files[i],url,uploadNext);
+			//如果上传的为文件夹就不上传到服务器
+			if(files[i].name=="."){
+				var json = {
+						success:true,
+						relativePath:files[i].webkitRelativePath,
+						isDir:true,
+						batchNo:batchNo
+							};
+				i++;
+				//调用回调函数
+				if(typeof option.callback == "string")
+					option.callback = bc.getNested(option.callback);
+				if(typeof option.callback == "function")
+					option.callback.call($file,json);
+				uploadNext();
+			}else{
+				uploadOneFile(key,files[i],url,uploadNext);
+			}
 		}
 	   
 		bc.file.xhrs=[];
@@ -175,9 +193,10 @@ bc.file={
 					bc.file.xhrs[key] = null;
 					//累计上传的文件数
 					logger.info("onreadystatechange:i="+ i + ",responseText=" + xhr.responseText);
-					i++;
+				
 					var json = eval("(" + xhr.responseText + ")");
-					
+					 $.extend(json,{relativePath:files[i].webkitRelativePath,isDir:false,batchNo:batchNo});
+					i++;
 					//附件总数加一
 					option.totalCount += 1;
 					
@@ -231,6 +250,7 @@ bc.file={
 //初始化文件控件的选择事件;Chrome12、Safari5、Firefox4、Opera
 if($.browser.safari || $.browser.mozilla || $.browser.opera){
 	$(":file.auto.uploadFile").live("change",function(e){
+		console.log(e);
 		logger.info("localfile=" + this.value);
 		bc.file.upload.call(this,e.target.files,$(this).data("cfg"));
 	});

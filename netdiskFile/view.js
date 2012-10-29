@@ -8,6 +8,11 @@ bc.netdiskFileView = {
 
 		//上传文件夹
 		}else if (option.value == "shangchuanwenjianjia") {
+			//如果是火狐或苹果浏览器不支持上传文件夹
+			if(!$.browser.webkit){
+				alert("您的浏览器不支持上传整个文件夹。我们建议您使用 Google Chrome 网络浏览器，该浏览器支持文件夹上传。")
+				return;
+			}
 			
 		//新建文件夹
 		}else if(option.value == "xinjianwenjianjia"){

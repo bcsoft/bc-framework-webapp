@@ -44,6 +44,41 @@ bc.netdiskFileForm = {
 		}else
 			bc.msg.alert(json.msg);
 	},
+	/** 文件夹上传完毕后 */
+	afterUploadfolder : function(json){
+		var $form = $(this).closest(".bc-page");
+		logger.info("--"+$.toJSON(json));
+		//文件信息
+		var fileInfo = {};
+		var fileInfos = [];
+		alert("123:"+json.relativePath);
+		if(json.success){
+			fileInfo = {
+					name : json.source,
+					size : json.size,
+					path : json.to,
+					relativePath:json.relativePath,
+					isDir:json.isDir,
+					batchNo:json.batchNo
+				};
+			if(fileInfo)
+				fileInfos.push(fileInfo);
+				//上传文件
+				bc.ajax({
+					url: bc.root + "/bc/netdiskFile/uploadfolder",
+					dataType: "json",
+					data: {fileInfo:$.toJSON(fileInfos)},
+					success: function(json){
+						logger.info("doLogout result=" + $.toJSON(json));
+						//完成后提示用户
+						bc.msg.slide(json.msg);
+						if(json.success) bc.grid.reloadData($form);
+						return false;
+					}
+				});
+		}else
+			bc.msg.alert(json.msg);
+	},
 	//整理确定后的处理函数
 	clickOk4clearUp : function(){
 		var $form = $(this);
