@@ -108,12 +108,14 @@ bc.page = {
 			$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
 				open: function(event, ui) {
 					var dataType = $dom.attr("data-type");
-					if(dataType == "list"){//视图
-						//视图聚焦到搜索框
-						$dom.find("#searchText").focus();
-					}else if(dataType == "form"){//表单
-						//聚焦到表单的第一个可输入元素
-						$dom.find(":text:eq(0)").focus();
+					if(!("ontouchend" in document)){// 触摸屏不聚焦，避免输入法框的弹出
+						if(dataType == "list"){//视图
+							//视图聚焦到搜索框
+							$dom.find("#searchText").focus();
+						}else if(dataType == "form"){//表单
+							//聚焦到表单的第一个可输入元素
+							$dom.find(":text:eq(0)").focus();
+						}
 					}
 				},
 				appendTo:"#middle",
