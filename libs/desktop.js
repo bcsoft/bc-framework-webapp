@@ -71,6 +71,8 @@
 					this.setAttribute("href","#");
 				});
 			}
+			
+			// 双击打开桌面快捷方式
 			this.element.delegate("a.shortcut","dblclick",this.openModule);
 			
 			// 禁用桌面快捷方式的默认链接打开功能

@@ -40,7 +40,7 @@
 <!-- 整个桌面 -->
 <div id="desktop" class="bc-desktop">
 	<!-- 系统菜单条 -->
-	<div id="top" class="ui-widget-header">
+	<div id="top" class="ui-widget-header unselectable" unselectable="on">
 		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />"
 			title='<s:text name="app.title"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:property value="#session.loginTime" />'>
 		<s:property value="startMenu" escapeHtml="false"/>
@@ -64,7 +64,7 @@
 	
 	<div id="middle" class="ui-widget-content">
 		<!-- 桌面区域 -->
-		<div id="center" class="bc-shortcuts">
+		<div id="center" class="bc-shortcuts unselectable" unselectable="on">
 			<!-- 回收站 -->
 			<a class="recycle" data-m="true" title='<s:text name="shortcut.title.drag2recyle" />'
 				data-id='recycle'
@@ -100,7 +100,7 @@
 		</div>
 		
 		<!-- 右边栏 -->
-		<div id="right" class="ui-widget-content">
+		<div id="right" class="ui-widget-content unselectable" unselectable="on">
 		</div>
 	</div>
 	
@@ -122,6 +122,7 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/i18n/jquery.ui.datepicker-zh-CN.js' />"></script>
+<s:if test="mobile"><script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/TouchPunch/0.2.2/jquery.ui.touch-punch.min.js' />"></script></s:if>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/jquery-ui-timepicker-addon.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/timepicker/0.9.6/i18n/jquery-ui-timepicker-zh-CN.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/plugins/pnotify/1.1.0/jquery.pnotify.min.js' />"></script>

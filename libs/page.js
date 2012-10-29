@@ -93,6 +93,8 @@ bc.page = {
 				cfg = {};
 			}
 			cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
+			if($dom.attr("data-type"))
+				cfg.dialogClass += " " + $dom.attr("data-type");
 			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
