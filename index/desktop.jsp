@@ -53,7 +53,7 @@
 					<a class="icon i0004">&nbsp;</a>
 					<span class="number ui-state-highlight">8</span>
 				</td> -->
-				<s:if test='%{getText("app.bcq") == "true" && !outerNet}'>
+				<s:if test='%{getText("app.bcq") == "true" && !outerNet && !mobile}'>
 				<td class="topIcon" title="聊天" id="bcq"><a class="icon i0003">&nbsp;</a></td>
 				</s:if>
 				<td class="topIcon" title="帮助" id="bchelp"><a class="icon i0001">&nbsp;</a></td>
