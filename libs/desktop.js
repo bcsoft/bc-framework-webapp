@@ -60,7 +60,6 @@
 				}
 			});
 			
-			// 双击打开桌面快捷方式
 			var $middle = this.element.find(">#middle");
 			var $center = $middle.find(">#center");
 			var $shortcuts = $center.find(">a.shortcut");
@@ -72,8 +71,10 @@
 				});
 			}
 			
+			$.support.touch = 'ontouchend' in document;
+			//alert("$.support.touch=" + $.support.touch);
 			// 双击打开桌面快捷方式
-			this.element.delegate("a.shortcut","dblclick",this.openModule);
+			this.element.delegate("a.shortcut","dblclick" + ($.support.touch ? " touchend" : ""),this.openModule);
 			
 			// 禁用桌面快捷方式的默认链接打开功能
 			this.element.delegate("a.shortcut","click",function(){return false;});
@@ -319,7 +320,8 @@
 		},
 		
 		/**双击打开桌面快捷方式*/
-		openModule: function() {
+		openModule: function(e) {
+			//alert(e.type);
 			$this = $(this);
 			logger.debug("openModule:" + $this.attr("class"));
 			var option = $this.attr("data-option");
