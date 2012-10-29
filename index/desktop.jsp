@@ -53,7 +53,7 @@
 					<a class="icon i0004">&nbsp;</a>
 					<span class="number ui-state-highlight">8</span>
 				</td> -->
-				<s:if test='%{getText("app.bcq") == "true"}'>
+				<s:if test='%{getText("app.bcq") == "true" && !outerNet}'>
 				<td class="topIcon" title="聊天" id="bcq"><a class="icon i0003">&nbsp;</a></td>
 				</s:if>
 				<td class="topIcon" title="帮助" id="bchelp"><a class="icon i0001">&nbsp;</a></td>
@@ -134,6 +134,8 @@
 	bc.title = '<s:text name="app.title"/> v<s:text name="app.version"/>';
 	bc.root = "<%=request.getContextPath()%>";
 	bc.debug = <s:text name="app.debug" />;
+	bc.mobile = <s:property value="mobile" />;
+	bc.outerNet = <s:property value="outerNet" />;
 	bc.bcq = <s:text name="app.bcq" />;
 	bc.loginTime = '${loginTime}';
 	bc.md5 = '${md5}';
