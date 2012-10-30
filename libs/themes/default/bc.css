@@ -41,7 +41,17 @@ body {
 	white-space:nowrap;
 	overflow:hidden;
 }
-
+/**不可选择文本控制*/
+.unselectable,.bc-page[data-type='list'],.bc-ui-dialog.list {
+    -moz-user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /*cursor:not-allowed; makes it even more obvious*/
+}
 
 /**
  * jquery-ui样式的特殊覆盖或扩展

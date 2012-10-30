@@ -93,6 +93,8 @@ bc.page = {
 				cfg = {};
 			}
 			cfg.dialogClass=cfg.dialogClass || "bc-ui-dialog ui-widget-header";// ui-widget-header";
+			if($dom.attr("data-type"))
+				cfg.dialogClass += " " + $dom.attr("data-type");
 			//cfg.afterClose=option.afterClose || null;//传入该窗口关闭后的回调函数
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
@@ -106,12 +108,14 @@ bc.page = {
 			$dom.dialog($.extend(bc.page._rebuildWinOption(cfg),{
 				open: function(event, ui) {
 					var dataType = $dom.attr("data-type");
-					if(dataType == "list"){//视图
-						//视图聚焦到搜索框
-						$dom.find("#searchText").focus();
-					}else if(dataType == "form"){//表单
-						//聚焦到表单的第一个可输入元素
-						$dom.find(":text:eq(0)").focus();
+					if(!("ontouchend" in document)){// 触摸屏不聚焦，避免输入法框的弹出
+						if(dataType == "list"){//视图
+							//视图聚焦到搜索框
+							$dom.find("#searchText").focus();
+						}else if(dataType == "form"){//表单
+							//聚焦到表单的第一个可输入元素
+							$dom.find(":text:eq(0)").focus();
+						}
 					}
 				},
 				appendTo:"#middle",
