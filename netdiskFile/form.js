@@ -51,7 +51,6 @@ bc.netdiskFileForm = {
 		//文件信息
 		var fileInfo = {};
 		var fileInfos = [];
-		alert("123:"+json.relativePath);
 		if(json.success){
 			fileInfo = {
 					name : json.source,

@@ -1,5 +1,13 @@
 if(!window['bc'])window['bc']={};
 bc.netdiskFileView = {
+	init : function() {
+		var $form = $(this);
+		//如果是火狐或苹果浏览器不支持上传文件夹
+		if(!$.browser.webkit){
+			$form.find(":input[name='uploadFolder']").remove();
+		}
+		
+	},
 		//操作按钮组
 	selectMenuButtonItem : function(option) {
 		var $page = $(this);
@@ -10,8 +18,7 @@ bc.netdiskFileView = {
 		}else if (option.value == "shangchuanwenjianjia") {
 			//如果是火狐或苹果浏览器不支持上传文件夹
 			if(!$.browser.webkit){
-				alert("您的浏览器不支持上传整个文件夹。我们建议您使用 Google Chrome 网络浏览器，该浏览器支持文件夹上传。")
-				return;
+				bc.msg.alert("您的浏览器不支持上传整个文件夹。我们建议您使用 Google Chrome 网络浏览器，该浏览器支持文件夹上传。")
 			}
 			
 		//新建文件夹
@@ -62,9 +69,9 @@ bc.netdiskFileView = {
 			var $rightTr = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 			var $hidden = $rightTr.data("hidden");
 			data.id = $leftTr.attr("data-id");
-			data.title = $rightTr.find(">td:eq(2)").attr("data-value");
-			data.order = $rightTr.find(">td:eq(1)").attr("data-value");
-			data.folder = $rightTr.find(">td:eq(5)").attr("data-value");
+			data.title = $rightTr.find(">td:eq(0)").attr("data-value");
+			data.order = $rightTr.find(">td:eq(4)").attr("data-value");
+			data.folder = $rightTr.find(">td:eq(1)").attr("data-value");
 			data.pid = $hidden.pid;
 			data.dialogType="zhengliwenjian";
 			bc.page.newWin({

@@ -251,8 +251,13 @@ bc.file={
 if($.browser.safari || $.browser.mozilla || $.browser.opera){
 	$(":file.auto.uploadFile").live("change",function(e){
 		console.log(e);
+		var form = this;
 		logger.info("localfile=" + this.value);
-		bc.file.upload.call(this,e.target.files,$(this).data("cfg"));
+		bc.msg.confirm("确定要上传"+e.target.files.length+"份文件吗？",function(){
+			//上传文件
+			bc.file.upload.call(form,e.target.files,$(form).data("cfg"));
+			
+		});
 	});
 }
 
