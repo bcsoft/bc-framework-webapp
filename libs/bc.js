@@ -847,7 +847,7 @@ bc.page = {
 							$dom.find("#searchText").focus();
 						}else if(dataType == "form"){//表单
 							//聚焦到表单的第一个可输入元素
-							$dom.find(":text:eq(0)").focus();
+							$dom.find(":input:eq(0)").focus();
 						}
 					}
 				},
