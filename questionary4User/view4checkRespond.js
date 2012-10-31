@@ -12,7 +12,7 @@ bc.checkRespondView = {
 		var userId = $.evalJSON($trs4UserId.attr("data-hidden")).userId;
 		bc.page.newWin({
 			name: name+"的答卷",  
-			mid: "questionary4User" + pid,
+			mid: "questionary4User" + userId,
 			url: bc.root + "/bc/questionary4User/open",
 					data: {pid:pid,userId:userId},
 					afterClose: function(status){
