@@ -7,13 +7,14 @@ bc.gradeForm = {
 		//滑动条进行评分
 		$form.find("#slider").slider({
 			min: 0,
-			max: score,
-			value: amount,
-			slide: function( event, ui ) {
-				$form.find("#amount").val( ui.value );
+			max: parseInt(score),
+			value: parseInt(amount),
+			slide: function(event,ui) {
+
+				$form.find("#amount").val(ui.value);
 			}
 		});
-		$form.find("#amount").val( $( "#slider" ).slider( "value" ) );
+		$form.find("#amount").val($("#slider").slider("value"));
 		
 		},
 	//评分
