@@ -54,6 +54,7 @@
 		<s:hidden name="rid" />
 		<s:hidden name="score" />
 		<s:hidden name="gid" />
+		<s:hidden name="amount" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		
 	</s:form>
