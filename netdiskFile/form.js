@@ -12,6 +12,30 @@ bc.netdiskFileForm = {
 			});
 		});
 		
+		//绑定添加访问者的按钮事件处理
+		$form.find("#addVisitor").click(function(){
+			bc.identity.selectUser({
+				multiple: true,//可多选
+				history: false,
+				onOk: function(users){
+					$.each(users,function(i,user){
+//						if($lis.filter("[data-id='" + user.id + "']").size() > 0){//已存在
+//							logger.info("duplicate select: id=" + user.id + ",name=" + user.name);
+//						}else{//新添加的
+//							if(!$ul.size()){//先创建ul元素
+//								$ul = $(ulTpl).appendTo($form.find("#assignUsers"));
+//							}
+//							$(liTpl.format(user.id,user.name,title))
+//							.appendTo($ul).find("span.click2remove")
+//							.click(function(){
+//								$(this).parent().remove();
+//						});
+//						}
+					});
+				}
+			});
+			});
+		
 	},
 	/** 文件上传完毕后 */
 	afterUploadfile : function(json){
@@ -100,6 +124,10 @@ bc.netdiskFileForm = {
 				return false;
 			}
 		});
+	},
+	//共享确定后的处理函数
+	clickOk4Share : function(){
+		
 	}
 
 };

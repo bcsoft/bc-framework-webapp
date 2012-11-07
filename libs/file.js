@@ -43,6 +43,34 @@ bc.file={
 		return win;
 	},
 	
+	/** 统计上传文件夹和文件的数量 */
+	getUploadFilesOrFolderCount: function(files){
+		//文件数
+		var fileCount=0;
+		//文件夹数
+		var folderCount=1;
+		//是否包含文件夹
+		var isFolder=false;
+		for(var i=0;i<files.length;i++){
+			if(files[i].name=="."){
+				folderCount++;
+				isFolder=true;
+			}else{
+				fileCount++;
+			}
+		}
+		//如果有文件夹的提示信息
+		if(isFolder){
+			return folderCount+"个文件夹和"+fileCount+"份文件";	
+		}else{
+		//只上传文件的提示
+			return fileCount+"份文件";
+		}
+		
+		
+	},
+	
+	
     /**将字节单位的数值转换为较好看的文字*/
 	getSizeInfo: function(size){
 		if (size < 1024)
@@ -253,8 +281,8 @@ if($.browser.safari || $.browser.mozilla || $.browser.opera){
 		console.log(e);
 		var form = this;
 		logger.info("localfile=" + this.value);
-		bc.msg.confirm("确定要上传"+e.target.files.length+"份文件吗？",function(){
-			//上传文件
+		bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
+			//上传文件  e.target.files.length+"份文件吗？"
 			bc.file.upload.call(form,e.target.files,$(form).data("cfg"));
 			
 		});
