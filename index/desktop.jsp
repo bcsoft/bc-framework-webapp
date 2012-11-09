@@ -94,7 +94,7 @@
 					data-url='<s:url value="%{url}" />'>
 					<span class='icon <s:property value="iconClass" />'></span>
 					<span class="text"><s:property value="name" /></span>
-					<s:if test="%{cfg != null}"><pre style="display:none"><s:property value="cfg" /></pre></s:if>
+					<s:if test="%{cfg != null && !cfg.trim().isEmpty()}"><pre style="display:none"><s:property value="cfg" /></pre></s:if>
 				</a>
 			</s:iterator>
 		</div>
