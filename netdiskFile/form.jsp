@@ -23,14 +23,18 @@
 					</tr>
 					<tr>
 						<td class="label" ><s:text name="netdisk.SubordinateFolder"/>:</td>
-						<td class="value" >
-							<s:textfield name="e.vin" cssClass="ui-widget-content"/>
-						</td>
+						<td class="value" style="position:relative;display: block;"><s:textfield name="folder"
+				    		 cssClass="ui-widget-content" readonly="true" />
+				    		<span id="selectFolder" style="position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:22px;cursor:pointer;" 
+				    			class="selectButton ui-icon ui-icon-circle-plus" title='<s:text name="title.click2select"/>'></span>
+				    		<span id="clearFolder" style="position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:8px;cursor:pointer;"
+				    			class="selectButton verticalMiddle ui-icon ui-icon-circle-close" title='<s:text name="title.click2clear"/>'></span>
+				    	</td>
 					</tr>
 					<tr>
 						<td class="label" ><s:text name="netdisk.order"/>:</td>
 						<td class="value" >
-							<s:textfield name="e.order" data-validate="required" cssClass="ui-widget-content"/>
+							<s:textfield name="e.order" cssClass="ui-widget-content"/>
 						</td>
 					</tr>
 				</tbody>

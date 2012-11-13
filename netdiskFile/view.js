@@ -27,6 +27,9 @@ bc.netdiskFileView = {
 				mid: "xinjianwenjianjia",
 				name: "新建文件夹",
 				url: bc.root + "/bc/netdiskFile/create",
+				afterClose: function(status){
+					if(status)bc.grid.reloadData($page);
+				}
 			});
 		//下载
 		}else if(option.value == "xiazai"){
