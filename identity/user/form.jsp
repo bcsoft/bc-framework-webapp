@@ -32,7 +32,13 @@
 			</tr>
 			<tr>
 				<td class="label">*<s:text name="user.code"/>:</td>
-				<td class="value"><s:textfield name="e.code" data-validate="required" cssClass="ui-widget-content"/></td>
+				<td class="value">
+					<s:if test='e.id == null'>
+						<s:textfield name="e.code" data-validate="required" cssClass="ui-widget-content" />
+					</s:if><s:else>
+						<s:textfield name="e.code" data-validate="required" cssClass="ui-widget-content" readonly="true" />
+					</s:else> 	
+				</td>
 				<td class="label"><s:text name="user.duty"/>:</td>
 				<td class="value">
 					<s:select name="e.detail.duty.id" list="duties" listKey="id" listValue="name" value="e.detail.duty.id"></s:select>
