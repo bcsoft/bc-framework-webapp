@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="clearUp.title"/>' data-type='form' class="bc-page"
+<div title='整理<s:text name="%{title}"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/netdiskFile/save" />'
 	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/identity/identity.js" />,<s:url value="/bc/netdiskFile/folder.js" />'
 	data-initMethod='bc.netdiskFileForm.init' 
@@ -15,9 +15,9 @@
 		                <td >&nbsp;</td>
 	                </tr>
 					<tr>
-						<td class="label" >*<s:text name="netdisk.folderName"/>:</td>
+						<td class="label" >*<s:text name="%{title}"/>名称:</td>
 						<td class="value" >
-							<s:textfield name="title" data-validate="required" cssClass="ui-widget-content" disabled="%{!isClearUp}"/>
+							<s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content" disabled="%{!isClearUp}"/>
 						</td>
 					</tr>
 					<tr>
@@ -35,13 +35,13 @@
 					<tr>
 						<td class="label" ><s:text name="netdisk.order"/>:</td>
 						<td class="value" >
-							<s:textfield name="order" cssClass="ui-widget-content" disabled="%{!isClearUp}" />
+							<s:textfield name="e.orderNo" cssClass="ui-widget-content" disabled="%{!isClearUp}" />
 						</td>
 					</tr>
 				</tbody>
 			</table>
-		<s:hidden name="id" />
-		<s:hidden name="pid" />
+		<s:hidden name="e.id" />
+		<s:hidden name="e.pid" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>
