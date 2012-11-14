@@ -49,6 +49,7 @@ bc.grid = {
 	 */
 	resizeGridPage: function(container) {
 		var $grid = container.find(".bc-grid");
+		container = $grid.parent();
 		if($grid.size()){
 			var $data_right = $grid.find(".data .right");
 			var $data_left = $grid.find(".data .left");
@@ -62,6 +63,7 @@ bc.grid = {
 			}
 			logger.debug("grid's sh:" + sh);
 			logger.debug("grid's sw:" + sw);
+			logger.debug("--" + container.width() + "," + $data_left.width());
 			
 			//设置右容器的宽度
 			$data_right.width(container.width()-$data_left.width()-sw);
@@ -80,7 +82,7 @@ bc.grid = {
 			
 			//累计表格兄弟的高度
 			var otherHeight = 0;
-			$grid.siblings(":visible:not('.bc-conditionsForm,.boxPointer')").each(function(i){
+			$grid.siblings(":visible:not('.bc-conditionsForm,.boxPointer,.bc-tree')").each(function(i){
 				otherHeight += $(this).outerHeight(true);
 				logger.debug("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});

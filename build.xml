@@ -58,6 +58,9 @@
 				<include name="grid.import.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
+				<include name="tree.js" />
+			</fileset>
+			<fileset dir="${bclibs.dir}">
 				<include name="form.js" />
 			</fileset>
 			<fileset dir="${bclibs.dir}">
@@ -125,6 +128,9 @@
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="grid.css" />
+				</fileset>
+				<fileset dir="${bclibs.dir}/themes/@{theme}">
+					<include name="tree.css" />
 				</fileset>
 				<fileset dir="${bclibs.dir}/themes/@{theme}">
 					<include name="grid.export.css" />
