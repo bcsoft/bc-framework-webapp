@@ -89,6 +89,11 @@ body {
 }
 .bc-ui-dialog .ui-dialog-buttonpane{margin:0;}
 
+/** 对话框最大化后的样式控制 */
+.bc-ui-dialog.maximized {
+	border-radius: 0;
+	box-shadow: none;
+}
 
 /**jquery-ui tabs */
 .formTabs.ui-tabs .ui-tabs-panel {padding:0;}

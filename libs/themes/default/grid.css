@@ -219,3 +219,12 @@ table.table { /*width: 100%;
 	text-decoration: underline;
 	color: inherit;
 }
+
+/* 视图布局的通用样式 */
+.treeGrid>.bc-grid-wrap {
+	position: absolute;
+	left: 160px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}

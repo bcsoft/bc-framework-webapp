@@ -207,6 +207,10 @@ bc.page = {
 				$dom.bind("dialogmaximize",function(event,ui){
 					if(logger.infoEnabled)logger.info("--maximize");
 				});
+				
+				// 首次打开就最大化
+				var $maxBtn = $dom.closest(".bc-ui-dialog").find(">.ui-dialog-titlebar .maximizeBtn");
+				$maxBtn.click();
 			}
 			
 			// 窗口帮助的处理
