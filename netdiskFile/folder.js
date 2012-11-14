@@ -5,7 +5,7 @@ bc.selectFolder = function(option) {
 	// 构建默认参数
 	option = jQuery.extend({
 		mid: 'selectFolder',
-		paging: false,
+		paging: true,
 		title: '选择文件夹',
 		folderId:null
 	},option);

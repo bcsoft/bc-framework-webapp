@@ -264,8 +264,19 @@ bc.netdiskFileForm = {
 				return false;
 			}
 		});
-		
+	},
+	//保存
+	save : function() {
+		var $form = $(this);
+		//调用标准的方法执行保存
+		bc.page.save.call($form,{callback:function(json){
+			bc.msg.slide(json.msg);
+			$form.data("data-status","saved");
+			// 关闭当前窗口
+			$form.dialog("close");
+		}});
 	
 	}
+
 
 };

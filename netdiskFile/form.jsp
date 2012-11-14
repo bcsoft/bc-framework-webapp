@@ -5,7 +5,7 @@
 	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.netdiskFileForm.init'
 	data-option='{
-		"buttons":[{"text":"<s:text name="netdisk.create"/>","action":"save"}],
+		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.netdiskFileForm.save"}],
 		"width":300,"minWidth":320,"minHeight":200,"modal":false}' style="overflow-y:auto;">
 	<s:form name="netdiskFileForm" theme="simple">
 		<div class="formFields ui-widget-content" >
