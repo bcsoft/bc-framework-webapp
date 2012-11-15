@@ -36,7 +36,7 @@ bc.netdiskFileView = {
 
 			var $page = $(this);
 			// 确定选中的行
-			var $trs = $page.find(">.bc-grid>.data>.right tr.ui-state-highlight");
+			var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 			if($trs.length == 0){
 				bc.msg.slide("请先选择需要下载的文件！");
 				return;
@@ -68,7 +68,7 @@ bc.netdiskFileView = {
 	clearUp : function(){
 		var $page = $(this);
 		// 确定选中的行
-		var $trs = $page.find(">.bc-grid>.data>.right tr.ui-state-highlight");
+		var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 		if($trs.length == 0){
 			bc.msg.slide("请先选择需要整理的文件！");
 			return;
@@ -101,7 +101,7 @@ bc.netdiskFileView = {
 	share : function(){
 		var $page = $(this);
 		// 确定选中的行
-		var $trs = $page.find(">.bc-grid>.data>.right tr.ui-state-highlight");
+		var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 		var $leftTr = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 
 		if($trs.length == 0){
@@ -128,7 +128,7 @@ bc.netdiskFileView = {
 	preview : function(){
 		var $page = $(this);
 		// 确定选中的行
-		var $trs = $page.find(">.bc-grid>.data>.right tr.ui-state-highlight");
+		var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 		if($trs.length == 0){
 			bc.msg.slide("请先选择需要预览的文件！");
 			return;
@@ -181,7 +181,7 @@ bc.netdiskFileView = {
 		var $leftTr = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		var id = $leftTr.attr("data-id");
 		// 确定选中的行
-		var $trs = $page.find(">.bc-grid>.data>.right tr.ui-state-highlight");
+		var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 		if($trs.length == 0){
 			bc.msg.slide("请先选择需要删除的文件！");
 			return;
