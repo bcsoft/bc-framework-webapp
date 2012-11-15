@@ -45,7 +45,7 @@ bc.netdiskFileView = {
 				var $hidden = $tr.data("hidden");
 				//文件才支持下载，文件夹不支持
 				if($hidden.type==1){
-					var n = $tr.find(">td:eq(2)").attr("data-value");// 获取文件名
+					var n = $tr.find(">td:eq(1)").attr("data-value");// 获取文件名
 					var f = "netdisk/" + $hidden.path;// 获取附件相对路径
 					// 预览文件
 					var option = {f: f, n: n,ptype:"Netdisk"};
@@ -55,7 +55,7 @@ bc.netdiskFileView = {
 					}
 					bc.file.download(option);
 				}else{
-					bc.msg.alert("该文件的类型是文件夹不支持下载！");
+					bc.msg.alert("文件夹不支持直接下载！");
 				}
 					
 			}else{
@@ -78,13 +78,13 @@ bc.netdiskFileView = {
 			var $rightTr = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 			var $hidden = $rightTr.data("hidden");
 			data.id = $leftTr.attr("data-id");
-			data.title = $rightTr.find(">td:eq(0)").attr("data-value");
-			data.order = $rightTr.find(">td:eq(4)").attr("data-value");
-			data.folder = $rightTr.find(">td:eq(1)").attr("data-value");
-			data.pid = $hidden.pid;
+//			data.title = $rightTr.find(">td:eq(1)").attr("data-value");
+//			data.order = $rightTr.find(">td:eq(5)").attr("data-value");
+			data.folder = $rightTr.find(">td:eq(0)").attr("data-value");
+//			data.pid = $hidden.pid;
 			data.dialogType="zhengliwenjian";
 			bc.page.newWin({
-				mid: "zhengliwenjian",
+				mid: "zhengliwenjian"+$leftTr.attr("data-id"),
 				name: "整理文件夹/整理文件",
 				data: data,
 				url: bc.root + "/bc/netdiskFile/createDialog",
@@ -147,7 +147,7 @@ bc.netdiskFileView = {
 				}
 				bc.file.inline(option);
 			}else{
-				bc.msg.alert("该文件的类型是文件夹不支持在线预览！");
+				bc.msg.alert("文件夹不支持在线查看！");
 			}
 
 		}else{

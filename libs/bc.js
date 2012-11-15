@@ -4958,6 +4958,34 @@ bc.file={
 		return win;
 	},
 	
+	/** 统计上传文件夹和文件的数量 */
+	getUploadFilesOrFolderCount: function(files){
+		//文件数
+		var fileCount=0;
+		//文件夹数
+		var folderCount=1;
+		//是否包含文件夹
+		var isFolder=false;
+		for(var i=0;i<files.length;i++){
+			if(files[i].name=="."){
+				folderCount++;
+				isFolder=true;
+			}else{
+				fileCount++;
+			}
+		}
+		//如果有文件夹的提示信息
+		if(isFolder){
+			return folderCount+"个文件夹和"+fileCount+"份文件";	
+		}else{
+		//只上传文件的提示
+			return fileCount+"份文件";
+		}
+		
+		
+	},
+	
+	
     /**将字节单位的数值转换为较好看的文字*/
 	getSizeInfo: function(size){
 		if (size < 1024)
@@ -4975,6 +5003,7 @@ bc.file={
 	 * @param {Object} option 配置参数
 	 */
     upload: function(files,option){
+    	var batchNo = new Date().getTime();
 		var $file = $(this);
 	    //html5上传文件(不要批量异步上传，实测会乱，如Chrome后台合并为一个文件等，需逐个上传)
 		//用户选择的文件(name、fileName、type、size、fileSize、lastModifiedDate)
@@ -4987,7 +5016,7 @@ bc.file={
 	    var maxCount = option.maxCount;
 	    var curCount = parseInt(option.curCount);
 	    if(isNaN(curCount)) curCount = 0;
-	    logger.info("maxCount=" + maxCount + ",curCount=" + curCount);
+	    logger.info("total=" + files.length + ",maxCount=" + maxCount + ",curCount=" + curCount);
 	    if(!isNaN(maxCount) && files.length + curCount > maxCount){
 	    	alert("上传附件总数已限制为最多" + maxCount + "个，已超出上限了！");
 	    	bc.file.clearFileSelect($file);
@@ -5058,7 +5087,24 @@ bc.file={
 	    	var key = batchNo + i;
 			logger.info("uploading:i=" + i);
 			//继续上传下一个附件
-			uploadOneFile(key,files[i],url,uploadNext);
+			//如果上传的为文件夹就不上传到服务器
+			if(files[i].name=="."){
+				var json = {
+						success:true,
+						relativePath:files[i].webkitRelativePath,
+						isDir:true,
+						batchNo:batchNo
+							};
+				i++;
+				//调用回调函数
+				if(typeof option.callback == "string")
+					option.callback = bc.getNested(option.callback);
+				if(typeof option.callback == "function")
+					option.callback.call($file,json);
+				uploadNext();
+			}else{
+				uploadOneFile(key,files[i],url,uploadNext);
+			}
 		}
 	   
 		bc.file.xhrs=[];
@@ -5089,10 +5135,11 @@ bc.file={
 				if(xhr.readyState===4){
 					bc.file.xhrs[key] = null;
 					//累计上传的文件数
-					i++;
-					logger.info(i + ":" + xhr.responseText);
+					logger.info("onreadystatechange:i="+ i + ",responseText=" + xhr.responseText);
+				
 					var json = eval("(" + xhr.responseText + ")");
-					
+					 $.extend(json,{relativePath:files[i].webkitRelativePath,isDir:false,batchNo:batchNo});
+					i++;
 					//附件总数加一
 					option.totalCount += 1;
 					
@@ -5117,6 +5164,8 @@ bc.file={
 						option.callback = bc.getNested(option.callback);
 					if(typeof option.callback == "function")
 						option.callback.call($file,json);
+					if(typeof callback == "function")
+						callback.call();
 				}
 			};
 			
@@ -5144,8 +5193,14 @@ bc.file={
 //初始化文件控件的选择事件;Chrome12、Safari5、Firefox4、Opera
 if($.browser.safari || $.browser.mozilla || $.browser.opera){
 	$(":file.auto.uploadFile").live("change",function(e){
+		console.log(e);
+		var form = this;
 		logger.info("localfile=" + this.value);
-		bc.file.upload.call(this,e.target.files,$(this).data("cfg"));
+		bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
+			//上传文件  e.target.files.length+"份文件吗？"
+			bc.file.upload.call(form,e.target.files,$(form).data("cfg"));
+			
+		});
 	});
 }
 

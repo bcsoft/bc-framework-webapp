@@ -5,16 +5,17 @@ bc.netdiskFileForm = {
 		//选择文件夹
 		$form.find("#selectFolder").click(function() {
 			bc.selectFolder({
+				folderId:$form.find(":input[name='e.id']").val(),
 				onOk : function(folder) {
 					$form.find(":input[name='folder']").val(folder.name);
-					$form.find(":input[name='pid']").val(folder.id);
+					$form.find(":input[name='e.pid']").val(folder.id);
 				}
 			});
 		});
 		//清除选择的文件夹
 		$form.find("#clearFolder").click(function() {
 			$form.find(":input[name='folder']").val("");
-			$form.find(":input[name='pid']").val("");
+			$form.find(":input[name='e.pid']").val("");
 		});
 		
 		
@@ -180,10 +181,10 @@ bc.netdiskFileForm = {
 	clickOk4clearUp : function(){
 		var $form = $(this);
 		var data = {};
-		data.id=$form.find(":input[name='id']").val();
-		data.pid=$form.find(":input[name='pid']").val();
-		data.order=$form.find(":input[name='order']").val();
-		data.title=$form.find(":input[name='title']").val();
+		data.id=$form.find(":input[name='e.id']").val();
+		data.pid=$form.find(":input[name='e.pid']").val();
+		data.order=$form.find(":input[name='e.orderNo']").val();
+		data.name=$form.find(":input[name='e.name']").val();
 		bc.ajax({
 			url: bc.root + "/bc/netdiskFile/clearUp",
 			dataType: "json",
@@ -263,8 +264,19 @@ bc.netdiskFileForm = {
 				return false;
 			}
 		});
-		
+	},
+	//保存
+	save : function() {
+		var $form = $(this);
+		//调用标准的方法执行保存
+		bc.page.save.call($form,{callback:function(json){
+			bc.msg.slide(json.msg);
+			$form.data("data-status","saved");
+			// 关闭当前窗口
+			$form.dialog("close");
+		}});
 	
 	}
+
 
 };
