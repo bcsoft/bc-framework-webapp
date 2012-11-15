@@ -82,10 +82,11 @@ bc.netdiskFileView = {
 //			data.order = $rightTr.find(">td:eq(5)").attr("data-value");
 			data.folder = $rightTr.find(">td:eq(0)").attr("data-value");
 //			data.pid = $hidden.pid;
+			var type = $hidden.type;
 			data.dialogType="zhengliwenjian";
 			bc.page.newWin({
 				mid: "zhengliwenjian"+$leftTr.attr("data-id"),
-				name: "整理文件夹/整理文件",
+				name: (type==0 ?"整理文件夹":"整理文件" ),
 				data: data,
 				url: bc.root + "/bc/netdiskFile/createDialog",
 				afterClose: function(status){
