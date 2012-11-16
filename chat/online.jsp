@@ -3,7 +3,7 @@
 <div title='<s:text name="chat.online.title"/>' data-type='form'
 	class="bc-page online"
 	data-js='<s:url value="/bc/chat/online.css" />,<s:url value="/bc/chat/online.js" />'
-	data-initMethod='bc.online.init' data-option='{"width":350,"height":400}'
+	data-initMethod='bc.online.init' data-option='{"width":350,"height":400,minimizable:true,maximizable:false}'
 	style="overflow-y: auto;">
 	<div class='container'>
 		<ul class="items">
