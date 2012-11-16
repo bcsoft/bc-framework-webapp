@@ -104,39 +104,43 @@
 }
 
 /* 节点的嵌套层次结构样式控制 */
-.bc-tree table.nodes.level1>tbody>tr>.treeNode>.item {
+.treeNode[data-level="1"]>.item {
+	padding-left: 0px;
+}
+
+.treeNode[data-level="2"]>.item {
 	padding-left: 16px;
 }
 
-.bc-tree table.nodes.level2>tbody>tr>.treeNode>.item {
+.treeNode[data-level="3"]>.item {
 	padding-left: 32px;
 }
 
-.bc-tree table.nodes.level3>tbody>tr>.treeNode>.item {
+.treeNode[data-level="4"]>.item {
 	padding-left: 48px;
 }
 
-.bc-tree table.nodes.level4>tbody>tr>.treeNode>.item {
+.treeNode[data-level="5"]>.item {
 	padding-left: 64px;
 }
 
-.bc-tree table.nodes.level5>tbody>tr>.treeNode>.item {
+.treeNode[data-level="6"]>.item {
 	padding-left: 80px;
 }
 
-.bc-tree table.nodes.level6>tbody>tr>.treeNode>.item {
+.treeNode[data-level="7"]>.item {
 	padding-left: 96px;
 }
 
-.bc-tree table.nodes.level7>tbody>tr>.treeNode>.item {
+.treeNode[data-level="8"]>.item {
 	padding-left: 112px;
 }
 
-.bc-tree table.nodes.level8>tbody>tr>.treeNode>.item {
+.treeNode[data-level="9"]>.item {
 	padding-left: 128px;
 }
 
-.bc-tree table.nodes.level9>tbody>tr>.treeNode>.item {
+.treeNode[data-level="10"]>.item {
 	padding-left: 144px;
 }
 

@@ -278,5 +278,11 @@ bc.netdiskFileView = {
 					});	
 				}
 			}
+	},
+	
+	/** 点击树节点的回调函数 */
+	clickTreeNode: function(node){
+		var $tree = $(this);
+		logger.info("clickTreeNode: id=" + node.id + ",name=" + node.name);
 	}
 };

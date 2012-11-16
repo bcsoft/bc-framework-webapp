@@ -39,9 +39,23 @@ bc.tree = {
 	},
 	/** 展开折叠节点 */
 	toggleNode: function($node){
+		// 检测是否需要远程加载下级节点的数据
+		var needLoadRemoteData = ($node.is(".collapsed") && $node.has(">table.nodes").size() == 0);
+		
+		// 切换样式
 		$node.toggleClass("open collapsed");
 		$node.find(">.item>.nav-icon").toggleClass("ui-icon ui-icon-triangle-1-se ui-icon ui-icon-triangle-1-e");
 		$node.find(">.item>.type-icon").toggleClass("ui-icon-folder-open ui-icon-folder-collapsed");
+		
+		// 远程加载下级节点数据
+		logger.info("needLoadRemoteData=" + needLoadRemoteData);
+		if(needLoadRemoteData){
+			var $tree = $node.closest(".bc-tree");
+			var nodeId = bc.tree.getNodeId($node);
+			bc.tree.reload($tree,nodeId,function(nodeId,html){
+				
+			});
+		}
 	},
 	/** 获取选中的节点信息
 	 * @param $tree 
@@ -78,9 +92,16 @@ bc.tree = {
 			return null;
 		}
 	},
+	/** 获取选中的节点
+	 * @param $tree 
+	 * @param nodeId 节点ID
+	 */
+	getNode: function($tree,nodeId){
+		return bc.tree.getNodeItem($tree,nodeId).parent();
+	},
 	/** 获取选中的节点对象
 	 * @param $tree 
-	 * @param nodeId 节点的data-id属性的值
+	 * @param nodeId 节点ID
 	 */
 	getNodeItem: function($tree,nodeId){
 		var $items = $tree.find("div.item[data-id='" + nodeId + "']");
@@ -92,11 +113,18 @@ bc.tree = {
 			return null;
 		}
 	},
+	/** 获取选中的节点ID
+	 * @param $node 节点
+	 */
+	getNodeId: function($node){
+		return $node.children("div.item").attr("data-id");
+	},
 	/** 重新加载
 	 * @param $tree 
 	 * @param nodeId 要更新的节点，没有配置就更新整棵树
+	 * @param callback 加载完毕后的回调函数
 	 */
-	reload: function($tree,nodeId) {
+	reload: function($tree,nodeId,callback) {
 		var ts = "tree.reload." + new Date().getTime();
 		logger.profile(ts);
 		
@@ -127,18 +155,30 @@ bc.tree = {
 		}
 		
 		// 附加节点参数
-		if(nodeId) data.nodeId = nodeId;
+		if(nodeId) data.pid = nodeId;
 		
 		// Ajax请求获取信息
 		bc.ajax({
 			url : url, data: data,
-			dataType : "html",
+			dataType : "json",
 			type: "POST",
-			success : function(html) {
-				if(nodeId){								// 更新节点的信息
-					bc.tree.getNodeItem($tree,nodeId).empty().replaceWith(html);
-				}else{									// 更新整棵树
-					$tree.empty().replaceWith(html);
+			success : function(json) {
+				// json格式：{success:true|false, subNodesCount: [子节点数量], msg: [success=false时的异常信息]}
+				// 加载失败的提示
+				if(!json.success){
+					bc.msg.info("加载节点数据失败：" + json.msg);
+					return;
+				}
+				
+				var $updateNode;
+				if(nodeId){			// 更新节点
+					$updateNode = bc.tree.getNode($tree,nodeId);
+				}else{				// 更新整棵树
+					$updateNode = $tree;
+				}
+				$updateNode.children("table.nodes").remove();
+				if(json.subNodesCount > 0){
+					$updateNode.append(json.html);
 				}
 				
 				//删除加载动画
@@ -146,6 +186,10 @@ bc.tree = {
 				logger.profile(ts);
 				
 				//调用回调函数
+				if(typeof callback == "function"){
+					// 上下文为树，第一个参数为传入的节点ID值
+					callback.call($tree.get(0),nodeId,html);
+				}
 				if(cfg.afterLoad){
 					var _fn = cfg.afterLoad;
 					if(typeof cfg.afterLoad == "string"){
@@ -179,7 +223,7 @@ $(".treeNode>.item").live("mouseover mouseout click dblclick",function(e){
 		// 调用回调函数
 		var $tree = $node.closest("." + bc.tree.option.class_container);
 		var cfg = $tree.data("cfg");
-		if(cfg && cfg.clickNode){
+		if(cfg && cfg.clickNode){// 点击节点调用的函数
 			var _fn = cfg.clickNode;
 			if(typeof cfg.clickNode == "string"){
 				cfg.clickNode = bc.getNested(cfg.clickNode);
