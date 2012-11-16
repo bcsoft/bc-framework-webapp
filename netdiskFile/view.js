@@ -281,9 +281,12 @@ bc.netdiskFileView = {
 			}
 	},
 	
-	/** 点击树节点的回调函数 */
+	/** 点击树节点的处理 */
 	clickTreeNode: function(node){
 		var $tree = $(this);
+		var $page = $tree.closest(".bc-page");
 		logger.info("clickTreeNode: id=" + node.id + ",name=" + node.name);
+		$page.data("extras").pid = node.id;
+		bc.grid.reloadData($page);
 	}
 };

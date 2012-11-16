@@ -170,6 +170,7 @@ bc.tree = {
 					return;
 				}
 				
+				// 更新节点的html
 				var $updateNode;
 				if(nodeId){			// 更新节点
 					$updateNode = bc.tree.getNode($tree,nodeId);
@@ -178,8 +179,12 @@ bc.tree = {
 				}
 				$updateNode.children("table.nodes").remove();
 				if(json.subNodesCount > 0){
-					$updateNode.append(json.html);
+					var $html = $(json.html);
+					$html.find(">tbody>tr>td.treeNode").attr("data-level",parseInt($updateNode.attr("data-level"))+1);
+					$html.appendTo($updateNode);
 				}
+				
+				// 更新子节点的level
 				
 				//删除加载动画
 				$loader.remove();
@@ -188,7 +193,7 @@ bc.tree = {
 				//调用回调函数
 				if(typeof callback == "function"){
 					// 上下文为树，第一个参数为传入的节点ID值
-					callback.call($tree.get(0),nodeId,html);
+					callback.call($tree.get(0),nodeId,json);
 				}
 				if(cfg.afterLoad){
 					var _fn = cfg.afterLoad;
@@ -197,7 +202,7 @@ bc.tree = {
 					}
 					if(typeof cfg.afterLoad == "function"){
 						// 上下文为树，第一个参数为传入的节点ID值
-						cfg.afterLoad.call($tree.get(0),nodeId,html);
+						cfg.afterLoad.call($tree.get(0),nodeId,json);
 					}else{
 						alert("回调函数没有定义：" + _fn);
 					}
@@ -217,6 +222,7 @@ $(".treeNode>.item").live("mouseover mouseout click dblclick",function(e){
 		bc.tree.selectNode($node);
 		if ($(e.target).is(".nav-icon:visible")){
 			bc.tree.toggleNode($node);
+			return;
 		}
 		//console.log(bc.tree.getSelected($node.closest("." + bc.tree.option.class_container),true));
 		

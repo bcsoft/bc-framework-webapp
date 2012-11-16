@@ -58,13 +58,14 @@
 	display: inline-block;
 }
 
-.treeNode>.item>span.ui-icon{
+.treeNode>.item>span.ui-icon {
 	opacity: 0.7;
-	filter: alpha(opacity = 70);
+	filter: alpha(opacity =   70);
 }
-.treeNode>.item>span.ui-icon:hover{
+
+.treeNode>.item>span.ui-icon:hover {
 	opacity: 1;
-	filter: alpha(opacity = 100);
+	filter: alpha(opacity =   100);
 }
 /* 节点：叶子-无导航图标 */
 .treeNode.leaf>.item>span.nav-icon {
@@ -90,6 +91,7 @@
 	margin: -9px 0 0 0;
 	right: 4px;
 }
+
 .treeNode>.item>ul.buttons>li {
 	cursor: pointer;
 	padding: 0;
