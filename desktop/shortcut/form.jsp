@@ -6,7 +6,7 @@
 	data-initMethod='bc.shortcutForm.init'
 	data-option='{
 		"buttons":[{"text":"<s:text name="label.save"/>","action":"save"}],
-		"width":415,"minWidth":300,"minHeight":200
+		"width":415,"minWidth":300,"minHeight":200,minimizable:true,maximizable:false
 	}'>
 	<s:form name="shortcutForm" theme="simple">
 		<table class="formTable ui-widget-content" cellspacing="2" cellpadding="0">

@@ -8,7 +8,7 @@
 	data-option='{
 		"buttons":[{"text":"<s:text name="label.changePassword"/>","click":"bc.personal.changePassword"}
 			,{"text":"<s:text name="label.save"/>","click":"bc.personal.save"}],
-		"minWidth":560,"minHeight":250,"modal":false
+		"minWidth":560,"minHeight":250,"modal":false,minimizable:true,maximizable:false
 	}'>
 	<s:form name="personalForm" theme="simple" style="height:100%;">
 		<div style="margin: 10px;">

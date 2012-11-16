@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="browser.title"/>' data-type='form' class="bc-page"
 	data-js='<s:url value="/bc/libs/themes/default/browser.css" />' 
-	data-option='{"width":600,"minWidth":250,"minHeight":250,"height":400,"modal":true}' style="overflow-y:auto;">
+	data-option='{"width":600,"minWidth":250,"minHeight":250,"height":400,"modal":true,minimizable:true,maximizable:false}' style="overflow-y:auto;">
 	<s:form name="browserForm" theme="simple">
 		<div class="browsersTitle">现代化的浏览器(支持Html5)：</div>
 		<ul class="browsers ui-widget-content">
