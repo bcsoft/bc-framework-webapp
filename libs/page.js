@@ -99,8 +99,12 @@ bc.page = {
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
 			if($dom.attr("data-type") == "form") {
-				cfg.minimizable = true;// 默认为表单添加最小化按钮
-				cfg.maximizable = true;// 默认为表单添加最大化按钮
+				if(typeof(cfg.minimizable) == "undefined") {
+					cfg.minimizable = true;// 默认为表单添加最小化按钮
+				}
+				if(typeof(cfg.maximizable) == "undefined") {
+					cfg.maximizable = true;// 默认为表单添加最大化按钮
+				}
 			}
 			
 			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置

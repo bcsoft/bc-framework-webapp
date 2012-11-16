@@ -6,7 +6,7 @@
 	data-initMethod='bc.netdiskFileForm.init' 
 	data-option='{<s:if test="isClearUp">
 		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.netdiskFileForm.clickOk4clearUp"}],
-		</s:if>"width":300,"minWidth":320,"minHeight":150,"modal":false}' style="overflow-y:auto;">
+		</s:if>"width":300,"minWidth":320,"minHeight":150,"modal":false,"minimizable":false,"maximizable":false}' style="overflow-y:auto;">
 	<s:form name="netdiskFileForm" theme="simple">
 			<table class="formFields" cellspacing="2" cellpadding="0">
 				<tbody>
@@ -15,7 +15,7 @@
 		                <td >&nbsp;</td>
 	                </tr>
 					<tr>
-						<td class="label" >*<s:text name="%{title}"/>名称:</td>
+						<td class="label" >*<s:text name="netdisk.name"/>:</td>
 						<td class="value" >
 							<s:textfield name="e.name" data-validate="required" cssClass="ui-widget-content" disabled="%{!isClearUp}"/>
 						</td>
