@@ -30,6 +30,9 @@ bc.netdiskFileView = {
 				url: bc.root + "/bc/netdiskFile/create",
 				afterClose: function(status){
 					if(status)bc.grid.reloadData($page);
+					//刷新节点
+					var tree = $page.find(".bc-tree");
+					bc.tree.reload(tree,-1);
 				}
 			});
 		//新建公共文件夹
@@ -41,6 +44,9 @@ bc.netdiskFileView = {
 				url: bc.root + "/bc/netdiskFile/create",
 				afterClose: function(status){
 					if(status)bc.grid.reloadData($page);
+					//刷新节点
+					var tree = $page.find(".bc-tree");
+					bc.tree.reload(tree,-2);
 				}
 			});
 		//下载
@@ -209,10 +215,13 @@ bc.netdiskFileView = {
 							dataType: "json",
 							data: {id:id},
 							success: function(json){
-								bc.msg.slide(json.msg);
+								
 								if(json.success){
+									bc.msg.slide(json.msg);
 									$page.data("data-status","saved");
 									bc.grid.reloadData($page);
+								}else{
+									bc.msg.alert(json.msg);
 								}
 							}
 						});
