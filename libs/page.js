@@ -47,7 +47,7 @@ bc.page = {
 			success : function(html) {
 				logger.profile("newWin.ajax." + option.mid);
 				var _option = jQuery.extend({},option);
-				delete _option.url;
+				//delete _option.url;
 				_option.html = html;
 				bc.page._createWin(_option);
 			},
@@ -143,6 +143,16 @@ bc.page = {
 						this.parentNode.innerHTML="";
 					});
 				}
+				
+				// 保存窗口状态
+				var maximized = $this.dialog("widget").hasClass("maximized");
+				logger.debug("maximized=" + maximized);
+				if(maximized){
+					$.cookie("size::" + option.url, "maximized");
+				}else{
+					$.removeCookie("size::" + option.url);
+				}
+
 				//彻底删除所有相关的dom元素
 				$this.dialog("destroy").remove();
 				//删除任务栏对应的dom元素
@@ -212,9 +222,13 @@ bc.page = {
 					if(logger.infoEnabled)logger.info("--maximize");
 				});
 				
-				// 首次打开就最大化
-				var $maxBtn = $dom.closest(".bc-ui-dialog").find(">.ui-dialog-titlebar .maximizeBtn");
-				$maxBtn.click();
+				// 首次打开就最大化:检测cookie中此url的对话框是否保存为最大化状态，是才最大化
+				var v = $.cookie("size::" + option.url);
+				logger.info("c=" + v);
+				if(v == "maximized"){
+					var $maxBtn = $dom.closest(".bc-ui-dialog").find(">.ui-dialog-titlebar .maximizeBtn");
+					$maxBtn.click();
+				}
 			}
 			
 			// 窗口帮助的处理
