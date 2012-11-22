@@ -171,6 +171,10 @@ bc.netdiskFileForm = {
 						//完成后提示用户
 						bc.msg.slide(json.msg);
 						if(json.success) bc.grid.reloadData($form);
+						//刷新节点
+						var tree = $form.find(".bc-tree");
+						bc.tree.reload(tree,-1);
+
 						return false;
 					}
 				});
@@ -274,6 +278,7 @@ bc.netdiskFileForm = {
 			$form.data("data-status","saved");
 			// 关闭当前窗口
 			$form.dialog("close");
+			
 		}});
 	
 	}
