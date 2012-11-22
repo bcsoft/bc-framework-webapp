@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="create.title"/>' data-type='form' class="bc-page"
+<div title='<s:text name="%{title}"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/netdiskFile/save" />'
 	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.netdiskFileForm.init'
@@ -46,6 +46,7 @@
 		<s:hidden name="e.type" />
 		<s:hidden name="e.status" />
 		<s:hidden name="e.size" />
+		<s:hidden name="e.folderType" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>

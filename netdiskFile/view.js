@@ -21,11 +21,23 @@ bc.netdiskFileView = {
 				bc.msg.alert("您的浏览器不支持上传整个文件夹。我们建议您使用 Google Chrome 网络浏览器，该浏览器支持文件夹上传。")
 			}
 			
-		//新建文件夹
-		}else if(option.value == "xinjianwenjianjia"){
+		//新建个人文件夹
+		}else if(option.value == "xinjiangerenwenjianjia"){
 			bc.page.newWin({
-				mid: "xinjianwenjianjia",
-				name: "新建文件夹",
+				mid: "xinjiangerenwenjianjia",
+				name: "新建个人文件夹",
+				data:{dialogType:"xinjiangerenwenjianjia"},
+				url: bc.root + "/bc/netdiskFile/create",
+				afterClose: function(status){
+					if(status)bc.grid.reloadData($page);
+				}
+			});
+		//新建公共文件夹
+		}else if(option.value == "xinjiangonggongwenjianjia"){
+			bc.page.newWin({
+				mid: "xinjiangonggongwenjianjia",
+				name: "新建公共文件夹",
+				data:{dialogType:"xinjiangonggongwenjianjia"},
 				url: bc.root + "/bc/netdiskFile/create",
 				afterClose: function(status){
 					if(status)bc.grid.reloadData($page);
