@@ -89,6 +89,11 @@ body {
 }
 .bc-ui-dialog .ui-dialog-buttonpane{margin:0;}
 
+/** 对话框最大化后的样式控制 */
+.bc-ui-dialog.maximized {
+	border-radius: 0;
+	box-shadow: none;
+}
 
 /**jquery-ui tabs */
 .formTabs.ui-tabs .ui-tabs-panel {padding:0;}
@@ -883,7 +888,7 @@ div.bc-desktop> table.bottomIcons #quickShowHide.bottomIcon {
 
 /**
  * 桌面图标
- * innmm -->nn:行号，mm:列号
+ * innmm -->nn:行号，mm:列号（索引从0开始，偏移值计算公式：x=-mm*52, y=-nn*52）
  * @author rongjihuang@gmail.com
  * @date 2011-04-11
  */
@@ -998,6 +1003,17 @@ a.shortcut .i0906 {background-position: -312px -468px;}
 a.shortcut .i0907 {background-position: -364px -468px;}
 a.shortcut .i0908 {background-position: -416px -468px;}
 a.shortcut .i0909 {background-position: -468px -468px;}
+
+a.shortcut .i1000 {background-position: 0 -520px;}
+a.shortcut .i1001 {background-position: -52px -520px;}
+a.shortcut .i1002 {background-position: -104px -520px;}
+a.shortcut .i1003 {background-position: -156px -520px;}
+a.shortcut .i1004 {background-position: -208px -520px;}
+a.shortcut .i1005 {background-position: -260px -520px;}
+a.shortcut .i1006 {background-position: -312px -520px;}
+a.shortcut .i1007 {background-position: -364px -520px;}
+a.shortcut .i1008 {background-position: -416px -520px;}
+a.shortcut .i1009 {background-position: -468px -520px;}
 
 /**
  * grid样式
@@ -1219,6 +1235,181 @@ table.table { /*width: 100%;
 .bc-grid>.data>.right tr.row a.bc-link {
 	text-decoration: underline;
 	color: inherit;
+}
+
+/* 视图布局的通用样式 */
+.treeGrid>.bc-grid-wrap {
+	position: absolute;
+	left: 160px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+/**
+ * 树的样式配置文件
+ * 
+ * @author rongjihuang@gmail.com
+ * @date 2012-11-12
+ * @comment 使用table作为节点的容器，通过表格行的背景控制鼠标悬停的整行样式显示，类似win7的资源管理器树
+ */
+
+/* 容器 */
+.bc-tree {
+	position: relative;
+	overflow: auto;
+	margin: 0px;
+	padding: 0px;
+	cursor: default;
+	box-sizing: border-box;
+	padding: 8px 1px !important;
+	font-weight: normal;
+}
+
+/* 加载动画 */
+.bc-tree>.loader {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	background: url("images/loader/loader01_32x32.gif") no-repeat;
+	padding: 0;
+	margin: 0;
+}
+
+/* 节点 */
+.treeNode {
+	padding: 0;
+	vertical-align: middle;
+}
+
+/* 节点集 */
+.treeNode>table.nodes {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	cursor: default;
+	border-spacing: 0;
+	border: none;
+	width: 100%;
+}
+
+.treeNode>.item {
+	position: relative;
+	white-space: nowrap; /* normal | nowrap | keep-all*/
+}
+
+.treeNode>.item.ui-state-normal {
+	border-color: transparent;
+}
+/* 节点：内容 */
+.treeNode>.item>span {
+	display: inline-block;
+}
+
+.treeNode>.item>span.ui-icon {
+	opacity: 0.7;
+	filter: alpha(opacity =   70);
+}
+
+.treeNode>.item>span.ui-icon:hover {
+	opacity: 1;
+	filter: alpha(opacity =   100);
+}
+/* 节点：叶子-无导航图标 */
+.treeNode.leaf>.item>span.nav-icon {
+	background-image: none;
+	visibility: hidden;
+}
+/* 节点：导航图标--默认隐藏 */
+.bc-tree.autoHideShowNav .treeNode>.item>span.nav-icon {
+	visibility: hidden;
+	-moz-transition: visibility 0.5s ease-out 0.1s;
+	-webkit-transition: visibility 0.5s ease-out 0.2s;
+}
+/* 节点：导航图标--鼠标悬停时显示 */
+.bc-tree.autoHideShowNav:hover .treeNode>.item>span.nav-icon {
+	visibility: visible;
+}
+/* 节点：操作按钮 */
+.treeNode>.item>ul.buttons {
+	list-style: none;
+	position: absolute;
+	top: 50%;
+	padding: 0;
+	margin: -9px 0 0 0;
+	right: 4px;
+}
+
+.treeNode>.item>ul.buttons>li {
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	float: left;
+	box-sizing: border-box;
+}
+
+/* 节点的子节点可见性控制 */
+.treeNode.collapsed>table.nodes {
+	display: none;
+}
+
+/* 节点的嵌套层次结构样式控制 */
+.treeNode[data-level="1"]>.item {
+	padding-left: 0px;
+}
+
+.treeNode[data-level="2"]>.item {
+	padding-left: 16px;
+}
+
+.treeNode[data-level="3"]>.item {
+	padding-left: 32px;
+}
+
+.treeNode[data-level="4"]>.item {
+	padding-left: 48px;
+}
+
+.treeNode[data-level="5"]>.item {
+	padding-left: 64px;
+}
+
+.treeNode[data-level="6"]>.item {
+	padding-left: 80px;
+}
+
+.treeNode[data-level="7"]>.item {
+	padding-left: 96px;
+}
+
+.treeNode[data-level="8"]>.item {
+	padding-left: 112px;
+}
+
+.treeNode[data-level="9"]>.item {
+	padding-left: 128px;
+}
+
+.treeNode[data-level="10"]>.item {
+	padding-left: 144px;
+}
+
+/* 视图布局的通用样式 */
+.treeGrid {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 40px;
+	border: 0;
+}
+
+.treeGrid>.bc-tree {
+	position: absolute;
+	width: 160px;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	border-width: 0 1px 0 0;
 }
 /**
  * grid导出ExcelTip框的样式控制
