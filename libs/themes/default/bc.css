@@ -888,7 +888,7 @@ div.bc-desktop> table.bottomIcons #quickShowHide.bottomIcon {
 
 /**
  * 桌面图标
- * innmm -->nn:行号，mm:列号
+ * innmm -->nn:行号，mm:列号（索引从0开始，偏移值计算公式：x=-mm*52, y=-nn*52）
  * @author rongjihuang@gmail.com
  * @date 2011-04-11
  */
@@ -1003,6 +1003,17 @@ a.shortcut .i0906 {background-position: -312px -468px;}
 a.shortcut .i0907 {background-position: -364px -468px;}
 a.shortcut .i0908 {background-position: -416px -468px;}
 a.shortcut .i0909 {background-position: -468px -468px;}
+
+a.shortcut .i1000 {background-position: 0 -520px;}
+a.shortcut .i1001 {background-position: -52px -520px;}
+a.shortcut .i1002 {background-position: -104px -520px;}
+a.shortcut .i1003 {background-position: -156px -520px;}
+a.shortcut .i1004 {background-position: -208px -520px;}
+a.shortcut .i1005 {background-position: -260px -520px;}
+a.shortcut .i1006 {background-position: -312px -520px;}
+a.shortcut .i1007 {background-position: -364px -520px;}
+a.shortcut .i1008 {background-position: -416px -520px;}
+a.shortcut .i1009 {background-position: -468px -520px;}
 
 /**
  * grid样式
