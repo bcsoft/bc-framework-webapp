@@ -401,24 +401,29 @@ bc.page = {
 			url: url, data: data, dataType: "json",
 			success: function(json) {
 				if(logger.debugEnabled)logger.debug("save success.json=" + jQuery.param(json));
-				if(json.id){
-					$form.find("input[name='e.id']").val(json.id);
+				if(json.success === false){
+					bc.msg.info(json.msg);
+				}else{
+					if(json.id){
+						$form.find("input[name='e.id']").val(json.id);
+					}
+					//记录已保存状态
+					$page.attr("data-status","saved").data("data-status","saved");
+
+					//调用回调函数
+					var showMsg = true;
+					if(typeof option.callback == "function"){
+						//返回false将禁止保存提示信息的显示
+						if(option.callback.call($page[0],json) === false)
+							showMsg = false;
+					}
+					if(showMsg){
+						bc.msg.slide(json.msg);
+					}
 				}
-				//记录已保存状态
-				$page.attr("data-status","saved").data("data-status","saved");
 				
 				//将正在保存标识设为false[已保存]
 				$page.data("saving",false);
-				//调用回调函数
-				var showMsg = true;
-				if(typeof option.callback == "function"){
-					//返回false将禁止保存提示信息的显示
-					if(option.callback.call($page[0],json) === false)
-						showMsg = false;
-				}
-				if(showMsg){
-					bc.msg.slide(json.msg);
-				}
 			}
 		});
 	},
