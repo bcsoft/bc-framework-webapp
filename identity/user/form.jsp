@@ -41,7 +41,7 @@
 				</td>
 				<td class="label"><s:text name="user.duty"/>:</td>
 				<td class="value">
-					<s:select name="e.detail.duty.id" list="duties" listKey="id" listValue="name" value="e.detail.duty.id"></s:select>
+					<s:select name="e.detail.duty.id" list="duties" listKey="id" listValue="name" value="e.detail.duty.id" cssClass="ui-widget-content"></s:select>
 				</td>
 			</tr>
 			<tr>
