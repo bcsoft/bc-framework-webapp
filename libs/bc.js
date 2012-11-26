@@ -780,7 +780,7 @@ bc.page = {
 			success : function(html) {
 				logger.profile("newWin.ajax." + option.mid);
 				var _option = jQuery.extend({},option);
-				delete _option.url;
+				//delete _option.url;
 				_option.html = html;
 				bc.page._createWin(_option);
 			},
@@ -832,8 +832,12 @@ bc.page = {
 			//if(!$dom.attr("title")) cfg.title=option.name;
 			cfg.title = option.title || $dom.attr("title");// 对话框标题
 			if($dom.attr("data-type") == "form") {
-				cfg.minimizable = true;// 默认为表单添加最小化按钮
-				cfg.maximizable = true;// 默认为表单添加最大化按钮
+				if(typeof(cfg.minimizable) == "undefined") {
+					cfg.minimizable = true;// 默认为表单添加最小化按钮
+				}
+				if(typeof(cfg.maximizable) == "undefined") {
+					cfg.maximizable = true;// 默认为表单添加最大化按钮
+				}
 			}
 			
 			if(option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
@@ -872,6 +876,16 @@ bc.page = {
 						this.parentNode.innerHTML="";
 					});
 				}
+				
+				// 保存窗口状态
+				var maximized = $this.dialog("widget").hasClass("maximized");
+				logger.debug("maximized=" + maximized);
+				if(maximized){
+					$.cookie("size::" + option.url, "maximized");
+				}else{
+					$.removeCookie("size::" + option.url);
+				}
+
 				//彻底删除所有相关的dom元素
 				$this.dialog("destroy").remove();
 				//删除任务栏对应的dom元素
@@ -940,6 +954,14 @@ bc.page = {
 				$dom.bind("dialogmaximize",function(event,ui){
 					if(logger.infoEnabled)logger.info("--maximize");
 				});
+				
+				// 首次打开就最大化:检测cookie中此url的对话框是否保存为最大化状态，是才最大化
+				var v = $.cookie("size::" + option.url);
+				logger.info("c=" + v);
+				if(v == "maximized"){
+					var $maxBtn = $dom.closest(".bc-ui-dialog").find(">.ui-dialog-titlebar .maximizeBtn");
+					$maxBtn.click();
+				}
 			}
 			
 			// 窗口帮助的处理
@@ -2656,6 +2678,7 @@ bc.grid = {
 	 */
 	resizeGridPage: function(container) {
 		var $grid = container.find(".bc-grid");
+		container = $grid.parent();
 		if($grid.size()){
 			var $data_right = $grid.find(".data .right");
 			var $data_left = $grid.find(".data .left");
@@ -2669,6 +2692,7 @@ bc.grid = {
 			}
 			logger.debug("grid's sh:" + sh);
 			logger.debug("grid's sw:" + sw);
+			logger.debug("--" + container.width() + "," + $data_left.width());
 			
 			//设置右容器的宽度
 			$data_right.width(container.width()-$data_left.width()-sw);
@@ -2687,7 +2711,7 @@ bc.grid = {
 			
 			//累计表格兄弟的高度
 			var otherHeight = 0;
-			$grid.siblings(":visible:not('.bc-conditionsForm,.boxPointer')").each(function(i){
+			$grid.siblings(":visible:not('.bc-conditionsForm,.boxPointer,.bc-tree')").each(function(i){
 				otherHeight += $(this).outerHeight(true);
 				logger.debug("grid's sibling" + i + ".outerHeight:" + $(this).outerHeight(true));
 			});
@@ -3468,6 +3492,276 @@ bc.grid.import = function($grid,el) {
 		bc.file.upload.call(this,e.target.files,fileOption);
 	});
 };
+
+})(jQuery);
+/**
+ * 树
+ * 
+ * @author rongjihuang@gmail.com
+ * @date 2012-11-13
+ * @depend jquery-ui-1.8,bc.core
+ */
+(function($) {
+bc.tree = {
+	/**
+	 * 默认配置
+	 */
+	option: {
+		/* 样式 */
+		class_container: "bc-tree",	/* 容器样式 */
+		class_node_selected: "ui-state-focus",	/* 节点被选中样式 */
+		class_node_hover: "ui-state-hover"	/* 节点鼠标悬停样式 */
+	},
+	
+	/**
+	 * 初始化
+	 * @param container 对话框内容的jquery对象
+	 */
+	init: function(container) {
+		//alert(container);
+		// 添加树的全局样式
+		var $tree = $(container);
+		$tree.toggleClass(bc.tree.option.class_container,true);
+		
+		//禁止选择文字
+		if($tree.disableSelection) $tree.disableSelection();
+	},
+	/** 选择节点 */
+	selectNode: function($node){
+		$node.closest("." + bc.tree.option.class_container).find(".item." + bc.tree.option.class_node_selected)
+		.toggleClass(bc.tree.option.class_node_selected,false).toggleClass("ui-state-normal",true);
+		
+		$node.children(".item").toggleClass(bc.tree.option.class_node_selected,true).toggleClass("ui-state-normal",false);
+	},
+	/** 展开折叠节点 */
+	toggleNode: function($node){
+		// 检测是否需要远程加载下级节点的数据
+		var needLoadRemoteData = ($node.is(".collapsed") && $node.has(">table.nodes").size() == 0);
+		
+		// 切换样式
+		$node.toggleClass("open collapsed");
+		$node.find(">.item>.nav-icon").toggleClass("ui-icon ui-icon-triangle-1-se ui-icon ui-icon-triangle-1-e");
+		$node.find(">.item>.type-icon").toggleClass("ui-icon-folder-open ui-icon-folder-collapsed");
+		
+		// 远程加载下级节点数据
+		logger.info("needLoadRemoteData=" + needLoadRemoteData);
+		if(needLoadRemoteData){
+			var $tree = $node.closest(".bc-tree");
+			var nodeId = bc.tree.getNodeId($node);
+			bc.tree.reload($tree,nodeId,function(nodeId,html){
+				
+			});
+		}
+	},
+	/** 获取选中的节点信息
+	 * @param $tree 
+	 * @param returnJson true|false {id:..., name:...,el:...}
+	 */
+	getSelected: function($tree,returnJson){
+		var $items = $tree.find("div.item." + bc.tree.option.class_node_selected);
+		if($items.length == 1){
+			if(returnJson){
+				return {
+					id: $items.attr("data-id"),
+					name: $items.children(".text").text(),
+					el: $items.get(0)
+				};
+			}else{
+				return $items.attr("data-id");
+			}
+		}else if($items.length > 1){
+			var r = [];
+			$items.each(function(i){
+				var $t = $(this);
+				if(returnJson){
+					r.push({
+						id: $t.attr("data-id"),
+						name: $t.children(".text").text(),
+						el: $t.get(0)
+					});
+				}else{
+					r.push($t.attr("data-id"));
+				}
+			});
+			return r;
+		}else{
+			return null;
+		}
+	},
+	/** 获取选中的节点
+	 * @param $tree 
+	 * @param nodeId 节点ID
+	 */
+	getNode: function($tree,nodeId){
+		return bc.tree.getNodeItem($tree,nodeId).parent();
+	},
+	/** 获取选中的节点对象
+	 * @param $tree 
+	 * @param nodeId 节点ID
+	 */
+	getNodeItem: function($tree,nodeId){
+		var $items = $tree.find("div.item[data-id='" + nodeId + "']");
+		if($items.length == 1){
+			return $($items.get(0));
+		}else if($items.length > 1){
+			return $items;
+		}else{
+			return null;
+		}
+	},
+	/** 获取选中的节点ID
+	 * @param $node 节点
+	 */
+	getNodeId: function($node){
+		return $node.children("div.item").attr("data-id");
+	},
+	/** 重新加载
+	 * @param $tree 
+	 * @param nodeId 要更新的节点，没有配置就更新整棵树
+	 * @param callback 加载完毕后的回调函数
+	 */
+	reload: function($tree,nodeId,callback) {
+		var ts = "tree.reload." + new Date().getTime();
+		logger.profile(ts);
+		
+		var $page = $tree.closest(".bc-page");
+		// 显示加载动画
+		var $loader = $('<div class="loader"></div>').appendTo($tree);
+		$loader.css({
+			top: ($tree.height() - $loader.height())/2,
+			left: ($tree.width() - $loader.width())/2
+		});
+
+		// 获取树的配置参数
+		var url = $tree.attr("data-url");
+		var cfg = $tree.data("cfg") || {};
+
+		//==附加额外的请求参数
+		var data = {};
+		//  从page取
+		var extras = $page.data("extras");
+		if(extras){
+			data = $.extend(data, extras);
+		}
+		
+		//  从tree取
+		extras = $tree.data("extras");
+		if(extras){
+			data = $.extend(data, extras);
+		}
+		
+		// 附加节点参数
+		if(nodeId) data.pid = nodeId;
+		
+		// Ajax请求获取信息
+		bc.ajax({
+			url : url, data: data,
+			dataType : "json",
+			type: "POST",
+			success : function(json) {
+				// json格式：{success:true|false, subNodesCount: [子节点数量], msg: [success=false时的异常信息]}
+				// 加载失败的提示
+				if(!json.success){
+					bc.msg.info("加载节点数据失败：" + json.msg);
+					return;
+				}
+				
+				// 更新节点的html
+				var $updateNode;
+				if(nodeId){			// 更新节点
+					$updateNode = bc.tree.getNode($tree,nodeId);
+				}else{				// 更新整棵树
+					$updateNode = $tree;
+				}
+				$updateNode.children("table.nodes").remove();
+				if(json.subNodesCount > 0){
+					var $html = $(json.html);
+					$html.find(">tbody>tr>td.treeNode").attr("data-level",parseInt($updateNode.attr("data-level"))+1);
+					$html.appendTo($updateNode);
+				}
+				
+				// 更新子节点的level
+				
+				//删除加载动画
+				$loader.remove();
+				logger.profile(ts);
+				
+				//调用回调函数
+				if(typeof callback == "function"){
+					// 上下文为树，第一个参数为传入的节点ID值
+					callback.call($tree.get(0),nodeId,json);
+				}
+				if(cfg.afterLoad){
+					var _fn = cfg.afterLoad;
+					if(typeof cfg.afterLoad == "string"){
+						cfg.afterLoad = bc.getNested(cfg.afterLoad);
+					}
+					if(typeof cfg.afterLoad == "function"){
+						// 上下文为树，第一个参数为传入的节点ID值
+						cfg.afterLoad.call($tree.get(0),nodeId,json);
+					}else{
+						alert("回调函数没有定义：" + _fn);
+					}
+				}
+			}
+		});
+	}
+};
+
+// 节点的事件监听
+$(".treeNode>.item").live("mouseover mouseout click dblclick",function(e){
+	e.stopPropagation();
+	var $nodeItem = $(this);
+	var $node = $nodeItem.parent();
+	if (e.type == 'click') {										// 单击节点
+		console.log("click");
+		bc.tree.selectNode($node);
+		if ($(e.target).is(".nav-icon:visible")){
+			bc.tree.toggleNode($node);
+			return;
+		}
+		//console.log(bc.tree.getSelected($node.closest("." + bc.tree.option.class_container),true));
+		
+		// 调用回调函数
+		var $tree = $node.closest("." + bc.tree.option.class_container);
+		var cfg = $tree.data("cfg");
+		if(cfg && cfg.clickNode){// 点击节点调用的函数
+			var _fn = cfg.clickNode;
+			if(typeof cfg.clickNode == "string"){
+				cfg.clickNode = bc.getNested(cfg.clickNode);
+			}
+			if(typeof cfg.clickNode == "function"){
+				// 上下文为树，第一个参数为选中的节点值，格式为：{id:..., name:...,el:...}
+				cfg.clickNode.call($tree.get(0),{
+					id: $nodeItem.attr("data-id"),
+					name: $nodeItem.children(".text").text(),
+					el: $nodeItem.get(0)
+				});
+			}else{
+				alert("回调函数没有定义：" + _fn);
+			}
+		}
+	}else if (e.type == 'dblclick') {								// 双击节点
+		console.log("dblclick:todo");
+	}else if (e.type == 'mouseover') {	// 鼠标悬停及离开行
+		$nodeItem.toggleClass(bc.tree.option.class_node_hover,true).toggleClass("ui-state-normal",false);
+	}else if (e.type == 'mouseout') {	// 鼠标悬停及离开行
+		$nodeItem.toggleClass(bc.tree.option.class_node_hover,false).filter(":not(." + bc.tree.option.class_node_selected + ")").toggleClass("ui-state-normal",true);
+	}
+});
+
+// 节点右侧操作按钮的事件监听 TODO
+$(".treeNode>.item>ul.buttons>li").live("mouseover mouseout click",function(e){
+	e.stopPropagation();
+	var $button = $(this);
+	var $node = $button.closest(".node");
+	if (e.type == 'click') {										// 单击
+		console.log("click nodeButton");
+		// TODO
+	}else if (e.type == 'mouseover' || e.type == 'mouseout') {		// 鼠标悬停及离开行
+		$button.toggleClass("ui-state-hover ui-corner-all");
+	}
+});
 
 })(jQuery);
 /**
@@ -5088,21 +5382,25 @@ bc.file={
 			logger.info("uploading:i=" + i);
 			//继续上传下一个附件
 			//如果上传的为文件夹就不上传到服务器
-			if(files[i].name=="."){
+			if(files[i].name=="."){// 处理文件夹
 				var json = {
-						success:true,
-						relativePath:files[i].webkitRelativePath,
-						isDir:true,
-						batchNo:batchNo
-							};
+					success:true,
+					relativePath:files[i].webkitRelativePath,
+					isDir:true,
+					batchNo:batchNo
+				};
 				i++;
 				//调用回调函数
 				if(typeof option.callback == "string")
 					option.callback = bc.getNested(option.callback);
-				if(typeof option.callback == "function")
-					option.callback.call($file,json);
-				uploadNext();
-			}else{
+				if(typeof option.callback == "function"){
+					option.callback.call($file,json,function(){
+						uploadNext();
+					});
+				}else{
+					uploadNext();
+				}
+			}else{// 处理文件
 				uploadOneFile(key,files[i],url,uploadNext);
 			}
 		}
@@ -5196,11 +5494,15 @@ if($.browser.safari || $.browser.mozilla || $.browser.opera){
 		console.log(e);
 		var form = this;
 		logger.info("localfile=" + this.value);
-		bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
-			//上传文件  e.target.files.length+"份文件吗？"
-			bc.file.upload.call(form,e.target.files,$(form).data("cfg"));
-			
-		});
+		var cfg = $(form).data("cfg");
+		if(cfg && cfg.needConfirm){
+			bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
+				//上传文件  e.target.files.length+"份文件吗？"
+				bc.file.upload.call(form,e.target.files,cfg);
+			});
+		}else{
+			bc.file.upload.call(form,e.target.files,cfg);
+		}
 	});
 }
 
@@ -6295,7 +6597,7 @@ $.extend($.ui.dialog.prototype, {
 		
 		// 添加最大化按钮：maximized
 		if (options.maximizable) {
-			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-extlink">maximize</span></a>')
+			$('<a href="#" class="ui-corner-all maximizeBtn"><span class="ui-icon ui-icon-extlink">maximize</span></a>')
 			.appendTo($topRightButtons)
 			.click(function( event ) {
 				event.preventDefault();
@@ -6304,8 +6606,9 @@ $.extend($.ui.dialog.prototype, {
 		}
 		
 		// 最后添加右上角的关闭按钮
+		var $maximizeBtn;
 		if (options.closable) {
-			$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-closethick">close</span></a>')
+			$maximizeBtn=$('<a href="#" class="ui-corner-all"><span class="ui-icon ui-icon-closethick">close</span></a>')
 			.appendTo($topRightButtons)
 			.click(function( event ) {
 				event.preventDefault();
@@ -6513,6 +6816,9 @@ $.extend($.ui.dialog.prototype, {
 			width: newWidth - (self.element.outerWidth(true) - self.element.width()), 
 			height: newHeight - (self.element.outerHeight(true) - self.element.height()) - self.uiDialog.children(".ui-dialog-titlebar").outerHeight(true) - self.uiDialog.children(".ui-dialog-buttonpane").outerHeight(true)
 		});
+		
+		// 增加样式标记
+		self.uiDialog.toggleClass("maximized");
 		
 		self._trigger('resize', event);
 		
