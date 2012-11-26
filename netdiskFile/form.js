@@ -144,7 +144,7 @@ bc.netdiskFileForm = {
 			bc.msg.alert(json.msg);
 	},
 	/** 文件夹上传完毕后 */
-	afterUploadfolder : function(json){
+	afterUploadfolder : function(json,callback){
 		var $form = $(this).closest(".bc-page");
 		logger.info("--"+$.toJSON(json));
 		//文件信息
@@ -174,6 +174,11 @@ bc.netdiskFileForm = {
 						//刷新节点
 						var tree = $form.find(".bc-tree");
 						bc.tree.reload(tree,-1);
+						
+						//调用回调函数
+						if(typeof callback == "function"){
+							callback();
+						}
 
 						return false;
 					}

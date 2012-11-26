@@ -5382,21 +5382,25 @@ bc.file={
 			logger.info("uploading:i=" + i);
 			//继续上传下一个附件
 			//如果上传的为文件夹就不上传到服务器
-			if(files[i].name=="."){
+			if(files[i].name=="."){// 处理文件夹
 				var json = {
-						success:true,
-						relativePath:files[i].webkitRelativePath,
-						isDir:true,
-						batchNo:batchNo
-							};
+					success:true,
+					relativePath:files[i].webkitRelativePath,
+					isDir:true,
+					batchNo:batchNo
+				};
 				i++;
 				//调用回调函数
 				if(typeof option.callback == "string")
 					option.callback = bc.getNested(option.callback);
-				if(typeof option.callback == "function")
-					option.callback.call($file,json);
-				uploadNext();
-			}else{
+				if(typeof option.callback == "function"){
+					option.callback.call($file,json,function(){
+						uploadNext();
+					});
+				}else{
+					uploadNext();
+				}
+			}else{// 处理文件
 				uploadOneFile(key,files[i],url,uploadNext);
 			}
 		}
@@ -5490,11 +5494,15 @@ if($.browser.safari || $.browser.mozilla || $.browser.opera){
 		console.log(e);
 		var form = this;
 		logger.info("localfile=" + this.value);
-		bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
-			//上传文件  e.target.files.length+"份文件吗？"
-			bc.file.upload.call(form,e.target.files,$(form).data("cfg"));
-			
-		});
+		var cfg = $(form).data("cfg");
+		if(cfg && cfg.needConfirm){
+			bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
+				//上传文件  e.target.files.length+"份文件吗？"
+				bc.file.upload.call(form,e.target.files,cfg);
+			});
+		}else{
+			bc.file.upload.call(form,e.target.files,cfg);
+		}
 	});
 }
 
