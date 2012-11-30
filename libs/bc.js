@@ -2333,10 +2333,10 @@ $document.delegate(".bc-select:not(.ignore)","click", function richInputFn(e) {
 		if(option.itemMapping){
 			$input.autocomplete().data("autocomplete")._renderItem = function( ul, item ) {
 				if(logger.debugEnabled)logger.debug("item1=" + $.toJSON(item));
-				return $( "<li></li>" )
+				return $( "<li><a></a></li>" )
 					.data( "item.autocomplete", item )
-					.append(bc.formatTpl(option.itemMapping, item))
-					.appendTo( ul );
+					.children("a").append(bc.formatTpl(option.itemMapping, item))
+					.end().appendTo( ul );
 			};
 		}
 		
