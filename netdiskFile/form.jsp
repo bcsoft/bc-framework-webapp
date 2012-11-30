@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="%{title}"/>' data-type='form' class="bc-page"
 	data-saveUrl='<s:url value="/bc/netdiskFile/save" />'
-	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/identity/identity.js" />'
+	data-js='<s:url value="/bc/netdiskFile/form.js" />,<s:url value="/bc/netdiskFile/folder.js" />,<s:url value="/bc/identity/identity.js" />'
 	data-initMethod='bc.netdiskFileForm.init'
 	data-option='{
 		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.netdiskFileForm.save"}],
@@ -47,6 +47,7 @@
 		<s:hidden name="e.status" />
 		<s:hidden name="e.size" />
 		<s:hidden name="e.folderType" />
+		<s:hidden name="e.pid" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
 </div>

@@ -26,6 +26,7 @@ bc.netdiskFileForm = {
 			bc.identity.selectUser({
 				multiple: true,//可多选
 				history: false,
+				status:'0',
 				onOk: function(users){
 					$.each(users,function(i,user){
 

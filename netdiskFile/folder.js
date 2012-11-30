@@ -26,7 +26,8 @@ bc.selectFolder = function(option) {
 
 	//弹出选择对话框
 	bc.page.newWin(jQuery.extend({
-		url: bc.root + "/bc/selectFolders/"+ (option.paging ? "paging" : "list"),
+		//url: bc.root + "/bc/selectFolders/"+ (option.paging ? "paging" : "list"),
+		url: bc.root + "/bc/netdiskFiles/selectFolders",
 		name: option.title,
 		mid: option.mid,
 		afterClose: function(status){
