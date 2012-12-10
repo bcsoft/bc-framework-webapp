@@ -181,7 +181,7 @@ bc.netdiskFileView = {
 		var $hidden = $tr.data("hidden");
 		//文件才支持在线预览，文件夹不支持
 		if($hidden.type==1){
-			var n = $tr.find(">td:eq(2)").attr("data-value");// 获取文件名
+			var n = $tr.find(">td:eq(1)").attr("data-value");// 获取文件名
 			var f = "netdisk/" + $hidden.path;// 获取附件相对路径
 			// 预览文件
 			var option = {f: f, n: n,ptype:"Netdisk"};
