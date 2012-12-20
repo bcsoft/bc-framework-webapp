@@ -1945,6 +1945,10 @@ span.file-icon.tar {
 	background-position: -160px -32px;
 }
 
+span.file-icon.html, span.file-icon.htm {
+	background-position: -192px -32px;
+}
+
 /**图片*/
 span.file-icon.pic {
 	background-position: 0 -64px;
