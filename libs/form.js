@@ -54,6 +54,9 @@ bc.form = {
 				bc.form.resizeFromTabs.call($tabs,$form);
 			});
 		});
+		
+		// 自动高度调整
+		$form.find(".autoHeight").keyup();
 	},
 	
 	/** 重新调整tab的尺寸

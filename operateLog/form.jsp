@@ -14,7 +14,7 @@
 		</div>
 		<div style="font-weight: normal;margin-bottom: -8px;padding-left: 6px;">详细内容:</div>
 		<div class="formFields">
-			<s:textarea name="e.content" rows="10" style="width:99%" cssClass="ui-widget-content"/>
+			<s:textarea name="e.content" rows="10" style="width:99%" cssClass="ui-widget-content autoHeight nooutline" />
 		</div>
 		<s:property value="attachsUI" escapeHtml="false"/>
 		<s:hidden name="e.uid" />
@@ -26,6 +26,5 @@
 		<s:hidden name="e.pid" />
 		<s:hidden name="e.operate" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
-		
 	</s:form>
 </div>
