@@ -116,6 +116,7 @@
 		</table>
 	</div>
 </div>
+<input type="hidden" id="token" name="token" value='<s:property value="token"/>'/>
 <!-- 空白框架，通常用于下载附件 -->
 <iframe id="blank" name="blank" style="width:0; height:0; display:hidden;" src="about:blank" scrolling="no" frameborder="0"></iframe>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7.2/jquery.min.js' />"></script>

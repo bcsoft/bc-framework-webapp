@@ -205,6 +205,41 @@ bc.validator = {
 		/** 金额：1,111,111,111.00 */
 		money: function(element) {
 			return /^-?(?:\d*|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(element.value);
+		},
+		/** 自定义正则表达式的验证 */
+		regexp: function(element) {
+			if(!this.pattern){
+				alert("没有指定正则表达式的值！");
+				return false;
+			}
+			//最小长度验证
+			var ok;
+			if(this.minLen || this.minLen === 0 ){
+				ok = bc.validator.methods.minLen.call(this,element);
+				if(!ok){
+					bc.validator.remind(element, "minLen", [this.minLen+""],this);
+					return false;
+				}
+			}
+			//最大长度验证
+			if(this.maxLen || this.maxLen === 0 ){
+				ok = bc.validator.methods.maxLen.call(this,element);
+				if(!ok){
+					bc.validator.remind(element, "maxLen", [this.maxLen+""],this);
+					return false;
+				}
+			}
+			//alert(/[\da-zA-Z]*\d+[a-zA-Z]+[\da-zA-Z]*/.test(element.value) + "," + element.value)
+			//alert(new RegExp("[\\da-zA-Z]*\\d+[a-zA-Z]+[\\da-zA-Z]*").test(element.value) + "-" + element.value)
+			
+			// 正则表达式验证
+			var re;
+			if(this.flags)
+				re = new RegExp(this.pattern, this.flags);
+			else
+				re = new RegExp(this.pattern);
+				
+			return re.test(element.value);
 		}
 	},
 	/**

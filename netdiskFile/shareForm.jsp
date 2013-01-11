@@ -6,7 +6,7 @@
 	data-initMethod="bc.netdiskFileForm.init"
 	data-option='{<s:if test="isEditVisitorsAuthority">
 		"buttons":[{"text":"<s:text name="label.ok"/>","click":"bc.netdiskFileForm.clickOk4Share"}],
-		</s:if>"width":420,"minWidth":320,"minHeight":200,"modal":false,minimizable:false,maximizable:false}'
+		</s:if>"width":420,"height":520,"minWidth":320,"minHeight":200,"modal":false,minimizable:false,maximizable:false}'
 	style="overflow-y:auto;">
 	<s:form name="netdiskFileForm" theme="simple">
 		<table class="formFields" cellspacing="2" cellpadding="0">
