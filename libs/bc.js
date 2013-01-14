@@ -915,10 +915,17 @@ bc.page = {
 				// 保存窗口状态
 				var maximized = $this.dialog("widget").hasClass("maximized");
 				logger.debug("maximized=" + maximized);
-				if(maximized){
-					$.cookie("size::" + option.url, "maximized");
+				var cookieId;
+				var ci = option.mid.indexOf("::");
+				if(ci > 0){
+					cookieId = option.mid.substring(0,ci);// 使用自定义分类标记
 				}else{
-					$.removeCookie("size::" + option.url);
+					cookieId = option.url;// 使用url
+				}
+				if(maximized){
+					$.cookie("size::" + cookieId, "maximized");
+				}else{
+					$.removeCookie("size::" + cookieId);
 				}
 
 				//彻底删除所有相关的dom元素
@@ -991,7 +998,14 @@ bc.page = {
 				});
 				
 				// 首次打开就最大化:检测cookie中此url的对话框是否保存为最大化状态，是才最大化
-				var v = $.cookie("size::" + option.url);
+				var cookieId;
+				var ci = option.mid.indexOf("::");
+				if(ci > 0){
+					cookieId = option.mid.substring(0,ci);// 使用自定义分类标记
+				}else{
+					cookieId = option.url;// 使用url
+				}
+				var v = $.cookie("size::" + cookieId);
 				logger.info("c=" + v);
 				if(v == "maximized"){
 					var $maxBtn = $dom.closest(".bc-ui-dialog").find(">.ui-dialog-titlebar .maximizeBtn");
