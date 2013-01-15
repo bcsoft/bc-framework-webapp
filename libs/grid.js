@@ -22,11 +22,19 @@ bc.grid = {
 	init: function(container) {
 		var $grid = container.find(".bc-grid");
 		//滚动条处理
-		$grid.find(".data .right").scroll(function(){
+		var $dataRight = $grid.find(".data .right");
+		var $dataLeft = container.find(".data .left");
+		var $headerRight = container.find(".header .right");
+		$dataRight.scroll(function(e){
+			var $this = $(this);
+			e.stopPropagation();
+			e.preventDefault();
+			e.stopImmediatePropagation(); 
 			//logger.debug("scroll");
-			container.find(".header .right").scrollLeft($(this).scrollLeft());
-			container.find(".data .left").scrollTop($(this).scrollTop());
+			$headerRight.scrollLeft($this.scrollLeft());
+			$dataLeft.scrollTop($this.scrollTop());
 		});
+
 		//记录表格的原始宽度
 		//var $data_table = $grid.find(".data .right .table");
 		//var originWidth = parseInt($data_table.attr("originWidth"));
