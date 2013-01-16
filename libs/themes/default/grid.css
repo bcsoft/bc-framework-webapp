@@ -71,6 +71,13 @@ table.table { /*width: 100%;
 	border-right: 1px solid #aaa;
 }
 
+/* 移动设备访问时的样式控制 */
+@media only screen and (max-width: 999px) {
+	.bc-grid .left {
+		border-right-width: 2px;
+	}
+}
+
 .bc-grid .left,.bc-grid .left table.table,.bc-grid .left table.table td.id
 	{
 	width: 40px;

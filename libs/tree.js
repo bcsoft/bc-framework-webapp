@@ -113,11 +113,17 @@ bc.tree = {
 			return null;
 		}
 	},
-	/** 获取选中的节点ID
+	/** 获取指定节点的ID
 	 * @param $node 节点
 	 */
 	getNodeId: function($node){
 		return $node.children("div.item").attr("data-id");
+	},
+	/** 获取指定节点的父节点ID
+	 * @param $node 节点
+	 */
+	getParentNodeId: function($node){
+		return $node.parent().closest(".treeNode").children("div.item").attr("data-id");
 	},
 	/** 重新加载
 	 * @param $tree 

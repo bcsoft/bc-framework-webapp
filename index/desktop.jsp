@@ -45,9 +45,6 @@
 		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />"
 			title='<s:text name="app.title"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:property value="#session.loginTime" />'>
 		<s:property value="startMenu" escapeHtml="false"/>
-		<s:if test='%{getText("app.product") != "true"}'>
-		<div style="padding-left: 600px;margin-top: -60px;"><font color="red" size="6">测试环境！</font></div>
-		</s:if>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<!-- <td class="topIcon" title="邮箱" id="bcmail">
@@ -116,6 +113,8 @@
 		</table>
 	</div>
 </div>
+<input type="hidden" id="token" name="token" value='<s:property value="token"/>'/>
+<s:if test='%{"true" != getText("app.product")}'><div id="test"><s:text name="app.debugInfo"/></div></s:if>
 <!-- 空白框架，通常用于下载附件 -->
 <iframe id="blank" name="blank" style="width:0; height:0; display:hidden;" src="about:blank" scrolling="no" frameborder="0"></iframe>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7.2/jquery.min.js' />"></script>
@@ -212,6 +211,7 @@
 <script type="text/javascript">
 jQuery(function() {
 	$("#desktop").bcdesktop();
+	$("#test").click(function(){logger.toggle();});
 });
 </script>
 </body>
