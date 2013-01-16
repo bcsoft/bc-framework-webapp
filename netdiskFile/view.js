@@ -256,7 +256,7 @@ bc.netdiskFileView = {
 					var $div = $(div4Delete);
 					var isRelevanceDelete = $div.find(":input[name='isRelevanceDelete']")[0].checked;
 					//ajax删除方法
-					bc.netdiskFileView.ajax4Delete({id:selectNodeId,isRelevanceDelete:isRelevanceDelete},true,$page);	
+					bc.netdiskFileView.ajax4Delete({id:selectNodeId,isRelevanceDelete:isRelevanceDelete},true,$page,true);	
 				});
 			}
 		}else if((selectNodeId !=null && $trs.length != 0) || (selectNodeId ==null && $trs.length != 0)){
@@ -279,7 +279,7 @@ bc.netdiskFileView = {
 						var $div = $(div4Delete);
 						var isRelevanceDelete = $div.find(":input[name='isRelevanceDelete']")[0].checked;
 						//ajax删除方法
-						bc.netdiskFileView.ajax4Delete({id:id,isRelevanceDelete:isRelevanceDelete},true,$page);	
+						bc.netdiskFileView.ajax4Delete({id:id,isRelevanceDelete:isRelevanceDelete},true,$page,false);	
 					});
 					}
 				//删除多份文件时				
@@ -304,7 +304,7 @@ bc.netdiskFileView = {
 						var $div = $(div4Delete);
 						var isRelevanceDelete = $div.find(":input[name='isRelevanceDelete']")[0].checked;
 						//ajax删除方法
-						bc.netdiskFileView.ajax4Delete({ids:ids,isRelevanceDelete:isRelevanceDelete},true,$page);	
+						bc.netdiskFileView.ajax4Delete({ids:ids,isRelevanceDelete:isRelevanceDelete},true,$page,false);	
 					});
 				}else{
 					bc.msg.confirm("是否确定要删除多份文件吗?",function(){
@@ -333,8 +333,9 @@ bc.netdiskFileView = {
 	 * @param data 参数 
 	 * @param isRefurbish 是否更新的节点
 	 * @param view 视图
+	 * @param isRefurbishParentNode 是否刷新父节点，否则刷新本本身
 	 */
-	ajax4Delete: function(data,isRefurbish,view){
+	ajax4Delete: function(data,isRefurbish,view,isRefurbishParentNode){
 		bc.ajax({
 			url: bc.root + "/bc/netdiskFile/delete",
 			dataType: "json",
@@ -344,14 +345,25 @@ bc.netdiskFileView = {
 					bc.msg.slide(json.msg);
 					view.data("data-status","saved");
 					bc.grid.reloadData(view);
+					var tree = view.find(".bc-tree");
 					//刷新节点
 					if(isRefurbish){
 						//获取选中节点的id
-						var selectNodeId = bc.tree.getSelected(view.find(".bc-tree"));
-						if(selectNodeId){
-							var tree = view.find(".bc-tree");
-							bc.tree.reload(tree,selectNodeId);
+						var selectNodeId = bc.tree.getSelected(tree);
+						
+						//获取选中节点的父节点的id
+						var selectNodeParentId = bc.tree.getParentNodeId(bc.tree.getNode(tree,selectNodeId));
+						
+						if(isRefurbishParentNode){//刷新父节点
+							if(selectNodeParentId){
+								bc.tree.reload(tree,selectNodeParentId);
+							}
+						}else{//刷新本身
+							if(selectNodeId){
+								bc.tree.reload(tree,selectNodeId);
+							}
 						}
+						
 					}
 					
 				}else{
