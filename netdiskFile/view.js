@@ -11,6 +11,8 @@ bc.netdiskFileView = {
 		//操作按钮组
 	selectMenuButtonItem : function(option) {
 		var $page = $(this);
+		//获取选中节点的id
+		var selectNodeId = bc.tree.getSelected($page.find(".bc-tree"));
 		//上传文件
 		if (option.value == "shangchuanwenjian") {
 
@@ -23,6 +25,7 @@ bc.netdiskFileView = {
 			
 		//新建个人文件夹
 		}else if(option.value == "xinjiangerenwenjianjia"){
+						
 			bc.page.newWin({
 				mid: "xinjiangerenwenjianjia",
 				name: "新建个人文件夹",
@@ -85,64 +88,103 @@ bc.netdiskFileView = {
 	//整理
 	clearUp : function(){
 		var $page = $(this);
+		//获取选中节点的id
+		var selectNodeId = bc.tree.getSelected($page.find(".bc-tree"));
 		// 确定选中的行
 		var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
-		if($trs.length == 0){
+		
+		//选择左边导航的文件进行整理
+		if(selectNodeId && $trs.length == 0){
+			//不能对“我的硬盘”“公共硬盘”“共享给我的”的节点进行整理
+			if(selectNodeId==-1 || selectNodeId==-2 || selectNodeId==-3){
+				bc.msg.alert("不能对根目录进行整理！");
+			}else{
+				bc.netdiskFileView.ajax4ClearUp($page,selectNodeId,1);
+			}
+		}else if((selectNodeId && $trs.length != 0) || (!selectNodeId && $trs.length != 0)){
+		//选择右边的文件进行整理
+			if($trs.length == 1){
+				var $leftTr = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
+				var $rightTr = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
+				var $hidden = $rightTr.data("hidden");
+				bc.netdiskFileView.ajax4ClearUp($page,$leftTr.attr("data-id"),$hidden.type);
+			}else{
+				bc.msg.alert("每次只能整理一个文件！");
+			}
+			
+		}else{
 			bc.msg.slide("请先选择需要整理的文件！");
 			return;
-		}else if($trs.length == 1){
-			var data = {};
-			var $leftTr = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
-			var $rightTr = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var $hidden = $rightTr.data("hidden");
-			data.id = $leftTr.attr("data-id");
-//			data.title = $rightTr.find(">td:eq(1)").attr("data-value");
-//			data.order = $rightTr.find(">td:eq(5)").attr("data-value");
-			data.folder = $rightTr.find(">td:eq(0)").attr("data-value");
-//			data.pid = $hidden.pid;
-			var type = $hidden.type;
-			data.dialogType="zhengliwenjian";
-			bc.page.newWin({
-				mid: "zhengliwenjian"+$leftTr.attr("data-id"),
-				name: (type==0 ?"整理文件夹":"整理文件" ),
-				data: data,
-				url: bc.root + "/bc/netdiskFile/createDialog",
-				afterClose: function(status){
-					if(status)bc.grid.reloadData($page);
-				}
-			});
-		}else{
-			bc.msg.alert("每次只能整理一个文件！");
 		}
-		
+	},
+	/**整理文件的ajax方法
+	 * @param clearUpId 共享文件的id 
+	 * @param view 视图上下文
+	 * @param type 文件类型
+	 */
+	ajax4ClearUp : function (view,clearUpId,type){
+		var data = {};
+		data.id = clearUpId;
+		data.dialogType="zhengliwenjian";
+		bc.page.newWin({
+			mid: "zhengliwenjian"+clearUpId,
+			name: (type==0 ?"整理文件夹":"整理文件" ),
+			data: data,
+			url: bc.root + "/bc/netdiskFile/createDialog",
+			afterClose: function(status){
+				if(status)bc.grid.reloadData($page);
+			}
+		});
 	},
 	//共享
 	share : function(){
 		var $page = $(this);
+		//获取选中节点的id
+		var selectNodeId = bc.tree.getSelected($page.find(".bc-tree"));
 		// 确定选中的行
 		var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
 		var $leftTr = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 
-		if($trs.length == 0){
+		//选择左边导航的文件进行共享设置
+		if(selectNodeId && $trs.length == 0){
+			//不能对“我的硬盘”“公共硬盘”“共享给我的”的节点进行共享设置
+			if(selectNodeId==-1 || selectNodeId==-2 || selectNodeId==-3){
+				bc.msg.alert("不能对根目录进行共享设置！");
+			}else{
+			bc.netdiskFileView.ajax4Share(selectNodeId,$page);
+			}
+		}else if((selectNodeId && $trs.length != 0) || (!selectNodeId && $trs.length != 0)){
+			//选择右边的文件进行共享
+			if($trs.length == 1){
+				bc.netdiskFileView.ajax4Share($leftTr.attr("data-id"),$page);
+			}else{
+				bc.msg.alert("每次只能共享一个文件！");
+			}
+			
+		}else{
 			bc.msg.slide("请先选择需要共享的文件！");
 			return;
-		}else if($trs.length == 1){
-			var data = {};
-			data.id = $leftTr.attr("data-id");
-			data.dialogType="gongxiang";
-			bc.page.newWin({
-				mid: "gongxiang",
-				name: "共享",
-				data: data,
-				url: bc.root + "/bc/netdiskFile/createDialog",
-				afterClose: function(status){
-					if(status)bc.grid.reloadData($page);
-				}
-			});
-		}else{
-			bc.msg.alert("每次只能共享一个文件！");
 		}
 	},
+	/**删除文件的ajax方法
+	 * @param shareId 共享文件的id 
+	 * @param view 视图
+	 */
+	ajax4Share : function (shareId,view){
+		var data = {};
+		data.id = shareId;
+		data.dialogType="gongxiang";
+		bc.page.newWin({
+			mid: "gongxiang",
+			name: "共享",
+			data: data,
+			url: bc.root + "/bc/netdiskFile/createDialog",
+			afterClose: function(status){
+				if(status)bc.grid.reloadData(view);
+			}
+		});
+	},
+	
 	//预览
 	preview : function(){
 		var $page = $(this);
@@ -199,55 +241,50 @@ bc.netdiskFileView = {
 		var $page = $(this);
 		var $leftTr = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 		var id = $leftTr.attr("data-id");
+		//获取选中节点的id
+		var selectNodeId = bc.tree.getSelected($page.find(".bc-tree"));
 		// 确定选中的行
 		var $trs = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
-		if($trs.length == 0){
-			bc.msg.slide("请先选择需要删除的文件！");
-			return;
-		}else if($trs.length == 1){
-			var $tr = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
-			var $hidden = $tr.data("hidden");
-				//删除一份文件
-				if($hidden.type==1){
-					bc.msg.confirm("是否确定要删除该文件吗?",function(){
-						bc.ajax({
-							url: bc.root + "/bc/netdiskFile/delete",
-							dataType: "json",
-							data: {id:id},
-							success: function(json){
-								
-								if(json.success){
-									bc.msg.slide(json.msg);
-									$page.data("data-status","saved");
-									bc.grid.reloadData($page);
-								}else{
-									bc.msg.alert(json.msg);
-								}
-							}
-						});
-					});
-				}else{
+
+		//选择左边导航的文件进行删除
+		if(selectNodeId !=null && $trs.length == 0){
+			if(selectNodeId==-1 || selectNodeId==-2 || selectNodeId==-3){
+				bc.msg.alert("不能删除根目录！")
+			}else{
 				//删除一份文件夹
 				var div4Delete = bc.msg.confirm("是否确定要删除该文件夹吗?<br><input type=\"checkbox\" name=\"isRelevanceDelete\" style=\"width:1em;\">删除该文件夹下的子文件",function(){
 					var $div = $(div4Delete);
 					var isRelevanceDelete = $div.find(":input[name='isRelevanceDelete']")[0].checked;
-					bc.ajax({
-						url: bc.root + "/bc/netdiskFile/delete",
-						dataType: "json",
-						data: {id:id,isRelevanceDelete:isRelevanceDelete},
-						success: function(json){
-							if(json.success){
-								bc.msg.slide(json.msg);
-								$page.data("data-status","saved");
-								bc.grid.reloadData($page);
-							}else{
-								bc.msg.alert(json.msg);
-							}
-						}
-					});
+					//ajax删除方法
+					bc.netdiskFileView.ajax4Delete({id:selectNodeId,isRelevanceDelete:isRelevanceDelete},true,$page);	
 				});
-				}
-			}else{//多选
+			}
+		}else if((selectNodeId !=null && $trs.length != 0) || (selectNodeId ==null && $trs.length != 0)){
+			//选择右边的文件进行删除
+			
+			//删除一份文件时
+			if($trs.length == 1){
+
+				var $tr = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
+				var $hidden = $tr.data("hidden");
+					//删除一份文件
+					if($hidden.type==1){
+						bc.msg.confirm("是否确定要删除该文件吗?",function(){
+							//ajax删除方法
+							bc.netdiskFileView.ajax4Delete({id:id},false,$page);	
+						});
+					}else{
+					//删除一份文件夹
+					var div4Delete = bc.msg.confirm("是否确定要删除该文件夹吗?<br><input type=\"checkbox\" name=\"isRelevanceDelete\" style=\"width:1em;\">删除该文件夹下的子文件",function(){
+						var $div = $(div4Delete);
+						var isRelevanceDelete = $div.find(":input[name='isRelevanceDelete']")[0].checked;
+						//ajax删除方法
+						bc.netdiskFileView.ajax4Delete({id:id,isRelevanceDelete:isRelevanceDelete},true,$page);	
+					});
+					}
+				//删除多份文件时				
+			}else{
+				//多选
 				var ids = "";
 				//是否存在文件夹
 				var isFolder = false;
@@ -266,40 +303,22 @@ bc.netdiskFileView = {
 					var div4Delete = bc.msg.confirm("删除的多份文件中包含文件夹！是否删除文件夹下的子文件？<br><input type=\"checkbox\" name=\"isRelevanceDelete\" style=\"width:1em;\">删除文件夹下的子文件",function(){
 						var $div = $(div4Delete);
 						var isRelevanceDelete = $div.find(":input[name='isRelevanceDelete']")[0].checked;
-						bc.ajax({
-							url: bc.root + "/bc/netdiskFile/delete",
-							dataType: "json",
-							data:{ids:ids,isRelevanceDelete:isRelevanceDelete},
-							success: function(json){
-								if(json.success){
-									bc.msg.slide(json.msg);
-									$page.data("data-status","saved");
-									bc.grid.reloadData($page);
-								}else{
-									bc.msg.alert(json.msg);
-								}
-							}
-						});
+						//ajax删除方法
+						bc.netdiskFileView.ajax4Delete({ids:ids,isRelevanceDelete:isRelevanceDelete},true,$page);	
 					});
 				}else{
-					bc.msg.confirm("是否确定要删除多份文件吗?",function(){	
-						bc.ajax({
-							url: bc.root + "/bc/netdiskFile/delete",
-							dataType: "json",
-							data:{ids:ids},
-							success: function(json){
-								if(json.success){
-									bc.msg.slide(json.msg);
-									$page.data("data-status","saved");
-									bc.grid.reloadData($page);
-								}else{
-									bc.msg.alert(json.msg);
-								}
-							}
-						});
+					bc.msg.confirm("是否确定要删除多份文件吗?",function(){
+						//ajax删除方法
+						bc.netdiskFileView.ajax4Delete({ids:ids},false,$page);	
 					});	
 				}
+							
 			}
+			
+		}else{
+			bc.msg.slide("请先选择需要删除的文件！");
+			return;
+		}
 	},
 	
 	/** 点击树节点的处理 */
@@ -309,5 +328,37 @@ bc.netdiskFileView = {
 		logger.info("clickTreeNode: id=" + node.id + ",name=" + node.name);
 		$page.data("extras").pid = node.id;
 		bc.grid.reloadData($page);
+	},
+	/**删除文件的ajax方法
+	 * @param data 参数 
+	 * @param isRefurbish 是否更新的节点
+	 * @param view 视图
+	 */
+	ajax4Delete: function(data,isRefurbish,view){
+		bc.ajax({
+			url: bc.root + "/bc/netdiskFile/delete",
+			dataType: "json",
+			data: data,
+			success: function(json){
+				if(json.success){
+					bc.msg.slide(json.msg);
+					view.data("data-status","saved");
+					bc.grid.reloadData(view);
+					//刷新节点
+					if(isRefurbish){
+						//获取选中节点的id
+						var selectNodeId = bc.tree.getSelected(view.find(".bc-tree"));
+						if(selectNodeId){
+							var tree = view.find(".bc-tree");
+							bc.tree.reload(tree,selectNodeId);
+						}
+					}
+					
+				}else{
+					bc.msg.alert(json.msg);
+				}
+			}
+		});
+		
 	}
 };

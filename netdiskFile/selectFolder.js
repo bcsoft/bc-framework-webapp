@@ -23,7 +23,10 @@ bc.folderSelectDialog = {
 //				return false;
 //			}
 			//组装文件夹数据
-			data.id=node.id;
+			if(node.id==-1 || node.id==-2){
+			}else{
+				data.id=node.id;
+			}
 			data.name=node.name;
 
 		}
