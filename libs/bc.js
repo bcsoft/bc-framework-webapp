@@ -5566,11 +5566,38 @@ if($.browser.safari || $.browser.mozilla || $.browser.opera){
 		var form = this;
 		logger.info("localfile=" + this.value);
 		var cfg = $(form).data("cfg");
-		if(cfg && cfg.needConfirm){
-			bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
-				//上传文件  e.target.files.length+"份文件吗？"
-				bc.file.upload.call(form,e.target.files,cfg);
-			});
+		
+		if(cfg && cfg.beforeUploadFile){
+			if(cfg.beforeUploadFileIsAsync){// 异步处理
+				if(typeof cfg.beforeUploadFile == "string")
+					cfg.beforeUploadFile = bc.getNested(cfg.beforeUploadFile);
+				if(typeof cfg.beforeUploadFile == "function"){
+					cfg.beforeUploadFile.call(form,function(){
+						if(cfg.needConfirm){
+							bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
+								//上传文件  e.target.files.length+"份文件吗？"
+								bc.file.upload.call(form,e.target.files,cfg);
+							});
+						}else{
+							bc.file.upload.call(form,e.target.files,cfg);
+						}
+					});
+				}else{
+					alert("error");
+				}
+				
+			}else{// 同步处理
+				if(cfg.beforeUploadFile.call(form) !== false){
+					if(cfg.needConfirm){
+						bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
+							//上传文件  e.target.files.length+"份文件吗？"
+							bc.file.upload.call(form,e.target.files,cfg);
+						});
+					}else{
+						bc.file.upload.call(form,e.target.files,cfg);
+					}
+				}
+			}
 		}else{
 			bc.file.upload.call(form,e.target.files,cfg);
 		}
