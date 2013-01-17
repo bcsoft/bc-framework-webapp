@@ -887,6 +887,29 @@ div.bc-desktop> table.bottomIcons #quickShowHide.bottomIcon {
 }
 
 /**
+ * 显示测试字样的容器
+ */
+#test {
+	z-index:100;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	position: absolute;
+	color: #808000;
+	font-size: 28px;
+	font-weight: bold;
+	text-align: center;
+	width: 100px;
+	height: 100px;
+	top: 4px;
+	left: 45%;
+	border-radius: 50px;
+	padding:4px;
+	border: 4px solid #808000;
+	cursor: pointer;
+}
+
+/**
  * 桌面图标
  * innmm -->nn:行号，mm:列号（索引从0开始，偏移值计算公式：x=-mm*52, y=-nn*52）
  * @author rongjihuang@gmail.com
@@ -1086,6 +1109,13 @@ table.table { /*width: 100%;
 
 .bc-grid .left {
 	border-right: 1px solid #aaa;
+}
+
+/* 移动设备访问时的样式控制 */
+@media only screen and (max-width: 999px) {
+	.bc-grid .left {
+		border-right-width: 2px;
+	}
 }
 
 .bc-grid .left,.bc-grid .left table.table,.bc-grid .left table.table td.id
