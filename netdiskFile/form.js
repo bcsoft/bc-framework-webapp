@@ -113,18 +113,96 @@ bc.netdiskFileForm = {
 
 		
 	},
-	/** 文件上传完毕后 */
-	afterUploadfile : function(json){
+	/** 文件上传之前 */
+	beforeUploadfile : function(continueUpload){
 		var $form = $(this).closest(".bc-page");
-		logger.info("--"+$.toJSON(json));
+		//获取选中节点的id
+		var selectNodeId = bc.tree.getSelected($form.find(".bc-tree"));
 		//文件信息
+		if(selectNodeId){
+		//选择节点上传
+		//如果没有选中节点默认上传到“我的硬盘”	
+			if(selectNodeId==-1){
+			//如果选择上传到“我的硬盘”
+				if(continueUpload){
+					continueUpload.call();
+				}
+			}else if(selectNodeId==-2){
+			//如果选择上传到“公共硬盘”
+				//判断是否有“公共硬盘”管理权限
+				bc.ajax({
+					url: bc.root + "/bc/netdiskFile/checkPublicHardDiskPower",
+					dataType: "json",
+					success: function(json){
+						//可以上传
+						if(json.success){
+							if(continueUpload){
+								continueUpload.call();
+							}
+						}else{
+							bc.msg.alert(json.msg);	
+						}
+						
+					}
+				});
+			}else if(selectNodeId==-3){
+			//如果选择上传到“共享到我的”	
+//				if(continueUpload){
+//					continueUpload.call();
+//				}
+				bc.msg.alert("不能上传文件到“共享给我”的根目录下！");
+			}else{
+				//判断选中的节点是否拥有管理权限
+				bc.ajax({
+					url: bc.root + "/bc/netdiskFile/checkSelectNodePower",
+					dataType: "json",
+					data: {selectNodeId:selectNodeId},
+					success: function(json){
+							//可以上传
+							if(json.success){
+								if(continueUpload){
+									continueUpload.call();
+								}
+							}else{
+								bc.msg.alert(json.msg);	
+							}
+					}
+				});
+			}
+		}else{//无选中提示需要选中文件夹
+			bc.msg.alert("请选择你需要上传文件的目标节点！");
+//			if(continueUpload){
+//				continueUpload.call();
+//			}
+		}
+	},
+	/** 文件上传完毕后 */
+	afterUploadfile : function(json4file){
+		var $form = $(this).closest(".bc-page");
+		//获取选中节点的id
+		var selectNodeId = bc.tree.getSelected($form.find(".bc-tree"));
+		logger.info("--"+$.toJSON(json4file));
+		//文件信息
+		if(json4file!=null){
+			if(selectNodeId!=null){
+				//选择节点上传
+					//不能上传文件到“共享给我”的根目录下
+					if(selectNodeId!=-3){
+						bc.netdiskFileForm.ajax4Uploadfile(json4file,selectNodeId,$form);	
+					}
+				}
+		}
+	},
+	/** 文件上传的ajax方法 */
+	ajax4Uploadfile : function (json,selectNodeId,form){
 		var fileInfo = {};
 		var fileInfos = [];
 		if(json.success){
 			fileInfo = {
 					name : json.source,
 					size : json.size,
-					path : json.to
+					path : json.to,
+					selectNodeId : selectNodeId
 				};
 			if(fileInfo)
 				fileInfos.push(fileInfo);
@@ -137,18 +215,31 @@ bc.netdiskFileForm = {
 						logger.info("doLogout result=" + $.toJSON(json));
 						//完成后提示用户
 						bc.msg.slide(json.msg);
-						if(json.success) bc.grid.reloadData($form);
+						if(json.success) bc.grid.reloadData(form);
 						return false;
 					}
 				});
 		}else
 			bc.msg.alert(json.msg);
 	},
+	
 	/** 文件夹上传完毕后 */
-	afterUploadfolder : function(json,callback){
+	afterUploadfolder : function(json4folder){
 		var $form = $(this).closest(".bc-page");
-		logger.info("--"+$.toJSON(json));
-		//文件信息
+		//获取选中节点的id
+		var selectNodeId = bc.tree.getSelected($form.find(".bc-tree"));
+		if(json4folder!=null){
+			if(selectNodeId!=null){
+				//选择节点上传
+					//不能上传文件夹到“共享给我”的根目录下
+					if(selectNodeId!=-3){
+						bc.netdiskFileForm.ajax4Uploadfolder(json4folder,selectNodeId,$form);	
+					}
+				}
+		}
+	},
+	/** 文件夹上传的ajax方法 */
+	ajax4Uploadfolder : function(json,selectNodeId,form){
 		var fileInfo = {};
 		var fileInfos = [];
 		if(json.success){
@@ -158,7 +249,8 @@ bc.netdiskFileForm = {
 					path : json.to,
 					relativePath:json.relativePath,
 					isDir:json.isDir,
-					batchNo:json.batchNo
+					batchNo:json.batchNo,
+					selectNodeId : selectNodeId
 				};
 			if(fileInfo)
 				fileInfos.push(fileInfo);
@@ -171,16 +263,13 @@ bc.netdiskFileForm = {
 						logger.info("doLogout result=" + $.toJSON(json));
 						//完成后提示用户
 						bc.msg.slide(json.msg);
-						if(json.success) bc.grid.reloadData($form);
+						if(json.success) bc.grid.reloadData(form);
 						//刷新节点
-						var tree = $form.find(".bc-tree");
-						bc.tree.reload(tree,-1);
-						
-						//调用回调函数
-						if(typeof callback == "function"){
-							callback();
+						if(selectNodeId){
+							var tree = form.find(".bc-tree");
+							bc.tree.reload(tree,selectNodeId);
 						}
-
+						
 						return false;
 					}
 				});
