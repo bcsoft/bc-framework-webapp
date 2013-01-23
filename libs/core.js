@@ -215,6 +215,19 @@ bc.getTime = function(){
 		time += now.getSeconds();
 	return time;
 };
+/** 格式化时间信息，格式为HH:mm:ss
+ * @return 
+ */
+bc.formatTime = function(hour,minute,second,millisecond){
+	var time = (hour < 10 ? "0" : "") + hour;//时
+	if(typeof minute != "undefined")
+		time += (minute < 10 ? ":0" : ":") + minute;//分
+	if(typeof second != "undefined")
+		time += (second < 10 ? ":0" : ":") + second;//秒
+	if(typeof millisecond != "undefined")
+		time += millisecond;//豪秒
+	return time; 
+};
 /**
  * 计算指定时间范围内的耗时描述信息
  * 
