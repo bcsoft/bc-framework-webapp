@@ -3593,6 +3593,10 @@ bc.grid.import = function($grid,el) {
 				if(json.detail){
 					msg += '&nbsp;<a href="#" id="'+detailID+'">点击查看详情</a>';
 				}
+				if(!json.success){
+					msg = "出错了！可能是数据格式有误或其它未知的原因，请修正上传数据的格式或联系管理员！";
+					msg += "<div style='color:red;font-weight:bold'>["+json.msg+"]</div>";
+				}
 				$processDlg.children(".info").html(msg);
 				if(json.success) $processDlg.data("refresh",true);
 				if(json.detail){
@@ -4757,10 +4761,14 @@ bc.attach={
 	deleteAll: function(attachsEl,callback){
 		var $attachs = $(attachsEl);
 		if($attachs.find(".attach").size()){
+			var data = {
+				ptype: $attachs.attr("data-ptype"),
+				puid: $attachs.attr("data-puid"),
+			};
 			bc.msg.confirm("确定要将全部附件删除吗？",function(){
 				bc.ajax({
-					url: bc.root + "/bc/attach/deleteAll?ptype=" + $attachs.attr("data-ptype"),
-					type: "GET",dataType:"json",
+					url: bc.root + "/bc/attach/deleteAll",
+					data: data,type: "POST",dataType:"json",
 					success: function(json){
 						//json:{success:true,msg:"..."}
 						if(typeof(json) != "object"){
