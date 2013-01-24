@@ -125,6 +125,10 @@ bc.grid.import = function($grid,el) {
 				if(json.detail){
 					msg += '&nbsp;<a href="#" id="'+detailID+'">点击查看详情</a>';
 				}
+				if(!json.success){
+					msg = "出错了！可能是数据格式有误或其它未知的原因，请修正上传数据的格式或联系管理员！";
+					msg += "<div style='color:red;font-weight:bold'>["+json.msg+"]</div>";
+				}
 				$processDlg.children(".info").html(msg);
 				if(json.success) $processDlg.data("refresh",true);
 				if(json.detail){
