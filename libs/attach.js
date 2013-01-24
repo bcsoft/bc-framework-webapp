@@ -76,10 +76,14 @@ bc.attach={
 	deleteAll: function(attachsEl,callback){
 		var $attachs = $(attachsEl);
 		if($attachs.find(".attach").size()){
+			var data = {
+				ptype: $attachs.attr("data-ptype"),
+				puid: $attachs.attr("data-puid"),
+			};
 			bc.msg.confirm("确定要将全部附件删除吗？",function(){
 				bc.ajax({
-					url: bc.root + "/bc/attach/deleteAll?ptype=" + $attachs.attr("data-ptype"),
-					type: "GET",dataType:"json",
+					url: bc.root + "/bc/attach/deleteAll",
+					data: data,type: "POST",dataType:"json",
 					success: function(json){
 						//json:{success:true,msg:"..."}
 						if(typeof(json) != "object"){
