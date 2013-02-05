@@ -170,7 +170,7 @@ bc.netdiskFileForm = {
 				});
 			}
 		}else{//无选中提示需要选中文件夹
-			bc.msg.alert("请选择你需要上传文件的目标节点！");
+			bc.msg.alert("请先选择要上传到的目录！(在左侧的文件夹导航区点选指定的文件夹后，再点击上传按钮上传)");
 //			if(continueUpload){
 //				continueUpload.call();
 //			}
