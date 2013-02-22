@@ -6689,6 +6689,7 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 	};
 
 $.extend($.ui.dialog.prototype.options, {
+	closeOnEscape: false,
 	closable: true,//关闭按钮
 	minimizable: false,//最小化按钮
 	maximizable: false,//最大化按钮
