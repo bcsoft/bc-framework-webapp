@@ -71,9 +71,9 @@
 						</td>
 						<td class="last" >
 							<s:if test='%{isFromDoc&&showRole == "01"}'>
-								<label>查阅<input type="checkbox" class="actor_checkbox" checked onclick="return false;"></label><input type="hidden" class="actor_checkbox">
+								<label><input type="checkbox" class="actor_checkbox" checked onclick="return false;">查阅</label><input type="hidden" class="actor_checkbox">
 							</s:if><s:else>
-								<label>查阅<input type="checkbox" class="actor_checkbox" checked onclick="return false;"></label>&nbsp;<label>编辑<input type="checkbox" class="actor_checkbox"></label>
+								<label><input type="checkbox" class="actor_checkbox" checked onclick="return false;">查阅</label>&nbsp;<label><input type="checkbox" class="actor_checkbox">编辑</label>
 							</s:else>
 							<input type="hidden" class="actor_role" value='<s:property value="role"/>'/>
 						</td>

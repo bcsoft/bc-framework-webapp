@@ -55,7 +55,7 @@ bc.accessControlForm = {
 							cell=newRow.insertCell(2);
 							cell.setAttribute("class","last");
 							
-							if(isFromDoc=="true"&&$form.find(":input[name='isFromDoc']").val()=="01"){
+							if(isFromDoc=="true"&&$form.find(":input[name='showRole']").val()=="01"){
 								cell.innerHTML='<label><input type="checkbox" class="actor_checkbox" checked onclick="return false;">查阅</label>'
 									+'<input type="hidden" class="actor_checkbox">';	
 							}else{
