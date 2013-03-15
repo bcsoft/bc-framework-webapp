@@ -5,11 +5,11 @@ bc.accessControlForm = {
 		$form.find("#actorTables tr.ui-widget-content.row").each(function(){
 			var $tr=$(this);
 			var $checkboxes=$tr.find(".actor_checkbox");
-			var role_array=$tr.find(".actor_role").val().split("").reverse();
-			var a=role_array.length;
-			//匹配选中
-			for(var i=0;i<role_array.length;i++){
-				if(role_array[i]=="1"){
+			var role=$tr.find(".actor_role").val();
+			var role_array=$tr.find(".actor_role").val().split("");
+			//匹配选中,"查阅"为默认选中
+			for(var i=1;i<role_array.length;i++){
+				if(role_array[role_array.length-i-1]=="1"){
 					if(i<$checkboxes.size()){
 						$checkboxes[i].checked=true;
 					}
@@ -28,6 +28,8 @@ bc.accessControlForm = {
 				selecteds+=$(this).find(".access_actor").attr("data-id");
 				selecteds+=',';
 			});
+			
+			var isFromDoc=$form.find(":input[name='isFromDoc']").val();
 			
 			bc.identity.selectUser({
 				multiple: true,//可多选
@@ -52,8 +54,14 @@ bc.accessControlForm = {
 							
 							cell=newRow.insertCell(2);
 							cell.setAttribute("class","last");
-							cell.innerHTML='<label>查阅<input type="checkbox" class="actor_checkbox" checked></label>'
-										+'&nbsp;<label>编辑<input type="checkbox" class="actor_checkbox"></label>';	
+							
+							if(isFromDoc=="true"&&$form.find(":input[name='isFromDoc']").val()=="01"){
+								cell.innerHTML='<label><input type="checkbox" class="actor_checkbox" checked onclick="return false;">查阅</label>'
+									+'<input type="hidden" class="actor_checkbox">';	
+							}else{
+								cell.innerHTML='<label><input type="checkbox" class="actor_checkbox" checked onclick="return false;">查阅</label>'
+									+'&nbsp;<label><input type="checkbox" class="actor_checkbox">编辑</label>';	
+							}
 						}
 					});
 				}
@@ -172,7 +180,13 @@ bc.accessControlForm = {
 			return;
 		}
 		
-		if(isFromDoc=="true"&&$rows.size()==0){
+		if(isFromDoc=="false"){
+			//调用标准的方法执行保存
+			bc.page.save.call($form);
+			return;
+		}
+		
+		if($rows.size()==0){
 			bc.msg.confirm("若不配置访问者，确定后系统将删除此监控配置！",function(){
 				bc.ajax({
 					url: bc.root+"/bc/accessControl/delete", 
@@ -190,7 +204,11 @@ bc.accessControlForm = {
 			});
 		}else{
 			//调用标准的方法执行保存
-			bc.page.save.call($form);
+			bc.page.save.call($form,{callback:function(json){
+					bc.msg.slide("确定成功");
+					$form.dialog("close");
+					return false;
+			}});
 		}
 	},
 	/**

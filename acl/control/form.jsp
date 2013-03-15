@@ -22,7 +22,9 @@
 					</tr>
 					<tr>
 						<td class="label">*<s:text name="accessControl.docType"/>:</td>
-						<td class="value"><s:textfield name="e.docType" cssStyle="ui-webgit-content" data-validate="required" /></td>
+						<td class="value">
+							<s:select name="e.docType" list="categoryList" listKey="key" listValue="value" headerKey="" headerValue="" cssClass="ui-widget-content"></s:select>
+						</td>
 					</tr>
 					<tr>
 						<td class="label">*<s:text name="accessControl.docId"/>:</td>
@@ -64,11 +66,15 @@
 					<tr class="ui-widget-content row">
 						<td class="id first" ><span class="ui-icon"></span></td>
 						<td class="middle" >
-							<input type="text" class="access_actor" style="margin:0;border:none;background:none;"
+							<input type="text" class="access_actor" style="margin:0;border:none;background:none;" 
 								 value='<s:property value="actor.name"/>' data-id='<s:property value="actor.id"/>' readonly="readonly"/>
 						</td>
-						<td class="last"  >
-							<label>查阅<input type="checkbox" class="actor_checkbox"></label>&nbsp;<label>编辑<input type="checkbox" class="actor_checkbox"></label>
+						<td class="last" >
+							<s:if test='%{isFromDoc&&showRole == "01"}'>
+								<label>查阅<input type="checkbox" class="actor_checkbox" checked onclick="return false;"></label><input type="hidden" class="actor_checkbox">
+							</s:if><s:else>
+								<label>查阅<input type="checkbox" class="actor_checkbox" checked onclick="return false;"></label>&nbsp;<label>编辑<input type="checkbox" class="actor_checkbox"></label>
+							</s:else>
 							<input type="hidden" class="actor_role" value='<s:property value="role"/>'/>
 						</td>
 					</tr>
@@ -84,6 +90,7 @@
 			<s:hidden name="e.docId" />
 			<s:hidden name="e.docType" />
 			<s:hidden name="e.docName" />
+			<s:hidden name="showRole" />
 		</s:if>
 		
 		<input type="hidden" name="accessActors" />	
