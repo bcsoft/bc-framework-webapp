@@ -216,6 +216,18 @@ bc.accessControlForm = {
 	 */
 	history:function(){
 		var $form = $(this);
-		bc.msg.alert("功能开发中...");
+		var pid=$form.find(":input[name='e.id']").val();
+		
+		if(pid==""){
+			bc.msg.slide("请先保存监控配置信息！");
+		}
+
+		bc.page.newWin({
+			url:bc.root+"/bc/accessHistorys/paging",
+			data:{pid:pid,isFromDoc:true},
+			mid:"accessHistorys::"+pid,
+			name:$form.find(":input[name='e.docName']").val()+"的访问历史",
+			title:$form.find(":input[name='e.docName']").val()+"的访问历史"
+		});
 	}
 };

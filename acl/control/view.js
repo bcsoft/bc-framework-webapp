@@ -14,7 +14,11 @@ bc.accessControlView = {
 	/** 查看访问历史 */
 	history: function(){
 		var $view=$(this);
-		bc.msg.alert("功能开发中。。。");
-		
+		bc.page.newWin({
+			url:bc.root+"/bc/accessHistorys/paging",	
+			mid:"accessHistorys::",
+			name:"访问历史",
+			title:"访问历史",
+		});
 	}
 };
