@@ -117,7 +117,7 @@
 <s:if test='%{"true" != getText("app.product")}'><div id="test"><s:text name="app.debugInfo"/></div></s:if>
 <!-- 空白框架，通常用于下载附件 -->
 <iframe id="blank" name="blank" style="width:0; height:0; display:hidden;" src="about:blank" scrolling="no" frameborder="0"></iframe>
-<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7.2/jquery.min.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.9.1/jquery.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/cookie/1.2.0/jquery.cookie.js'/>"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/json/2.2/jquery.json.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery-ui/1.9pre/ui/jquery-ui.js' />"></script>
@@ -129,6 +129,7 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/easing/1.3/jquery.easing.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.6/jquery.mousewheel.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/mustache/0.6.0/mustache.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/backbone/0.9.10/backbone-min.js' />"></script>
 <script type="text/javascript">
 	bc={};
 	bc.syskey = '<s:text name="app.name" />';
