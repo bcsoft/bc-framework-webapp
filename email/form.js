@@ -29,10 +29,11 @@ bc.emailForm = {
 		'<span class="text">{2}</span>'+
 		'<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title={3}></span></li>';
 		
-		$form.delegate(".selectReceiver","click",function(){
+		//绑定添加用户
+		$form.delegate("ul>.email-addUsers","click",function(){
 			var $div = $(this).closest("div");
-			var $ul = $div.find("ul");
-			var $lis = $ul.find("li");
+			var $ul = $div.find(".ulReceiver");
+			var $lis = $form.find(".ulReceiver>li");
 			var selecteds="";
 			$lis.each(function(i){
 				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
@@ -50,9 +51,78 @@ bc.emailForm = {
 							var data={
 								id:user.id,
 								code:user.account,
-								name:user.name
+								name:user.name,
+								type:4
 							}
 							$(liTpl.format(user.id,$.toJSON(data),user.name,'点击移除'))
+							.appendTo($ul).find("span.click2remove")
+							.click(function(){
+								$(this).parent().remove();
+							});
+						}
+					});
+				}
+			});
+		});
+		
+		//绑定添加岗位
+		$form.delegate("ul>.email-addGroups","click",function(){
+			var $div = $(this).closest("div");
+			var $ul = $div.find(".ulReceiver");
+			var $lis = $form.find(".ulReceiver>li");
+			var selecteds="";
+			$lis.each(function(i){
+				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
+			});
+			bc.identity.selectGroup({
+				multiple: true,
+				selecteds: selecteds,
+				onOk: function(groups){
+					$.each(groups,function(i,group){
+						if($lis.filter("[data-id='" + group.id + "']").size() > 0){//已存在
+							logger.info("duplicate select: id=" + group.id + ",name=" + user.name);
+						}else{//新添加的
+							var data={
+								id:group.id,
+								code:group.code,
+								name:group.name,
+								type:group.type
+							}
+							$(liTpl.format(group.id,$.toJSON(data),group.name,'点击移除'))
+							.appendTo($ul).find("span.click2remove")
+							.click(function(){
+								$(this).parent().remove();
+							});
+						}
+					});
+				}
+			});
+		});
+		
+		//绑定添加岗位
+		$form.delegate("ul>.email-addUnitOrDepartments","click",function(){
+			var $div = $(this).closest("div");
+			var $ul = $div.find(".ulReceiver");
+			var $lis = $form.find(".ulReceiver>li");
+			var selecteds="";
+			$lis.each(function(i){
+				selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));//
+			});
+			bc.identity.selectUnitOrDepartment({
+				multiple: true,
+				selecteds: selecteds,
+				onOk: function(groups){
+					$.each(groups,function(i,group){
+						if($lis.filter("[data-id='" + group.id + "']").size() > 0){//已存在
+							logger.info("duplicate select: id=" + group.id + ",name=" + user.name);
+						}else{//新添加的
+							var data={
+								id:group.id,
+								code:group.code,
+								name:group.name,
+								type:group.type
+							}
+							$(liTpl.format(group.id,$.toJSON(data),group.name,'点击移除'))
 							.appendTo($ul).find("span.click2remove")
 							.click(function(){
 								$(this).parent().remove();
@@ -70,7 +140,7 @@ bc.emailForm = {
 		var $form = $(this);
 		if(!bc.validator.validate($form)) return;
 		
-		var $uls=$form.find(".ulReceiver");
+		var $uls=$form.find("div>.ulReceiver");
 		var datas=[];
 		var data;
 		var $ul;
@@ -81,14 +151,14 @@ bc.emailForm = {
 			$lis=$ul.find("li");
 			toType=$ul.attr("data-type");
 			$lis.each(function(){
-				data={type:toType},
+				data={toType:toType},
 				data=$.extend(data,eval("("+$(this).attr("data-hidden")+")"));
 				datas.push(data);
 			});
 		});
 		
 		if(datas.length==0){
-			bc.msg.alert("请至少添加一位邮件的接收人！");
+			bc.msg.alert("请至少添加一个收件单位！");
 			return;
 		}
 		$form.find(":input[name='receivers']").val($.toJSON(datas));

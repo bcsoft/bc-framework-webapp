@@ -15,7 +15,11 @@
 				<td class="label"><s:text name="email.receiver"/>：</td>
 				<td class="value">
 					<div class="ui-widget-content" style="position:relative;margin: 0;padding: 0;min-height:19px;margin: 0;font-weight: normal;" >
-						<span class="selectReceiver selectButton verticalMiddle ui-icon ui-icon-circle-plus"  title="点击添加收件人"></span>
+						<ul class="inputIcons">
+						 	<li class="email-addUsers inputIcon ui-icon ui-icon-person" data-type="4" title='点击添加用户'>
+						 	<li class="email-addGroups inputIcon ui-icon ui-icon-contact" title='点击添加岗位'>
+						 	<li class="email-addUnitOrDepartments inputIcon ui-icon ui-icon-home" title='点击添加单位或部门'>
+						</ul>
 						<ul class="horizontal ulReceiver" style="padding: 0;overflow:hidden;" data-type="0"></ul>
 					</div>
 				</td>
@@ -24,7 +28,11 @@
 				<td class="label"><s:text name="email.cc"/>：</td>
 				<td class="value">
 					<div class="ui-widget-content" style="position:relative;margin: 0;padding: 0;min-height:19px;margin: 0;font-weight: normal;" >
-						<span class="selectReceiver selectButton verticalMiddle ui-icon ui-icon-circle-plus"  title="点击添加抄送用户"></span>
+						<ul class="inputIcons">
+						 	<li class="email-addUsers inputIcon ui-icon ui-icon-person" data-type="4" title='点击添加用户'>
+						 	<li class="email-addGroups inputIcon ui-icon ui-icon-contact" title='点击添加岗位'>
+						 	<li class="email-addUnitOrDepartments inputIcon ui-icon ui-icon-home" title='点击添加单位或部门'>
+						</ul>
 						<ul class="horizontal ulReceiver" style="padding: 0;overflow:hidden;" data-type="1"></ul>
 					</div>
 				</td>
@@ -33,7 +41,11 @@
 				<td class="label"><s:text name="email.bcc"/>：</td>
 				<td class="value">
 					<div class="ui-widget-content" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;" >
-						<span class="selectReceiver selectButton verticalMiddle ui-icon ui-icon-circle-plus"  title="点击添加密送用户"></span>
+						<ul class="inputIcons">
+						 	<li class="email-addUsers inputIcon ui-icon ui-icon-person" data-type="4" title='点击添加用户'>
+						 	<li class="email-addGroups inputIcon ui-icon ui-icon-contact" title='点击添加岗位'>
+						 	<li class="email-addUnitOrDepartments inputIcon ui-icon ui-icon-home" title='点击添加单位或部门'>
+						</ul>
 						<ul class="horizontal ulReceiver" style="padding: 0;overflow:hidden;" data-type="2"></ul>
 					</div>
 				</td>
