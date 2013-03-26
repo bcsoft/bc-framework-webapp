@@ -22,6 +22,12 @@ bc.emailForm = {
 		
 		if(readonly)return;
 		
+		//绑定点击移除按钮
+		$form.find(".ulReceiver>li>.click2remove").click(function(){
+			$(this).closest("li").remove();
+		});
+		
+		
 		//声明li
 		var liTpl = '<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
 		" data-hidden='{1}'"+
@@ -183,14 +189,6 @@ bc.emailForm = {
 	 * 预览
 	 */
 	preview : function(){
-		var $form = $(this);
-		var id = $form.find("input[name='e.id']").val();
-		
-		bc.page.newWin({
-			name: $page.find("input[name='e.subject']").val(),
-			mid: "info.preview."+id,
-			url: bc.root+ "/bc-business/info/open?id="+id
-		});
-		
+		var $form = $(this);	
 	}
 };
