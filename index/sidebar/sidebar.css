@@ -13,6 +13,7 @@
 	padding: 0px;
 	cursor: default;
 	text-align: left;
+	font-size: 115%;
 }
 
 .sidebar>* {
@@ -31,7 +32,7 @@
 }
 
 .sidebar>.header>.label {
-	font-size: 125%;
+	font-size: 110%;
 	padding-bottom: 0.2em;
 }
 
@@ -151,8 +152,12 @@
 	border-bottom-width: 0;
 }
 
-.sidebar .group>.rows>.row:hover {
+.sidebar .group>.rows>.row:hover>.header {
 	font-weight: bold;
+}
+.sidebar .group>.rows>.row:hover>.header>.label {
+	font-weight: bold;
+	text-decoration: underline;
 }
 
 .sidebar .group>.rows>.row>.header>.time {

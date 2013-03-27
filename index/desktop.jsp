@@ -129,6 +129,8 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/easing/1.3/jquery.easing.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/mousewheel/3.0.6/jquery.mousewheel.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/mustache/0.6.0/mustache.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/moment/2.0.0/moment.min.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/moment/2.0.0/lang/zh-cn.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/underscore/1.4.4/underscore-min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/backbone/1.0.0/backbone-min.js' />"></script>
 <script type="text/javascript">
@@ -200,6 +202,7 @@
 			profile:$.noop,enable:$.noop,disabled:$.noop,show:$.noop,test:true
 		};
 	}
+	logger.toggle();
 	</script>
 </s:else>
 <!-- 额外加载的js文件 -->

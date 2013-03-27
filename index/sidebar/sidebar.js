@@ -3,22 +3,17 @@ bc.namespace("bc.sidebar");
 
 // 通知：id,type,title,content,time
 var Notice = Backbone.Model.extend({
-	// 默认属性
-	defaults: function() {
- 		return {
-	 		title: "(空)",
-	 		iconClass: "ui-icon-radio-on"
-		};
-	},
-
 	// 初始化
 	initialize: function() {
- 		// 如果没有就添加默认的标题
-	 	if (!this.get("title")) {
-	 		this.set({"title": this.defaults().title});
-		}
 	 	if (!this.get("iconClass")) {
-	 		this.set({"iconClass": this.defaults().iconClass});
+	 		var parentIconClass = GroupTypes[this.get("type")].iconClass;
+	 		if(parentIconClass)
+		 		this.set({"iconClass": parentIconClass});
+	 		else
+		 		this.set({"iconClass": "ui-icon-radio-on"});
+		}
+	 	if (!this.get("time4moment")) {
+	 		this.set({"time4moment": moment(this.get("time"), "YYYY-MM-DD HH:mm:ss").fromNow()});
 		}
 	}
 });
@@ -26,7 +21,9 @@ var Notice = Backbone.Model.extend({
 // 通知列表
 var NoticeList = Backbone.Collection.extend({
 	// 获取数据的URl
-	url: "sidebar",
+	url: function(){
+		return "sidebar";
+	},
 
 	// 关联到通知
 	model: Notice
@@ -50,25 +47,39 @@ var NoticeView = Backbone.View.extend({
 
 	// 绑定DOM事件
 	events: {
-		"click .row": "open"
+		"click": "open"
 	},
 
 	// 初始化
 	initialize: function() {
 		// 监听模块的事件
-		this.listenTo(this.model, 'change', this.render);
+		//this.listenTo(this.model, 'change', this.render);
+		this.listenTo(this.model, 'change:time4moment', this.updateTime4moment);
 		this.listenTo(this.model, 'destroy', this.remove);
 	},
 
 	// 渲染
 	render: function() {
+		logger.info("m:render");
 		this.$el.html(this.template(this.model.toJSON()));
+		this.time = this.$(">.header>.time");
+		return this;
+	},
+
+	// 自动更新相对时间的显示
+	updateTime4moment: function() {
+		logger.info("m:updateTime4moment");
+		this.time.html(this.model.get("time4moment"));
 		return this;
 	},
 
 	// 打开链接
 	open: function() {
-		alert("open:id=" + this.model.id);
+		bc.page.newWin({
+			name: this.model.get("title") || "(无)",
+			mid: this.model.get("type") + this.model.get("dbid"),
+			url: GroupTypes[this.model.get("type")].itemUrl.format(this.model.get("dbid"))
+		});
 	}
 });
 
@@ -76,7 +87,6 @@ var NoticeView = Backbone.View.extend({
 var NoticeGroupView = Backbone.View.extend({
 	tagName: "div",
 	className: "group",
-	type: "none",
 	template: _.template(
 		'<div class="header row ui-widget-header">'
 			+'<div class="icon ui-icon <%- iconClass %>"></div>'
@@ -87,23 +97,31 @@ var NoticeGroupView = Backbone.View.extend({
 
 	// 绑定DOM事件
 	events: {
-		"click >.header>.label>span": "open",
-		"click >.header>.btn.close": "close"
+		"click .header>.label>span": "open",
 	},
 
 	// 初始化
 	initialize: function() {
+		// 初始化dom结构
+		this.render();
 	},
 
 	// 渲染
 	render: function() {
-		this.$el.html(this.template(this.model.toJSON()));
+		//alert("NoticeGroupView.render");
+		this.$el.html(this.template(this.model));
+		this.rows = this.$(">.rows");
 		return this;
 	},
 
 	// 打开更多视图
 	open: function() {
-		alert("TODO: group.type=" + this.type);
+		var g = this.model;
+		bc.page.newWin({
+			name: g.title,
+			mid: g.mid,
+			url: g.url,
+		});
 	},
 
 	// 关闭分组
@@ -114,9 +132,37 @@ var NoticeGroupView = Backbone.View.extend({
 	// 在组中添加一项
 	add: function(notice) {
 	    var view = new NoticeView({model: notice});
-	    this.$el.append(view.render().el);
+	    this.rows.append(view.render().el);
 	}
 });
+
+// 预定义的分组配置
+var GroupTypes={
+	todo: {
+		mid: "myTodos",
+		title: "个人待办",
+		url: "bc-workflow/todo/personals/list",			// 视图url
+		itemUrl: "bc-workflow/workspace/open?id={0}",	// 表单url
+		iconClass: "ui-icon-calendar",
+		order: 1
+	},
+	groupTodo: {
+		mid: "myGroupTodos",
+		title: "岗位待办",
+		url: "bc-workflow/todo/personals/list",
+		itemUrl: "bc-workflow/workspace/open?id={0}",
+		iconClass: "ui-icon-calendar",
+		order: 2
+	},
+	email: {
+		mid: "myEmails",
+		title: "未读邮件",
+		url: "bc/email/personals/list",
+		itemUrl: "bc/email/open?id={0}",
+		iconClass: "ui-icon-mail-closed",
+		order: 3
+	}
+};
 
 // 待办边栏视图
 var SidebarView = Backbone.View.extend({
@@ -150,10 +196,12 @@ var SidebarView = Backbone.View.extend({
 
 	// 初始化
 	initialize: function() {
+		// 初始化dom结构
+		this.render();
+		
 		// 监听模块列表的事件
-		this.listenTo(notices, 'add', this.addOne);
+		this.listenTo(notices, 'add', this.add);
 		this.listenTo(notices, 'reset', this.addAll);
-		this.listenTo(notices, 'all', this.render);
 
 		// 加载数据
 		notices.fetch();
@@ -167,6 +215,7 @@ var SidebarView = Backbone.View.extend({
 		this.input = this.$(">.header>.search>input");
 		this.groups = this.$(">.groups");
 
+	    //alert("SidebarView.render");
 		return this;
 	},
 
@@ -184,17 +233,23 @@ var SidebarView = Backbone.View.extend({
 
 	// 在组中添加一项
 	add: function(notice) {
-		if(!groupViews[notice.type]){
+		var type = notice.get("type");
+		if(!this.groupViews[type]){
 			// 创建分组
-		    var view = new NoticeGroupView;
-		    this.$el.append(view.render().el);
-		    groupViews[notice.type] = view;
+		    var groupView = new NoticeGroupView({
+		    	model: GroupTypes[type]
+		    });
+		    this.groupViews[type] = groupView;
+		    this.groups.append(groupView.el);
 		}
-		groupViews[notice.type].add(notice);
+		
+		// 添加信息条目
+		this.groupViews[type].add(notice);
 	},
 
 	// 在组中重新添加全部
 	addAll: function() {
+		alert("addAll");
 		notices.each(this.addOne, this);
 	},
 
@@ -206,4 +261,12 @@ var SidebarView = Backbone.View.extend({
 
 // 创建边栏的实例
 bc.sidebar = new SidebarView;
+
+// 定时更新时间的相对值
+window.setInterval(function(){
+	notices.each(function(m){
+ 		m.set({"time4moment": moment(m.get("time"), "YYYY-MM-DD HH:mm:ss").fromNow()});
+	});
+}, 60000);
+
 })(jQuery);
