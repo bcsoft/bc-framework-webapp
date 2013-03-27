@@ -24,20 +24,22 @@ bc.emailViewBase = {
 			var openType=$hidden.openType;
 			
 			if(openType==1){
-				data = {id: $tds.attr("data-id")};
+				data = {id: $tds.attr("data-id"),openType:openType};
 				mid="email::send::"+$tds.attr("data-id");
 				name="查看已发邮件";
 				title="查看已发邮件";
 			}else if(openType==2){
-				data = {id: $tds.attr("data-id")};
+				data = {id: $tds.attr("data-id"),openType:openType};
 				mid="email::to::"+$tds.attr("data-id");
 				name="查看已收邮件";
 				title="查看已收邮件";
-			}else{
-				data = {id: $hidden.emailId};
+			}else if(openType==3){
+				data = {id: $hidden.emailId,openType:openType};
 				mid="email::trash::"+$hidden.emailId;
 				name="查看垃圾邮件";
 				title="查看垃圾邮件";
+			}else{
+				return;
 			}
 			
 			bc.page.newWin({
@@ -45,7 +47,11 @@ bc.emailViewBase = {
 				data:data,
 				mid:mid,
 				name:name,
-				title:title
+				title:title,
+				afterClose: function(){
+					//查看收件箱中未读邮件，查看后刷新视图
+					if(openType==2&&$hidden.read === false)bc.grid.reloadData($view);
+				}
 			});
 		}else if($tds.length > 1){
 			bc.msg.slide("一次只能查看一封邮件！");
