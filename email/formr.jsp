@@ -5,20 +5,25 @@
 	data-initMethod='bc.emailFormr.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;cursor: default;">
 	<s:form name="emailFormr" theme="simple" style="margin:10px;" >
-		<div class="email-subject" style='text-align:left;font-size:20px;outline:0;color:black;margin-bottom:8px;position:relative;' tabIndex="0">
+		<div class="email-subject" style='text-align:left;font-size:20px;outline:0;color:black;margin-bottom:8px;position:relative;'>
 			<s:property value="e.subject" escapeHtml="false"/>
 			<ul class="inputIcons email-open">
 				<s:if test="%{openType == 2}">
-				 	<li class="emailFormr-reply inputIcon ui-icon ui-icon-arrowreturnthick-1-w"  title='点击回复邮件'/>
+				 	<li class="emailFormr-reply inputIcon ui-state-default ui-corner-all"  title='点击回复邮件'>
+				 		<span class="ui-icon ui-icon-arrowreturnthick-1-w"></span>
+				 	</li>
 			 	</s:if>
 				<s:if test="%{openType == 1 || openType == 2}">
-				 	<li class="emailFormr-forward inputIcon ui-icon ui-icon ui-icon-arrowthick-1-e" title='点击转发邮件'/>
+				 	<li class="emailFormr-forward inputIcon ui-state-default ui-corner-all" title='点击转发邮件'>
+				 		<span class="ui-icon ui-icon-arrowthick-1-e"></span>
+				 	</li>
 			 	</s:if>
 			</ul>
 		</div>
+		
 		<!-- 发件人 -->
-		<div class="email-history" style="text-align:left;font-weight:normal;">
-			<s:text name="email.sender"/>：<s:property value="e.sender.name" /> 
+		<div class="email-history" style="text-align:left;font-weight:normal;position:relative;">
+			<s:text name="email.sender"/>：<s:property value="e.sender.name" />
 		</div>
 		
 		<!-- 收件人、抄送、密送的显示  -->
@@ -38,13 +43,13 @@
 				</s:if><s:else>
 					<s:set name="email_cc" value="receiver.name" />
 				</s:else>
-			</s:elseif><s:else>
+			</s:elseif><s:elseif test="%{type==2}">
 				<s:if test="%{#email_bcc.length() > 0}">
 					<s:set name="email_bcc" value="%{#email_bcc+'、'+receiver.name}" />
 				</s:if><s:else>
 					<s:set name="email_bcc" value="receiver.name" />
 				</s:else>
-			</s:else>
+			</s:elseif>
 		</s:iterator>	
 		
 		<s:if test="%{#email_sender.length() > 0}">

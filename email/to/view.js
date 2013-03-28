@@ -3,6 +3,9 @@ bc.emailToView = {
 	selectMenuButtonItem : function(option) {
 		var $view = $(this);
 		switch(option.value){
+			case "emailTrash":
+				bc.emailViewBase.trashBox.call($view);
+				break;
 			case "markRead":
 				bc.emailToView.markRead.call($view);
 				break;

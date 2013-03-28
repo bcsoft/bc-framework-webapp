@@ -24,12 +24,5 @@
 			</div>
 			<div class="clear"></div>
 		</li>
-		<li class="condition">
-			<div class="label">状态</div>
-			<div class="value checkboxes" data-condition='{"type":"boolean","key":"t.read_"}' >
-				<label><input type="checkbox" name="checkboxField1" value="false"><span>未读</span></label>
-				<label><input type="checkbox" name="checkboxField1" value="true"><span>已读</span></label>
-			</div>
-		</li>
 	</ul>
 </form>

@@ -6,7 +6,7 @@
 	data-initMethod='bc.emailForm.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;">
 	<s:form name="emailForm" theme="simple" >
-		<table class="formTable2" cellspacing="2" cellpadding="0" style="min-width:650px;">
+		<table cellspacing="2" cellpadding="0" style="width:100%;">
 			<tr class="widthMarker">
 				<td style="width: 80px;">&nbsp;</td>
 				<td >&nbsp;</td>
@@ -73,10 +73,10 @@
 			</tr>
 		</table>
 		
-		<div class="formEditor" style="min-width:650px;font-weight: normal;overflow: hidden;">
+		<div class="formEditor" style="min-width:590px;font-weight: normal;overflow: hidden;">
 			<textarea name="e.content" class="bc-redactor"
 				 data-ptype="companyFile.editor" data-puid='${e.uid}' 
-				 style="height:150px;"
+				 style="min-height:150px;"
 				 data-readonly='${readonly}' data-tools='simple'>${e.content}</textarea>
 		</div>
 		

@@ -17,7 +17,8 @@ bc.emailForm = {
 			plugins: ['fullscreen'],
 			minHeight: 80,
 			buttons: buttons,
-			imageUpload: bc.root + "/upload/?a=1&type=img&sp=editor&fn=file&ptype=email." + type + ".editor&puid=" + uid
+			imageUpload: bc.root + "/upload/?a=1&type=img&sp=editor&fn=file&ptype=email." + type + ".editor&puid=" + uid,
+			autoresize: true
 		});
 		
 		if(readonly)return;
