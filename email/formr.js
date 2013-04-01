@@ -4,6 +4,11 @@ bc.emailFormr = {
 		
 		$form.find(".email-open").show();
 		
+		var sendDate=$form.find(":input[name='e.sendDate']").val();
+		var fromNow=moment(sendDate, "YYYY-MM-DD HH:mm:ss").fromNow()
+		$form.find(".emailFormr-fromNow").text(fromNow);
+		
+		
 		//绑定回复事件
 		$form.find(".emailFormr-reply").click(function(){
 			var id=$form.find(":input[name='e.id']").val();
@@ -26,6 +31,12 @@ bc.emailFormr = {
 				name:"转发邮件",
 				title:"转发邮件"
 			});
+		});
+		
+		$form.find(".emailFormr-show").click(function(){
+			$form.find(".email-history:gt(0)").toggle("fast");
+			$form.find(".emailFormr-show>.ui-icon-triangle-1-s").toggle("fast");
+			$form.find(".emailFormr-show>.ui-icon-triangle-1-n").toggle("fast");
 		});
 	}
 };

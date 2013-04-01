@@ -2,11 +2,17 @@ bc.emailViewBase = {
 	i:0,
 	/** 写邮件 */
 	writeEmail: function(){
+		var $view = $(this);
+		var $writeButton = $view.find(".bc-toolbar>button:eq(0)");
 		bc.page.newWin({
 			url:bc.root+"/bc/email/create",
 			mid:"email::create::"+bc.emailViewBase.i,
 			name:"新邮件",
-			title:"新邮件"
+			title:"新邮件",
+			afterClose: function(){
+				//通过发件箱的按钮写邮件
+				if($writeButton.hasClass('bc-email-vriteEmail-send'))bc.grid.reloadData($view);
+			}
 		});
 		bc.emailViewBase.i=bc.emailViewBase.i+1;
 	},
@@ -50,7 +56,7 @@ bc.emailViewBase = {
 				title:title,
 				afterClose: function(){
 					//查看收件箱中未读邮件，查看后刷新视图
-					if(openType==2&&$hidden.read === false)bc.grid.reloadData($view);
+					if(openType == 2 && $hidden.read === false)bc.grid.reloadData($view);
 				}
 			});
 		}else if($tds.length > 1){

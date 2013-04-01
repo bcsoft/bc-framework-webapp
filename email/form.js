@@ -165,7 +165,7 @@ bc.emailForm = {
 		});
 		
 		if(datas.length==0){
-			bc.msg.alert("请至少添加一个收件单位！");
+			bc.msg.alert("收件人不能为空！");
 			return;
 		}
 		$form.find(":input[name='receivers']").val($.toJSON(datas));
@@ -174,8 +174,14 @@ bc.emailForm = {
 		$form.find(":input[name='e.status']").val(1);
 		
 		bc.msg.confirm("确认发送邮件",function(){
+			var $processDlg = '<div data-type="custom" class="bc-page">';
+			$processDlg += '<div class="info">正在发送邮件。。。</div>';
+			$processDlg += '</div>';
+			$processDlg=$($processDlg);
+			$processDlg.dialog({title:"正在发送邮件", modal: true});
 			bc.page.save.call($form,{callback:function(json){
 				bc.msg.slide("发送成功");
+				$processDlg.dialog("close");
 				$form.dialog("close");
 				return false;
 			}});
