@@ -1,0 +1,247 @@
+/**
+ * 边栏样式
+ * @author rongjihuang@gmail.com
+ * @date 2013-03-20
+ **/
+
+/* 容器  */
+.sidebar {
+	box-sizing: border-box;
+	position: relative;
+	overflow: hidden !important;
+	margin: 0px;
+	padding: 0px;
+	cursor: default;
+	text-align: left;
+	font-size: 115%;
+}
+
+.sidebar>* {
+	text-align: left;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+}
+
+/* 通知中心  */
+.sidebar>.header {
+	border-width: 0;
+	padding: 0.4em;
+	text-align: center;
+	height: 4.6em;
+}
+
+.sidebar>.header>.label {
+	font-size: 110%;
+	padding-bottom: 0.2em;
+}
+
+.sidebar>.header>.btns {
+	position: absolute;
+	right: 2px;
+	top: 0.5em;
+	padding: 0;
+	margin: 0;
+}
+
+.sidebar>.header>.btns>.btn.ui-state-default {
+	background: transparent;
+}
+.sidebar>.header>.btns>.btn {
+	display: inline-block;
+	margin: auto 1px;
+	cursor: pointer;
+}
+
+.sidebar>.header>.search {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+}
+
+.sidebar>.header>.search>.ui-icon {
+	position: absolute;
+	top: 50%;
+	margin-top: -0.6em;
+	margin-left: 2px;
+}
+
+.sidebar>.header>.search>input {
+	height: 1.8em;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	padding: 0.2em 1.4em 0.2em 1.4em;
+	width: 100%;
+}
+
+/* 单行固定高度3列布局通用样式  */
+.sidebar .group .row {
+	position: relative;
+	border-width: 0;
+	padding: 0;
+	height: 1.6em;
+}
+
+.sidebar .group .row>.icon {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin-top: -8px;
+}
+
+.sidebar .group .row>.btn {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+	display: none;
+}
+
+.sidebar .group .row>.label {
+	margin: 0 18px 0 18px;
+	white-space: nowrap; /* 加上这个才能让中文也显示省略号，否则中文会自动换行 */
+	text-overflow: ellipsis;
+	overflow: hidden;
+	height: 1.6em;
+	line-height: 1.6em;
+}
+
+/* 信息分组  */
+.sidebar>.groups {
+	position: absolute;
+	border-width: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	top: 4.6em;
+}
+
+.sidebar>.groups>* {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.sidebar>.groups.group {
+	position: relative;
+}
+
+.sidebar .group>.header>.label>span:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/* 信息条目列表  */
+.sidebar .group>.rows {
+	overflow-x: hidden;
+	overflow-y: auto;
+	margin: 0 0 0 0px;
+	/* max-height: 8em;  */
+}
+
+.sidebar .group>.rows>.empty {
+	cursor: default;
+	height: auto;
+	font-style: italic;
+	opacity: .5;
+	text-align: center;
+}
+
+.sidebar .group>.rows>.row {
+	cursor: pointer;
+	height: auto;
+	border-bottom: 1px solid #ccc;
+	border-bottom-style: solid;
+}
+
+.sidebar .group>.rows>.row.last {
+	border-bottom-width: 0;
+}
+
+.sidebar .group>.rows>.row:hover>.header {
+	font-weight: bold;
+}
+.sidebar .group>.rows>.row:hover>.header>.label {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.sidebar .group>.rows>.row>.header>.time {
+	position: absolute;
+	height: 1.6em;
+	line-height: 1.6em;
+	right: 2px;
+	top: 50%;
+	margin-top: -0.8em;
+	text-align: right;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	width: 4.5em;
+	opacity: .9;
+	font-size: 80%;
+}
+
+.sidebar .group>.rows>.row>.header>.label {
+	margin-right: 4.5em;
+}
+
+.sidebar .group>.rows>.row>.detail {
+	opacity: .9;
+	max-height: 3em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	word-break: break-all;
+	margin: 0 2px 0 18px;
+	padding: 0;
+	font: inherit;
+	white-space: pre-wrap;
+	display: block;
+}
+
+/* 内滚动控制（每个group内部的条目区自滚动）*/
+.sidebar>.groups>.spliter {
+	display: none;
+	cursor: s-resize;
+	background-color: #eee;
+	height: .4em;
+	bottom: 16em;
+}
+
+.sidebar>.groups.innerScroll>.spliter {
+	display: block;
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+.sidebar>.groups.innerScroll {
+	overflow: hidden;
+}
+
+.sidebar>.groups.innerScroll>.group.task {
+	bottom: 15.6em;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+.sidebar>.groups.innerScroll>.group.mail {
+	height: 16em;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.sidebar>.groups.innerScroll>.group>.rows {
+	position: absolute;
+	top: 1.6em;
+	bottom: 0;
+	right: 0;
+	left: 0;
+}
