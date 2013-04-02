@@ -205,6 +205,16 @@ var NoticeGroupView = Backbone.View.extend({
 
 // 预定义的分组配置
 var GroupTypes={
+	email: {
+		mid: "myEmails",
+		title: "邮件",
+		url: "bc/emailTos/paging",
+		itemUrl: "bc/email/open",
+		itemData: "id={0}",
+		iconClass: "ui-icon-mail-closed",
+		itemIconClass: "ui-icon-mail-closed",
+		order: 3
+	},
 	todo: {
 		mid: "myTodos",
 		title: "个人待办",
@@ -224,16 +234,6 @@ var GroupTypes={
 		iconClass: "ui-icon-calendar",
 		itemIconClass: "ui-icon-person",
 		order: 2
-	},
-	email: {
-		mid: "myEmails",
-		title: "未读邮件",
-		url: "bc/emailTos/paging",
-		itemUrl: "bc/email/open",
-		itemData: "id={0}",
-		iconClass: "ui-icon-mail-closed",
-		itemIconClass: "ui-icon-mail-closed",
-		order: 3
 	}
 };
 
