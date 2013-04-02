@@ -6,7 +6,7 @@ var Notice = Backbone.Model.extend({
 	// 初始化
 	initialize: function() {
 	 	if (!this.get("iconClass")) {
-	 		var parentIconClass = GroupTypes[this.get("type")].iconClass;
+	 		var parentIconClass = GroupTypes[this.get("type")].itemIconClass;
 	 		if(parentIconClass)
 		 		this.set({"iconClass": parentIconClass});
 	 		else
@@ -26,7 +26,13 @@ var NoticeList = Backbone.Collection.extend({
 	},
 
 	// 关联到通知
-	model: Notice
+	model: Notice,
+	
+	comparator: "time",
+	
+	// 初始化
+	initialize: function() {
+	}
 });
 
 // 创建一个通知列表实例
@@ -60,7 +66,7 @@ var NoticeView = Backbone.View.extend({
 
 	// 渲染
 	render: function() {
-		logger.info("m:render");
+		if(logger.infoEnabled)logger.info("m:render");
 		this.$el.html(this.template(this.model.toJSON()));
 		this.time = this.$(">.header>.time");
 		return this;
@@ -68,7 +74,7 @@ var NoticeView = Backbone.View.extend({
 
 	// 自动更新相对时间的显示
 	updateTime4moment: function() {
-		logger.info("m:updateTime4moment");
+		if(logger.debugEnabled)logger.debug("m:updateTime4moment");
 		this.time.html(this.model.get("time4moment"));
 		return this;
 	},
@@ -93,7 +99,8 @@ var NoticeGroupView = Backbone.View.extend({
 			+'<div class="label"><span><%- title %></span></div>'
 			+'<div class="btn close ui-icon ui-icon-close"></div>'
 		+'</div>'
-		+'<div class="rows"></div>'),
+		+'<div class="rows"><div class="empty">(无)</div></div>'),
+	empty: '<div class="empty">(无)</div>',
 
 	// 绑定DOM事件
 	events: {
@@ -102,13 +109,14 @@ var NoticeGroupView = Backbone.View.extend({
 
 	// 初始化
 	initialize: function() {
+		this.itemViews={};
 		// 初始化dom结构
 		this.render();
 	},
 
 	// 渲染
 	render: function() {
-		//alert("NoticeGroupView.render");
+		if(logger.infoEnabled)logger.info("mg:render");
 		this.$el.html(this.template(this.model));
 		this.rows = this.$(">.rows");
 		return this;
@@ -131,9 +139,41 @@ var NoticeGroupView = Backbone.View.extend({
 
 	// 在组中添加一项
 	add: function(notice) {
+		if(this.rows.is(":has(.empty)"))
+			this.rows.empty();
 	    var view = new NoticeView({model: notice});
 	    this.rows.append(view.render().el);
-	}
+	    this.itemViews[notice.cid] = view;
+	},
+
+	// 在组中移除一项
+	removeItem: function(notice) {
+		if(logger.infoEnabled)logger.info("group:removeItem");
+	    this.itemViews[notice.cid].remove();
+	    delete this.itemViews[notice.cid];
+		if(this.rows.is(":empty"))
+			this.rows.append(this.empty);
+	},
+
+ 	// 搜索
+ 	doSearch: function(text) {
+		if(logger.infoEnabled)logger.info("mg:doSearch:" + this.$el.find(">.header>.label>span").text() + ":" + text);
+ 	   	
+		var view,model;
+		for(var key in this.itemViews){
+			view = this.itemViews[key];
+			model = view.model;
+			//if(logger.infoEnabled)logger.info("id=" + model.id + "," + model.get("title"));
+			if(model.get("title").indexOf(text) != -1 
+				|| (model.has("content") && model.get("content").indexOf(text) != -1)){
+				if(logger.infoEnabled)logger.info("match:title=" + model.get("title"));
+				view.$el.show();
+			}else{
+				view.$el.hide();
+			}
+		}
+ 	   	return false;
+ 	}
 });
 
 // 预定义的分组配置
@@ -144,6 +184,7 @@ var GroupTypes={
 		url: "bc-workflow/todo/personals/list",			// 视图url
 		itemUrl: "bc-workflow/workspace/open?id={0}",	// 表单url
 		iconClass: "ui-icon-calendar",
+		itemIconClass: "ui-icon-check",
 		order: 1
 	},
 	groupTodo: {
@@ -152,6 +193,7 @@ var GroupTypes={
 		url: "bc-workflow/todo/personals/list",
 		itemUrl: "bc-workflow/workspace/open?id={0}",
 		iconClass: "ui-icon-calendar",
+		itemIconClass: "ui-icon-person",
 		order: 2
 	},
 	email: {
@@ -160,6 +202,7 @@ var GroupTypes={
 		url: "bc/email/personals/list",
 		itemUrl: "bc/email/open?id={0}",
 		iconClass: "ui-icon-mail-closed",
+		itemIconClass: "ui-icon-mail-closed",
 		order: 3
 	}
 };
@@ -176,8 +219,8 @@ var SidebarView = Backbone.View.extend({
 //				+'<div class="btn toggle">'
 //					+'<span class="ui-icon ui-icon-transferthick-e-w"></span>'
 //				+'</div>'
-				+'<div class="btn config">'
-					+'<span class="ui-icon ui-icon-wrench"></span>'
+				+'<div class="btn refresh" title="刷新">'
+					+'<span class="ui-icon ui-icon-refresh"></span>'
 				+'</div>'
 			+'</div>'
 			+'<div class="label">通知中心</div>'
@@ -190,32 +233,56 @@ var SidebarView = Backbone.View.extend({
 
 	// 定义事件委托
 	events: {
-		"click >.header>.btns>.btn.config": "config",
-		"keypress >.header>.search>input": "searchOnEnter"
+		"click .header>.btns>.btn.refresh": "refresh",
+		"keypress .header>.search>input": "doSearchOnEnter",
+		"click .header>.search>a": "doSearch"
 	},
 
 	// 初始化
 	initialize: function() {
+		var _this = this;
 		// 初始化dom结构
 		this.render();
 		
 		// 监听模块列表的事件
 		this.listenTo(notices, 'add', this.add);
-		this.listenTo(notices, 'reset', this.addAll);
-
-		// 加载数据
-		notices.fetch();
+		this.listenTo(notices, 'reset', this.reset);
+		this.listenTo(notices, 'remove', this.removeItem);
+		
+		// 每间隔一段时间更新相对时间的值
+		window.setInterval(function(){
+			if(_this.refreshing) return;
+			logger.info("sidebar:updateMoment");
+			notices.each(function(m){
+				m.set({"time4moment": moment(m.get("time"), "YYYY-MM-DD HH:mm:ss").fromNow()});
+			});
+		},60000);
+		
+		this.refresh();
+		// 每间隔一段时间重新获取数据
+		window.setInterval(function(){
+			_this.refresh();
+		},300000);
 	},
 
  	// 渲染
  	render: function() {
+		if(logger.infoEnabled)logger.info("sidebar:render");
 		this.$el.toggleClass("sidebar",true).html(this.template({}));
 		
 		// 缓存一些内部的dom对象
 		this.input = this.$(">.header>.search>input");
 		this.groups = this.$(">.groups");
+		
+		// 生成空的分组
+		for(var key in GroupTypes){
+		    var groupView = new NoticeGroupView({
+		    	model: GroupTypes[key]
+		    });
+		    this.groupViews[key] = groupView;
+		    this.groups.append(groupView.el);
+		}
 
-	    //alert("SidebarView.render");
 		return this;
 	},
 
@@ -225,14 +292,25 @@ var SidebarView = Backbone.View.extend({
  	},
 
  	// 回车后搜索
-	searchOnEnter: function(e) {
+ 	doSearchOnEnter: function(e) {
  	   	if (e.keyCode != 13) return;
- 	   	if (!this.input.val()) return;
- 	   	alert("TODO: searchOnEnter:" + this.input.val());
+ 	   	this.doSearch();
+ 	   	return false;
+ 	},
+
+ 	// 搜索
+ 	doSearch: function() {
+		if(logger.infoEnabled)logger.info("sidebar:doSearch:" + this.input.val());
+ 	   	
+		for(var key in this.groupViews){
+			this.groupViews[key].doSearch(this.input.val());
+		}
+ 	   	return false;
  	},
 
 	// 在组中添加一项
 	add: function(notice) {
+		if(logger.infoEnabled)logger.info("sidebar:add");
 		var type = notice.get("type");
 		if(!this.groupViews[type]){
 			// 创建分组
@@ -246,27 +324,50 @@ var SidebarView = Backbone.View.extend({
 		// 添加信息条目
 		this.groupViews[type].add(notice);
 	},
+	
+	// 在组中移除1项
+	removeItem: function(model) {
+		if(logger.infoEnabled)logger.info("sidebar:removeItem=" + model.get("type"));
+		this.groupViews[model.get("type")].removeItem(model);
+	},
 
 	// 在组中重新添加全部
-	addAll: function() {
-		alert("addAll");
-		notices.each(this.addOne, this);
+	reset: function(models) {
+		if(logger.infoEnabled)logger.info("sidebar:reset");
+		this.groups.empty();
+		this.groupViews = {};
 	},
 
 	// 刷新
-	refresh: function() {
-		alert("TODO: sidebar.refresh");
+	refresh: function(callback) {
+		var _this = this;
+		logger.info("sidebar:refreshing=" + this.refreshing);
+		//this.input.val("");
+		if(this.refreshing) return;
+		this.refreshing = true;
+		
+		// 清空数据
+		notices.each(function(model){
+			notices.remove(model);
+		});
+
+		// 加载数据
+		logger.info("sidebar:refresh-start");
+		notices.fetch({
+			reset: false,
+			success:function(){
+				logger.info("sidebar:refresh-success");
+				_this.refreshing = false;
+				_this.doSearch();
+			},
+			error: function(){
+				logger.info("sidebar:refresh-error");
+				_this.refreshing = false;
+			}
+		});
 	}
 });
 
 // 创建边栏的实例
 bc.sidebar = new SidebarView;
-
-// 定时更新时间的相对值
-window.setInterval(function(){
-	notices.each(function(m){
- 		m.set({"time4moment": moment(m.get("time"), "YYYY-MM-DD HH:mm:ss").fromNow()});
-	});
-}, 60000);
-
 })(jQuery);

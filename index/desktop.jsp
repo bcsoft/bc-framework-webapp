@@ -202,7 +202,6 @@
 			profile:$.noop,enable:$.noop,disabled:$.noop,show:$.noop,test:true
 		};
 	}
-	logger.toggle();
 	</script>
 </s:else>
 <!-- 额外加载的js文件 -->

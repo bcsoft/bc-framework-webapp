@@ -141,6 +141,14 @@
 	/* max-height: 8em;  */
 }
 
+.sidebar .group>.rows>.empty {
+	cursor: default;
+	height: auto;
+	font-style: italic;
+	opacity: .5;
+	text-align: center;
+}
+
 .sidebar .group>.rows>.row {
 	cursor: pointer;
 	height: auto;
