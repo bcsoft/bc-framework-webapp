@@ -20,15 +20,16 @@ bc.groupSelectDialog = {
 			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
 			data.name = $trs.find("td:eq(1)").attr("data-value");
 			data.account = $trs.find("td:eq(2)").attr("data-value");
+			$.extend(data,$trs.data("hidden"));
 		}else{//多选
 			data = [];
 			var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
 			$tds.each(function(i){
-				data.push({
+				data.push($.extend({
 					id: $(this).attr("data-id"),
 					name:$($trs.get(i)).find("td:eq(1)").attr("data-value"),
 					account:$($trs.get(i)).find("td:eq(2)").attr("data-value")
-				});
+				},$($trs.get(i)).data("hidden")));
 			});
 		}
 		logger.info($.toJSON(data));
