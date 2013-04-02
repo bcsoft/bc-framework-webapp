@@ -75,6 +75,9 @@
 }
 
 /* 单行固定高度3列布局通用样式  */
+.sidebar .group.collapse>.rows {
+	display: none;
+}
 .sidebar .group .row {
 	position: relative;
 	border-width: 0;
@@ -95,7 +98,6 @@
 	top: 50%;
 	margin-top: -8px;
 	cursor: pointer;
-	display: none;
 }
 
 .sidebar .group .row>.label {
@@ -128,7 +130,7 @@
 	position: relative;
 }
 
-.sidebar .group>.header>.label>span:hover {
+.sidebar .group>.header>.label>span.title:hover {
 	text-decoration: underline;
 	cursor: pointer;
 }
