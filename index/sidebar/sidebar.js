@@ -46,10 +46,10 @@ var NoticeView = Backbone.View.extend({
 	// Cache the template function for a single item.
 	template: _.template('<div class="header row">'
 		+'		<div class="icon ui-icon <%- iconClass %>"></div>'
-		+'		<div class="label"><%- title %></div>'
+		+'		<div class="label" title="<%- title %>"><%- title %></div>'
 		+'		<div class="time"><%- time4moment %></div>'
 		+'	</div>'
-		+'	<pre class="detail"><%- content %></pre>'),
+		+'	<pre class="detail" title="<%- content %>"><%- content %></pre>'),
 
 	// 绑定DOM事件
 	events: {
