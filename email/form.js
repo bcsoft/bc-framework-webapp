@@ -87,7 +87,9 @@ bc.emailForm = {
 				onOk: function(groups){
 					$.each(groups,function(i,group){
 						if($lis.filter("[data-id='" + group.id + "']").size() > 0){//已存在
-							logger.info("duplicate select: id=" + group.id + ",name=" + user.name);
+							logger.info("duplicate select: id=" + group.id + ",name=" + group.name);
+						}else if(group.count=="0"){
+							logger.info("size 0 select: id=" + group.id + ",name=" + group.name);
 						}else{//新添加的
 							var data={
 								id:group.id,
@@ -106,7 +108,7 @@ bc.emailForm = {
 			});
 		});
 		
-		//绑定添加岗位
+		//绑定添加单位或部门
 		$form.delegate("ul>.email-addUnitOrDepartments","click",function(){
 			var $div = $(this).closest("div");
 			var $ul = $div.find(".ulReceiver");
@@ -121,7 +123,9 @@ bc.emailForm = {
 				onOk: function(groups){
 					$.each(groups,function(i,group){
 						if($lis.filter("[data-id='" + group.id + "']").size() > 0){//已存在
-							logger.info("duplicate select: id=" + group.id + ",name=" + user.name);
+							logger.info("duplicate select: id=" + group.id + ",name=" + group.name);
+						}else if(group.count=="0"){
+							logger.info("size 0 select: id=" + group.id + ",name=" + group.name);
 						}else{//新添加的
 							var data={
 								id:group.id,
