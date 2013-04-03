@@ -210,7 +210,7 @@ var GroupTypes={
 		title: "邮件",
 		url: "bc/emailTos/paging",
 		itemUrl: "bc/email/open",
-		itemData: "id={0}",
+		itemData: "openType=2&id={0}",
 		iconClass: "ui-icon-mail-closed",
 		itemIconClass: "ui-icon-mail-closed",
 		order: 3
