@@ -46,10 +46,10 @@ var NoticeView = Backbone.View.extend({
 	// Cache the template function for a single item.
 	template: _.template('<div class="header row">'
 		+'		<div class="icon ui-icon <%- iconClass %>"></div>'
-		+'		<div class="label"><%- title %></div>'
+		+'		<div class="label" title="<%- title %>"><%- title %></div>'
 		+'		<div class="time"><%- time4moment %></div>'
 		+'	</div>'
-		+'	<pre class="detail"><%- content %></pre>'),
+		+'	<pre class="detail" title="<%- content %>"><%- content %></pre>'),
 
 	// 绑定DOM事件
 	events: {
@@ -81,10 +81,12 @@ var NoticeView = Backbone.View.extend({
 
 	// 打开链接
 	open: function() {
+		var g = GroupTypes[this.model.get("type")];
 		bc.page.newWin({
 			name: this.model.get("title") || "(无)",
 			mid: this.model.get("type") + this.model.get("dbid"),
-			url: GroupTypes[this.model.get("type")].itemUrl.format(this.model.get("dbid"))
+			url: g.itemUrl,
+			data: g.itemData.format(this.model.get("dbid"))
 		});
 	}
 });
@@ -96,8 +98,8 @@ var NoticeGroupView = Backbone.View.extend({
 	template: _.template(
 		'<div class="header row ui-widget-header">'
 			+'<div class="icon ui-icon <%- iconClass %>"></div>'
-			+'<div class="label"><span><%- title %></span></div>'
-			+'<div class="btn close ui-icon ui-icon-close"></div>'
+			+'<div class="label"><span class="title"><%- title %></span> (<span class="count">0</span>)</div>'
+			+'<div class="btn toggle ui-icon ui-icon-triangle-1-n" title="点击展开"></div>'
 		+'</div>'
 		+'<div class="rows"><div class="empty">(无)</div></div>'),
 	empty: '<div class="empty">(无)</div>',
@@ -105,11 +107,13 @@ var NoticeGroupView = Backbone.View.extend({
 	// 绑定DOM事件
 	events: {
 		"click .header>.label>span": "open",
+		"click .header>.btn.toggle": "toggle"
 	},
 
 	// 初始化
 	initialize: function() {
-		this.itemViews={};
+		this.count = 0;
+		this.itemViews = {};
 		// 初始化dom结构
 		this.render();
 	},
@@ -119,6 +123,8 @@ var NoticeGroupView = Backbone.View.extend({
 		if(logger.infoEnabled)logger.info("mg:render");
 		this.$el.html(this.template(this.model));
 		this.rows = this.$(">.rows");
+		this.toggleBtn = this.$(">.header>.btn.toggle");
+		this.countEl = this.$(">.header>.label>.count");
 		return this;
 	},
 
@@ -128,7 +134,7 @@ var NoticeGroupView = Backbone.View.extend({
 		bc.page.newWin({
 			name: g.title,
 			mid: g.mid,
-			url: g.url,
+			url: g.url
 		});
 	},
 
@@ -139,11 +145,14 @@ var NoticeGroupView = Backbone.View.extend({
 
 	// 在组中添加一项
 	add: function(notice) {
-		if(this.rows.is(":has(.empty)"))
+		if(this.rows.is(":has(.empty)")){
 			this.rows.empty();
+		}
 	    var view = new NoticeView({model: notice});
 	    this.rows.append(view.render().el);
 	    this.itemViews[notice.cid] = view;
+	    this.count++;
+	    this.countEl.text(this.count);
 	},
 
 	// 在组中移除一项
@@ -153,6 +162,8 @@ var NoticeGroupView = Backbone.View.extend({
 	    delete this.itemViews[notice.cid];
 		if(this.rows.is(":empty"))
 			this.rows.append(this.empty);
+	    this.count--;
+	    this.countEl.text(this.count);
 	},
 
  	// 搜索
@@ -173,16 +184,43 @@ var NoticeGroupView = Backbone.View.extend({
 			}
 		}
  	   	return false;
- 	}
+ 	},
+
+	// 折叠或展开
+	toggle: function() {
+		this.$el.toggleClass("collapse");
+		var isCollapse = this.$el.hasClass("collapse");
+		if(isCollapse){
+			this.toggleBtn.toggleClass("ui-icon-triangle-1-s",true)
+				.toggleClass("ui-icon-triangle-1-n",false)
+				.attr("title","点击展开");
+		}else{
+			this.toggleBtn.toggleClass("ui-icon-triangle-1-n",true)
+				.toggleClass("ui-icon-triangle-1-s",false)
+				.attr("title","点击折叠");
+		}
+		return false;
+	}
 });
 
 // 预定义的分组配置
 var GroupTypes={
+	email: {
+		mid: "myEmails",
+		title: "邮件",
+		url: "bc/emailTos/paging",
+		itemUrl: "bc/email/open",
+		itemData: "id={0}",
+		iconClass: "ui-icon-mail-closed",
+		itemIconClass: "ui-icon-mail-closed",
+		order: 3
+	},
 	todo: {
 		mid: "myTodos",
 		title: "个人待办",
 		url: "bc-workflow/todo/personals/list",			// 视图url
-		itemUrl: "bc-workflow/workspace/open?id={0}",	// 表单url
+		itemUrl: "bc-workflow/workspace/open",	// 表单url
+		itemData: "id={0}",
 		iconClass: "ui-icon-calendar",
 		itemIconClass: "ui-icon-check",
 		order: 1
@@ -191,19 +229,11 @@ var GroupTypes={
 		mid: "myGroupTodos",
 		title: "岗位待办",
 		url: "bc-workflow/todo/personals/list",
-		itemUrl: "bc-workflow/workspace/open?id={0}",
+		itemUrl: "bc-workflow/workspace/open",
+		itemData: "id={0}",
 		iconClass: "ui-icon-calendar",
 		itemIconClass: "ui-icon-person",
 		order: 2
-	},
-	email: {
-		mid: "myEmails",
-		title: "未读邮件",
-		url: "bc/email/personals/list",
-		itemUrl: "bc/email/open?id={0}",
-		iconClass: "ui-icon-mail-closed",
-		itemIconClass: "ui-icon-mail-closed",
-		order: 3
 	}
 };
 
@@ -222,6 +252,9 @@ var SidebarView = Backbone.View.extend({
 				+'<div class="btn refresh" title="刷新">'
 					+'<span class="ui-icon ui-icon-refresh"></span>'
 				+'</div>'
+				+'<div class="btn toggle" title="展开|折叠信息">'
+					+'<span class="ui-icon ui-icon-carat-2-n-s"></span>'
+				+'</div>'
 			+'</div>'
 			+'<div class="label">通知中心</div>'
 			+'<div class="search">'
@@ -234,6 +267,7 @@ var SidebarView = Backbone.View.extend({
 	// 定义事件委托
 	events: {
 		"click .header>.btns>.btn.refresh": "refresh",
+		"click .header>.btns>.btn.toggle": "toggle",
 		"keypress .header>.search>input": "doSearchOnEnter",
 		"click .header>.search>a": "doSearch"
 	},
@@ -365,6 +399,14 @@ var SidebarView = Backbone.View.extend({
 				_this.refreshing = false;
 			}
 		});
+	},
+
+	// 折叠或展开
+	toggle: function() {
+		for(var key in this.groupViews){
+			this.groupViews[key].toggle();
+		}
+		return false;
 	}
 });
 
