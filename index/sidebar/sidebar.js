@@ -99,7 +99,7 @@ var NoticeGroupView = Backbone.View.extend({
 		'<div class="header row ui-widget-header">'
 			+'<div class="icon ui-icon <%- iconClass %>"></div>'
 			+'<div class="label"><span class="title"><%- title %></span> (<span class="count">0</span>)</div>'
-			+'<div class="btn toggle ui-icon ui-icon-triangle-1-n" title="点击展开"></div>'
+			+'<div class="btn toggle ui-icon ui-icon-triangle-1-n" title="点击折叠"></div>'
 		+'</div>'
 		+'<div class="rows"><div class="empty">(无)</div></div>'),
 	empty: '<div class="empty">(无)</div>',
