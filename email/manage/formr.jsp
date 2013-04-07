@@ -5,7 +5,7 @@
 	data-initMethod='bc.email2ManageFormr.init'
 	data-option='<s:property value="formPageOption"/>' style="overflow-y:auto;cursor: default;">
 	<s:form name="emailManageFormr" theme="simple" style="margin:10px;" >
-		<div class="email-subject" style='text-align:left;font-size:20px;outline:0;color:black;margin-bottom:8px;position:relative;'>
+		<div tabindex="-1" class="email-subject" style='text-align:left;font-size:20px;outline:0;color:black;margin-bottom:8px;position:relative;'>
 			<s:property value="e.subject" escapeHtml="false"/>
 			<ul class="inputIcons email-open">
 				<li class="emailFormr-fromNow inputIcon" style="width:auto;height:atuo;font-size:14px;cursor:default;font-weight:normal;margin-right:3px;"></li>
