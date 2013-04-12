@@ -95,6 +95,9 @@ bc.toolbar = {
 					var op = {type:c.type,ql:c.ql,value:value};
 					if(c.likeType)
 						op.likeType = c.likeType;
+					if(c.name){
+						op.name=c.name;
+					}
 					conditions.push(op);
 				}
 			}else if($this.is(".radios,.checkboxes")){//单选按钮组或多选框的容器
