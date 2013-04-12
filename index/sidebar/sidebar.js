@@ -82,11 +82,9 @@ var NoticeView = Backbone.View.extend({
 	// 打开链接
 	open: function() {
 		var g = GroupTypes[this.model.get("type")];
-		bc.page.newWin({
-			name: this.model.get("title") || "(无)",
-			mid: this.model.get("type") + this.model.get("dbid"),
-			url: g.itemUrl,
-			data: g.itemData.format(this.model.get("dbid"))
+		bc.flow.openWorkspace({
+			name : this.model.get("title") || "(无)",
+			id : this.model.get("dbid")
 		});
 	}
 });
@@ -97,7 +95,7 @@ var NoticeGroupView = Backbone.View.extend({
 	className: "group",
 	template: _.template(
 		'<div class="header row ui-widget-header">'
-			+'<div class="icon ui-icon <%- iconClass %>"></div>'
+			+'<div class="icon u i-icon <%- iconClass %>"></div>'
 			+'<div class="label"><span class="title"><%- title %></span> (<span class="count">0</span>)</div>'
 			+'<div class="btn toggle ui-icon ui-icon-triangle-1-n" title="点击展开"></div>'
 		+'</div>'
@@ -216,7 +214,7 @@ var GroupTypes={
 		order: 3
 	},
 	todo: {
-		mid: "myTodos",
+		mid: "workspace",
 		title: "个人待办",
 		url: "bc-workflow/todo/personals/list",			// 视图url
 		itemUrl: "bc-workflow/workspace/open",	// 表单url
@@ -226,7 +224,7 @@ var GroupTypes={
 		order: 1
 	},
 	groupTodo: {
-		mid: "myGroupTodos",
+		mid: "workspace",
 		title: "岗位待办",
 		url: "bc-workflow/todo/personals/list",
 		itemUrl: "bc-workflow/workspace/open",
