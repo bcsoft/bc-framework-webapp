@@ -28,11 +28,14 @@ bc.validator = {
 	 * required的值控制是否必须填写true|false
 	 * @$form 表单form的jquery对象
 	 */
-	validate: function($form) {
+	validate: function($form,ignoreFileds) {
 		var ok = true;
 		$form.find("div.input[data-validate],:input:enabled:not(input[type='hidden']):not(:button):not(textarea.bc-editor)")
 		//添加内部特殊的div模拟input控件的验证
 		.each(function(i, n){
+			//判断查找中的对象存在ignoreFileds(忽略必填验证域的name属性值)中就返回不作验证
+			if(ignoreFileds && $.inArray(this.name,ignoreFileds)!=-1)
+				return;
 			var $this = $(this);
 			var validate = $this.attr("data-validate");
 			if(logger.debugEnabled)logger.debug("validate=" + validate);

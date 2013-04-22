@@ -383,7 +383,13 @@ bc.page = {
 	 * @param {Object} option
 	 * @option {Function} callback 保存成功后的回调函数，上下文为当前页面，第一个参数为服务器返回的json对象
 	 */
-	save: function(option) {
+	save: function(option,isValidationValue) {
+		//默认须要验证
+		var isValidation=true;
+		if(isValidationValue!=undefined && !isValidationValue){
+			isValidation=isValidationValue;
+		}
+		
 		option = option || {};
 		var $page = $(this);
 		var url=$page.attr("data-saveUrl");
@@ -405,7 +411,7 @@ bc.page = {
 		$page.data("saving",true);
 		
 		//表单验证
-		if(!bc.validator.validate($form)){
+		if(isValidation && !bc.validator.validate($form)){
 			$page.data("saving",false);
 			return;
 		}
