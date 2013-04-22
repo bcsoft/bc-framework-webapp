@@ -82,10 +82,22 @@ var NoticeView = Backbone.View.extend({
 	// 打开链接
 	open: function() {
 		var g = GroupTypes[this.model.get("type")];
-		bc.flow.openWorkspace({
-			name : this.model.get("title") || "(无)",
-			id : this.model.get("dbid")
-		});
+		
+		//邮件
+		if(this.model.get("type")=='email'){
+			bc.page.newWin({
+				name: this.model.get("title") || "(无)",
+				mid: this.model.get("type") + this.model.get("dbid"),
+				url: g.itemUrl,
+				data: g.itemData.format(this.model.get("dbid"))
+			});
+			
+		}else{
+			bc.flow.openWorkspace({
+				name : this.model.get("title") || "(无)",
+				id : this.model.get("dbid")
+			});
+		}		
 	}
 });
 
