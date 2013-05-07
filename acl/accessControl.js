@@ -36,4 +36,47 @@ bc.addAccessControl = function(option) {
 			name:option.name ? option.name : "["+option.docName+"]监控配置",
 			title:option.title ? option.title : "["+option.docName+"]监控配置",
 		});
-}
+};
+
+/** 
+ * 访问监控【可以在模块中直接调用】 
+ * 默认已选择查阅，
+ * 视图必须要配置一下两个隐藏列
+ *accessControlDocType
+ *accessControlDocName
+ *
+ */
+bc.accessControl = function(){
+	var $page = $(this);
+	// 获取用户选中的条目
+	var ids = bc.grid.getSelected($page.find(".bc-grid"));
+	if(ids.length == 0){
+		bc.msg.slide("请先选择需要访问配置的信息！");
+		return;
+	}
+	
+	if(ids.length > 1){
+		bc.msg.slide("只能对一个信息操作！");
+		return;
+	}
+	
+	var $tr = $page.find(".bc-grid>.data>.right tr.ui-state-highlight");
+	var $hidden = $tr.data("hidden");
+	
+	if(!($hidden && $hidden.accessControlDocType)){
+		alert("视图必须要添加：accessControlDocType隐藏列！");
+		return;
+	}
+	
+	if(!($hidden && $hidden.accessControlDocName)){
+		alert("视图必须要添加：accessControlDocName隐藏列！");
+		return;
+	}
+	
+	bc.addAccessControl({
+		docId:ids[0],
+		docType:$hidden.accessControlDocType,
+		docName:$hidden.accessControlDocName,
+		showRole:"01"
+	});
+};
