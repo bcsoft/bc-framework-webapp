@@ -138,7 +138,13 @@ bc.spider = {
 		});
 		
 		// 自动请求
-		if(config.auto){
+		var auto = $page.find(".hiddenFields>input[name=auto]").val();
+		if(auto && auto.length > 0){// 有强制配置
+			auto = (auto === "true");
+		}else{// 无强制配置就使用系统配置
+			auto = config.auto;
+		}
+		if(auto){
 			$go.click();
 		}
 	},

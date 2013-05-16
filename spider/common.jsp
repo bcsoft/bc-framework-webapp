@@ -32,6 +32,7 @@
 	<div class="hiddenFields">
 		<s:hidden name='config'></s:hidden>
 		<s:hidden name='code'></s:hidden>
+		<s:hidden name='auto'></s:hidden>
 		<s:hidden name='params'></s:hidden>
 	</div>
 	</div>
