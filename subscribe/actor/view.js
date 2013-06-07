@@ -94,20 +94,24 @@ bc.subscribeActorView = {
 			data = $.extend({
 				actorIds : actorIds
 			},data);
-		}	
+		}
 		
-		bc.ajax({
-			url:bc.root+"/bc/subscribe/delete4manager",
-			data:data,
-			dataType:"json",
-			success:function(json){
-				if(json.success){
-					bc.msg.slide(json.msg);
-					bc.grid.reloadData($view);
-				}else{
-					bc.msg.alert(json.msg);
-				}
+		bc.msg.confirm("确定删除选中的订阅人吗？",
+				function(){
+				bc.ajax({
+					url:bc.root+"/bc/subscribe/delete4manager",
+					data:data,
+					dataType:"json",
+					success:function(json){
+						if(json.success){
+							bc.msg.slide(json.msg);
+							bc.grid.reloadData($view);
+						}else{
+							bc.msg.alert(json.msg);
+						}
+					}
+				});
 			}
-		});
+		);
 	}
 };
