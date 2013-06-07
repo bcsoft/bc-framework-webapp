@@ -366,6 +366,19 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 .ui-dialog .ui-dialog-titlebar-buttons a span {display: block; margin: 1px;}
 .ui-dialog .ui-dialog-titlebar-buttons a:hover, .ui-dialog .ui-dialog-titlebar-buttons a:focus {padding: 0;}
 
+/* 禁止文本溢自动换行，文字溢出就显示省略号 */
+.nowrap,.nowrap>th,.nowrap>td{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+/* 文本自动换行 */
+.autowrap,.autowrap>th,.autowrap>td{
+	white-space: normal;
+	overflow: auto;
+	word-wrap: break-word;
+	word-break: break-all;
+}
 /**
  * tabs组件水平布局的样式设置
  *
