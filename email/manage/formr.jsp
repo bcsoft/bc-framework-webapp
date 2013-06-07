@@ -42,7 +42,7 @@
 			</s:if>
 			<s:if test="%{ccList != null}">
 				<tr>
-					<td class="label">抄&nbsp;&nbsp;&nbsp;送：</td>
+					<td class="topLabel">抄&nbsp;&nbsp;&nbsp;送：</td>
 					<td class="value">
 						<s:iterator var="t" value="ccList" status="st">
 							<s:if test="%{#st.index > 0}">、</s:if>
@@ -61,7 +61,7 @@
 			</s:if>
 			<s:if test="%{bccList != null }">
 				<tr>
-					<td class="label">密&nbsp;&nbsp;&nbsp;送：</td>
+					<td class="topLabel">密&nbsp;&nbsp;&nbsp;送：</td>
 					<td class="value">
 						<s:iterator var="t" value="bccList" status="st">
 							<s:if test="%{#st.index > 0}">、</s:if>
