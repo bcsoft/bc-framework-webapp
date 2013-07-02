@@ -118,6 +118,12 @@ bc.spider = {
 						$status.text("查询完成！(" + from.toLocaleString() + " ～ " + new Date().toLocaleString()+")");
 						if(typeof(json.html) == "string"){
 							$result.html(json.html);
+
+                            // 重置验证码
+                            if(captchaField){
+                                $params.find("input[name='"+captchaField.name+"']").val("");
+                                $params.find("img.captcha").attr("src",bc.root+"/bc/spider/captcha.jpg");
+                            }
 						}else{
 							
 						}
