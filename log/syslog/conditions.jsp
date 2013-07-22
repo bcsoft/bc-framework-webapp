@@ -15,15 +15,15 @@
 			<div class="label">登录日期</div>
 			<div class="value">
 				<div class="bc-dateContainer">
-					<input type="text" class="bc-datetime ui-widget-content" data-validate="datetime" style="width:12em;"
-						data-condition='{"type":"date","ql":"l.file_date>=?"}'>
+					<input type="text" class="bc-date ui-widget-content" data-validate="date" style="width:12em;"
+						data-condition='{"type":"startDate","ql":"l.file_date>=?"}'>
 					<ul class="inputIcons">
 						<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"></li>
 						<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
 					</ul>
 				</div>～<div class="bc-dateContainer">
-					<input type="text" class="bc-datetime ui-widget-content" data-validate="datetime" style="width:12em;"
-						data-condition='{"type":"date","ql":"l.file_date<=?"}'>
+					<input type="text" class="bc-date ui-widget-content" data-validate="date" style="width:12em;"
+						data-condition='{"type":"endDate","ql":"l.file_date<=?"}'>
 					<ul class="inputIcons">
 						<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"></li>
 						<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
