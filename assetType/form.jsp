@@ -3,7 +3,7 @@
 <div title='<s:text name="assetType.title"/>' data-type='form' class="bc-page bc-autoScroll"
 	data-saveUrl='<s:url value="/bc/assetType/save" />'
 	data-js='<s:url value="/bc/assetType/form.js" />'
-	data-initMethod='bc.assetType.init'
+	data-initMethod='bc.assetTypeForm.init'
 	data-option='{
 		"buttons":[{"text":"<s:text name="label.save"/>","action":"save"}],
 		"width":600,"minWidth":280,"minHeight":200,"modal":false
@@ -19,7 +19,7 @@
 						<td class="value relative"><s:textfield name="e.parent.name"
 							readonly="true" title='%{getText("resource.title.click2selectIconClass")}' cssClass="ui-widget-content"/>
 							<ul class="inputIcons">
-								<li id="selectOptionType" class="inputIcon ui-icon ui-icon-circle-plus"
+								<li id="selectAssetType" class="inputIcon ui-icon ui-icon-circle-plus"
 									title='<s:text name="title.click2select"/>'></li>
 								<li class="clearSelect inputIcon ui-icon ui-icon-circle-close" 
 									data-cfg='e.parent.id,e.parent.name'
@@ -57,8 +57,5 @@
 		<s:hidden name="e.parent.id"/>
 		<s:hidden name="e.author.id" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
-		<s:hidden name="e.modifier.id"/>
-		<input type="hidden" name="e.modifiedDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.modifiedDate" />'/>
-		
 	</s:form>
 </div>
