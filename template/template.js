@@ -80,7 +80,7 @@ bc.addAttachFromTemplate = function($atm,id,action,option) {
 		    	f=tpls[i];
 				//上传进度显示
 				var attach = bc.attach.tabelTpl.format(f.size,bc.attach.getSizeInfo(f.size),f.path.substr(f.path.lastIndexOf(".")+1).toLowerCase(),f.subject);
-				$(attach).attr("data-tpl",batchNo+i).appendTo($atm.find(".header")).find(".progressbar").progressbar();
+				$(attach).attr("data-tpl",batchNo+i).insertAfter($atm.find(".header")).find(".progressbar").progressbar();
 		    }
 		    
 		    //逐一处理模板
@@ -120,7 +120,7 @@ bc.addAttachFromTemplate = function($atm,id,action,option) {
 							
 							$attach.attr("data-id",json.id)
 								.attr("data-name",json.subject)
-								.attr("data-url",bc.root + "/bc/attach/download?id=" + json.id)
+								.attr("data-url",json.path)
 								.removeAttr("data-tpl");
 						},200);
 						
@@ -136,4 +136,67 @@ bc.addAttachFromTemplate = function($atm,id,action,option) {
 			startUpload(batchNo + i,tpls[0]);
 		}
 	}));
+}
+
+/** 
+ * 根据模板编码添加附件
+ * @param {String} code 模板编码
+ * @param {String} $atm 附件控件对象					
+ * @param {String} id 附件所属文档的id		
+ * @param {String} action 调用路径		
+ * @param {function} callback
+ */
+bc.addAttachFromTemplate4Code = function(code,$atm,id,action,callback) {
+	if(!id || id.length == 0){
+		bc.msg.alert("要从模板添加附件，请先保存文档信息！");
+		return false;
+	}
+  
+    bc.ajax({
+		url: action,
+		dataType: "json",
+		data: {id: id, tpl:code},
+		success: function(json){
+			logger.info("result=" + $.toJSON(json));
+			var $totalCount = $atm.find("#totalCount");
+			var $totalSize = $atm.find("#totalSize");
+			//附件总数加一
+			$totalCount.text(parseInt($totalCount.text()) + 1);
+			//附件总大小添加该附件的部分
+			var newSize = parseInt($totalSize.attr("data-size")) + json.size;
+			logger.info("s=" + $totalSize.attr("data-size") + ",a=" + json.size+ ",n=" + newSize);
+			$totalSize.attr("data-size",newSize).text(bc.attach.getSizeInfo(newSize));
+			
+			//构建新的附件
+			var attach = bc.attach.tabelTpl.format(
+					json.size
+					,bc.attach.getSizeInfo(json.size)
+					,json.path.substr(json.path.lastIndexOf(".")+1).toLowerCase()
+					,json.subject);
+			var $attach = $(attach);
+			$attach.attr("data-id",json.id);
+			$attach.attr("data-name",json.subject);
+			$attach.attr("data-url",json.path);
+			//加进附件表
+			$attach.insertAfter($atm.find(".header"));
+			//删除进度跳
+			var $progressbar = $attach.find(".progressbar");
+			var tds = $progressbar.parent();
+			var $operations = tds.next();
+			tds.remove();
+			$operations.empty().append(bc.attach.operationsTpl);
+			
+			//调用回调函数
+			var showMsg = true;
+			if(typeof callback == "function"){
+				//返回false将禁止保存提示信息的显示
+				if(callback.call($attach[0],json) === false)
+					showMsg = false;
+			}
+			if(showMsg){
+				bc.msg.slide("已添加附件<b>《"+json.subject+"》</b>！");
+			}
+		}
+	});
+
 }
