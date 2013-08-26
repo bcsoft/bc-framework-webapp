@@ -158,6 +158,11 @@ bc.addAttachFromTemplate4Code = function(code,$atm,id,action,callback) {
 		data: {id: id, tpl:code},
 		success: function(json){
 			logger.info("result=" + $.toJSON(json));
+			if(!json.success){
+				bc.msg.alert("附件生成失败！");
+				return;
+			}
+			
 			var $totalCount = $atm.find("#totalCount");
 			var $totalSize = $atm.find("#totalSize");
 			//附件总数加一
@@ -199,4 +204,204 @@ bc.addAttachFromTemplate4Code = function(code,$atm,id,action,callback) {
 		}
 	});
 
+}
+
+/** 
+ * 查看使用模板动态生成的附件
+ * @param {Object} option 配置参数
+ * @option {String} templateCode 模板编码  必须要设置			
+ * @option {boolean} isModule 控制是否需要到模块中获取数据，默认需要		
+ * @option {String} mserviceid 需要调用的模块中service的id名，isModule为true是需要设置
+ * @option {String} moduleid 调用模块对象的id，isModule为true是需要设置		
+ * @option {String} markerValueJson 格式化的模板的参数json字符串对象
+ * @option {String} formatSqlJson 格式化模板参数sql的json字符串对象，模板带有模板参数 必须要设置此参数
+ * @option {boolean} isReplace 控制如果替换参数中没有可替换模板中的key，加上默认设置value值，默认false
+ * @option {String} replaceValue 替换值
+ * @option {String} to 查看文件格式化后的类型
+ */
+bc.inlineDynamicTemplate4Code = function(option) {
+	// 构建默认参数
+	option = jQuery.extend({
+		isModule : true,
+		isReplace : false
+	},option);
+	
+	if(!option.templateCode){
+		bc.msg.alert("请设置模板编码！");
+		return;
+	}
+	
+	if(option.isModule === true){
+		if(!option.mserviceid || !option.moduleid){
+			bc.msg.alert("请设置mserviceid 和  moduleid！");
+			return;
+		}
+	}
+  
+    //在新的窗口中打开
+	var url = bc.root+"/bc/templateDynamicViewFile/inline?code="+option.templateCode;
+	url += "&im=" + option.isModule;
+	if(option.isModule === true){
+		url += "&msid=" + option.mserviceid;
+		url += "&mid=" + option.moduleid;
+	}
+	if(option.markerValueJson) url += "&mvj=" + option.markerValueJson;
+	if(option.formatSqlJson) url += "&fsj=" + option.formatSqlJson;
+	url += "&ir=" + option.isReplace;
+	if(option.isReplace === true){
+		if(option.replaceValue) url += "&rv=" + option.replaceValue;
+	}
+	if(option.to) url += "&to=" + option.to;
+	if(option.from) url += "&from=" + option.from;
+	var win = window.open(url, "_blank");
+}
+
+/** 
+ * 查看使用模板动态生成的附件
+ * @param {Object} option 配置参数
+ * @option {String} templateId 模板Id  必须要设置			
+ * @option {boolean} isModule 控制是否需要到模块中获取数据，默认需要		
+ * @option {String} mserviceid 需要调用的模块中service的id名，isModule为true是需要设置
+ * @option {String} moduleid 调用模块对象的id，isModule为true是需要设置		
+ * @option {String} markerValueJson 格式化的模板的参数json字符串对象
+ * @option {String} formatSqlJson 格式化模板参数sql的json字符串对象，模板带有模板参数 必须要设置此参数
+ * @option {boolean} isReplace 控制如果替换参数中没有可替换模板中的key，加上默认设置value值，默认false
+ * @option {String} replaceValue 替换值
+ * @option {String} to 查看文件格式化后的类型
+ */
+bc.inlineDynamicTemplate4Id = function(option) {
+	// 构建默认参数
+	option = jQuery.extend({
+		isModule : true,
+		isReplace : false
+	},option);
+	
+	if(!option.templateId){
+		bc.msg.alert("请设置模板id！");
+		return;
+	}
+	
+	if(option.isModule === true){
+		if(!option.mserviceid || !option.moduleid){
+			bc.msg.alert("请设置mserviceid 和  moduleid！");
+			return;
+		}
+	}
+  
+    //在新的窗口中打开
+	var url = bc.root+"/bc/templateDynamicViewFile/inline?id="+option.templateId;
+	url += "&im=" + option.isModule;
+	if(option.isModule === true){
+		url += "&msid=" + option.mserviceid;
+		url += "&mid=" + option.moduleid;
+	}
+	if(option.markerValueJson) url += "&mvj=" + option.markerValueJson;
+	if(option.formatSqlJson) url += "&fsj=" + option.formatSqlJson;
+	url += "&ir=" + option.isReplace;
+	if(option.isReplace === true){
+		if(option.replaceValue) url += "&rv=" + option.replaceValue;
+	}
+	if(option.to) url += "&to=" + option.to;
+	if(option.from) url += "&from=" + option.from;
+	var win = window.open(url, "_blank");
+}
+
+/** 
+ * 下载使用模板动态生成的附件
+ * @param {Object} option 配置参数
+ * @option {String} templateCode 模板编码  必须要设置			
+ * @option {boolean} isModule 控制是否需要到模块中获取数据，默认需要		
+ * @option {String} mserviceid 需要调用的模块中service的id名，isModule为true是需要设置
+ * @option {String} moduleid 调用模块对象的id，isModule为true是需要设置		
+ * @option {String} markerValueJson 格式化的模板的参数json字符串对象
+ * @option {String} formatSqlJson 格式化模板参数sql的json字符串对象，模板带有模板参数 必须要设置此参数
+ * @option {boolean} isReplace 控制如果替换参数中没有可替换模板中的key，加上默认设置value值，默认false
+ * @option {String} replaceValue 替换值
+ * @option {String} to 查看文件格式化后的类型
+ */
+bc.downloadDynamicTemplate4Code = function(option) {
+	// 构建默认参数
+	option = jQuery.extend({
+		isModule : true,
+		isReplace : false
+	},option);
+	
+	if(!option.templateCode){
+		bc.msg.alert("请设置模板编码！");
+		return;
+	}
+	
+	if(option.isModule == true){
+		if(!option.mserviceid || !option.moduleid){
+			bc.msg.alert("请设置mserviceid 和  moduleid！");
+			return;
+		}
+	}
+  
+    //在新的窗口中打开
+	var url = bc.root+"/bc/templateDynamicViewFile/download?code="+option.templateCode;
+	url += "&im=" + option.isModule;
+	if(option.isModule === true){
+		url += "&msid=" + option.mserviceid;
+		url += "&mid=" + option.moduleid;
+	}
+	if(option.markerValueJson) url += "&mvj=" + option.markerValueJson;
+	if(option.formatSqlJson) url += "&fsj=" + option.formatSqlJson;
+	url += "&ir=" + option.isReplace;
+	if(option.isReplace === true){
+		if(option.replaceValue) url += "&rv=" + option.replaceValue;
+	}
+	if(option.to) url += "&to=" + option.to;
+	if(option.from) url += "&from=" + option.from;
+	var win = window.open(url, "_blank");
+}
+
+/** 
+ * 下载使用模板动态生成的附件
+ * @param {Object} option 配置参数
+ * @option {String} templateId 模板Id  必须要设置			
+ * @option {boolean} isModule 控制是否需要到模块中获取数据，默认需要		
+ * @option {String} mserviceid 需要调用的模块中service的id名，isModule为true是需要设置
+ * @option {String} moduleid 调用模块对象的id，isModule为true是需要设置		
+ * @option {String} markerValueJson 格式化的模板的参数json字符串对象
+ * @option {String} formatSqlJson 格式化模板参数sql的json字符串对象，模板带有模板参数 必须要设置此参数
+ * @option {boolean} isReplace 控制如果替换参数中没有可替换模板中的key，加上默认设置value值，默认false
+ * @option {String} replaceValue 替换值
+ * @option {String} to 查看文件格式化后的类型
+ */
+bc.downloadDynamicTemplate4Id = function(option) {
+	// 构建默认参数
+	option = jQuery.extend({
+		isModule : true,
+		isReplace : false
+	},option);
+	
+	if(!option.templateId){
+		bc.msg.alert("请设置模板id！");
+		return;
+	}
+	
+	if(option.isModule === true){
+		if(!option.mserviceid || !option.moduleid){
+			bc.msg.alert("请设置mserviceid 和  moduleid！");
+			return;
+		}
+	}
+  
+    //在新的窗口中打开
+	var url = bc.root+"/bc/templateDynamicViewFile/download?id="+option.templateId;
+	url += "&im=" + option.isModule;
+	if(option.isModule === true){
+		url += "&msid=" + option.mserviceid;
+		url += "&mid=" + option.moduleid;
+	}
+	if(option.markerValueJson) url += "&mvj=" + option.markerValueJson;
+	if(option.formatSqlJson) url += "&fsj=" + option.formatSqlJson;
+	url += "&ir=" + option.isReplace;
+	if(option.isReplace === true){
+		if(option.replaceValue) url += "&rv=" + option.replaceValue;
+	}
+	if(option.to) url += "&to=" + option.to;
+	if(option.from) url += "&from=" + option.from;
+	var win = window.open(url, "_blank");
 }
