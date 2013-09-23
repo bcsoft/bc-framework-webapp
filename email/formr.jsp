@@ -19,21 +19,45 @@
 				 		<span class="ui-icon ui-icon-arrowthick-1-e"></span>
 				 	</li>
 			 	</s:if>
-			</ul>
-		</div>
-		
-		<!-- 发件人 -->
-		<div class="email-history" style="text-align:left;font-weight:normal;position:relative;width:150px;">
-			<div style="width:60px;text-align:right;display: inline-block;"><s:text name="email.sender"/>：</div>
-			<s:property value="e.sender.name" />
-			<ul class="inputIcons email-open">
 			 	<li class="emailFormr-show inputIcon ui-state-default ui-corner-all" >
 			 		<span class="ui-icon ui-icon-triangle-1-s" title="点击显示详细信息"></span>
 			 		<span class="ui-icon ui-icon-triangle-1-n" title="点击隐藏详细信息" style="display:none;"></span>
 			 	</li>
 			</ul>
 		</div>
-
+		<div class="email-history"></div>
+		<!-- 发件人查看发送的邮件 -->
+		<s:if test="context.user.code == e.sender.code">
+			<div class="email-history" style="text-align:left;font-weight:normal;position:relative;">
+				&nbsp;&nbsp;我&nbsp;于  &nbsp;<s:date format="yyyy-MM-dd HH:mm" 
+				name="e.sendDate" />&nbsp;&nbsp;(<s:property value="week4cn" />)&nbsp;发送
+			</div>
+		</s:if>
+		<!-- 收件人查看接收的邮件 -->
+		<s:else>
+			<!-- 精简信息 -->
+			<div class="email-history" style="text-align:left;font-weight:normal;position:relative;">
+				&nbsp;&nbsp;<s:property value="e.sender.name" />&nbsp;于  &nbsp;<s:date format="yyyy-MM-dd HH:mm" 
+				name="e.sendDate" />&nbsp;&nbsp;(<s:property value="week4cn" />) &nbsp;
+				<s:iterator var="to" value="e.to">
+						<s:if test="context.user.code == receiver.code">
+							<s:if test="type == 0">
+								<s:text name="email.send"/>
+							</s:if><s:elseif test="type == 1">
+								<s:text name="email.cc"/>
+							</s:elseif><s:else>
+								<s:text name="email.bcc"/>
+							</s:else>
+						</s:if>
+				</s:iterator>&nbsp;给我
+			</div>
+			<!-- 发件人 -->
+			<div class="email-history" style="text-align:left;font-weight:normal;position:relative;display:none;">
+				<div style="width:60px;text-align:right;display: inline-block;"><s:text name="email.sender"/>：</div>
+				<s:property value="e.sender.name" />
+			</div>
+		</s:else>
+		
 		<s:if test="%{receiverList != null}">
 			<div class="email-history" style="text-align:left;font-weight:normal;display:none;">
 				<div style="width:60px;text-align:right;display: inline-block;"><s:text name="email.receiver"/>：</div>
@@ -121,7 +145,7 @@
 		
 		<!-- 日期 -->
 		<div class="email-history" style="text-align:left;font-weight:normal;display:none;">
-			<div style="width:60px;text-align:right;display: inline-block;">日&nbsp;&nbsp;&nbsp;期：</div>
+			<div style="width:60px;text-align:right;display: inline-block;">时&nbsp;&nbsp;&nbsp;间：</div>
 			<s:date format="yyyy-MM-dd HH:mm" name="e.sendDate" />&nbsp;&nbsp;(<s:property value="week4cn" />)
 		</div>
 		
