@@ -151,7 +151,7 @@
 		
 		<s:if test="%{e.content.length() > 0}">
 			<div class="ui-widget-content" style="border-width: 0 0 1px 0;height:1px;margin-top:10px;"></div>
-			<div class="email-content redactor_editor unselectable" unselectable="on" style='font-weight: normal;'>
+			<div class="email-content redactor_editor" style='font-weight: normal;'>
 				<s:property value="e.content" escapeHtml="false"/>
 			</div>
 		</s:if>

@@ -16,12 +16,13 @@
 	border: 0;
 }
 /** 表单右上角信息*/
-.formTopInfo {
+.formTopInfo,.fileInfo {
 	margin: 8px 8px 0 8px;
 	text-align: right;
 	color: #888;
 	font-size: 0.75em;
 	padding-right: 4px;
+	font-weight: normal;
 }
 /** 表单底部注释信息*/
 .formComment {
