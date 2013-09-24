@@ -40,8 +40,8 @@ bc.emailViewBase = {
 				name="查看已收邮件";
 				title="查看已收邮件";
 			}else if(openType==3){
-				data = {id: $hidden.emailId,openType:openType};
-				mid="email::trash::"+$hidden.emailId;
+				data = {id: $hidden.emailId,openType:openType,trashSource:$hidden.source,trashHandleDate:$hidden.handleDate};
+				mid="email::trash::"+$hidden.source+"::"+$hidden.emailId;
 				name="查看垃圾邮件";
 				title="查看垃圾邮件";
 			}else{

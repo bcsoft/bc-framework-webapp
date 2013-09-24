@@ -25,18 +25,25 @@
 			 	</li>
 			</ul>
 		</div>
-		<div class="email-history"></div>
+		<!-- 垃圾箱查看的邮件 -->
+		<s:if test="openType == 3">
+			<div style="text-align:left;font-weight:normal;">
+				&nbsp;&nbsp;我&nbsp;于  &nbsp;<s:property value="trashHandleDate" />&nbsp;移动至垃圾箱
+			</div>
+		</s:if>
+		
+		<div class="email-history"></div>		
 		<!-- 发件人查看发送的邮件 -->
-		<s:if test="context.user.code == e.sender.code">
-			<div class="email-history" style="text-align:left;font-weight:normal;position:relative;">
+		<s:if test="openType == 1 || trashSource == 1">
+			<div class="email-history" style="text-align:left;font-weight:normal;">
 				&nbsp;&nbsp;我&nbsp;于  &nbsp;<s:date format="yyyy-MM-dd HH:mm" 
 				name="e.sendDate" />&nbsp;&nbsp;(<s:property value="week4cn" />)&nbsp;发送
 			</div>
 		</s:if>
 		<!-- 收件人查看接收的邮件 -->
-		<s:else>
+		<s:elseif test="openType == 2 || trashSource == 2">
 			<!-- 精简信息 -->
-			<div class="email-history" style="text-align:left;font-weight:normal;position:relative;">
+			<div class="email-history" style="text-align:left;font-weight:normal;">
 				&nbsp;&nbsp;<s:property value="e.sender.name" />&nbsp;于  &nbsp;<s:date format="yyyy-MM-dd HH:mm" 
 				name="e.sendDate" />&nbsp;&nbsp;(<s:property value="week4cn" />) &nbsp;
 				<s:iterator var="to" value="e.to">
@@ -52,12 +59,12 @@
 				</s:iterator>&nbsp;给我
 			</div>
 			<!-- 发件人 -->
-			<div class="email-history" style="text-align:left;font-weight:normal;position:relative;display:none;">
+			<div class="email-history" style="text-align:left;font-weight:normal;display:none;">
 				<div style="width:60px;text-align:right;display: inline-block;"><s:text name="email.sender"/>：</div>
 				<s:property value="e.sender.name" />
 			</div>
-		</s:else>
-		
+		</s:elseif>
+
 		<s:if test="%{receiverList != null}">
 			<div class="email-history" style="text-align:left;font-weight:normal;display:none;">
 				<div style="width:60px;text-align:right;display: inline-block;"><s:text name="email.receiver"/>：</div>
