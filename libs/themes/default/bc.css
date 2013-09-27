@@ -1573,7 +1573,7 @@ div.formFields {
 /** 表单内顶部主体元素容器*/
 table.formFields {
 	width: 100%;
-	border: 0;
+	border-width: 0;
 }
 /** 表单富文本编辑器容器*/
 div.formEditor {
