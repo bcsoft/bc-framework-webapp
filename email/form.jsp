@@ -21,18 +21,31 @@
 						 	<li class="email-addUnitOrDepartments inputIcon ui-icon ui-icon-home" title='点击添加单位或部门'>
 						</ul>
 						<ul class="horizontal ulReceiver" style="padding:0;overflow:hidden;" data-type="0">
-							<s:iterator value="e.to" var="t" >
-								<s:if test="%{receiver.type == 4}">
-									<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" 
-										data-id='<s:property value="receiver.id"/>' 
-										data-hidden='{"id":"<s:property value='receiver.id'/>"
-													,"code":"<s:property value='receiver.code'/>"
-													,"name":"<s:property value='receiver.name'/>"
-													,"type":<s:property value='receiver.type'/>}' 
-										style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">
-										<span class="text"><s:property value="receiver.name"/></span>
-										<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title="点击移除"></span>
-									</li>
+							<s:iterator value="e.tos" var="t" >
+								<s:if test="%{type == 0}">
+									<s:if test="%{receiver != null}">
+										<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" 
+											data-id='<s:property value="receiver.id"/>' 
+											data-hidden='{"id":"<s:property value='receiver.id'/>"
+														,"code":"<s:property value='receiver.code'/>"
+														,"name":"<s:property value='receiver.name'/>"
+														,"type":<s:property value='receiver.type'/>}' 
+											style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">
+											<span class="text"><s:property value="receiver.name"/></span>
+											<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title="点击移除"></span>
+										</li>
+									</s:if><s:else>
+										<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" 
+											data-id='<s:property value="receiver.id"/>' 
+											data-hidden='{"id":"<s:property value='upper.id'/>"
+														,"code":"<s:property value='upper.code'/>"
+														,"name":"<s:property value='upper.name'/>"
+														,"type":<s:property value='upper.type'/>}' 
+											style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">
+											<span class="text"><s:property value="upper.name"/></span>
+											<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title="点击移除"></span>
+										</li>
+									</s:else>
 								</s:if>			
 							</s:iterator>
 						</ul>
@@ -48,7 +61,35 @@
 						 	<li class="email-addGroups inputIcon ui-icon ui-icon-contact" title='点击添加岗位'>
 						 	<li class="email-addUnitOrDepartments inputIcon ui-icon ui-icon-home" title='点击添加单位或部门'>
 						</ul>
-						<ul class="horizontal ulReceiver" style="padding: 0;overflow:hidden;" data-type="1"></ul>
+						<ul class="horizontal ulReceiver" style="padding: 0;overflow:hidden;" data-type="1">
+							<s:iterator value="e.tos" var="t" >
+								<s:if test="%{type == 1}">
+									<s:if test="%{receiver != null}">
+										<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" 
+											data-id='<s:property value="receiver.id"/>' 
+											data-hidden='{"id":"<s:property value='receiver.id'/>"
+														,"code":"<s:property value='receiver.code'/>"
+														,"name":"<s:property value='receiver.name'/>"
+														,"type":<s:property value='receiver.type'/>}' 
+											style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">
+											<span class="text"><s:property value="receiver.name"/></span>
+											<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title="点击移除"></span>
+										</li>
+									</s:if><s:else>
+										<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" 
+											data-id='<s:property value="receiver.id"/>' 
+											data-hidden='{"id":"<s:property value='upper.id'/>"
+														,"code":"<s:property value='upper.code'/>"
+														,"name":"<s:property value='upper.name'/>"
+														,"type":<s:property value='upper.type'/>}' 
+											style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">
+											<span class="text"><s:property value="upper.name"/></span>
+											<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title="点击移除"></span>
+										</li>
+									</s:else>
+								</s:if>			
+							</s:iterator>
+						</ul>
 					</div>
 				</td>
 			</tr>
@@ -61,7 +102,35 @@
 						 	<li class="email-addGroups inputIcon ui-icon ui-icon-contact" title='点击添加岗位'>
 						 	<li class="email-addUnitOrDepartments inputIcon ui-icon ui-icon-home" title='点击添加单位或部门'>
 						</ul>
-						<ul class="horizontal ulReceiver" style="padding: 0;overflow:hidden;" data-type="2"></ul>
+						<ul class="horizontal ulReceiver" style="padding: 0;overflow:hidden;" data-type="2">
+							<s:iterator value="e.tos" var="t" >
+								<s:if test="%{type == 2}">
+									<s:if test="%{receiver != null}">
+										<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" 
+											data-id='<s:property value="receiver.id"/>' 
+											data-hidden='{"id":"<s:property value='receiver.id'/>"
+														,"code":"<s:property value='receiver.code'/>"
+														,"name":"<s:property value='receiver.name'/>"
+														,"type":<s:property value='receiver.type'/>}' 
+											style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">
+											<span class="text"><s:property value="receiver.name"/></span>
+											<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title="点击移除"></span>
+										</li>
+									</s:if><s:else>
+										<li class="horizontal  ui-widget-content ui-corner-all ui-state-highlight" 
+											data-id='<s:property value="receiver.id"/>' 
+											data-hidden='{"id":"<s:property value='upper.id'/>"
+														,"code":"<s:property value='upper.code'/>"
+														,"name":"<s:property value='upper.name'/>"
+														,"type":<s:property value='upper.type'/>}' 
+											style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">
+											<span class="text"><s:property value="upper.name"/></span>
+											<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title="点击移除"></span>
+										</li>
+									</s:else>
+								</s:if>			
+							</s:iterator>
+						</ul>
 					</div>
 				</td>
 			</tr>

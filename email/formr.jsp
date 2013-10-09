@@ -46,7 +46,7 @@
 			<div class="email-history" style="text-align:left;font-weight:normal;">
 				&nbsp;&nbsp;<s:property value="e.sender.name" />&nbsp;于  &nbsp;<s:date format="yyyy-MM-dd HH:mm" 
 				name="e.sendDate" />&nbsp;&nbsp;(<s:property value="week4cn" />) &nbsp;
-				<s:iterator var="to" value="e.to">
+				<s:iterator var="to" value="e.tos">
 						<s:if test="context.user.code == receiver.code">
 							<s:if test="type == 0">
 								<s:text name="email.send"/>
