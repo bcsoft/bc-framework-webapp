@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html data-app-domain="http://www.baidufe.com"
+	data-static-domain="http://www.baidufe.com/fe/static">
+<head>
+<title>Html2Canvas_Alien的笔记</title>
+<meta name=author content="http://www.baidufe.com">
+<meta charset=utf-8>
+<link rel="shortcut icon"
+	href="http://www.baidufe.com/fe/static/img/favicon.ico?v=91d5254e"
+	type=image/x-icon>
+<link rel=author
+	href=https://plus.google.com/116603019704204361428/posts>
+<!--[if (lt IE 8.0)]><link rel=stylesheet href="http://www.baidufe.com/fe/static/css/base/base.css?v=f9a938e4"><![endif]-->
+<!--[if (!IE)|(gte IE 8.0)]><!-->
+<link rel=stylesheet
+	href="http://www.baidufe.com/fe/static/css/base/base_datauri.css?v=943bc720">
+<!--<![endif]-->
+<style type="text/css">
+.btn-panel {
+	float: right;
+	padding: 10px;
+	border: 1px solid #aaa;
+	background: #f1f1f1
+}
+
+.btn-exportasimg {
+	height: 30px;
+	padding: 2px 5px;
+	cursor: pointer
+}
+
+.mod-canvas {
+	clear: both;
+	width: 560px;
+	margin: 10px auto;
+	text-align: center;
+	font-size: 16px
+}
+
+.mod-canvas .q-txt {
+	margin-top: 20px
+}
+
+.mod-canvas img {
+	margin-top: 30px;
+	-webkit-border-radius: 10px 10px;
+	-moz-border-radius: 10px 10px;
+	-o-border-radius: 10px 10px;
+	border-radius: 10px 10px;
+	-webkit-box-shadow: 5px 5px 10px #bbb;
+	-moz-box-shadow: 5px 5px 10px #bbb;
+	box-shadow: 5px 5px 10px #bbb
+}
+</style>
+<script type="text/javascript">
+	(function() {
+		var a = document.getElementsByTagName("html")[0];
+		window.Session = {
+			appDomain : a.getAttribute("data-app-domain") || "",
+			staticDomain : a.getAttribute("data-static-domain") || ""
+		}
+	})();
+	window.registNS = function(fullNS, isIgnorSelf) {
+		var reg = /^[_$a-z]+[_$a-z0-9]*/i;
+		var nsArray = fullNS.split(".");
+		var sEval = "";
+		var sNS = "";
+		var n = isIgnorSelf ? nsArray.length - 1 : nsArray.length;
+		for ( var i = 0; i < n; i++) {
+			if (!reg.test(nsArray[i])) {
+				throw new Error("Invalid namespace:" + nsArray[i] + "");
+				return
+			}
+			if (i != 0) {
+				sNS += "."
+			}
+			sNS += nsArray[i];
+			sEval += "if(typeof(" + sNS + ")=='undefined') " + sNS
+				+ "=new Object();else " + sNS + ";"
+		}
+		if (sEval != "") {
+			return eval(sEval)
+		}
+		return {}
+	};
+	window.addEventMap = function(c, d, b, a) {
+		$.each(d, function(e, f) {
+			$(c).bind(f, function(h) {
+				var g = h.target || h.srcElement;
+				if (!g) {
+					return false
+				}
+				for ( var j in b[f]) {
+					var i = b[f][j];
+					if ((g.className && $(g).hasClass(j))) {
+						i.call(g, h);
+						break
+					} else {
+						if (ancestor = $(g).parents("." + j)[0]) {
+							i.call(ancestor, h);
+							break
+						}
+					}
+				}
+				if (typeof a === "function") {
+					a.call(h)
+				}
+			})
+		})
+	};
+	var fixedTheElementOnScroll = function(c, a) {
+		if (!c) {
+			return
+		}
+		a = parseInt(a, 10) || 0;
+		var b = function(g) {
+			var f = $(c).offset();
+			if ($(c).attr("data-fixed") != "1") {
+				$(c).attr({
+					"data-original-top" : f.top
+				})
+			}
+			var d = $(window).scrollTop() + a;
+			if ($(c).attr("data-original-top") <= d) {
+				if ($.browser.ie == 6) {
+					$(c).attr({
+						"data-fixed" : 1
+					});
+					$(c).css(
+						{
+							position : "absolute",
+							top : d - $(c).attr("data-original-top")
+								+ c.offsetHeight,
+							left : 0
+						})
+				} else {
+					if ($(c).attr("data-fixed") != "1") {
+						$(c).attr({
+							"data-fixed" : 1
+						});
+						$(c).css({
+							position : "fixed",
+							top : a,
+							left : f.left
+						})
+					}
+				}
+			} else {
+				$(c).attr("data-fixed", 0);
+				$(c).css({
+					position : "static"
+				})
+			}
+		};
+		b();
+		$(window).scroll(b)
+	};
+	String.prototype.trim = function() {
+		return this.replace(/^\s*|\s*$/g, "")
+	};
+	String.format = function(c, a) {
+		c = String(c);
+		var b = Array.prototype.slice.call(arguments, 1), d = Object.prototype.toString;
+		if (b.length) {
+			b = b.length == 1 ? (a !== null
+				&& (/\[object Array\]|\[object Object\]/.test(d.call(a))) ? a
+				: b) : b;
+			return c.replace(/#\{(.+?)\}/g, function(e, g) {
+				var f = b[g];
+				if ("[object Function]" == d.call(f)) {
+					f = f(g)
+				}
+				return ("undefined" == typeof f ? "" : f)
+			})
+		}
+		return c
+	};
+	(function() {
+		var b = ("abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video")
+			.split(","), a = b.length;
+		while (a--) {
+			document.createElement(b[a])
+		}
+	})();
+</script>
+</head>
+<body>
+	<section class=mod-page-body>
+		<div class="mod-page-main wordwrap clearfix">
+			<div class=mod-pageheader>
+				<div class=mod-blogdesc>
+					<div class=logo-box id=alienfeLogoBox>
+						<a href="http://www.baidufe.com" class=a-logo><span
+							id=alienfeLogo class="q-logo animated bounceInLeft"><img
+								src="http://www.baidufe.com/fe/static/img/logo.png?v=54bd51fc"
+								title="Alien的笔记" alt="Alien的笔记"></span></a>
+					</div>
+					<div class=mod-btitle>
+						<div class=x-name>
+							<a href="http://www.baidufe.com">Alien的笔记</a>
+						</div>
+						<div class=x-desc>不自重者，取辱。不自长者，取祸。不自满者，受益。不自足者，博闻。</div>
+					</div>
+				</div>
+				<div class=mod-topbar id=modTopbar>
+					<div class="wrapper-box clearfix">
+						<div class=mainnav-box>
+							<ul class=q-menubox>
+								<li class=q-menuitem><a href="http://www.baidufe.com">首页</a>
+								<li class=q-menuitem><a
+									href="http://www.baidufe.com/fehelper" target=_blank>WEB前端助手(FeHelper)</a>
+								<li class="q-menuitem q-widget"><a
+									href=http://www.doitbegin.com target=_blank>组件库<img
+										src="http://www.baidufe.com/fe/static/img/icon_new.png?v=678678ce"
+										alt=new>&nbsp;
+								</a>
+							</ul>
+						</div>
+						<div class=subnav-box>
+							<ul class=q-navbox>
+								<li class=q-navitem><form
+										action="http://www.baidufe.com/fulltext" class=q-serchform>
+										<input type=search id=text name=text class=ipt-text
+											placeholder="全文搜索...">
+									</form>
+								<li class=q-navitem><a
+									href="http://www.baidufe.com/data/feedblogrss" target=_blank
+									class=q-rss><span>订阅</span></a>
+								<li class=q-sp>|
+								<li class=q-navitem><a href="http://www.baidufe.com/about"
+									target=_blank class=q-about><span>关于我</span></a>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class=mod-pagecontent>
+				<div class=btn-panel>
+					<input type=radio name=createtype id=createInNewWin value=0><label
+						for=createInNewWin>新窗口打开</label><input type=radio name=createtype
+						id=downloadAsImg checked value=1 title="下载后请将文件命名为*.png"><label
+						for=downloadAsImg title="下载后请将文件命名为*.png">下载为图片</label>
+					<button class=btn-exportasimg>将页面导出为图片</button>
+				</div>
+				<div class=mod-canvas>
+					<img
+						src="http://www.baidufe.com/fe/static/img/bye-ie.png?v=92ec462b"
+						alt="再见！">
+					<div class=q-txt>
+						对不起，本站坚决不支持IE7及其以下版本！<br>你可以使用<a
+							href=http://www.google.cn/chrome/intl/zh-CN/landing_chrome.html
+							title="点击下载chrome浏览器">chrome</a>、<a
+							href=http://www.firefox.com.cn/download / title="点击下载firefox浏览器">firefox</a>等，能得到更好的浏览体验！
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<link rel=stylesheet
+		href="http://www.baidufe.com/fe/static/vender/ueditor/third-party/SyntaxHighlighter/shCoreEmacs.css">
+	<script
+		src="http://www.baidufe.com/fe/static/vender/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+	<script
+		src="http://www.baidufe.com/fe/static/js/page/page_footer.js?v=e1f548d1"></script>
+	<script>
+		$(function() {
+			WebpageZoomDetect.start()
+		});
+	</script>
+	<script
+		src="http://www.baidufe.com/fe/static/js/vender/html2canvas/html2canvas.js?v=23d565fe"></script>
+	<script
+		src="http://www.baidufe.com/fe/static/js/demo/html2canvas.js?v=f00d768b"></script>
+	<div class=mod-footer>
+		<div class=clearfix></div>
+		<div class=footer-box>
+			Copyright &copy;<a href="http://www.baidufe.com/about" target=_blank>Alien</a>&nbsp;All
+			Rights Reserved.
+		</div>
+	</div>
+	<div class=hide>
+		<script>
+			(function() {
+				var _bdhmProtocol = "https:" == document.location.protocol ? " https://"
+					: " http://";
+				document
+					.write(unescape("%3Cscript src='"
+						+ _bdhmProtocol
+						+ "hm.baidu.com/h.js%3F17b02fba4e62901b4289eef4c2243123' type='text/javascript'%3E%3C/script%3E"))
+			})();
+		</script>
+	</div>
