@@ -40,8 +40,8 @@ bc.emailViewBase = {
 				name="查看已收邮件";
 				title="查看已收邮件";
 			}else if(openType==3){
-				data = {id: $hidden.emailId,openType:openType};
-				mid="email::trash::"+$hidden.emailId;
+				data = {id: $hidden.emailId,openType:openType,trashSource:$hidden.source,trashHandleDate:$hidden.handleDate};
+				mid="email::trash::"+$hidden.source+"::"+$hidden.emailId;
 				name="查看垃圾邮件";
 				title="查看垃圾邮件";
 			}else{
@@ -197,6 +197,32 @@ bc.emailViewBase = {
 				}
 			});
 		});
+		
+	},
+	// 编辑
+	edit : function(){
+		var $view = $(this);
+		var $tds = $view.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
+		var $trs = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
+		if($tds.length==1){
+			bc.page.newWin({
+				url:bc.root+"/bc/email/edit",
+				data:{id: $tds.attr("data-id")},
+				mid:"email::edit::"+$tds.attr("data-id"),
+				name:"草稿邮件",
+				title:"草稿邮件",
+				afterClose: function(){
+					bc.grid.reloadData($view);
+				}
+			});
+		}else if($tds.length > 1){
+			bc.msg.slide("一次只能编辑一封邮件！");
+		}else{
+			bc.msg.slide("请先选择要编辑的邮件！");
+		}
+	},
+	// 直接删除
+	_delete : function(){
 		
 	}
 };

@@ -152,6 +152,44 @@ bc.emailForm = {
 		if(!bc.validator.validate($form)) return;
 		
 		var $uls=$form.find("div>.ulReceiver");
+		if($uls.length>0){
+			var datas=[];
+			var data;
+			var $ul;
+			var $lis;
+			var toType;
+			$uls.each(function(){
+				$ul=$(this);
+				$lis=$ul.find("li");
+				toType=$ul.attr("data-type");
+				$lis.each(function(){
+					data={toType:toType},
+					data=$.extend(data,eval("("+$(this).attr("data-hidden")+")"));
+					datas.push(data);
+				});
+			});
+			$form.find(":input[name='receivers']").val($.toJSON(datas));
+		}
+		
+		bc.page.save.call($form,{callback:function(json){
+			bc.msg.slide("保存草稿成功");
+			return false;
+		}});
+	},
+	/**
+	 * 预览
+	 */
+	preview : function(){
+		var $form = $(this);	
+	},
+	/**
+	 *  发送
+	 */
+	send : function(){
+		var $form = $(this);
+		if(!bc.validator.validate($form)) return;
+		
+		var $uls=$form.find("div>.ulReceiver");
 		var datas=[];
 		var data;
 		var $ul;
@@ -195,11 +233,5 @@ bc.emailForm = {
 			$form.find(":input[name='e.status']").val(0);
 		});
 		
-	},
-	/**
-	 * 预览
-	 */
-	preview : function(){
-		var $form = $(this);	
 	}
 };

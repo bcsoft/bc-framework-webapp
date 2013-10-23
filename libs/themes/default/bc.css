@@ -1546,12 +1546,13 @@ form.bc-export>div.buttons {
 	border: 0;
 }
 /** 表单右上角信息*/
-.formTopInfo {
+.formTopInfo,.fileInfo {
 	margin: 8px 8px 0 8px;
 	text-align: right;
 	color: #888;
 	font-size: 0.75em;
 	padding-right: 4px;
+	font-weight: normal;
 }
 /** 表单底部注释信息*/
 .formComment {
@@ -1572,7 +1573,7 @@ div.formFields {
 /** 表单内顶部主体元素容器*/
 table.formFields {
 	width: 100%;
-	border: 0;
+	border-width: 0;
 }
 /** 表单富文本编辑器容器*/
 div.formEditor {
