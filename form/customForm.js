@@ -94,6 +94,12 @@ bc.customForm = {
 					option.buttons=[{click:"bc.customForm.save",text:"保存"}];
 				}
 			}
+			
+			if(!option.name)
+				option.name=option.subject;
+			if(!option.title)
+				option.title=option.subject;
+			
 			if(!option.data){option.data={}}
 			option.data.id=option.id;
 			var afterOpen;
@@ -179,7 +185,8 @@ bc.customForm = {
 					}else{
 						bc.customForm.setFormInfo($form,{id:json.id,formData:json.formData});
 						bc.customForm.loadFormData.call($page);
-
+						//记录已保存状态
+						$page.attr("data-status","saved").data("data-status","saved");
 						//调用回调函数
 						var showMsg = true;
 						if(typeof option.callback == "function"){
