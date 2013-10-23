@@ -10,6 +10,8 @@ bc.customForm = {
 		 * @option {String} subject [必填]标题
 		 * @option {String} type [必填]类别
 		 * @option {String} mid [必填]对话框的唯一标识id
+		 * @option {Integer} pid [必填]pid
+		 * @option {String} code [必填]编码
 		 * @option {String} from [可选]打开此对话框的源对话框的mid
 		 * @option {String} name [可选]任务栏显示的名称或对话框的标题
 		 * @option {String} title [可选]对话框的标题,如果不指定则使用请求返回的值
@@ -21,7 +23,7 @@ bc.customForm = {
 		 *
 		 */
 		create : function(option) {
-			if(!(option&&option.tpl&&option.subject&&option.type&&option.mid)){
+			if(!(option&&option.tpl&&option.subject&&option.type&&option.mid&&option.pid&&option.code)){
 				alert("必须设置option参数！");
 				return;
 			}
@@ -47,11 +49,15 @@ bc.customForm = {
 				afterOpen=option.afterOpen;
 			}
 			
-			//对模板表单中form-info加入模板编码、类别、标题 
+			//对模板表单中form-info加入模板编码、类别、标题 、pid、code
 			option.afterOpen=function(){
 				var $page = $(this);
 				var $form = $("form",$page);
-				bc.customForm.setFormInfo($form,{tpl:option.tpl,subject:option.subject,type:option.type});
+				bc.customForm.setFormInfo($form,{tpl:option.tpl
+					,subject:option.subject
+					,type:option.type
+					,pid:option.pid
+					,code:option.code});
 				if(afterOpen){
 					afterOpen.call($page);
 				}
@@ -62,7 +68,7 @@ bc.customForm = {
 		/**
 		 * 自定义表单编辑方法
 		 * @param {Object} option 配置参数
-		 * @option {String} id [必填]变淡id
+		 * @option {String} id [必填]表单id
 		 * @option {String} subject [必填]标题
 		 * @option {String} mid [必填]对话框的唯一标识id
 		 * @option {String} from [可选]打开此对话框的源对话框的mid
