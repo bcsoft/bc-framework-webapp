@@ -67,10 +67,10 @@ body {
 /**修改对话框*/
 .bc-ui-dialog {
 	padding: 0 6px 6px 6px;
-	box-shadow:1px 1px 10px #000;	
+	box-shadow:1px 1px 10px #000;
 	/**fix ie:记得将ie-css3.htc文件放在网站的根目录下哦，用相对路径是不行的！<--拖动对话框会见到大块的黑色背景，还是没法使用
 	behavior: url(ie-css3.htc);*/
-	
+
 	overflow: visible;
 }
 .bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
@@ -112,7 +112,7 @@ body {
 	cursor: default;
 }
 .clickToSelect{
-	cursor: pointer;	
+	cursor: pointer;
 }
 
 
@@ -378,4 +378,87 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	overflow: auto;
 	word-wrap: break-word;
 	word-break: break-all;
+}
+
+/** 弹性框模型 */
+.box() {
+    display: -ms-box;
+    display: -moz-box;
+    display: -webkit-box;
+    display: box;
+}
+/** 框的子代是如何排列的
+ * 值：*horizontal | vertical | inherit
+ */
+.box-orient(@value: horizontal) {
+    -ms-box-orient: @value;
+    -moz-box-orient: @value;
+    -webkit-box-orient: @value;
+    box-orient: @value;
+}
+/** 设置沿 box-orient 轴的框排列方式。因此，如果 box-orient 是水平方向，就会选择框的子代的水平排列方式，反之亦然
+ * 值：*start | end | center | justify
+ */
+.box-pack(@value: start) {
+    -ms-box-pack: @value;
+    -moz-box-pack: @value;
+    -webkit-box-pack: @value;
+    box-pack: @value;
+}
+/** 基本上而言是 box-pack 的同级属性。设置框的子代在框中的排列方式。如果方向是水平的，该属性就会决定垂直排列，反之亦然。
+ * 值：start | end | center | baseline | *stretch
+ */
+.box-align(@value: stretch) {
+    -ms-box-align: @value;
+    -moz-box-align: @value;
+    -webkit-box-align: @value;
+    box-align: @value;
+}
+/** 子代的弹性比。弹性比为 1 的子代占据父代框的空间是弹性比为 2 的同级属性的两倍。其默认值为 0，也就是不具有弹性。
+ * 值：0 | 任意整数
+ */
+.box-flex(@value: 0) {
+    -ms-box-flex: @value;
+    -moz-box-flex: @value;
+    -webkit-box-flex: @value;
+    box-flex: @value;
+}
+.vlayout>.flex,.hlayout>.flex {
+    -ms-box-flex:1;
+    -moz-box-flex: 1;
+    -webkit-box-flex:1;
+    box-flex: 1;
+}
+
+/* 水平弹性布局 */
+.hlayout {
+    display: -ms-box;
+    -ms-box-orient: horizontal;
+
+    display: -moz-box;
+    -moz-box-orient: horizontal;
+
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+
+    display:box;
+    box-orient: horizontal;
+}
+
+/* 垂直弹性布局 */
+.vlayout {
+    display: -ms-box;
+    -ms-box-orient: vertical;
+
+    display: -moz-box;
+    -moz-box-orient: vertical;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical; /* 子代排列方向 - 轴向*/
+    -webkit-box-pack: center;   /* 子代轴向的排列方式*/
+    -webkit-box-align: center;  /* 子代垂直于轴向的排列方式*/
+
+    display:box;
+    box-orient: vertical;
+    box-pack: center;
 }
