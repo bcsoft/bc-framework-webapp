@@ -1,6 +1,5 @@
 bc.namespace("bc.photo");
 bc.photo = {
-    image: {},
     /** 初始化 */
     init: function () {
         // 浏览器支持检测
@@ -8,18 +7,26 @@ bc.photo = {
             alert("你的浏览器不支持window.FileReader接口，无法处理！");
             return;
         }
+        var $form = $(this);
 
-        bc.photo.image = {
+        $form.data("image",{
             type: "png",
             name: "bc",
             data: "data:image/png;base64,0"
-        };
+        });
 
-        var $form = $(this);
-        var $displayContainer = $form.find("#displayContainer");
-        var $imgDisplayer = $form.find("#imgDisplayer");
-        var $imgProxy = $form.find("#imgProxy");
+        var $displayContainer = $form.find(".container");
+        var $imgDisplayer = $displayContainer.children("img");
+        var $imgProxy = $form.find("img.proxy");
         $imgProxy.attr("src", $imgDisplayer.attr("src"));
+
+        $displayContainer.find(".indicator a").click(function(e){
+            $displayContainer.css("border","0");
+            $displayContainer.data("ignore",false);
+            $displayContainer.children(".indicator").hide();
+            $imgDisplayer.show();
+            return false;
+        });
 
         // 窗口大小变动后重新处理显示区的缩放
         $form.on("dialogresize", function (e, ui) {
@@ -27,22 +34,43 @@ bc.photo = {
         });
         $form.trigger("dialogresize");
 
-        // 支持文件拖动的处理
-        $displayContainer.on({
+        // 支持文件拖动的处理:dragover和drop是必须的
+        $(document).on({
+            dragstart: function(e){
+                $displayContainer.data("ignore",true);
+                console.log("document.dragstart");
+            },
+            dragenter: function(e){
+                e.originalEvent.dataTransfer.dropEffect  = 'move';
+                console.log("document.dragenter");
+                if(!$displayContainer.data("ignore")){
+                    // 显示拖放到这里的指示
+                    $displayContainer.css("border","4px dashed #666");
+                    $displayContainer.children(".indicator").show();
+                    $imgDisplayer.hide();
+                }
+            },
             dragover: function(e){
                 e.stopPropagation();
                 e.preventDefault();//取消默认浏览器拖拽效果
-                console.log("dragover");
+                //console.log("document.dragover");
             },
             drop: function(e){
                 e.stopPropagation();
                 e.preventDefault();//取消默认浏览器拖拽效果
-                console.log("drop");
-                //console.log(e.originalEvent.dataTransfer);
-                //获取文件对象: TODO 多文件的处理
-                var file = e.originalEvent.dataTransfer.files[0];
-                bc.photo.showImage($imgProxy, file);
+                console.log("document.drop");
+                if($(e.target).is(".container,.container *")
+                    && e.originalEvent.dataTransfer.files
+                    && e.originalEvent.dataTransfer.files.length){
+                    console.log("document.drop.ok");
+                    var file = e.originalEvent.dataTransfer.files[0];
+                    bc.photo.showImage.call($form,$imgProxy, file);
+                }
                 $displayContainer.css("border","0");
+                $displayContainer.data("ignore",false);
+
+                $displayContainer.children(".indicator").hide();
+                $imgDisplayer.show();
             }
         });
 
@@ -84,19 +112,20 @@ bc.photo = {
 
             // 显示图片：TODO 多选的处理
             var file = this.files[0];
-            bc.photo.showImage($imgProxy, file);
+            bc.photo.showImage.call($form,$imgProxy, file);
         });
     },
-    /** 显示指定的文件 */
+    /** 显示指定的图片 */
     showImage: function($imgProxy, file){
+        var $form = $(this);
         var reader = new window.FileReader();
-        bc.photo.image.type = file.name.substr(file.name.lastIndexOf(".") + 1);
-        bc.photo.image.name = file.name.substring(0, file.name.lastIndexOf("."));
+        $form.data("image").type = file.name.substr(file.name.lastIndexOf(".") + 1);
+        $form.data("image").name = file.name.substring(0, file.name.lastIndexOf("."));
         reader.onload = function (e) {
             //console.log(e.target.result);
             // 将图片数据加载到图片代理控件
             $imgProxy.attr("src", e.target.result);
-            bc.photo.image.data = e.target.result;
+            $form.data("image").data = e.target.result;
         };
         reader.readAsDataURL(file);
     },
@@ -138,13 +167,15 @@ bc.photo = {
 
     /** 下载 */
     download: function () {
+        console.log("download");
         var $form = $(this);
+        var image = $form.data("image");
 
         // 将mime-type改为image/octet-stream，强制让浏览器直接download
-        var imageData = bc.photo.image.data.replace('image/'+bc.photo.image.type,'image/octet-stream');
+        var imageData = image.data.replace('image/'+image.type,'image/octet-stream');
         var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
         save_link.href = imageData;
-        save_link.download = bc.photo.image.name + "." + bc.photo.image.type;
+        save_link.download = image.name + "." + image.type;
 
         var event = document.createEvent('MouseEvents');
         event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);

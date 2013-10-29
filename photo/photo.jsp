@@ -4,12 +4,17 @@
 	data-js='<s:url value="/bc/photo/photo.js" />'
 	data-initMethod='bc.photo.init'
 	data-option='<s:property value="pageOption"/>' style="overflow:hidden;">
-<div class="hlayout" style="width: 100%; height: 100%;font-weight:normal">
-    <div id="displayContainer" class="flex vlayout"
+<div class="hlayout" style="width: 100%; height: 100%;font-weight:normal;position:relative;">
+    <div class="container flex vlayout"
         style="position:relative;overflow:hidden;background-color:#2B2B2B;">
-        <img id="imgDisplayer" style="width:0;" src="bc/photo/asset/A4-手写.jpg"/>
+        <img style="width:0;"/>
+        <span class="indicator" style="display:none;font-size:48px;color:#000;text-align:center;">
+            <div>请将图片</div>
+            <div>拖放到这里</div>
+            <a href="#" style="font-size:24px;color:blue;">取消</a>
+        </span>
     </div>
     <div class="ui-widget-content" style="width: 180px;border-color:#27292A;border-width:0 0 0 1px;background-image:none;background-color:#3C3F41;">TODO</div>
 </div>
-<div style="display:none;"><img id="imgProxy"/></div>
+<div class="hiddenContainer" style="display:none;"><img class="proxy"/></div>
 </div>
