@@ -7,6 +7,13 @@ bc.photo = {
             alert("你的浏览器不支持window.FileReader接口，无法处理！");
             return;
         }
+        // 浏览器兼容性处理
+        window.URL = window.URL || window.webkitURL || window.mozURL
+            || window.msURL;
+        navigator.getUserMedia = navigator.getUserMedia
+            || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
+            || navigator.msGetUserMedia;
+
         var $form = $(this);
 
         $form.data("image",{
@@ -182,7 +189,101 @@ bc.photo = {
 
     /** 拍照 */
     captureCamera: function () {
-        alert("todo:captureCamera");
+        var $form = $(this);
+        var $video = $form.find("video");
+        $video.show();
+
+        // 如果摄像头已连接，返回不处理
+        if($video.data("connected"))
+            return false;
+
+        // 绑定video的事件
+        $video.on({
+            loadeddata: function(e){
+                var video = $video[0];
+                console.log('video.loadeddata:' + video.videoWidth + 'x' + video.videoHeight);
+            },
+            // 双击截图
+            dblclick: function(e){
+                console.log("dblclick");
+                bc.photo.snapshot.call($form,$video);
+            }
+        });
+
+        // 摄像头连接配置
+        var constraints = {
+            audio : false,
+            video : {
+                mandatory : {
+                    minWidth : "800",
+                    minHeight : "600"
+                }
+            }
+        };
+
+        // 摄像头连接成功的回调函数:
+        function successCallback(stream) {
+            console.log("camera connected successful");
+            // 记录已连接成功
+            $video.data("connected", true);
+
+            var video = $video[0];
+            // Firefox 使用mozSrcObject的属性，而Opera和Chrome使用src属性。
+            // Chrome 使用createObjectURL的方法，而Firefox和Opera直接发送视频流。
+            if (video.mozSrcObject !== undefined) {
+                video.mozSrcObject = stream;
+            } else {
+                video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+            }
+        }
+
+        // 摄像头连接失败的回调函数
+        function errorCallback(e) {
+            console.log(e);
+            if (e.name = "PERMISSION_DENIED") {
+                bc.msg.info('摄像头已被禁止访问！如果使用Chrome浏览器，请到"设置/显示高级设置.../隐私设置/内容设置.../媒体/管理例外情况..."中更改。');
+            } else {
+                bc.msg.info("无法连接摄像头：" + e.name);
+                //alert('getUserMedia() not supported in your browser.');
+            }
+            $video.hide();
+        }
+
+        // 连接摄像头
+        navigator.getUserMedia(constraints, successCallback,errorCallback);
+    },
+    snapshot: function($video){
+        var $form = $(this);
+        var video = $video[0];
+        var canvas = $form.find("canvas")[0];
+        var ctx = canvas.getContext('2d');
+
+        // 注：不是设置style.width|height属性，而是设置setAttribute('width|height')
+        // 如果不设置会导致裁剪
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        //drawImage函数有三种函数原型：
+        //drawImage(image, dx, dy)
+        //drawImage(image, dx, dy, dw, dh)
+        //drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
+        //第一个参数image可以用HTMLImageElement，HTMLCanvasElement或者HTMLVideoElement作为参数。
+        //dx和dy是image在canvas中定位的坐标值；dw和dh是image在canvas中即将绘制区域（相对dx和dy坐标的偏移量）的宽度和高度值；
+        //sx和sy是image所要绘制的起始位置，sw和sh是image所要绘制区域（相对image的sx和sy坐标的偏移量）的宽度和高度值。
+        ctx.drawImage(video, 0, 0);// 1：1全图显示
+        //ctx.drawImage(video, 0, 0, width * scale.value, height * scale.value);// 全图按比例缩放到指定区域显示
+        //ctx.drawImage(video, 0, 0,400,300,0,0, width * scale.value, height * scale.value);// 显示选中的区域全图显示
+        //ctx.drawImage(video, 400, 300,400,300,100,100, 400,300);// 显示选中的区域1:1显示
+
+        // 显示截图
+        var image = $form.data("image");
+        image.type = "png";
+        image.name = "video";
+        image.data = canvas.toDataURL("image/png");
+        $form.find("img.proxy")[0].src = image.data;
+
+        // 隐藏video控件
+        $video.hide();
     },
 
     /** 下载 */
