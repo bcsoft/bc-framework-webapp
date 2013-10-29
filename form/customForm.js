@@ -14,7 +14,7 @@ bc.customForm = {
 	 * @option {Integer} pid [必填]pid 新建为时0
 	 * @option {String} code [必填]编码 新建为时空字符窜
 	 * @option {String} readonly [必填]是否只读-- true为只读 false为可编辑
-	 * @option {Object} extraData [可选]附带数据
+	 * @option {Object} extraData [可选]附带数据 如[{name : "sex",value : 1,type : "int"}]
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
 	 * @option {String} beforeClose
@@ -199,7 +199,20 @@ bc.customForm = {
 			}
 		});
 	},
-
+	
+	/**
+	 * 自定义表单创建方法
+	 * 
+	 * @param {Object}
+	 *            option [可选]配置参数
+	 * @option {String} tpl 模板编码
+	 * @option {String} subject 标题
+	 * @option {String} type 类别
+	 * @option {Integer} pid pid 新建为时0
+	 * @option {String} code 编码 新建为时空字符窜
+	 * @option {String} readonly [是否只读-- true为只读 false为可编辑
+	
+	 
 	/** 删除自定义表单 */
 	delete_ : function(option) {
 		if (!(option && option.tpl && option.subject && option.type
