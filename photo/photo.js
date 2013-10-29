@@ -27,6 +27,25 @@ bc.photo = {
         });
         $form.trigger("dialogresize");
 
+        // 支持文件拖动的处理
+        $displayContainer.on({
+            dragover: function(e){
+                e.stopPropagation();
+                e.preventDefault();//取消默认浏览器拖拽效果
+                console.log("dragover");
+            },
+            drop: function(e){
+                e.stopPropagation();
+                e.preventDefault();//取消默认浏览器拖拽效果
+                console.log("drop");
+                //console.log(e.originalEvent.dataTransfer);
+                //获取文件对象: TODO 多文件的处理
+                var file = e.originalEvent.dataTransfer.files[0];
+                bc.photo.showImage($imgProxy, file);
+                $displayContainer.css("border","0");
+            }
+        });
+
         // 根据图片的实际大小调整显示区，保证图片整张显示
         $imgProxy.on("load", function (e) {
             $imgDisplayer.attr("src", $imgProxy.attr("src"));
@@ -64,18 +83,22 @@ bc.photo = {
             }
 
             // 显示图片：TODO 多选的处理
-            var reader = new window.FileReader();
             var file = this.files[0];
-            bc.photo.image.type = file.name.substr(file.name.lastIndexOf(".") + 1);
-            bc.photo.image.name = file.name.substring(0, file.name.lastIndexOf("."));
-            reader.onload = function (e) {
-                //console.log(e.target.result);
-                // 将图片数据加载到图片代理控件
-                $imgProxy.attr("src", e.target.result);
-                bc.photo.image.data = e.target.result;
-            };
-            reader.readAsDataURL(file);
+            bc.photo.showImage($imgProxy, file);
         });
+    },
+    /** 显示指定的文件 */
+    showImage: function($imgProxy, file){
+        var reader = new window.FileReader();
+        bc.photo.image.type = file.name.substr(file.name.lastIndexOf(".") + 1);
+        bc.photo.image.name = file.name.substring(0, file.name.lastIndexOf("."));
+        reader.onload = function (e) {
+            //console.log(e.target.result);
+            // 将图片数据加载到图片代理控件
+            $imgProxy.attr("src", e.target.result);
+            bc.photo.image.data = e.target.result;
+        };
+        reader.readAsDataURL(file);
     },
 
     /** 重新处理显示区的缩放 */

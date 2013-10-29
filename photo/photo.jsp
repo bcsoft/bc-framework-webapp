@@ -5,7 +5,8 @@
 	data-initMethod='bc.photo.init'
 	data-option='<s:property value="pageOption"/>' style="overflow:hidden;">
 <div class="hlayout" style="width: 100%; height: 100%;font-weight:normal">
-    <div id="displayContainer" class="flex vlayout" style="position:relative;overflow:hidden;background-color:#2B2B2B;">
+    <div id="displayContainer" class="flex vlayout"
+        style="position:relative;overflow:hidden;background-color:#2B2B2B;">
         <img id="imgDisplayer" style="width:0;" src="bc/photo/asset/A4-手写.jpg"/>
     </div>
     <div class="ui-widget-content" style="width: 180px;border-color:#27292A;border-width:0 0 0 1px;background-image:none;background-color:#3C3F41;">TODO</div>
