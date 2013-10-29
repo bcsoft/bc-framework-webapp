@@ -12,7 +12,7 @@ bc.photo = {
         $form.data("image",{
             type: "png",
             name: "bc",
-            data: "data:image/png;base64,0"
+            data: "data:image/png;base64,"
         });
 
         var $displayContainer = $form.find(".container");
@@ -119,6 +119,7 @@ bc.photo = {
     showImage: function($imgProxy, file){
         var $form = $(this);
         var reader = new window.FileReader();
+        //console.log("--" +  $form.data("image"));
         $form.data("image").type = file.name.substr(file.name.lastIndexOf(".") + 1);
         $form.data("image").name = file.name.substring(0, file.name.lastIndexOf("."));
         reader.onload = function (e) {
@@ -156,8 +157,27 @@ bc.photo = {
 
     /** 完成 */
     ok: function () {
-        //alert("todo:ok");
         var $form = $(this);
+        var data =  $form.data("image");
+        //data.path = "201310/201310290940430660.jpg";
+        $.ajax({
+            method: "post",
+            dataType: "json",
+            url: bc.root + "/bc/photo/upload",
+            data:data,
+            success: function(json){
+                console.log(json);
+                if(json.success){
+                    $form.data("data", json);
+                    $form.dialog("close");
+                }else{
+                   bc.msg.info(json.msg);
+                }
+            },
+            error: function(e){
+                alert("上传图片异常！");
+            }
+        });
     },
 
     /** 拍照 */
@@ -170,6 +190,10 @@ bc.photo = {
         console.log("download");
         var $form = $(this);
         var image = $form.data("image");
+        if(image.data.indexOf(",") == image.data.length - 1){
+            bc.msg.info("没有图像数据！");
+            return false;
+        }
 
         // 将mime-type改为image/octet-stream，强制让浏览器直接download
         var imageData = image.data.replace('image/'+image.type,'image/octet-stream');

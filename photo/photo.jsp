@@ -16,5 +16,7 @@
     </div>
     <div class="ui-widget-content" style="width: 180px;border-color:#27292A;border-width:0 0 0 1px;background-image:none;background-color:#3C3F41;">TODO</div>
 </div>
-<div class="hiddenContainer" style="display:none;"><img class="proxy"/></div>
+<div class="hiddenContainer" style="display:none;">
+    <img class="proxy"/>
+</div>
 </div>
