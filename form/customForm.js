@@ -13,10 +13,8 @@ bc.customForm = {
 	 * @option {String} type [必填]类别
 	 * @option {Integer} pid [必填]pid 新建为时0
 	 * @option {String} code [必填]编码 新建为时空字符窜
-	 * @option {Object} data [可选]附带数据
-	 * @option {String} from [可选]打开此对话框的源对话框的mid
-	 * @option {String} name [可选]任务栏显示的名称或对话框的标题
-	 * @option {String} title [可选]对话框的标题,如果不指定则使用请求返回的值
+	 * @option {String} readonly [必填]是否只读-- true为只读 false为可编辑
+	 * @option {Object} extraData [可选]附带数据
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
 	 * @option {String} beforeClose
@@ -27,7 +25,7 @@ bc.customForm = {
 	 */
 	render : function(option) {
 		if (!(option && option.tpl && option.subject && option.type
-				&& option.pid && option.code)) {
+				&& option.pid && option.code && (typeof (option.readonly) != "undefined"))) {
 			alert("必须设置option参数！");
 			return;
 		}
@@ -36,7 +34,6 @@ bc.customForm = {
 			option.name = option.subject;
 		if (!option.title)
 			option.title = option.subject;
-
 		if (option.pid && option.code) {
 			option.mid = option.type + option.pid + option.code;
 		}
@@ -44,35 +41,32 @@ bc.customForm = {
 			option.data = {}
 		}
 
-		var formInfo = {
-			tpl : option.tpl,
-			subject : option.subject,
-			type : option.type,
-			pid : option.pid,
-			code : option.code
+		if (option.extraData) {
+			option.data = {
+				tpl : option.tpl,
+				subject : option.subject,
+				type : option.type,
+				pid : option.pid,
+				code : option.code,
+				extraData : $.toJSON(option.extraData)
+			};
+		} else {
+			option.data = {
+				tpl : option.tpl,
+				subject : option.subject,
+				type : option.type,
+				pid : option.pid,
+				code : option.code
+			};
 		}
 
-		bc.ajax({
-			url : bc.root + "/bc/customForm/render",
-			data : {
-				formInfo : $.toJSON(formInfo)
-			},
-			dataType : "json",
-			success : function(json) {
-				if (json.success === false) {
-					bc.customForm.create(option);
-				} else {
-					option.id = json.id;
-					bc.customForm.edit(option);
-				}
+		// 如果为只读状态
+		if (option.readonly == true) {
+			bc.customForm.open(option);
+			return;
+		}
 
-			}
-		});
-
-	},
-	create : function(option) {
-		option.data.tpl = option.tpl;
-		option.url = bc.root + "/bc/customForm/create";
+		option.url = bc.root + "/bc/customForm/render";
 		if (option.addSaveBtn == null || true === option.addSaveBtn) {
 			if (option.saveClick) {
 				option.buttons = [ {
@@ -109,51 +103,13 @@ bc.customForm = {
 		}
 
 		bc.page.newWin(option);
-	},
-	// 编辑方法
-	edit : function(option) {
-		option.data.tpl = option.tpl;
-		option.url = bc.root + "/bc/customForm/edit";
-		if (option.addSaveBtn == null || true === option.addSaveBtn) {
-			if (option.saveClick) {
-				option.buttons = [ {
-					click : option.saveClick,
-					text : "保存"
-				} ];
-			} else {
-				option.buttons = [ {
-					click : "bc.customForm.save",
-					text : "保存"
-				} ];
-			}
-		}
 
-		option.data.id = option.id;
-		var afterOpen;
-		if (option.afterOpen) {
-			afterOpen = option.afterOpen;
-		}
-		option.afterOpen = function() {
-			var $page = $(this);
-			var $form = $("form", $page);
-			if (afterOpen) {
-				afterOpen.call($page);
-			}
-		}
-		bc.page.newWin(option);
 	},
-	// 打开方法
-	open : function() {
-		if (!(option && option.id && option.subject && option.mid)) {
-			alert("必须设置option参数！");
-			return;
-		}
+
+	/** 打开表单 */
+	open : function(option) {
 		option.url = bc.root + "/bc/customForm/open";
 
-		if (!option.data) {
-			option.data = {}
-		}
-		option.data.id = option.id;
 		var afterOpen;
 		if (option.afterOpen) {
 			afterOpen = option.afterOpen;
@@ -173,6 +129,9 @@ bc.customForm = {
 			$form.find("ul.inputIcons,span.selectButton").each(function() {
 				$(this).hide();
 			});
+			$form.find(".bc-date").each(function() {
+				$(this).unbind();
+			});
 
 			if (afterOpen) {
 				afterOpen.call($page);
@@ -180,16 +139,8 @@ bc.customForm = {
 		}
 		bc.page.newWin(option);
 	},
-	/**
-	 * 保存表单数据，上下文为页面对象
-	 * 
-	 * @param {Object}
-	 *            option
-	 * @option {Function} callback 保存成功后的回调函数，上下文为当前页面，第一个参数为服务器返回的json对象
-	 */
+	/** 保存表单 */
 	save : function(option) {
-		option = option || {};
-
 		var $page = $(this);
 		var $form = $("form", $page);
 		// 表单验证
@@ -248,6 +199,122 @@ bc.customForm = {
 			}
 		});
 	},
+
+	/** 删除自定义表单 */
+	delete_ : function(option) {
+		if (!(option && option.tpl && option.subject && option.type
+				&& option.pid && option.code)) {
+			bc.customForm.deleteById();
+		} else {
+			bc.customForm.deleteByOption(option);
+		}
+
+	},
+	// 通过id删除
+	deleteById : function() {
+		var $page = $(this);
+		var url = bc.root + "/bc/customForm/delete";
+
+		var data = null;
+		var $tds = $page
+				.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
+		if ($tds.length == 1) {
+			data = "id=" + $tds.attr("data-id");
+		} else if ($tds.length > 1) {
+			data = "ids=";
+			$tds.each(function(i) {
+				data += $(this).attr("data-id")
+						+ (i == $tds.length - 1 ? "" : ",");
+			});
+		}
+		if (logger.infoEnabled)
+			logger.info("bc.page.delete_: data=" + data);
+		if (data == null) {
+			bc.msg.slide("请先选择要删除的条目！");
+			return;
+		}
+		bc.msg.confirm("确定要删除选定的 <b>" + $tds.length + "</b> 项吗？", function() {
+			bc.ajax({
+				url : url,
+				data : data,
+				dataType : "json",
+				success : function(json) {
+					if (logger.debugEnabled)
+						logger.debug("delete success.json=" + $.toJSON(json));
+					if (json.success === false) {
+						bc.msg.alert(json.msg);// 仅显示失败信息
+					} else {
+						// 调用回调函数
+						var showMsg = true;
+						if (typeof option.callback == "function") {
+							// 返回false将禁止保存提示信息的显示
+							if (option.callback.call($page[0], json) === false)
+								showMsg = false;
+						}
+						if (showMsg)
+							bc.msg.slide(json.msg);
+
+						// 重新加载列表
+						bc.grid.reloadData($page);
+					}
+				}
+			});
+		});
+	},
+	// 通过option删除
+	deleteByOption : function(option) {
+		var $page = $(this);
+		var url = bc.root + "/bc/customForm/delete";
+
+		if (!option) {
+			option.data = {};
+		}
+
+		var formInfo = {
+			tpl : option.tpl,
+			subject : option.subject,
+			type : option.type,
+			pid : option.pid,
+			code : option.code
+		}
+
+		var data = $.extend(option.data, formInfo);
+
+		if (logger.infoEnabled)
+			logger.info("bc.page.delete_: data=" + data);
+		if (data == null) {
+			bc.msg.slide("请先选择要删除的条目！");
+			return;
+		}
+		bc.msg.confirm("确定要删除选定的 <b>" + 1 + "</b> 项吗？", function() {
+			bc.ajax({
+				url : url,
+				data : data,
+				dataType : "json",
+				success : function(json) {
+					if (logger.debugEnabled)
+						logger.debug("delete success.json=" + $.toJSON(json));
+					if (json.success === false) {
+						bc.msg.alert(json.msg);// 仅显示失败信息
+					} else {
+						// 调用回调函数
+						var showMsg = true;
+						if (typeof option.callback == "function") {
+							// 返回false将禁止保存提示信息的显示
+							if (option.callback.call($page[0], json) === false)
+								showMsg = false;
+						}
+						if (showMsg)
+							bc.msg.slide(json.msg);
+
+						// 重新加载列表
+						bc.grid.reloadData($page);
+					}
+				}
+			});
+		});
+	},
+
 	/** 获取表单数据 */
 	getFormData : function($form) {
 		// 默认的表单数据获取方法
