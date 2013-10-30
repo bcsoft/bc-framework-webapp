@@ -20,8 +20,8 @@ bc.customForm = {
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
 	 * @option {String} beforeClose
 	 *         [可选]窗口关闭前的回调函数，返回false将阻止关闭窗口。function(event, ui)
-	 * @option {boolean} addSaveBtn [可选]添加保存按钮的控制 默认true
-	 * @option {String} saveClick [可选]添加保存按钮自定义的点击事件 默认 调用"bc.customForm.save"
+	 * @option {Object} buttons [可选]扩展按钮如[{click : saveClick, text :"保存"
+	 *         }(click为自定义点击事件，text为按钮名称) 默认添加保存按钮
 	 * 
 	 */
 	render : function(option) {
@@ -71,19 +71,14 @@ bc.customForm = {
 		}
 
 		option.url = bc.root + "/bc/customForm/render";
-		if (option.addSaveBtn == null || true === option.addSaveBtn) {
-			if (option.saveClick) {
-				option.buttons = [ {
-					click : option.saveClick,
-					text : "保存"
-				} ];
-			} else {
-				option.buttons = [ {
-					click : "bc.customForm.save",
-					text : "保存"
-				} ];
-			}
+		var saveBtn = {
+			click : "bc.customForm.save",
+			text : "保存"
+		};
+		if (!option.buttons) {
+			option.buttons = [];
 		}
+		option.buttons.push(saveBtn);
 
 		var afterOpen;
 		if (option.afterOpen) {
@@ -215,9 +210,6 @@ bc.customForm = {
 	 * @option {Integer} pid pid 新建为时0
 	 * @option {String} code 编码 新建为时空字符窜
 	 * @option {String} readonly [可选]是否只读-- true为只读 false为可编辑,默认为true
-	 * 
-	 * 
-	 * /** 删除自定义表单
 	 */
 	delete_ : function(option) {
 		if (!(option && option.tpl && option.subject && option.type
@@ -449,8 +441,39 @@ bc.customForm = {
 				}
 			}
 		}
+		// texterea
+		var $textareas = $form.find("textarea:not(.ignore)");
+		if ($textareas.size() != 0) {
+			$textareas.each(function() {
+				var $textarea = $(this);
+				var data = {};
+				data.name = $textarea.attr("name");
+
+				if ($textarea.val() == null || $textarea.val() == "") {
+					data.value = "";
+				} else {
+					data.value = $textarea.val();
+				}
+				data.type = $textarea.attr("data-type") || "string";
+
+				var id = $textarea.attr("data-id");
+				if (id)
+					data.id = id;
+				var label = $textarea.attr("data-label");
+				if (label)
+					data.label = label;
+
+				datas.push(data);
+			});
+		}
 
 		return datas;
+	},
+	/**
+	 * 打印
+	 */
+	print : function() {
+		bc.page.print("callback");
 	},
 
 	/** 设置data-form-info 信息 * */
