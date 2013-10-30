@@ -16,7 +16,7 @@ bc.photo = {
 
         var $form = $(this);
 
-        $form.data("image",{
+        $form.data("image", {
             type: "png",
             name: "bc",
             data: "data:image/png;base64,"
@@ -25,12 +25,14 @@ bc.photo = {
         var $displayContainer = $form.find(".container");
         var $imgDisplayer = $displayContainer.children("img");
         var $imgProxy = $form.find("img.proxy");
+        var $canvasProxy = $form.find("canvas.proxy");
         $imgProxy.attr("src", $imgDisplayer.attr("src"));
 
-        $displayContainer.find(".indicator a").click(function(e){
-            $displayContainer.css("border","0");
-            $displayContainer.data("ignore",false);
-            $displayContainer.children(".indicator").hide();
+        var $indicator = $form.find(".indicator");
+        $indicator.find("a").click(function (e) {
+            $indicator.css("border", "0");
+            $indicator.data("ignore", false);
+            $indicator.hide();
             $imgDisplayer.show();
             return false;
         });
@@ -43,40 +45,40 @@ bc.photo = {
 
         // 支持文件拖动的处理:dragover和drop是必须的
         $(document).on({
-            dragstart: function(e){
-                $displayContainer.data("ignore",true);
+            dragstart: function (e) {
+                $indicator.data("ignore", true);
                 console.log("document.dragstart");
             },
-            dragenter: function(e){
-                e.originalEvent.dataTransfer.dropEffect  = 'move';
+            dragenter: function (e) {
+                e.originalEvent.dataTransfer.dropEffect = 'move';
                 console.log("document.dragenter");
-                if(!$displayContainer.data("ignore")){
+                if (!$displayContainer.data("ignore")) {
                     // 显示拖放到这里的指示
-                    $displayContainer.css("border","4px dashed #666");
-                    $displayContainer.children(".indicator").show();
+                    $indicator.css("border", "4px dashed #666");
+                    $indicator.show();
                     $imgDisplayer.hide();
                 }
             },
-            dragover: function(e){
+            dragover: function (e) {
                 e.stopPropagation();
                 e.preventDefault();//取消默认浏览器拖拽效果
                 //console.log("document.dragover");
             },
-            drop: function(e){
+            drop: function (e) {
                 e.stopPropagation();
                 e.preventDefault();//取消默认浏览器拖拽效果
                 console.log("document.drop");
-                if($(e.target).is(".container,.container *")
+                if ($(e.target).is(".container,.container *")
                     && e.originalEvent.dataTransfer.files
-                    && e.originalEvent.dataTransfer.files.length){
+                    && e.originalEvent.dataTransfer.files.length) {
                     console.log("document.drop.ok");
                     var file = e.originalEvent.dataTransfer.files[0];
-                    bc.photo.showImage.call($form,$imgProxy, file);
+                    bc.photo.showImage.call($form, $imgProxy, file);
                 }
-                $displayContainer.css("border","0");
-                $displayContainer.data("ignore",false);
+                $indicator.css("border", "0");
+                $indicator.data("ignore", false);
 
-                $displayContainer.children(".indicator").hide();
+                $indicator.hide();
                 $imgDisplayer.show();
             }
         });
@@ -119,21 +121,95 @@ bc.photo = {
 
             // 显示图片：TODO 多选的处理
             var file = this.files[0];
-            bc.photo.showImage.call($form,$imgProxy, file);
+            bc.photo.showImage.call($form, $imgProxy, file);
+        });
+        // 裁剪控件的创建与销毁
+        var $statusBar = $form.find(".statusBar");
+        $form.find("button.crop").click(function () {
+            this.disabled = true;
+            $form.find("button.destroy")[0].disabled = false;
+            $imgDisplayer.Jcrop({
+                bgOpacity: 0.6,                     // 遮罩的透明度
+                bgColor: 'rgba(0,0,0,0)',           // 背景色
+                //aspectRatio: 1/1,                 // 宽高比
+                //minSize: [10,10],                   // 最小尺寸
+                onSelect: function (c) {        // 选择完毕事件
+                    console.log("onSelect");
+                    $statusBar.html("x1=" + c.x + "<br>y1=" + c.y + "<br>x2=" + c.x2 + "<br>y2=" + c.y2 + "<br>w=" + c.w + "<br>h=" + c.h);
+                    $form.data("cropData",c);
+                },
+                onChange: function (c) {        // 选择区正在移动事件
+                    console.log("onChange");
+                    $statusBar.html("x1=" + c.x + "<br>y1=" + c.y + "<br>x2=" + c.x2 + "<br>y2=" + c.y2 + "<br>w=" + c.w + "<br>h=" + c.h);
+                },
+                onRelease: function () {// 选择区被释放事件
+                    console.log("onRelease");
+                    $form.removeData("cropData");
+                }
+            }, function () {
+                $form.data("jcrop", this);
+            });
+        });
+        $form.find("button.destroy").click(function () {
+            // 用户选中的区域数据，没有选中时为null
+            var c = $form.data("cropData");
+            console.log(c);
+
+            // 释放资源
+            var jcrop = $form.data("jcrop");
+            jcrop && jcrop.release();
+            jcrop && jcrop.destroy();
+            $form.removeData("jcrop");
+
+            // 裁剪图片
+            if(c){
+                var canvas = $canvasProxy[0];
+                var ctx = canvas.getContext('2d');
+
+                // 计算缩放比例
+                var rw = $imgProxy[0].width;
+                var vw = $imgDisplayer.width();
+                var scale = rw / vw;
+                console.log("rw=" + rw + ",vw=" + vw);
+                console.log("scaleW=" + scale);
+                //console.log("scaleH=" + ($imgProxy[0].height / $imgDisplayer.height()));
+                var sx = c.x * scale;
+                var sy = c.y * scale;
+                var sw = c.w * scale;
+                var sh = c.h * scale;
+
+                // 获取裁剪区的数据并显示
+                canvas.width = sw;
+                canvas.height = sh;
+                ctx.clearRect(0,0,sw,sh);//清除画布上的指定区域
+                ctx.drawImage($imgProxy[0], sx, sy, sw, sh, 0, 0, sw, sh);
+                var data = canvas.toDataURL("image/png");
+                $imgProxy.attr("src", data);
+                var image = $form.data("image");
+                image.data = data;
+                bc.photo.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
+            }
+
+            //bc.photo.cropImage.call($form, $imgDisplayer,jcrop.tellSelect());
+
+            // 恢复控件状态
+            $form.find("button.crop")[0].disabled = false;
+            this.disabled = true;
         });
     },
     /** 显示指定的图片 */
-    showImage: function($imgProxy, file){
-        var $form = $(this);
+    showImage: function ($imgProxy, file) {
+        var $form = this;
+        var data = $form.data("image");
         var reader = new window.FileReader();
         //console.log("--" +  $form.data("image"));
-        $form.data("image").type = file.name.substr(file.name.lastIndexOf(".") + 1);
-        $form.data("image").name = file.name.substring(0, file.name.lastIndexOf("."));
+        data.type = file.name.substr(file.name.lastIndexOf(".") + 1);
+        data.name = file.name.substring(0, file.name.lastIndexOf("."));
         reader.onload = function (e) {
             //console.log(e.target.result);
             // 将图片数据加载到图片代理控件
             $imgProxy.attr("src", e.target.result);
-            $form.data("image").data = e.target.result;
+            data.data = e.target.result;
         };
         reader.readAsDataURL(file);
     },
@@ -165,23 +241,23 @@ bc.photo = {
     /** 完成 */
     ok: function () {
         var $form = $(this);
-        var data =  $form.data("image");
+        var data = $form.data("image");
         //data.path = "201310/201310290940430660.jpg";
         $.ajax({
             method: "post",
             dataType: "json",
             url: bc.root + "/bc/photo/upload",
-            data:data,
-            success: function(json){
+            data: data,
+            success: function (json) {
                 console.log(json);
-                if(json.success){
+                if (json.success) {
                     $form.data("data", json);
                     $form.dialog("close");
-                }else{
-                   bc.msg.info(json.msg);
+                } else {
+                    bc.msg.info(json.msg);
                 }
             },
-            error: function(e){
+            error: function (e) {
                 alert("上传图片异常！");
             }
         });
@@ -194,29 +270,29 @@ bc.photo = {
         $video.show();
 
         // 如果摄像头已连接，返回不处理
-        if($video.data("connected"))
+        if ($video.data("connected"))
             return false;
 
         // 绑定video的事件
         $video.on({
-            loadeddata: function(e){
+            loadeddata: function (e) {
                 var video = $video[0];
                 console.log('video.loadeddata:' + video.videoWidth + 'x' + video.videoHeight);
             },
             // 双击截图
-            dblclick: function(e){
+            dblclick: function (e) {
                 console.log("dblclick");
-                bc.photo.snapshot.call($form,$video);
+                bc.photo.snapshot.call($form, $video);
             }
         });
 
         // 摄像头连接配置
         var constraints = {
-            audio : false,
-            video : {
-                mandatory : {
-                    minWidth : "800",
-                    minHeight : "600"
+            audio: false,
+            video: {
+                mandatory: {
+                    minWidth: "800",
+                    minHeight: "600"
                 }
             }
         };
@@ -250,9 +326,9 @@ bc.photo = {
         }
 
         // 连接摄像头
-        navigator.getUserMedia(constraints, successCallback,errorCallback);
+        var camera = navigator.getUserMedia(constraints, successCallback, errorCallback);
     },
-    snapshot: function($video){
+    snapshot: function ($video) {
         var $form = $(this);
         var video = $video[0];
         var canvas = $form.find("canvas")[0];
@@ -291,13 +367,13 @@ bc.photo = {
         console.log("download");
         var $form = $(this);
         var image = $form.data("image");
-        if(image.data.indexOf(",") == image.data.length - 1){
+        if (image.data.indexOf(",") == image.data.length - 1) {
             bc.msg.info("没有图像数据！");
             return false;
         }
 
         // 将mime-type改为image/octet-stream，强制让浏览器直接download
-        var imageData = image.data.replace('image/'+image.type,'image/octet-stream');
+        var imageData = image.data.replace('image/' + image.type, 'image/octet-stream');
         var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
         save_link.href = imageData;
         save_link.download = image.name + "." + image.type;
