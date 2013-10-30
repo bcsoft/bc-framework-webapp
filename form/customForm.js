@@ -13,8 +13,9 @@ bc.customForm = {
 	 * @option {String} type [必填]类别
 	 * @option {Integer} pid [必填]pid 新建为时0
 	 * @option {String} code [必填]编码 新建为时空字符窜
-	 * @option {String} readonly [必填]是否只读-- true为只读 false为可编辑
-	 * @option {Object} extraData [可选]附带数据 如[{name : "sex",value : 1,type : "int"}]
+	 * @option {String} readonly [可选]是否只读-- true为只读 false为可编辑,默认为false
+	 * @option {Object} extraData [可选]附带数据 如[{name : "sex",value : 1,type :
+	 *         "int"}]
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
 	 * @option {String} beforeClose
@@ -25,7 +26,7 @@ bc.customForm = {
 	 */
 	render : function(option) {
 		if (!(option && option.tpl && option.subject && option.type
-				&& option.pid && option.code && (typeof (option.readonly) != "undefined"))) {
+				&& option.pid && option.code)) {
 			alert("必须设置option参数！");
 			return;
 		}
@@ -60,6 +61,9 @@ bc.customForm = {
 			};
 		}
 
+		if (typeof (option.readonly) == "undefined") {
+			option.readonly = false;
+		}
 		// 如果为只读状态
 		if (option.readonly == true) {
 			bc.customForm.open(option);
@@ -199,9 +203,9 @@ bc.customForm = {
 			}
 		});
 	},
-	
+
 	/**
-	 * 自定义表单创建方法
+	 * 自定义表单删除方法
 	 * 
 	 * @param {Object}
 	 *            option [可选]配置参数
@@ -210,10 +214,11 @@ bc.customForm = {
 	 * @option {String} type 类别
 	 * @option {Integer} pid pid 新建为时0
 	 * @option {String} code 编码 新建为时空字符窜
-	 * @option {String} readonly [是否只读-- true为只读 false为可编辑
-	
-	 
-	/** 删除自定义表单 */
+	 * @option {String} readonly [可选]是否只读-- true为只读 false为可编辑,默认为true
+	 * 
+	 * 
+	 * /** 删除自定义表单
+	 */
 	delete_ : function(option) {
 		if (!(option && option.tpl && option.subject && option.type
 				&& option.pid && option.code)) {
@@ -384,8 +389,16 @@ bc.customForm = {
 					var data = {};
 					data.name = $checkbox.attr("name");
 					data.value = [];
-					data.value.push(parseInt($checkbox.val()));
 					data.type = $checkbox.attr("data-type") || "string";
+					if (data.type == "int" || data.type == "int[]"
+							|| data.type == "long" || data.type == "long[]") {
+						data.value.push(parseInt($checkbox.val()));
+					} else if (data.type == "float" || data.type == "float[]"
+							|| data.type == "double" || data.type == "double[]") {
+						data.value.push(parseFloat($checkbox.val()));
+					} else {
+						data.value.push($checkbox.val());
+					}
 
 					var id = $checkbox.attr("data-id");
 					if (id)
@@ -397,13 +410,33 @@ bc.customForm = {
 				} else { // 如果对象数组下标大于0
 					if ($checkbox.attr("name") == $checkboxes.eq(i - 1).attr(
 							"name")) { // 当前checkbox的name==前一个checkbox的name
-						data.value.push(parseInt($checkbox.val()));
+						if (data.type == "int" || data.type == "int[]"
+								|| data.type == "long" || data.type == "long[]") {
+							data.value.push(parseInt($checkbox.val()));
+						} else if (data.type == "float"
+								|| data.type == "float[]"
+								|| data.type == "double"
+								|| data.type == "double[]") {
+							data.value.push(parseFloat($checkbox.val()));
+						} else {
+							data.value.push($checkbox.val());
+						}
 					} else { // 当前checkbox的name不等于前一个checkbox的name
 						data = {};
 						data.name = $checkbox.attr("name");
 						data.value = [];
-						data.value.push(parseInt($checkbox.val()));
 						data.type = $checkbox.attr("data-type") || "string";
+						if (data.type == "int" || data.type == "int[]"
+								|| data.type == "long" || data.type == "long[]") {
+							data.value.push(parseInt($checkbox.val()));
+						} else if (data.type == "float"
+								|| data.type == "float[]"
+								|| data.type == "double"
+								|| data.type == "double[]") {
+							data.value.push(parseFloat($checkbox.val()));
+						} else {
+							data.value.push($checkbox.val());
+						}
 
 						var id = $checkbox.attr("data-id");
 						if (id)
