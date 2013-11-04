@@ -173,11 +173,11 @@ bc.customForm = {
 				if (json.success === false) {
 					bc.msg.info(json.msg);
 				} else {
-					bc.customForm.setFormInfo($form, {
+					/*bc.customForm.setFormInfo($form, {
 						id : json.id,
 						formData : json.formData
 					});
-					bc.customForm.loadFormData.call($page);
+					bc.customForm.loadFormData.call($page);*/
 					// 记录已保存状态
 					$page.attr("data-status", "saved").data("data-status",
 							"saved");
@@ -210,21 +210,23 @@ bc.customForm = {
 	 * @option {Integer} pid pid 新建为时0
 	 * @option {String} code 编码 新建为时空字符窜
 	 * @option {String} readonly [可选]是否只读-- true为只读 false为可编辑,默认为true
+	 * @option {String} afterDelete [可选]删除后的回调函数。function(event, ui)
 	 */
 	delete_ : function(option) {
-		if (!(option && option.tpl && option.subject && option.type
-				&& option.pid && option.code)) {
-			bc.customForm.deleteById();
+		var $page = option.page || $(this);
+		option = option || {};
+		option.page = $page;
+		if(option.tpl && option.subject && option.type
+				&& option.pid && option.code) {
+			bc.customForm.deleteByTpc(option);
 		} else {
-			bc.customForm.deleteByOption(option);
+			bc.customForm.deleteById(option);
 		}
-
 	},
 	// 通过id删除
-	deleteById : function() {
-		var $page = $(this);
+	deleteById : function(option) {
 		var url = bc.root + "/bc/customForm/delete";
-
+		var $page = option.page;
 		var data = null;
 		var $tds = $page
 				.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
@@ -271,9 +273,9 @@ bc.customForm = {
 			});
 		});
 	},
-	// 通过option删除
-	deleteByOption : function(option) {
-		var $page = $(this);
+	// 通过传入的(type,pid,code)参数进行删除
+	deleteByTpc : function(option) {
+		var $page = option.page;
 		var url = bc.root + "/bc/customForm/delete";
 
 		if (!option) {
