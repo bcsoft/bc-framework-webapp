@@ -340,13 +340,14 @@ bc.customForm = {
 		var pid = form_info.pid;
 		var url = bc.root
 				+ "/bc/customForm/open?tpl="+tpl+"&type="+type+"&pid="+pid+"&code=" + code;
-		var win = window.open(url,"_blank");
-		
+		var title = form_info.subject; 
 		// 加载js、css文件
 		var printCss = $page.attr("data-print-printCss");//打印样式
 		var pageCss = $page.attr("data-print-pageCss");//页面样式
+		
+		var win = window.open(url,"_blank");
 		//新建打印窗口
-		bc.customForm.winPrint(win,printCss,pageCss);
+		bc.customForm.winPrint(win,printCss,pageCss,title);
 	},
 	/**自定义setTimeout方法
 	 * 功能：修改 window.setTimeout，使之可以传递参数和对象参数    
@@ -359,7 +360,8 @@ bc.customForm = {
 	    }     
 	    setTimeout(_cb,timeout);     
 	} ,
-	winPrint : function(win,printCss,pageCss) {
+	//加载css文件,并调用窗口打印方法
+	winPrint : function(win,printCss,pageCss,title) {
 		// 先判断返回window中获取需要操作的Form是否为null
 		if (win.document.getElementsByTagName("form")[0]) {
 			// 对返回的window对象进行操作
@@ -397,10 +399,12 @@ bc.customForm = {
 					win.document.getElementsByTagName("head")[0].appendChild(link);
 				}
 			}
+			
+			win.document.title=title;
 			win.print();
 		} else {
 			// 设置延迟加载500毫秒
-			bc.customForm.customSetTimeout(bc.customForm.winPrint,500,win,printCss,pageCss);
+			bc.customForm.customSetTimeout(bc.customForm.winPrint,500,win,printCss,pageCss,title);
 		}
 	},
 
