@@ -474,8 +474,8 @@ bc.customForm = {
 	/**
 	 * 打印
 	 */
-	print : function() {
-		bc.page.print("callback");
+	print : function(key) {
+		bc.page.print(key);
 	},
 
 	/** 设置data-form-info 信息 * */
