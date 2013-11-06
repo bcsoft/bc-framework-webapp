@@ -548,15 +548,6 @@ bc.customForm = {
 
 		return datas;
 	},
-<<<<<<< HEAD
-	/**
-	 * 打印
-	 */
-	print : function(key) {
-		bc.page.print(key);
-	},
-=======
->>>>>>> bd110289c9cc901c969109640aa94509708691d4
 
 	/** 设置data-form-info 信息 * */
 	setFormInfo : function($form, extData) {
