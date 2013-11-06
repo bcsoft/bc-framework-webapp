@@ -173,11 +173,10 @@ bc.customForm = {
 				if (json.success === false) {
 					bc.msg.info(json.msg);
 				} else {
-					/*bc.customForm.setFormInfo($form, {
-						id : json.id,
-						formData : json.formData
-					});
-					bc.customForm.loadFormData.call($page);*/
+					/*
+					 * bc.customForm.setFormInfo($form, { id : json.id, formData :
+					 * json.formData }); bc.customForm.loadFormData.call($page);
+					 */
 					// 记录已保存状态
 					$page.attr("data-status", "saved").data("data-status",
 							"saved");
@@ -216,8 +215,8 @@ bc.customForm = {
 		var $page = option.page || $(this);
 		option = option || {};
 		option.page = $page;
-		if(option.tpl && option.subject && option.type
-				&& option.pid && option.code) {
+		if (option.tpl && option.subject && option.type && option.pid
+				&& option.code) {
 			bc.customForm.deleteByTpc(option);
 		} else {
 			bc.customForm.deleteById(option);
@@ -325,6 +324,84 @@ bc.customForm = {
 				}
 			});
 		});
+	},
+	
+	/**
+	 * 打印
+	 */
+	print : function(key) {
+		var $page = $(this);
+		var $form = $("form", $page);
+		var form_info = $form.attr("data-form-info");
+		form_info = eval("(" + form_info + ")");
+		var tpl = form_info.tpl;
+		var type = form_info.type;
+		var code = form_info.code;
+		var pid = form_info.pid;
+		var url = bc.root
+				+ "/bc/customForm/open?tpl="+tpl+"&type="+type+"&pid="+pid+"&code=" + code;
+		var win = window.open(url,"_blank");
+		
+		// 加载js、css文件
+		var printCss = $page.attr("data-print-printCss");//打印样式
+		var pageCss = $page.attr("data-print-pageCss");//页面样式
+		//新建打印窗口
+		bc.customForm.winPrint(win,printCss,pageCss);
+	},
+	/**自定义setTimeout方法
+	 * 功能：修改 window.setTimeout，使之可以传递参数和对象参数    
+     *	使用方法： setTimeout(回调函数,时间,参数1,,参数n)    
+	 */
+	customSetTimeout :  function(callback,timeout,param){     
+	    var args = Array.prototype.slice.call(arguments,2);     
+	    var _cb = function(){     
+	        callback.apply(null,args);     
+	    }     
+	    setTimeout(_cb,timeout);     
+	} ,
+	winPrint : function(win,printCss,pageCss) {
+		// 先判断返回window中获取需要操作的Form是否为null
+		if (win.document.getElementsByTagName("form")[0]) {
+			// 对返回的window对象进行操作
+			if(printCss && printCss.length > 0){
+				//逗号分隔多个文件
+				printCss = printCss.split(",");
+				for(var i=0; i<printCss.length; i++) {
+					var cssUrl = bc.root + printCss[i];
+					var link = document.createElement("link");
+					link.rel = "stylesheet";
+					link.type = "text/css";
+					link.media = "print";
+					link.href = cssUrl;
+					win.document.getElementsByTagName("head")[0].appendChild(link);
+				}
+			}else{
+				alert("aaa");
+				var cssUrl = bc.root + "/bc/form/print/page.css";
+				var link = document.createElement("link");
+				link.rel = "stylesheet";
+				link.type = "text/css";
+				link.media = "print";
+				link.href = cssUrl;
+				win.document.getElementsByTagName("head")[0].appendChild(link);				
+			}
+			if(pageCss && pageCss.length > 0){
+				//逗号分隔多个文件
+				pageCss = pageCss.split(",");
+				for(var i=0; i<pageCss.length; i++) {
+					var cssUrl = bc.root + pageCss[i];
+					var link = document.createElement("link");
+					link.rel = "stylesheet";
+					link.type = "text/css";
+					link.href = cssUrl;
+					win.document.getElementsByTagName("head")[0].appendChild(link);
+				}
+			}
+			win.print();
+		} else {
+			// 设置延迟加载500毫秒
+			bc.customForm.customSetTimeout(bc.customForm.winPrint,500,win,printCss,pageCss);
+		}
 	},
 
 	/** 获取表单数据 */
@@ -470,12 +547,6 @@ bc.customForm = {
 		}
 
 		return datas;
-	},
-	/**
-	 * 打印
-	 */
-	print : function() {
-		bc.page.print("callback");
 	},
 
 	/** 设置data-form-info 信息 * */
