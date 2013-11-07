@@ -327,7 +327,7 @@ bc.customForm = {
 	},
 	
 	/**
-	 * 打印
+	 * 打印方法
 	 */
 	print : function(key) {
 		var $page = $(this);
@@ -344,10 +344,10 @@ bc.customForm = {
 		// 加载js、css文件
 		var printCss = $page.attr("data-print-printCss");//打印样式
 		var pageCss = $page.attr("data-print-pageCss");//页面样式
-		
+		var appTs =  $page.attr("data-appTs");//时间戳
 		var win = window.open(url,"_blank");
 		//新建打印窗口
-		bc.customForm.winPrint(win,printCss,pageCss,title);
+		bc.customForm.winPrint(win,printCss,pageCss,title,appTs);
 	},
 	/**自定义setTimeout方法
 	 * 功能：修改 window.setTimeout，使之可以传递参数和对象参数    
@@ -361,7 +361,7 @@ bc.customForm = {
 	    setTimeout(_cb,timeout);     
 	} ,
 	//加载css文件,并调用窗口打印方法
-	winPrint : function(win,printCss,pageCss,title) {
+	winPrint : function(win,printCss,pageCss,title,appTs) {
 		// 先判断返回window中获取需要操作的Form是否为null
 		if (win.document.getElementsByTagName("form")[0]) {
 			// 对返回的window对象进行操作
@@ -369,7 +369,7 @@ bc.customForm = {
 				//逗号分隔多个文件
 				printCss = printCss.split(",");
 				for(var i=0; i<printCss.length; i++) {
-					var cssUrl = bc.root + printCss[i];
+					var cssUrl = bc.root + printCss[i] + "?ts=" + appTs ;
 					var link = document.createElement("link");
 					link.rel = "stylesheet";
 					link.type = "text/css";
@@ -378,8 +378,7 @@ bc.customForm = {
 					win.document.getElementsByTagName("head")[0].appendChild(link);
 				}
 			}else{
-				alert("aaa");
-				var cssUrl = bc.root + "/bc/form/print/page.css";
+				var cssUrl = bc.root + "/bc/form/print/page.css?ts=" + appTs;
 				var link = document.createElement("link");
 				link.rel = "stylesheet";
 				link.type = "text/css";
@@ -391,7 +390,7 @@ bc.customForm = {
 				//逗号分隔多个文件
 				pageCss = pageCss.split(",");
 				for(var i=0; i<pageCss.length; i++) {
-					var cssUrl = bc.root + pageCss[i];
+					var cssUrl = bc.root + pageCss[i] + "?ts=" + appTs;
 					var link = document.createElement("link");
 					link.rel = "stylesheet";
 					link.type = "text/css";
@@ -404,7 +403,7 @@ bc.customForm = {
 			win.print();
 		} else {
 			// 设置延迟加载500毫秒
-			bc.customForm.customSetTimeout(bc.customForm.winPrint,500,win,printCss,pageCss,title);
+			bc.customForm.customSetTimeout(bc.customForm.winPrint,500,win,printCss,pageCss,title,appTs);
 		}
 	},
 
