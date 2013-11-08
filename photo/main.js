@@ -1,5 +1,5 @@
-bc.namespace("bc.photo");
-bc.photo = {
+bc.namespace("bc.photo.handler");
+bc.photo.handler = {
 	/** 初始化 */
 	init: function () {
 		// 浏览器支持检测
@@ -44,7 +44,7 @@ bc.photo = {
 
 		// 窗口大小变动后重新处理显示区的缩放
 		$form.on("dialogresize", function (e, ui) {
-			bc.photo.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
+			bc.photo.handler.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
 		});
 		$form.trigger("dialogresize");
 
@@ -78,7 +78,7 @@ bc.photo = {
 					&& e.originalEvent.dataTransfer.files.length) {
 					console.log("document.drop.ok");
 					var file = e.originalEvent.dataTransfer.files[0];
-					bc.photo.showImage.call($form, $imgProxy, file);
+					bc.photo.handler.showImage.call($form, $imgProxy, file);
 				}
 				$indicator.css("border", "0");
 				$indicator.data("ignore", false);
@@ -91,11 +91,11 @@ bc.photo = {
 		// 根据图片的实际大小调整显示区，保证图片整张显示
 		$imgProxy.on("load", function (e) {
 			$imgDisplayer.attr("src", $imgProxy.attr("src"));
-			bc.photo.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
+			bc.photo.handler.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
 			console.log(this.width + "x" + this.height);
 
 			// 显示图片信息
-			bc.photo.showInfo.call($form);
+			bc.photo.handler.showInfo.call($form);
 		});
 
 		// 底部工具条容器
@@ -130,7 +130,7 @@ bc.photo = {
 
 			// 显示图片：TODO 多选的处理
 			var file = this.files[0];
-			bc.photo.showImage.call($form, $imgProxy, file);
+			bc.photo.handler.showImage.call($form, $imgProxy, file);
 		});
 		// 裁剪控件的创建与销毁
 		var $statusBar = $form.find(".statusBar");
@@ -150,7 +150,7 @@ bc.photo = {
 				onChange: function (c) {        // 选择区正在移动事件
 					console.log("onChange");
 					// 显示图片信息
-					bc.photo.showInfo.call($form);
+					bc.photo.handler.showInfo.call($form);
 
 					$statusBar.html("x1=" + c.x + "<br>y1=" + c.y + "<br>x2=" + c.x2 + "<br>y2=" + c.y2 + "<br>w=" + c.w + "<br>h=" + c.h);
 				},
@@ -199,7 +199,7 @@ bc.photo = {
 				$imgProxy.attr("src", data);
 				var image = $form.data("image");
 				image.data = data;
-				bc.photo.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
+				bc.photo.handler.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
 			}
 
 			// 恢复控件状态
@@ -322,7 +322,7 @@ bc.photo = {
 			// 双击截图
 			dblclick: function (e) {
 				console.log("dblclick");
-				bc.photo.snapshot.call($form, $video);
+				bc.photo.handler.snapshot.call($form, $video);
 			}
 		});
 

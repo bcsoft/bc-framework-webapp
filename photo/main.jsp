@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="photo.title"/>' data-type='form' class="bc-page "
 	data-js='js:jcrop_css,js:jcrop,<s:url value="/bc/photo/main.js" />'
-	data-initMethod='bc.photo.init'
+	data-initMethod='bc.photo.handler.init'
 	data-option='<s:property value="pageOption"/>' style="overflow:hidden;">
 <div class="hlayout" style="width: 100%; height: 100%;font-weight:normal;position:relative;">
     <div class="container flex vlayout hcenter vcenter unselectable" unselectable="on"
@@ -27,7 +27,7 @@
         <div style="width:100%;text-align:left;padding:0.4em;box-sizing: border-box;">
             <div>图片名称：</div>
             <div style="text-align:center;">
-                <input type="text" name="name" style="width:100%;box-sizing: border-box;margin:0;" value="${name}" />
+                <input type="text" name="fname" style="width:100%;box-sizing: border-box;margin:0;" value="${fname}" />
             </div>
             <div>图片信息：</div>
             <div class="info">无</div>
@@ -38,7 +38,8 @@
     <img class="proxy" src="${path}"/>
     <canvas class="proxy"/>
     <input type="hidden" name="id" value="${id}"/>
-    <input type="hidden" name="type" value="${type}"/>
+    <input type="hidden" name="dir" value="${dir}"/>
     <input type="hidden" name="path" value="${path}"/>
+    <input type="hidden" name="format" value="${format}"/>
 </div>
 </div>
