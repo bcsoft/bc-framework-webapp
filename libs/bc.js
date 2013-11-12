@@ -4636,7 +4636,8 @@ bc.loader.preconfig.js = {
     jcrop_css: '/ui-libs/jcrop/0.9.12/themes/default/jquery.Jcrop.css?ts=0',
 	
 	/** 平台 */
-	bc_identity: '/bc/identity/identity.js'
+	bc_identity: '/bc/identity/identity.js',
+	bc_photo: '/bc/photo/photo.js'
 };
 
 bc.loader.preconfig.css = {
