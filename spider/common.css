@@ -56,13 +56,13 @@
 }
 
 .field>.value>input.captcha {
-	width: 60%;
+	width: 50%;
 }
 
 img.captcha {
 	vertical-align: middle;
 	cursor: pointer;
-	width: 40%;
+	width: 50%;
 	box-sizing: border-box;
 }
 

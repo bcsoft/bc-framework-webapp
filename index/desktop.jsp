@@ -190,6 +190,7 @@
 	<script type="text/javascript" src="<s:url value='/bc/libs/tabs.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/dialog.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 	<script type="text/javascript" src="<s:url value='/bc/libs/chat.js' ><s:param name='ts' value='ts'/></s:url>"></script>
+	<script type="text/javascript" src="<s:url value='/bc/photo/photo.js' ><s:param name='ts' value='ts'/></s:url>"></script>
 </s:if>
 <s:else>
 	<script type="text/javascript" src="<s:url value='/bc/libs/bc.js' ><s:param name='ts' value='ts'/></s:url>"></script>
