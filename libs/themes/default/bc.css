@@ -67,10 +67,10 @@ body {
 /**修改对话框*/
 .bc-ui-dialog {
 	padding: 0 6px 6px 6px;
-	box-shadow:1px 1px 10px #000;	
+	box-shadow:1px 1px 10px #000;
 	/**fix ie:记得将ie-css3.htc文件放在网站的根目录下哦，用相对路径是不行的！<--拖动对话框会见到大块的黑色背景，还是没法使用
 	behavior: url(ie-css3.htc);*/
-	
+
 	overflow: visible;
 }
 .bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
@@ -112,7 +112,7 @@ body {
 	cursor: default;
 }
 .clickToSelect{
-	cursor: pointer;	
+	cursor: pointer;
 }
 
 
@@ -378,6 +378,90 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	overflow: auto;
 	word-wrap: break-word;
 	word-break: break-all;
+}
+
+/** 弹性框模型 */
+/* 水平弹性布局 */
+.hlayout {
+    display: -ms-box;
+    -ms-box-orient: horizontal;
+
+    display: -moz-box;
+    -moz-box-orient: horizontal;
+
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+
+    display:box;
+    box-orient: horizontal;
+}
+
+/* 垂直弹性布局 */
+.vlayout {
+    display: -ms-box;
+    -ms-box-orient: vertical;
+    -ms-box-pack: start;
+    -ms-box-align: stretch;
+
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    -moz-box-pack: start;
+    -moz-box-align: stretch;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical; /* 子代排列方向 - 轴向*/
+    -webkit-box-pack: start;   /* 子代轴向的排列方式：*start | end | center | justify*/
+    -webkit-box-align: stretch;  /* 子代垂直于轴向的排列方式：start | end | center | baseline | *stretch*/
+
+    display:box;
+    box-orient: vertical;
+    box-pack: start;
+    box-align: stretch;
+}
+.vlayout.hleft {
+    -ms-box-align: start;
+    -moz-box-align: start;
+    -webkit-box-align: start;
+    box-align: start;
+}
+.vlayout.hright {
+    -ms-box-align: end;
+    -moz-box-align: end;
+    -webkit-box-align: end;
+    box-align: end;
+}
+.vlayout.hcenter {
+    -ms-box-align: center;
+    -moz-box-align: center;
+    -webkit-box-align: center;
+    box-align: center;
+}
+.vlayout.vtop {
+    -ms-box-pack: start;
+    -moz-box-pack: start;
+    -webkit-box-pack: start;
+    box-pack: start;
+}
+.vlayout.vbottom {
+    -ms-box-pack: end;
+    -moz-box-pack: end;
+    -webkit-box-pack: end;
+    box-pack: end;
+}
+.vlayout.vcenter {
+    -ms-box-pack: center;
+    -moz-box-pack: center;
+    -webkit-box-pack: center;
+    box-pack: center;
+}
+/** 子代的弹性比。弹性比为 1 的子代占据父代框的空间是弹性比为 2 的同级属性的两倍。其默认值为 0，也就是不具有弹性。
+ * 值：0 | 任意整数
+ */
+.vlayout>.flex,.hlayout>.flex {
+    -ms-box-flex:1;
+    -moz-box-flex: 1;
+    -webkit-box-flex:1;
+    box-flex: 1;
 }
 /**
  * tabs组件水平布局的样式设置
