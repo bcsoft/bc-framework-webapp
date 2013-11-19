@@ -44,6 +44,8 @@
     <input type="hidden" name="size" value="${size}"/>
     <input type="hidden" name="url" value="${url}"/>
     <input type="hidden" name="fname" value="${fname}"/>
+    <input type="hidden" name="ptype" value="${ptype}"/>
+    <input type="hidden" name="puid" value="${puid}"/>
     <input type="hidden" name="data" value="${data}"/>
 </div>
 </div>
