@@ -307,6 +307,8 @@ if($.browser.safari || $.browser.mozilla || $.browser.opera){
 				}
 				
 			}else{// 同步处理
+				if(typeof cfg.beforeUploadFile == "string")
+					cfg.beforeUploadFile = bc.getNested(cfg.beforeUploadFile);
 				if(cfg.beforeUploadFile.call(form) !== false){
 					if(cfg.needConfirm){
 						bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
