@@ -188,9 +188,9 @@ bc.customForm = {
 						bc.msg.slide(json.msg);
 					}
 					if(isNew) {//如果表单为新建，保存后，isNew变为false
-						 bc.customForm.setFormInfo($form, {
+						bc.customForm.setFormInfo($form, {
 								isNew : false
-							});	
+						});	
 					}
 					//保存后表单控件"changed"标识变为false,防止相同的数据二次提交
 					$form.find(":input,select,texterea").each(function() {
@@ -563,7 +563,7 @@ bc.customForm = {
 					if (label)
 						data.label = label;
 					datas.push(data);
-				} else if (typeof($hidden.data("newData")) != "undefined" && $hidden.data("oldData") != $hidden.data("newData")) { //表单为编辑状态时
+				} else if ($hidden.data("oldData") != $hidden.val()) { //表单为编辑状态时
 					var data = {};
 					data.name = this.name;
 					data.value = $hidden.val();
@@ -711,16 +711,13 @@ bc.customForm = {
 		$form.find("input:checkbox:not(.ignore)").each(function() {
 			$(this).data("oldData",$(this)[0].checked);
 		});
-		$form.find("input:checkbox:not(.ignore)").change(function() {
+		$form.find("input:checkbox:not(.ignore)").change(function() {			
 			$(this).data("newData",$(this)[0].checked);
 		});
 		
 		//input类型为hidden
 		$form.find("input:hidden:not(.ignore)").each(function() {
-			$(this).data("oldData",$(this).val());
-		});
-		$form.find("input:hidden:not(.ignore)").change(function() {
-			$(this).data("newData",$(this).val());
+			$(this).data("oldData",$(this).val());			
 		});
 		
 		//select
