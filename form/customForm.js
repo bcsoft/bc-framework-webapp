@@ -196,7 +196,7 @@ bc.customForm = {
 					$form.find(":input,select,texterea").each(function() {
 					     $(this).removeData();
 					});
-					//监测表单内容是否有修改
+					//重新监测表单内容是否有修改
 					bc.customForm.monitorFormChange($form);
 				}
 
@@ -719,6 +719,7 @@ bc.customForm = {
 		$form.find("input:hidden:not(.ignore)").each(function() {
 			$(this).data("oldData",$(this).val());			
 		});
+		//hidden不能触发change事件,另作处理
 		
 		//select
 		$form.find("select:not(.ignore)").each(function() {
