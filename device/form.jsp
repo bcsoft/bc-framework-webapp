@@ -13,14 +13,14 @@
 						<td class="label" style="width: 6em">*<s:text name="device.model"/>:</td>
 						<td class="value">
 							<s:textfield name="e.model" data-validate="required" 
-								readonly="%{!e.isNew()}" cssClass="ui-widget-content" />
+								cssClass="ui-widget-content" />
 						</td>
 					</tr>
 					<tr>
 					<td class="label">*<s:text name="device.name"/>:</td>
 					<td class="value">
 							<s:textfield name="e.name" data-validate="required" 
-								readonly="%{!e.isNew()}" cssClass="ui-widget-content" />
+								cssClass="ui-widget-content" />
 					</td>
 					</tr>
 					<tr>
@@ -31,13 +31,18 @@
 						</td>
 					</tr>
 					<tr>
-						<s:if test="%{e.isNew()}">
-							<td class="label">*<s:text name="device.sn"/>:</td>
-							<td class="value">
-								<s:textfield name="e.sn" data-validate="required" 
-								 cssClass="ui-widget-content" />
-							</td>
-						</s:if>
+						<td class="label">*<s:text name="device.sn"/>:</td>
+						<td class="value">
+							<s:textfield name="e.sn" data-validate="required" 
+							 cssClass="ui-widget-content" />
+						</td>
+					</tr>
+					<tr>
+						<td class="label">*<s:text name="device.code"/>:</td>
+						<td class="value">
+							<s:textfield name="e.code" data-validate="required" 
+							 cssClass="ui-widget-content" />
+						</td>
 					</tr>
 					<tr>
 						<td class="label">*<s:text name="device.buyDate"/>:</td>
@@ -55,6 +60,12 @@
 							<ul class="inputIcons">
 								<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"></li>
 							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td class="label"><s:text name="device.desc"/>:</td>
+						<td class="value">
+							<s:textarea name="e.desc" cssClass="autoHeight ui-widget-content"/>
 						</td>
 					</tr>
 					<tr> 
@@ -76,9 +87,7 @@
 		</div>
 		<s:hidden name="e.id"/>
 		<s:hidden name="e.author.id"/>
-		<s:if test="%{!e.isNew()}"><s:hidden name="e.sn"/></s:if> 
 		<s:hidden name="e.uid"/>
-		<s:hidden name="e.code"/>
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		<input type="hidden" name="e.buyDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.buyDate" />'/>		
 	</s:form>
