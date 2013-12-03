@@ -150,6 +150,8 @@ bc.customForm = {
 	
 	/** 保存表单 */
 	save : function(option) {
+		option = option || {};
+		
 		var $page = $(this);
 		var $form = $("form", $page);
 		// 表单验证
