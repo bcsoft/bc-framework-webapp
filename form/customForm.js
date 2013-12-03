@@ -77,8 +77,21 @@ bc.customForm = {
 		};
 		if (!option.buttons) {
 			option.buttons = [];
+			option.buttons.push(saveBtn);
+		} else {
+			var isHasSaveBtn = false;
+			for(var i=0; i<option.buttons.length;i++) {
+				var btnText = option.buttons[i].text;
+				if(btnText == "保存") {
+					isHasSaveBtn = true;
+					break;
+				} 
+			}
+			if(isHasSaveBtn == false) {
+				option.buttons.push(saveBtn);
+			}
 		}
-		option.buttons.push(saveBtn);
+		
 
 		var afterOpen;
 		if (option.afterOpen) {
