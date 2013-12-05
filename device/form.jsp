@@ -62,9 +62,9 @@
 							</ul></td>
 					</tr>
 					<tr>
-						<td class="label"><s:text name="device.desc" />:</td>
-						<td class="value"><s:textarea name="e.desc" rows="4"
-								cssClass="ui-widget-content" /></td>
+						<td class="topLabel"><s:text name="device.desc" />:</td>
+						<td class="value"><s:textarea name="e.desc" rows="3"
+								cssClass="ui-widget-content noresize" /></td>
 					</tr>
 					<tr>
 						<td class="label"><s:text name="device.status" />:</td>
