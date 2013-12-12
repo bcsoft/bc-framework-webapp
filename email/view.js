@@ -198,5 +198,31 @@ bc.emailViewBase = {
 			});
 		});
 		
+	},
+	// 编辑
+	edit : function(){
+		var $view = $(this);
+		var $tds = $view.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
+		var $trs = $view.find(".bc-grid>.data>.right tr.ui-state-highlight");
+		if($tds.length==1){
+			bc.page.newWin({
+				url:bc.root+"/bc/email/edit",
+				data:{id: $tds.attr("data-id")},
+				mid:"email::edit::"+$tds.attr("data-id"),
+				name:"草稿邮件",
+				title:"草稿邮件",
+				afterClose: function(){
+					bc.grid.reloadData($view);
+				}
+			});
+		}else if($tds.length > 1){
+			bc.msg.slide("一次只能编辑一封邮件！");
+		}else{
+			bc.msg.slide("请先选择要编辑的邮件！");
+		}
+	},
+	// 直接删除
+	_delete : function(){
+		
 	}
 };

@@ -4636,7 +4636,8 @@ bc.loader.preconfig.js = {
     jcrop_css: '/ui-libs/jcrop/0.9.12/themes/default/jquery.Jcrop.css?ts=0',
 	
 	/** 平台 */
-	bc_identity: '/bc/identity/identity.js'
+	bc_identity: '/bc/identity/identity.js',
+	bc_photo: '/bc/photo/photo.js'
 };
 
 bc.loader.preconfig.css = {
@@ -5727,6 +5728,8 @@ if($.browser.safari || $.browser.mozilla || $.browser.opera){
 				}
 				
 			}else{// 同步处理
+				if(typeof cfg.beforeUploadFile == "string")
+					cfg.beforeUploadFile = bc.getNested(cfg.beforeUploadFile);
 				if(cfg.beforeUploadFile.call(form) !== false){
 					if(cfg.needConfirm){
 						bc.msg.confirm("确定要上传"+bc.file.getUploadFilesOrFolderCount(e.target.files)+"吗?",function(){
