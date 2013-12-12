@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="photo.title"/>' data-type='form' class="bc-page "
+<div title='<s:text name="photo.title"/>' data-type='form' class="bc-page"
 	data-js='js:jcrop_css,js:jcrop,<s:url value="/bc/photo/main.js" />'
 	data-initMethod='bc.photo.handler.init'
 	data-option='<s:property value="pageOption"/>' style="overflow:hidden;">

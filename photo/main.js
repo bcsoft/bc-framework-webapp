@@ -167,51 +167,62 @@ bc.photo.handler = {
 				$form.data("jcrop", this);
 			});
 		});
-		$form.find("button.destroy").click(function () {
-			// 用户选中的区域数据，没有选中时为null
-			var c = $form.data("cropData");
-			console.log(c);
-
-			// 释放资源
-			var jcrop = $form.data("jcrop");
-			jcrop && jcrop.release();
-			jcrop && jcrop.destroy();
-			$form.removeData("jcrop");
-
-			// 裁剪图片
-			if (c) {
-				var canvas = $canvasProxy[0];
-				var ctx = canvas.getContext('2d');
-
-				// 计算缩放比例
-				var rw = $imgProxy[0].width;
-				var vw = $imgDisplayer.width();
-				var scale = rw / vw;
-				console.log("rw=" + rw + ",vw=" + vw);
-				console.log("scaleW=" + scale);
-				//console.log("scaleH=" + ($imgProxy[0].height / $imgDisplayer.height()));
-				var sx = c.x * scale;
-				var sy = c.y * scale;
-				var sw = c.w * scale;
-				var sh = c.h * scale;
-
-				// 获取裁剪区的数据并显示
-				canvas.width = sw;
-				canvas.height = sh;
-				ctx.clearRect(0, 0, sw, sh);//清除画布上的指定区域
-				ctx.drawImage($imgProxy[0], sx, sy, sw, sh, 0, 0, sw, sh);
-				var data = canvas.toDataURL("image/png");
-				$imgProxy.attr("src", data);
-				var image = $form.data("image");
-				image.data = data;
-				bc.photo.handler.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
-			}
-
-			// 恢复控件状态
-			$form.find("button.crop")[0].disabled = false;
-			this.disabled = true;
-		});
+		$form.find("button.destroy").click(bc.photo.handler.finishedCrop);
 	},
+    /** 完成裁剪 */
+    finishedCrop: function () {
+        console.log("finishedCrop");
+        var $this = $(this);
+        var $form = $this.closest(".bc-page");
+
+        // 用户选中的区域数据，没有选中时为null
+        var c = $form.data("cropData");
+        console.log(c);
+
+        // 释放资源
+        var jcrop = $form.data("jcrop");
+        jcrop && jcrop.release();
+        jcrop && jcrop.destroy();
+        $form.removeData("jcrop");
+
+        // 裁剪图片
+        if (c) {
+            var $displayContainer = $form.find(".container");
+            var $canvasProxy = $form.find("canvas.proxy");
+            var $imgDisplayer = $displayContainer.children("img");
+            var $imgProxy = $form.find("img.proxy");
+
+            var canvas = $canvasProxy[0];
+            var ctx = canvas.getContext('2d');
+
+            // 计算缩放比例
+            var rw = $imgProxy[0].width;
+            var vw = $imgDisplayer.width();
+            var scale = rw / vw;
+            console.log("rw=" + rw + ",vw=" + vw);
+            console.log("scaleW=" + scale);
+            //console.log("scaleH=" + ($imgProxy[0].height / $imgDisplayer.height()));
+            var sx = c.x * scale;
+            var sy = c.y * scale;
+            var sw = c.w * scale;
+            var sh = c.h * scale;
+
+            // 获取裁剪区的数据并显示
+            canvas.width = sw;
+            canvas.height = sh;
+            ctx.clearRect(0, 0, sw, sh);//清除画布上的指定区域
+            ctx.drawImage($imgProxy[0], sx, sy, sw, sh, 0, 0, sw, sh);
+            var data = canvas.toDataURL("image/png");
+            $imgProxy.attr("src", data);
+            var image = $form.data("image");
+            image.data = data;
+            bc.photo.handler.resize.call($form, $displayContainer, $imgDisplayer, $imgProxy);
+        }
+
+        // 恢复控件状态
+        $form.find("button.crop")[0].disabled = false;
+        this.disabled = true;
+    },
 	/** 显示指定的图片 */
 	showInfo: function () {
 		var $form = this;
@@ -284,6 +295,10 @@ bc.photo.handler = {
 		var $form = $(this);
 		if(!bc.photo.handler.validate($form))
 			return;
+
+        // 如果处于裁剪中，自动完成裁剪
+        var $btnDestroy = $form.find("button.destroy");
+        if(!$btnDestroy[0].disabled) $btnDestroy.click();
 
 		// 封装传输的数据
 		var image = {
