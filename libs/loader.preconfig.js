@@ -23,11 +23,14 @@ bc.loader.preconfig.js = {
 	highcharts: '/ui-libs/highcharts/2.1.8/highcharts.min.js?ts=0',
 	highcharts_exporting: '/ui-libs/highcharts/2.1.8/modules/exporting.min.js?ts=0',
 	quicksand: '/ui-libs/jquery/plugins/quicksand/1.2.2/jquery.quicksand.js?ts=0',
+    jcrop: '/ui-libs/jcrop/0.9.12/jquery.Jcrop.min.js?ts=0',
+    jcrop_css: '/ui-libs/jcrop/0.9.12/themes/default/jquery.Jcrop.css?ts=0',
 	
 	/** 平台 */
-	bc_identity: '/bc/identity/identity.js'
+	bc_identity: '/bc/identity/identity.js',
+	bc_photo: '/bc/photo/photo.js'
 };
 
 bc.loader.preconfig.css = {
-	jqueryui: '/ui-libs/jquery-ui/1.9pre/themes/base/jquery-ui.css?ts=0',
+	jqueryui: '/ui-libs/jquery-ui/1.9pre/themes/base/jquery-ui.css?ts=0'
 };
