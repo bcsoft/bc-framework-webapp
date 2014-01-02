@@ -77,8 +77,21 @@ bc.customForm = {
 		};
 		if (!option.buttons) {
 			option.buttons = [];
+			option.buttons.push(saveBtn);
+		} else {
+			var isHasSaveBtn = false;
+			for(var i=0; i<option.buttons.length;i++) {
+				var btnText = option.buttons[i].text;
+				if(btnText == "保存") {
+					isHasSaveBtn = true;
+					break;
+				} 
+			}
+			if(isHasSaveBtn == false) {
+				option.buttons.push(saveBtn);
+			}
 		}
-		option.buttons.push(saveBtn);
+		
 
 		var afterOpen;
 		if (option.afterOpen) {
@@ -89,13 +102,9 @@ bc.customForm = {
 		option.afterOpen = function() {
 			var $page = $(this);
 			var $form = $("form", $page);
-			bc.customForm.setFormInfo($form, {
-				tpl : option.tpl,
-				subject : option.subject,
-				type : option.type,
-				pid : option.pid,
-				code : option.code
-			});
+			//监测表单内容是否有修改
+			bc.customForm.monitorFormChange($form);
+			
 			if (afterOpen) {
 				afterOpen.call($page);
 			}
@@ -138,8 +147,11 @@ bc.customForm = {
 		}
 		bc.page.newWin(option);
 	},
+	
 	/** 保存表单 */
 	save : function(option) {
+		option = option || {};
+		
 		var $page = $(this);
 		var $form = $("form", $page);
 		// 表单验证
@@ -157,7 +169,11 @@ bc.customForm = {
 		// 将表单的状态设为正常
 		var formInfo = bc.customForm.setFormInfo($form, {
 			status : 0
-		});
+		});	
+		
+		//表单是否为新建
+		var isNew = jQuery.parseJSON($form.attr("data-form-info")).isNew;
+		
 		// 设置是否正在保存的标识为true[正在保存]
 		$page.data("saving", true);
 		bc.ajax({
@@ -173,10 +189,6 @@ bc.customForm = {
 				if (json.success === false) {
 					bc.msg.info(json.msg);
 				} else {
-					/*
-					 * bc.customForm.setFormInfo($form, { id : json.id, formData :
-					 * json.formData }); bc.customForm.loadFormData.call($page);
-					 */
 					// 记录已保存状态
 					$page.attr("data-status", "saved").data("data-status",
 							"saved");
@@ -190,6 +202,17 @@ bc.customForm = {
 					if (showMsg) {
 						bc.msg.slide(json.msg);
 					}
+					if(isNew) {//如果表单为新建，保存后，isNew变为false
+						bc.customForm.setFormInfo($form, {
+								isNew : false
+						});	
+					}
+					//保存后表单控件"changed"标识变为false,防止相同的数据二次提交
+					$form.find(":input,select,texterea").each(function() {
+					     $(this).removeData();
+					});
+					//重新监测表单内容是否有修改
+					bc.customForm.monitorFormChange($form);
 				}
 
 				// 将正在保存标识设为false[已保存]
@@ -222,6 +245,7 @@ bc.customForm = {
 			bc.customForm.deleteById(option);
 		}
 	},
+	
 	// 通过id删除
 	deleteById : function(option) {
 		var url = bc.root + "/bc/customForm/delete";
@@ -264,7 +288,6 @@ bc.customForm = {
 						}
 						if (showMsg)
 							bc.msg.slide(json.msg);
-
 						// 重新加载列表
 						bc.grid.reloadData($page);
 					}
@@ -272,6 +295,7 @@ bc.customForm = {
 			});
 		});
 	},
+	
 	// 通过传入的(type,pid,code)参数进行删除
 	deleteByTpc : function(option) {
 		var $page = option.page;
@@ -325,7 +349,7 @@ bc.customForm = {
 			});
 		});
 	},
-	
+
 	/**
 	 * 打印方法
 	 */
@@ -338,72 +362,77 @@ bc.customForm = {
 		var type = form_info.type;
 		var code = form_info.code;
 		var pid = form_info.pid;
-		var url = bc.root
-				+ "/bc/customForm/open?tpl="+tpl+"&type="+type+"&pid="+pid+"&code=" + code;
-		var title = form_info.subject; 
+		var url = bc.root + "/bc/customForm/open?tpl=" + tpl + "&type=" + type
+				+ "&pid=" + pid + "&code=" + code;
+		var title = form_info.subject;
 		// 加载js、css文件
-		var printCss = $page.attr("data-print-printCss");//打印样式
-		var pageCss = $page.attr("data-print-pageCss");//页面样式
-		var appTs =  $page.attr("data-appTs");//时间戳
-		var win = window.open(url,"_blank");
-		//新建打印窗口
-		bc.customForm.winPrint(win,printCss,pageCss,title,appTs);
+		var printCss = $page.attr("data-print-printCss");// 打印样式
+		var pageCss = $page.attr("data-print-pageCss");// 页面样式
+		var appTs = $page.attr("data-appTs");// 时间戳
+		var win = window.open(url, "_blank");
+		// 新建打印窗口
+		bc.customForm.winPrint(win, printCss, pageCss, title, appTs);
 	},
-	/**自定义setTimeout方法
-	 * 功能：修改 window.setTimeout，使之可以传递参数和对象参数    
-     *	使用方法： setTimeout(回调函数,时间,参数1,,参数n)    
+	
+	/**
+	 * 自定义setTimeout方法 功能：修改 window.setTimeout，使之可以传递参数和对象参数 使用方法：
+	 * setTimeout(回调函数,时间,参数1,,参数n)
 	 */
-	customSetTimeout :  function(callback,timeout,param){     
-	    var args = Array.prototype.slice.call(arguments,2);     
-	    var _cb = function(){     
-	        callback.apply(null,args);     
-	    }     
-	    setTimeout(_cb,timeout);     
-	} ,
-	//加载css文件,并调用窗口打印方法
-	winPrint : function(win,printCss,pageCss,title,appTs) {
+	customSetTimeout : function(callback, timeout, param) {
+		var args = Array.prototype.slice.call(arguments, 2);
+		var _cb = function() {
+			callback.apply(null, args);
+		}
+		setTimeout(_cb, timeout);
+	},
+	
+	// 加载css文件,并调用窗口打印方法
+	winPrint : function(win, printCss, pageCss, title, appTs) {
 		// 先判断返回window中获取需要操作的Form是否为null
 		if (win.document.getElementsByTagName("form")[0]) {
 			// 对返回的window对象进行操作
-			if(printCss && printCss.length > 0){
-				//逗号分隔多个文件
+			if (printCss && printCss.length > 0) {
+				// 逗号分隔多个文件
 				printCss = printCss.split(",");
-				for(var i=0; i<printCss.length; i++) {
-					var cssUrl = bc.root + printCss[i] + "?ts=" + appTs ;
+				for ( var i = 0; i < printCss.length; i++) {
+					var cssUrl = bc.root + printCss[i] + "?ts=" + appTs;
 					var link = document.createElement("link");
 					link.rel = "stylesheet";
 					link.type = "text/css";
 					link.media = "print";
 					link.href = cssUrl;
-					win.document.getElementsByTagName("head")[0].appendChild(link);
+					win.document.getElementsByTagName("head")[0]
+							.appendChild(link);
 				}
-			}else{
+			} else {
 				var cssUrl = bc.root + "/bc/form/print/page.css?ts=" + appTs;
 				var link = document.createElement("link");
 				link.rel = "stylesheet";
 				link.type = "text/css";
 				link.media = "print";
 				link.href = cssUrl;
-				win.document.getElementsByTagName("head")[0].appendChild(link);				
+				win.document.getElementsByTagName("head")[0].appendChild(link);
 			}
-			if(pageCss && pageCss.length > 0){
-				//逗号分隔多个文件
+			if (pageCss && pageCss.length > 0) {
+				// 逗号分隔多个文件
 				pageCss = pageCss.split(",");
-				for(var i=0; i<pageCss.length; i++) {
+				for ( var i = 0; i < pageCss.length; i++) {
 					var cssUrl = bc.root + pageCss[i] + "?ts=" + appTs;
 					var link = document.createElement("link");
 					link.rel = "stylesheet";
 					link.type = "text/css";
 					link.href = cssUrl;
-					win.document.getElementsByTagName("head")[0].appendChild(link);
+					win.document.getElementsByTagName("head")[0]
+							.appendChild(link);
 				}
 			}
-			
-			win.document.title=title;
+
+			win.document.title = title;
 			win.print();
 		} else {
 			// 设置延迟加载500毫秒
-			bc.customForm.customSetTimeout(bc.customForm.winPrint,500,win,printCss,pageCss,title,appTs);
+			bc.customForm.customSetTimeout(bc.customForm.winPrint, 500, win,
+					printCss, pageCss, title, appTs);
 		}
 	},
 
@@ -411,25 +440,33 @@ bc.customForm = {
 	getFormData : function($form) {
 		// 默认的表单数据获取方法
 		var datas = [];
+		//表单是否为新建
+		var isNew = jQuery.parseJSON($form.attr("data-form-info")).isNew;
 
 		// input类型为text
 		var $texts = $form.find(":text:not(.ignore)");
 		if ($texts.size() != 0) {
 			$texts.each(function() {
 				var $text = $(this);
-				var data = {};
-				data.name = this.name;
-				data.value = $text.val();
-				data.type = $text.attr("data-type") || "string";
-
-				var id = $text.attr("data-id");
-				if (id)
-					data.id = id;
-				var label = $text.attr("data-label");
-				if (label)
-					data.label = label;
-
-				datas.push(data);
+				if (isNew && $text.val() != "") { // 表单为新建状态时
+					var data = {};
+					data.name = this.name;
+					data.value = $text.val();
+					data.type = $text.attr("data-type") || "string";
+					var label = $text.attr("data-label");
+					if (label)
+						data.label = label;
+					datas.push(data);
+				} else if (typeof($text.data("newData")) != "undefined" && $text.data("oldData") != $text.data("newData")) { //表单为编辑状态时
+					var data = {};
+					data.name = this.name;
+					data.value = $text.val();
+					data.type = $text.attr("data-type") || "string";
+					var label = $text.attr("data-label");
+					if (label)
+						data.label = label;
+					datas.push(data); 
+				} 				
 			});
 		}
 
@@ -438,117 +475,197 @@ bc.customForm = {
 		if ($radios.size() != 0) {
 			$radios.each(function() {
 				var $radio = $(this);
-				var data = {};
-				data.name = this.name;
-				data.value = $radio.val();
-				data.type = $radio.attr("data-type") || "string";
-
-				var id = $radio.attr("data-id");
-				if (id)
-					data.id = id;
-				var label = $radio.attr("data-label");
-				if (label)
-					data.label = label;
-
-				datas.push(data);
+				if(isNew || (typeof($radio.data("newData")) != "undefined" && $radio.data("oldData") != $radio.data("newData"))) { //表单为编辑状态时
+					var data = {};
+					data.name = this.name;
+					data.value = $radio.val();
+					data.type = $radio.attr("data-type") || "string";
+					var label = $radio.attr("data-label");
+					if (label)
+						data.label = label;
+					datas.push(data);
+				}
+				
 			});
 		}
 
 		// input类型为checkbox
-		var $checkboxes = $form.find(":checkbox:not(.ignore):checked");
-		if ($checkboxes.size() != 0) {
-			for ( var i = 0; i < $checkboxes.size(); i++) {
-				var $checkbox = $checkboxes.eq(i);
-				if (i == 0) { // 如果对象数组下标等于0
+		if(isNew) {  //表单为新建状态时
+			var $checkboxes = $form.find(":checkbox:not(.ignore):checked");
+			if ($checkboxes.size() != 0) {
+				
+				for ( var i = 0; i < $checkboxes.size();) {
+					var $checkbox = $checkboxes.eq(i);
 					var data = {};
 					data.name = $checkbox.attr("name");
 					data.value = [];
-					data.type = $checkbox.attr("data-type") || "string";
-					if (data.type == "int" || data.type == "int[]"
+					data.type = $checkbox.attr("data-type") || "string[]";
+					
+					var $brocheckboxes = $checkbox.parent().find(":checkbox:not(.ignore):checked");//找出同一组的被选中的checkbox
+					$brocheckboxes.each(function() {
+						var $brocheckbox = $(this);
+						if (data.type == "int" || data.type == "int[]"
 							|| data.type == "long" || data.type == "long[]") {
-						data.value.push(parseInt($checkbox.val()));
-					} else if (data.type == "float" || data.type == "float[]"
+							data.value.push(parseInt($brocheckbox.val()));
+						} else if (data.type == "float" || data.type == "float[]"
 							|| data.type == "double" || data.type == "double[]") {
-						data.value.push(parseFloat($checkbox.val()));
-					} else {
-						data.value.push($checkbox.val());
-					}
-
-					var id = $checkbox.attr("data-id");
-					if (id)
-						data.id = id;
-					var label = $checkbox.attr("data-label");
+							data.value.push(parseFloat($brocheckbox.val()));
+						} else {
+							data.value.push($brocheckbox.val());
+						}
+					});
+					datas.push(data);
+					i = i + $brocheckboxes.size();
+				}	
+			}
+		} else {  //表单为编辑状态时
+			var $checkboxes = $form.find(":checkbox:not(.ignore)");
+			if ($checkboxes.size() != 0) {
+				for ( var i = 0; i < $checkboxes.size(); i++) {
+					var $checkbox = $checkboxes.eq(i);
+					
+					if(typeof($checkbox.data("newData")) != "undefined" && $checkbox.data("oldData") != $checkbox.data("newData")) {
+						var data = {};
+						data.name = $checkbox.attr("name");
+						data.value = [];
+						data.type = $checkbox.attr("data-type") || "string[]";
+						var $changeCheckboxes =  $checkbox.parent().find(":checkbox:not(.ignore):checked");
+						
+						if($changeCheckboxes.size() > 0 ) {   //如果被修改的checkbox组有选中项
+							$changeCheckboxes.each(function(){
+								var $changeCheckbox = $(this);
+								if (data.type == "int" || data.type == "int[]"
+									|| data.type == "long" || data.type == "long[]") {
+									data.value.push(parseInt($changeCheckbox.val()));
+								} else if (data.type == "float" || data.type == "float[]"
+									|| data.type == "double" || data.type == "double[]") {
+									data.value.push(parseFloat($changeCheckbox.val()));
+								} else {
+									data.value.push($changeCheckbox.val());
+								}
+							});
+							datas.push(data);
+						} else {  //如果被修改的checkbox组没有选中项
+							if (data.type == "int" || data.type == "int[]"
+								|| data.type == "long" || data.type == "long[]") {
+								data.value.push(0);
+							} else if (data.type == "float" || data.type == "float[]"
+								|| data.type == "double" || data.type == "double[]") {
+								data.value.push(0.0);
+							} else {
+								data.value.push("");
+							}
+							datas.push(data);
+							var $changeCheckboxes =  $checkbox.parent().find(":checkbox:not(.ignore)");
+						}
+						i = i + $changeCheckboxes.size() - 1;
+					}					
+				}				
+			}
+		}
+		
+		// input类型为hidden
+		var $hiddens = $form.find("input:hidden:not(.ignore)");
+		if ($hiddens.size() != 0) {
+			$hiddens.each(function() {
+				var $hidden = $(this);
+				if (isNew && $hidden.val() != "") { // 表单为新建状态时
+					var data = {};
+					data.name = this.name;
+					data.value = $hidden.val();
+					data.type = $hidden.attr("data-type") || "string";
+					var label = $hidden.attr("data-label");
 					if (label)
 						data.label = label;
 					datas.push(data);
-				} else { // 如果对象数组下标大于0
-					if ($checkbox.attr("name") == $checkboxes.eq(i - 1).attr(
-							"name")) { // 当前checkbox的name==前一个checkbox的name
-						if (data.type == "int" || data.type == "int[]"
-								|| data.type == "long" || data.type == "long[]") {
-							data.value.push(parseInt($checkbox.val()));
-						} else if (data.type == "float"
-								|| data.type == "float[]"
-								|| data.type == "double"
-								|| data.type == "double[]") {
-							data.value.push(parseFloat($checkbox.val()));
-						} else {
-							data.value.push($checkbox.val());
-						}
-					} else { // 当前checkbox的name不等于前一个checkbox的name
-						data = {};
-						data.name = $checkbox.attr("name");
-						data.value = [];
-						data.type = $checkbox.attr("data-type") || "string";
-						if (data.type == "int" || data.type == "int[]"
-								|| data.type == "long" || data.type == "long[]") {
-							data.value.push(parseInt($checkbox.val()));
-						} else if (data.type == "float"
-								|| data.type == "float[]"
-								|| data.type == "double"
-								|| data.type == "double[]") {
-							data.value.push(parseFloat($checkbox.val()));
-						} else {
-							data.value.push($checkbox.val());
-						}
-
-						var id = $checkbox.attr("data-id");
-						if (id)
-							data.id = id;
-						var label = $checkbox.attr("data-label");
+				} else if ($hidden.data("oldData") != $hidden.val()) { //表单为编辑状态时
+					var data = {};
+					data.name = this.name;
+					data.value = $hidden.val();
+					data.type = $hidden.attr("data-type") || "string";
+					var label = $hidden.attr("data-label");
+					if (label)
+						data.label = label;
+					datas.push(data); 
+				} 				
+			});
+		}
+		
+		// select
+		var $selects = $form.find("select:not(.ignore)");
+		if ($selects.size() != 0) {
+			$selects.each(function() {
+				var $select = $(this);
+				if(isNew || (typeof($select.data("newData")) != "undefined" && $select.data("oldData") != $select.data("newData"))) {
+					
+					if (!$select.attr("multiple")) { // select为 单选
+						var $option = $select
+								.find("option:selected:not(.ignore)");
+						var data = {};
+						data.name = $option.attr("name");
+						data.value = $option.val();
+						data.type = $option.attr("data-type") || "string";
+						var label = $option.attr("data-label");
 						if (label)
 							data.label = label;
 						datas.push(data);
+					} else { // select为 多选
+						var $options = $select.find("option:selected:not(.ignore)");
+						
+						if ($options.size() != 0) {
+							var data ={};
+							data.name = $options.eq(0).attr("name");
+							data.value = [];
+							data.type = $options.eq(0).attr("data-type") || "string[]";
+							var label = $options.eq(0).attr("data-label");
+							if (label)
+								data.label = label;
+							$options.each(function() {
+								var $option = $(this);
+								if (data.type == "int" || data.type == "int[]"
+									|| data.type == "long" || data.type == "long[]") {
+								data.value.push(parseInt($option.val()));
+								} else if (data.type == "float"
+										|| data.type == "float[]"
+										|| data.type == "double"
+										|| data.type == "double[]") {
+									data.value.push(parseFloat($option.val()));
+								} else {
+									data.value.push($option.val());
+								}
+								
+							});
+							datas.push(data);
+						}
 					}
-				}
-			}
+				}				
+			});
 		}
-		// texterea
+
+		// textarea
 		var $textareas = $form.find("textarea:not(.ignore)");
 		if ($textareas.size() != 0) {
 			$textareas.each(function() {
 				var $textarea = $(this);
-				var data = {};
-				data.name = $textarea.attr("name");
+				if(isNew || (typeof($textarea.data("newData")) != "undefined" && $textarea.data("oldData") != $textarea.data("newData"))) {
+					var data = {};
+					data.name = $textarea.attr("name");
 
-				if ($textarea.val() == null || $textarea.val() == "") {
-					data.value = "";
-				} else {
-					data.value = $textarea.val();
-				}
-				data.type = $textarea.attr("data-type") || "string";
+					if ($textarea.val() == null || $textarea.val() == "") {
+						data.value = "";
+					} else {
+						data.value = $textarea.val();
+					}
+					data.type = $textarea.attr("data-type") || "string";
+					var label = $textarea.attr("data-label");
+					if (label)
+						data.label = label;
 
-				var id = $textarea.attr("data-id");
-				if (id)
-					data.id = id;
-				var label = $textarea.attr("data-label");
-				if (label)
-					data.label = label;
-
-				datas.push(data);
+					datas.push(data);
+				}	
 			});
 		}
-
+		
 		return datas;
 	},
 
@@ -566,6 +683,7 @@ bc.customForm = {
 		$form.attr("data-form-info", to_form_info);
 		return to_form_info;
 	},
+	
 	/**
 	 * 根据formData信息id信息 加载到对应input标签的字段中
 	 */
@@ -584,5 +702,54 @@ bc.customForm = {
 			var $input = $form.find(':input[name=' + value.name + ']');
 			$input.attr("data-id", value.id);
 		});
-	}
+	},
+	
+	//监测表单内容变化
+	monitorFormChange : function($form) {
+		//input类型为text
+		$form.find("input:text:not(.ignore)").each(function() {
+			$(this).data("oldData",$(this).val());
+		});
+		$form.find("input:text:not(.ignore)").change(function() {
+			$(this).data("newData",$(this).val());
+		});
+		
+		//input类型为radio
+		$form.find("input:radio:not(.ignore)").each(function() {
+			$(this).data("oldData",$(this)[0].checked);
+		});
+		$form.find("input:radio:not(.ignore)").change(function() {
+			$(this).data("newData",$(this)[0].checked);
+		});
+		
+		//input类型为checkbox
+		$form.find("input:checkbox:not(.ignore)").each(function() {
+			$(this).data("oldData",$(this)[0].checked);
+		});
+		$form.find("input:checkbox:not(.ignore)").change(function() {			
+			$(this).data("newData",$(this)[0].checked);
+		});
+		
+		//input类型为hidden
+		$form.find("input:hidden:not(.ignore)").each(function() {
+			$(this).data("oldData",$(this).val());			
+		});
+		//hidden不能触发change事件,另作处理
+		
+		//select
+		$form.find("select:not(.ignore)").each(function() {
+			$(this).data("oldData",String($(this).val()));
+		});
+		$form.find("select:not(.ignore)").change(function() {
+			$(this).data("newData",String($(this).val()));
+		});
+		
+		//textarea
+		$form.find("textarea:not(.ignore)").each(function() {
+			$(this).data("oldData",$(this).val());
+		});
+		$form.find("textarea:not(.ignore)").change(function() {
+			$(this).data("newData",$(this).val());
+		});	
+	}	
 }
