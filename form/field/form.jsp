@@ -33,18 +33,14 @@
 					<s:property value="e.label" />
 				</td>
 			</tr>
+			<tr>
+				<td class="label">表单字段的值:</td>
+				<td class="value">
+					<s:textarea name="e.value" cssClass="autoHeight ui-widget-content" data-validate="required"/>
+				</td>
+			</tr>
 		</table>
-		<div class="formFields ui-widget-content">
-			<div class="ui-widget-header title" style="position:relative;border-width:0!important;">
-				<span class="text" >字段的值：</span>
-				<span id="showGroups1" class="verticalMiddle ui-icon ui-icon-carat-1-n" title='<s:text name="runcase.title.click2HiddenGroups"/>'></span>
-			</div>
-			<div id="formEditorDiv" class="formEditor" style="min-width:590px;font-weight: normal;overflow: hidden;margin:0;border:none;">
-				  <textarea style="height:300px;width:670px"class="bc-date ui-widget-content">
-			       			<s:property value="e.value" />
-			      </textarea>
-			</div>
-		</div>
+	
 		<s:hidden name="e.id" />
 		<s:hidden name="e.form.id" />
 		<s:hidden name="e.name" />
