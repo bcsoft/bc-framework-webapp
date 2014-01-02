@@ -95,7 +95,8 @@ bc.form = {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				firstDay: 7,
-				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
+				dateFormat:"yy-mm-dd",//yy4位年份、MM-大写的月份,
+                timeFormat:"HH:mm"
 			},cfg);
 			
 			// 额外的处理

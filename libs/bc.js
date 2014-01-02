@@ -2241,7 +2241,7 @@ $document.delegate(".bc-button.bc-menuButton",{
 					$(this).popup("close");
 					//$this.button("option", "label", ui.item.text());
 					if(typeof change == "function"){
-						change.call($this.closest(".bc-ui-dialog").children(".bc-page")[0],{
+						change.call($this.closest(".bc-page")[0],{
 							text: ui.item.attr("data-text"),
 							value: ui.item.attr("data-value")
 						});
@@ -4063,7 +4063,8 @@ bc.form = {
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				firstDay: 7,
-				dateFormat:"yy-mm-dd"//yy4位年份、MM-大写的月份
+				dateFormat:"yy-mm-dd",//yy4位年份、MM-大写的月份,
+                timeFormat:"HH:mm"
 			},cfg);
 			
 			// 额外的处理
