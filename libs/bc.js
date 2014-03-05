@@ -2035,7 +2035,7 @@ $document.delegate(".bc-button",{
 $document.delegate(".bc-toolbar #searchText","keyup", function(e) {
 	var $this = $(this);
 	if(e.which == 13){//按下回车键
-		var $page = $this.parents(".bc-page");
+		var $page = $this.closest(".bc-page");
 		var $search = $this.parent();
 		bc.toolbar.doSearch($page,{
 			action: $search.attr("data-action"),//内定的操作
@@ -2047,7 +2047,7 @@ $document.delegate(".bc-toolbar #searchText","keyup", function(e) {
 //右侧的搜索框处理：点击左侧的简单搜索按钮
 $document.delegate(".bc-toolbar #searchBtn","click", function(e) {
 	var $this = $(this);
-	var $page = $this.parents(".bc-page");
+	var $page = $this.closest(".bc-page");
 	var $search = $this.parent();
 	bc.toolbar.doSearch($page,{
 		action: $search.attr("data-action"),//内定的操作
