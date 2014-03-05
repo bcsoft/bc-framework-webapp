@@ -22,20 +22,26 @@ ul.browsers li.browser {
 	padding: 4px;
 	border: 1px solid black;
 	text-decoration: none;
-	cursor: default;
+	cursor: pointer;
 	position: relative;
 	width:95%;
 }
-ul.browsers li.browser span.text{
+ul.browsers li.browser .text{
+	display:block;
 	font-size: 22px;
 	color:#22436C;
-	padding-left: 56px;
-	line-height: 52px;
+	margin-left: 56px;
+	/*line-height: 30px;*/
+}
+ul.browsers li.browser .text > .detail{
+	font-size: 60%;
+	color:#666;
 }
 li.browser span.browser-icon{
 	position: absolute;
 	display:block;
-	width:52px;height:52px;
+	width:52px;
+	height:52px;
 	top:50%;
 	margin-top: -26px;
 	padding:0;
