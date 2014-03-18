@@ -10,11 +10,10 @@
   * 单选返回一个对象 格式为{
  * 					id:[id],				--区域id
  * 					type:[type],			--区域类型
+ * 					status:[status],		--状态
  * 					pname:[pname],			--区域上级
  * 					code:[code],			--区域编码
  * 					name:[name],			--区域名称
- * 					fullname:[fullname],	--区域全名称
- * 					desc:[desc]				--区域描述
  * 					}
  * 如果为多选则返回的是对象集合，[对象1,对象2]。
  */
@@ -28,14 +27,11 @@ bc.selectPlaceOrigin = function(option) {
 	
 	// 将一些配置参数放到data参数内(这些参数是提交到服务器的参数)
 	option.data = jQuery.extend({
-		status: '0',
-		multiple: false,
-		types:option.types||''
+		paging: option.paging || true,
+		status: option.status || '0',
+		multiple: option.multiple || false,
+		types: option.types || ''
 	},option.data);
-	if (option.title)
-		option.data.title = option.title;
-	if(option.multiple === true)
-		option.data.multiple = true;
 	
 	//弹出选择对话框
 	bc.page.newWin(jQuery.extend({

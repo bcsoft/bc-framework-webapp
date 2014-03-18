@@ -14,39 +14,28 @@
 				</tr>
 				<tr>
 					<td class="label">*<s:text name="placeorigin.type"/>:</td>
-					<td class="value"><s:radio name="e.type" list="#{'1':'省级','2':'地级','3':'县级'}" cssStyle="width:auto;"/></td>
+					<td class="value"><s:radio name="e.type" list="#{'1':'省级','2':'地级','3':'县级','4':'乡级','5':'村级'}" cssStyle="width:auto;"/></td>
 				</tr>
 				<tr>
-					<td class="label">*<s:text name="placeorigin.name"/>:</td>
-					<td class="value"><s:textfield name="e.name" cssClass="ui-widget-content" data-validate="required"/></td>
-				</tr>
-				<tr>
-					<td class="label"><s:text name="placeorigin.code"/>:</td>
-					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" data-validate='{"minLen": 6,"maxLen": 6,"type":"number"}'/></td>
-				</tr>
-				<tr>
-					<td class="label"><s:text name="placeorigin.higherlevel"/>:</td>
-					<td class="value relative"><s:textfield name="pname" readonly="true" cssClass="ui-widget-content" />
+					<td class="label"><s:text name="placeorigin.pname"/>:</td>
+					<td class="value relative"><s:textfield name="e.pname" readonly="true" cssClass="ui-widget-content" />
 						<ul class="inputIcons">
 							<li id="selectPname" class="inputIcon ui-icon ui-icon-circle-plus"
 								title='<s:text name="title.click2select"/>'></li>
-							<li id="clearPname" class="clearSelect inputIcon ui-icon ui-icon-circle-close" 
-								data-cfg='e.pid,pname,pfullname'
+							<li id="clearPname" class="clearSelect inputIcon ui-icon ui-icon-circle-close"
+								data-cfg='e.pid,e.pname'
 								title='<s:text name="title.click2clear"/>'></li>
 						</ul>
 					</td>
 				</tr>
 				<tr>
-					<td class="label"><s:text name="placeorigin.fullcode"/>:</td>
-					<td class="value"><s:textfield name="e.fullcode" readonly="true" cssClass="ui-widget-content" /></td>
+					<td class="label">*<s:text name="placeorigin.code"/>:</td>
+					<td class="value"><s:textfield name="e.code" cssClass="ui-widget-content" 
+					   data-validate='{"required": true,"minLen": 2,"maxLen": 10,"type":"number"}'/></td>
 				</tr>
 				<tr>
-					<td class="topLabel" ><s:text name="placeorigin.fullname"/>:</td>
-					<td class="value" colspan="3" ><s:textarea name="e.fullname" rows="3" readonly="true" cssClass="ui-widget-content noresize"/></td>
-				</tr>
-				<tr>
-					<td class="topLabel" ><s:text name="placeorigin.desc"/>:</td>
-					<td class="value" colspan="3" ><s:textarea name="e.desc" rows="3"  cssClass="ui-widget-content noresize"/></td>
+					<td class="label">*<s:text name="placeorigin.name"/>:</td>
+					<td class="value"><s:textfield name="e.name" cssClass="ui-widget-content" data-validate="required"/></td>
 				</tr>
 				<tr>
 					<td class="label"><s:text name="placeorigin.status"/>:</td>
@@ -55,9 +44,9 @@
 				<tr>
 					<td class="label" colspan="2" rowspan="2">
 						<div class="formTopInfo">
-							登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm:ss"/>)
+							登记：<s:property value="e.author.name" />(<s:date name="e.fileDate" format="yyyy-MM-dd HH:mm"/>)
 							<s:if test="%{e.modifier != null}">
-							<br/>最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm:ss"/>)
+							<br/>最后修改：<s:property value="e.modifier.name" />(<s:date name="e.modifiedDate" format="yyyy-MM-dd HH:mm"/>)
 							</s:if>
 						</div>
 					</td>
@@ -66,8 +55,6 @@
 		</table>
 		<s:hidden name="e.id" />
 		<s:hidden name="e.pid" />
-		<!-- 上级的全名 -->
-		<s:hidden name="pfullname" />
 		<s:hidden name="e.author.id" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 	</s:form>
