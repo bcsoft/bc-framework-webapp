@@ -1942,7 +1942,7 @@ input.nostyle {
 	filter: alpha(opacity =         10);
 	opacity: 0;
 	cursor: pointer;
-	-moz-margin-start: -165px; /*Firefox的input:file宽度无法控制的处理*/
+	/*-moz-margin-start: -165px; Firefox的input:file宽度无法控制的处理，从v27.0发现此问题已经解决*/
 }
 
 /** 每个附加的总容器 */
