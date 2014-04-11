@@ -309,3 +309,31 @@ bc.getTpl = function(source){
 bc.formatTpl = function(source,params){
 	return Mustache.render(bc.getTpl(source), params)
 };
+
+/**
+ * 对指定的url地址，请求回来的内容进行打印
+ * @param url action地址
+ * @param isOpenNewWin [可选]是否在新窗口打开打印界面（默认false）
+ */
+bc.print = function(url,isOpenNewWin) {
+	if(isOpenNewWin == undefined) { //是否在新窗口打开打印界面（默认false）
+		isOpenNewWin = false;
+	}
+	
+	if(isOpenNewWin == false) { //在当前页显示打印界面
+		var $iframe = $("#print");
+		if(!$iframe.length){
+			$iframe = $("<iframe id='print' style='display:none'></iframe>").appendTo("body");
+		}
+		$iframe.attr("src",url);
+		$iframe.one("load", function(){
+			//调用打印方法打印iframe的内容
+			this.contentWindow.print();
+			//打单操作结束后，清空iframe内容节约资源
+			$iframe.attr("src","about:blank");
+		});
+	} else { //在新窗口显示打印界面
+		var win = window.open(url, "_blank");
+		win.print();
+	}
+};
