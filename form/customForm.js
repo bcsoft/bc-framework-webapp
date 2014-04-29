@@ -13,8 +13,8 @@ bc.customForm = {
 	 * @option {String} type [必填]类别
 	 * @option {Integer} pid [必填]pid 新建为时0
 	 * @option {String} code [必填]编码 新建为时空字符窜
-	 * @option {String} isNew [可选]设置表单是否为新建状态
-	 * @option {String} readonly [可选]是否只读-- true为只读 false为可编辑,默认为false
+	 * @option {boolean} isNew [可选]设置表单是否为新建状态 true为新建状态 false为编辑状态,默认为undefined,即通过后台action控制
+	 * @option {boolean} readonly [可选]是否只读-- true为只读 false为可编辑,默认为false
 	 * @option {Object} extraData [可选]附带数据 如[{name : "sex",value : 1,type :
 	 *         "int"}]
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
@@ -239,7 +239,7 @@ bc.customForm = {
 	 * @option {String} type 类别
 	 * @option {Integer} pid pid 新建为时0
 	 * @option {String} code 编码 新建为时空字符窜
-	 * @option {String} readonly [可选]是否只读-- true为只读 false为可编辑,默认为true
+	 * @option {boolean} readonly [可选]是否只读-- true为只读 false为可编辑,默认为true
 	 * @option {String} afterDelete [可选]删除后的回调函数。function(event, ui)
 	 */
 	delete_ : function(option) {
