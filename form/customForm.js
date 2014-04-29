@@ -13,6 +13,7 @@ bc.customForm = {
 	 * @option {String} type [必填]类别
 	 * @option {Integer} pid [必填]pid 新建为时0
 	 * @option {String} code [必填]编码 新建为时空字符窜
+	 * @option {String} isNew [可选]设置表单是否为新建状态
 	 * @option {String} readonly [可选]是否只读-- true为只读 false为可编辑,默认为false
 	 * @option {Object} extraData [可选]附带数据 如[{name : "sex",value : 1,type :
 	 *         "int"}]
@@ -102,6 +103,13 @@ bc.customForm = {
 		option.afterOpen = function() {
 			var $page = $(this);
 			var $form = $("form", $page);
+			
+			//设置表单是否为新建状态
+			if(option.isNew != undefined) {
+				$form.data("form-info").isNew = option.isNew;
+				$form.attr("data-form-info",JSON.stringify($form.data("form-info")))
+			}
+			
 			//监测表单内容是否有修改
 			bc.customForm.monitorFormChange($form);
 			
