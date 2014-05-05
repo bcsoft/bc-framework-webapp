@@ -13,7 +13,8 @@ bc.customForm = {
 	 * @option {String} type [必填]类别
 	 * @option {Integer} pid [必填]pid 新建为时0
 	 * @option {String} code [必填]编码 新建为时空字符窜
-	 * @option {boolean} isNew [可选]设置表单是否为新建状态 true时设置为新建状态 false时为其他状态,默认为undefined,即通过后台action控制
+	 * @option {boolean} isNew [可选]强制指定表单为新建状态 true时指定为新建状态 false时指定为非新建状态
+	 * 								,默认为undefined,即不对表单状态作指定,表单的状态有后台action控制
 	 * @option {boolean} readonly [可选]是否只读-- true为只读 false为可编辑,默认为false
 	 * @option {Object} extraData [可选]附带数据 如[{name : "sex",value : 1,type :
 	 *         "int"}]
