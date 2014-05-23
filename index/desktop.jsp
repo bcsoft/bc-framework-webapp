@@ -204,6 +204,7 @@
 		};
 	}
 	</script>
+	<script type="text/javascript" src="<s:url value='/bc/photo/photo.js'><s:param name='ts' value='ts'/></s:url>"></script>
 </s:else>
 <!-- 额外加载的js文件 -->
 <s:if test='%{"app.index.js" != getText("app.index.js")}'>
