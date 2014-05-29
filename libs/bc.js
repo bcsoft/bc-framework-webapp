@@ -337,7 +337,6 @@ bc.print = function(url,isOpenNewWin) {
 		win.print();
 	}
 };
-
 /**
  * 对$.ajax的通用封装:全局ajax设置
  * 
