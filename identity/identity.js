@@ -252,6 +252,27 @@ bc.identity = {
 		},option);
 		
 		bc.page.newWin(option);
+	},
+	
+	/**
+	 * 获取用户信息
+	 * @param {Object} option 配置参数
+	 * @option {String} group 所属岗位
+	 * @option {String} status 用户状态 0-启用中,1-已禁用,2-已删除
+	 */
+	getUser : function (option) {
+		option.data = jQuery.extend({
+			status: "0,1"
+		},option.data);
+		
+		bc.ajax({
+			url : option.url,
+			data : option.data,
+			dataType : "json",
+			success : function(json) {
+				option.onSuccess(json);
+			}
+		});
 	}
 };
 
