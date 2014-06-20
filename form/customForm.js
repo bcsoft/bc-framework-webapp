@@ -51,10 +51,7 @@ bc.customForm = {
 				type : option.type,
 				pid : option.pid,
 				code : option.code,
-				combine:option.combine,
-				totle_width:option.totle_width,
-				extraData : $.toJSON(option.extraData),
-				items:option.items
+				extraData : $.toJSON(option.extraData)
 			};
 		} else {
 			option.data = {
@@ -62,10 +59,7 @@ bc.customForm = {
 				subject : option.subject,
 				type : option.type,
 				pid : option.pid,
-				code : option.code,
-				combine:option.combine,
-				totle_width:option.totle_width,
-				items:option.items
+				code : option.code
 			};
 		}
 
