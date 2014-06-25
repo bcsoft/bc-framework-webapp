@@ -43,6 +43,10 @@ table.table { /*width: 100%;
 	/*height: 100px;*/
 }
 
+.bc-grid table a {
+	color: inherit;
+}
+
 .bc-grid .header td {
 	text-align: center;
 }

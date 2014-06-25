@@ -47,6 +47,10 @@
 							</ul>
 						</td>
 					</tr>
+					<tr>
+						<td class="label"><s:text name="option.desc"/>:</td>
+						<td class="value relative"><s:textfield name="e.description" /></td>
+					</tr>
 				</tbody>
 			</table>
 		</div>

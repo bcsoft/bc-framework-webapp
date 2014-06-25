@@ -462,6 +462,7 @@ bc.customForm = {
 					data.name = this.name;
 					data.value = $text.val();
 					data.type = $text.attr("data-type") || "string";
+					data.scope = $text.attr("data-scope") || "field";
 					var label = $text.attr("data-label");
 					if (label)
 						data.label = label;
@@ -471,6 +472,7 @@ bc.customForm = {
 					data.name = this.name;
 					data.value = $text.val();
 					data.type = $text.attr("data-type") || "string";
+                    data.scope = $text.attr("data-scope") || "field";
 					var label = $text.attr("data-label");
 					if (label)
 						data.label = label;
