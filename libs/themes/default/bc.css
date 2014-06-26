@@ -310,7 +310,12 @@ ul.inputIcons li.inputIcon.hover{
 	filter: alpha(opacity=100);
 }
 span.ui-icon.verticalMiddle {position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:4px;cursor:pointer;}
-
+/* 放在Grid的td内时 */
+ul.inputIcons.incell {
+    position: relative;
+    margin: 0;
+    top: 0.15em;
+}
 /*让td元素支持相对定位*/
 td.relative,div.relative{
 	position: relative;

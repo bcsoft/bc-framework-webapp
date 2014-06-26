@@ -4153,9 +4153,19 @@ $document.delegate("li.inputIcon",{
 	mouseover: function() {
 		$(this).addClass("hover");
 	},
-	mouseout: function() {
-		$(this).removeClass("hover");
-	}
+    mouseout: function() {
+        $(this).removeClass("hover");
+    },
+    click: function() {
+        var _fn = $(this).attr("data-click");
+        if(!_fn) return;
+        var fn = bc.getNested(_fn);
+        if(!fn){
+            alert("函数 " + _fn + " 没有定义！");
+            return;
+        }
+        fn.call(this);
+    }
 });
 /**
  * 清空选择的自动处理
