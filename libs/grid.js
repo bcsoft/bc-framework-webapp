@@ -303,6 +303,10 @@ bc.grid = {
 	 * @param $grid grid的jquery对象
 	 */
 	getSelected: function($grid,option){
+        option = $.extend({
+            all: false,     // 获取所有列的值
+            hidden: false   // 包含隐藏列的值
+        }, option);
 		var $tds = $grid.find(">.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			return [$tds.attr("data-id")];
@@ -315,7 +319,17 @@ bc.grid = {
 		}else{
 			return [];
 		}
-	}
+	},
+    /** 获取grid中选中行的隐藏列信息
+     * @param $grid grid的jquery对象
+     */
+    getSelectedRowHiddenData: function($grid){
+        var r = [];
+        $grid.find(">.data>.right tr.ui-state-highlight").each(function(){
+            r.push($(this).data("hidden"));
+        });
+        return r;
+    }
 };
 
 //表格分页条按钮控制
