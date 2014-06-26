@@ -314,12 +314,16 @@ bc.formatTpl = function(source,params){
  * 对指定的url地址，请求回来的内容进行打印
  * @param url action地址
  * @param isOpenNewWin [可选]是否在新窗口打开打印界面（默认false）
+ * @param autoPrint [可选]是否自动开始打印（默认true）
  */
-bc.print = function(url,isOpenNewWin) {
+bc.print = function(url,isOpenNewWin,autoPrint) {
 	if(isOpenNewWin == undefined) { //是否在新窗口打开打印界面（默认false）
 		isOpenNewWin = false;
 	}
-	
+	if(autoPrint == undefined) { //是否自动开始打印（默认true）
+        autoPrint = true;
+	}
+
 	if(isOpenNewWin == false) { //在当前页显示打印界面
 		var $iframe = $("#print");
 		if(!$iframe.length){
@@ -334,7 +338,7 @@ bc.print = function(url,isOpenNewWin) {
 		});
 	} else { //在新窗口显示打印界面
 		var win = window.open(url, "_blank");
-		win.print();
+		if(autoPrint) win.print();
 	}
 };
 /**
@@ -4149,7 +4153,7 @@ bc.form = {
 
 var $document = $(document);
 //表单域内的选择按钮鼠标样式切换
-$document.delegate("li.inputIcon",{
+$document.delegate(".inputIcon",{
 	mouseover: function() {
 		$(this).addClass("hover");
 	},
@@ -4157,14 +4161,28 @@ $document.delegate("li.inputIcon",{
         $(this).removeClass("hover");
     },
     click: function() {
-        var _fn = $(this).attr("data-click");
+        var $this = $(this);
+        // 获取回调函数
+        var _fn = $this.attr("data-click");
         if(!_fn) return;
         var fn = bc.getNested(_fn);
         if(!fn){
             alert("函数 " + _fn + " 没有定义！");
             return;
         }
-        fn.call(this);
+
+        // 获取函数参数，调用回调函数
+        var args = $this.attr("data-click-args");
+        if(args){
+            args = eval("(" + args + ")");
+            if($.isArray(args)){
+                fn.apply(this, args);
+            }else{
+                fn.call(this, args);
+            }
+        }else{
+            fn.call(this);
+        }
     }
 });
 /**
