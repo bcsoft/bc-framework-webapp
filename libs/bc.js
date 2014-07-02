@@ -314,12 +314,16 @@ bc.formatTpl = function(source,params){
  * 对指定的url地址，请求回来的内容进行打印
  * @param url action地址
  * @param isOpenNewWin [可选]是否在新窗口打开打印界面（默认false）
+ * @param autoPrint [可选]是否自动开始打印（默认true）
  */
-bc.print = function(url,isOpenNewWin) {
+bc.print = function(url,isOpenNewWin,autoPrint) {
 	if(isOpenNewWin == undefined) { //是否在新窗口打开打印界面（默认false）
 		isOpenNewWin = false;
 	}
-	
+	if(autoPrint == undefined) { //是否自动开始打印（默认true）
+        autoPrint = true;
+	}
+
 	if(isOpenNewWin == false) { //在当前页显示打印界面
 		var $iframe = $("#print");
 		if(!$iframe.length){
@@ -334,7 +338,7 @@ bc.print = function(url,isOpenNewWin) {
 		});
 	} else { //在新窗口显示打印界面
 		var win = window.open(url, "_blank");
-		win.print();
+		if(autoPrint) win.print();
 	}
 };
 /**
@@ -3039,6 +3043,10 @@ bc.grid = {
 	 * @param $grid grid的jquery对象
 	 */
 	getSelected: function($grid,option){
+        option = $.extend({
+            all: false,     // 获取所有列的值
+            hidden: false   // 包含隐藏列的值
+        }, option);
 		var $tds = $grid.find(">.data>.left tr.ui-state-highlight>td.id");
 		if($tds.length == 1){
 			return [$tds.attr("data-id")];
@@ -3051,7 +3059,17 @@ bc.grid = {
 		}else{
 			return [];
 		}
-	}
+	},
+    /** 获取grid中选中行的隐藏列信息
+     * @param $grid grid的jquery对象
+     */
+    getSelectedRowHiddenData: function($grid){
+        var r = [];
+        $grid.find(">.data>.right tr.ui-state-highlight").each(function(){
+            r.push($(this).data("hidden"));
+        });
+        return r;
+    }
 };
 
 //表格分页条按钮控制
@@ -4149,13 +4167,37 @@ bc.form = {
 
 var $document = $(document);
 //表单域内的选择按钮鼠标样式切换
-$document.delegate("li.inputIcon",{
+$document.delegate(".inputIcon",{
 	mouseover: function() {
 		$(this).addClass("hover");
 	},
-	mouseout: function() {
-		$(this).removeClass("hover");
-	}
+    mouseout: function() {
+        $(this).removeClass("hover");
+    },
+    click: function() {
+        var $this = $(this);
+        // 获取回调函数
+        var _fn = $this.attr("data-click");
+        if(!_fn) return;
+        var fn = bc.getNested(_fn);
+        if(!fn){
+            alert("函数 " + _fn + " 没有定义！");
+            return;
+        }
+
+        // 获取函数参数，调用回调函数
+        var args = $this.attr("data-click-args");
+        if(args){
+            args = eval("(" + args + ")");
+            if($.isArray(args)){
+                fn.apply(this, args);
+            }else{
+                fn.call(this, args);
+            }
+        }else{
+            fn.call(this);
+        }
+    }
 });
 /**
  * 清空选择的自动处理
