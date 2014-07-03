@@ -312,34 +312,101 @@ bc.formatTpl = function(source,params){
 
 /**
  * 对指定的url地址，请求回来的内容进行打印
- * @param url action地址
- * @param isOpenNewWin [可选]是否在新窗口打开打印界面（默认false）
- * @param autoPrint [可选]是否自动开始打印（默认true）
+ * @param option {Object} 配置参数
+ * @option url {String} url地址
+ * @option method {String} POST|GET
+ * @option data {Object} [可选]要传输的数据
+ * @option isOpenNewWin {Boolean} [可选]是否在新窗口打开打印界面（默认false）
+ * @option autoPrint {Boolean} [可选]是否自动开始打印（默认true）
  */
-bc.print = function(url,isOpenNewWin,autoPrint) {
-	if(isOpenNewWin == undefined) { //是否在新窗口打开打印界面（默认false）
-		isOpenNewWin = false;
-	}
-	if(autoPrint == undefined) { //是否自动开始打印（默认true）
-        autoPrint = true;
-	}
+bc.print = function(option) {
+    var _option = option;
+    option = {
+        isOpenNewWinL: false,       //是否在新窗口打开打印界面（默认false）
+        autoPrint: true             //是否自动开始打印（默认true）
+    };
+    if(typeof _option == "string"){
+        option = jQuery.extend(option,{
+            url: _option,
+            isOpenNewWinL: isOpenNewWin || false,
+            autoPrint: autoPrint || true,
+            old: true
+        });
+    }else{
+        option = _option;
+    }
+    if(!option.url) alert("必须设置打印的 url 参数！");
+    if(option.isOpenNewWin) option.target = "_blank";
 
-	if(isOpenNewWin == false) { //在当前页显示打印界面
-		var $iframe = $("#print");
-		if(!$iframe.length){
-			$iframe = $("<iframe id='print' style='display:none'></iframe>").appendTo("body");
-		}
-		$iframe.attr("src",url);
-		$iframe.one("load", function(){
-			//调用打印方法打印iframe的内容
-			this.contentWindow.print();
-			//打单操作结束后，清空iframe内容节约资源
-			$iframe.attr("src","about:blank");
-		});
-	} else { //在新窗口显示打印界面
-		var win = window.open(url, "_blank");
-		if(autoPrint) win.print();
-	}
+    console.log("option=" + $.toJSON(option));
+
+    if(!option.old) {// 使用表单方式提交
+        var $form = $("form[name='temp']");
+        if (!$form.length) {
+            console.log("create new form for post url with data.");
+            $form = $("<form name='temp' method='post' style='display:none'></form>").appendTo("body");
+        }
+        $form.attr("method", option.method || "post");
+        $form.attr("target", option.target || "print");
+        $form.attr("action", option.url);
+        $form.empty();// 清空提交环境
+        var form = $form[0];
+        if (option.data) {// 利用隐藏域保存数据
+            //console.log("TODO: post data.");
+            var html = [];
+            for (var key in option.data) {
+                html.push("<input type='hidden' name='" + key + "' value='" + option.data[key] + "'/>");
+            }
+            $form.html(html.join(""));
+        }
+
+        if(form.target == "print") {  // 通过iframe打印
+            // 获取打印用的隐藏 iframe
+            var $iframe = $("iframe[name='print']");
+            if(!$iframe.length){
+                console.log("create new iframe for print.");
+                $iframe = $("<iframe name='print' style='display:none'></iframe>").appendTo("body");
+            }
+            form.submit();  // 提交表单
+
+            $iframe.one("load", function(){
+                //调用打印方法打印iframe的内容
+                this.contentWindow.print();
+                //打单操作结束后，清空iframe内容节约资源
+                $iframe.attr("src","about:blank");
+            });
+        }else {// 新窗口：不支持 autoPrint 参数
+            form.submit();  // 提交表单
+        }
+        $form.attr("action","about:blank").empty(); // 清空form数据释放资源
+    }else { // 非表单方式提交
+        // 将data附加到url
+        if(option.data){
+            for(var key in option.data){
+                option.url = bc.addParamToUrl(option.url, key + "=" + option.data[key]);
+            }
+        }
+
+        if(!option.isOpenNewWin){// 通过iframe打印
+            // 获取打印用的隐藏 iframe
+            var $iframe = $("iframe[name='print']");
+            if(!$iframe.length){
+                console.log("create new iframe for print.");
+                $iframe = $("<iframe name='print' style='display:none'></iframe>").appendTo("body");
+            }
+
+            $iframe.attr("src", option.url);
+            $iframe.one("load", function(){
+                //调用打印方法打印iframe的内容
+                this.contentWindow.print();
+                //打单操作结束后，清空iframe内容节约资源
+                $iframe.attr("src","about:blank");
+            });
+        }else {// 在新窗口打印
+            var win = window.open(url, "_blank");
+            if(option.autoPrint) win.print();
+        }
+    }
 };
 /**
  * 对$.ajax的通用封装:全局ajax设置
