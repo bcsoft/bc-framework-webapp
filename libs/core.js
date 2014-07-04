@@ -328,8 +328,8 @@ bc.print = function(option) {
     if(typeof _option == "string"){
         option = jQuery.extend(option,{
             url: _option,
-            isOpenNewWinL: isOpenNewWin || false,
-            autoPrint: autoPrint || true,
+            isOpenNewWinL: (arguments.length > 1 ? arguments[1] : false),
+            autoPrint: (arguments.length > 2 ? arguments[2] : true),
             old: true
         });
     }else{
