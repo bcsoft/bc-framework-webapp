@@ -2,11 +2,11 @@
  * 添加访问监控配置
  * @param {Object} option 配置参数
  * @option {String} docId [必填] 文档标识
- * @option {String} docType [必填] 文档类型				
- * @option {String} docName [必填] 文档名称				
- * @option {String} title [可选]	监控配置窗口标题			
- * @option {String} name [可选]	监控配置窗口名称			
- * @option {String} mid [可选] 监控配置窗口标识			
+ * @option {String} docType [必填] 文档类型
+ * @option {String} docName [必填] 文档名称
+ * @option {String} title [可选] 监控配置窗口标题
+ * @option {String} name [可选] 监控配置窗口名称
+ * @option {String} mid [可选] 监控配置窗口标识
  */
 bc.addAccessControl = function(option) {
 	if(option.docId==null){
