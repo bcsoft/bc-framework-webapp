@@ -338,12 +338,12 @@ bc.print = function(option) {
     if(!option.url) alert("必须设置打印的 url 参数！");
     if(option.isOpenNewWin) option.target = "_blank";
 
-    console.log("option=" + $.toJSON(option));
+    //console.log("option=" + $.toJSON(option));
 
     if(!option.old) {// 使用表单方式提交
         var $form = $("form[name='temp']");
         if (!$form.length) {
-            console.log("create new form for post url with data.");
+            //console.log("create new form for post url with data.");
             $form = $("<form name='temp' method='post' style='display:none'></form>").appendTo("body");
         }
         $form.attr("method", option.method || "post");
@@ -364,7 +364,7 @@ bc.print = function(option) {
             // 获取打印用的隐藏 iframe
             var $iframe = $("iframe[name='print']");
             if(!$iframe.length){
-                console.log("create new iframe for print.");
+                //console.log("create new iframe for print.");
                 $iframe = $("<iframe name='print' style='display:none'></iframe>").appendTo("body");
             }
             form.submit();  // 提交表单
@@ -391,7 +391,7 @@ bc.print = function(option) {
             // 获取打印用的隐藏 iframe
             var $iframe = $("iframe[name='print']");
             if(!$iframe.length){
-                console.log("create new iframe for print.");
+                //console.log("create new iframe for print.");
                 $iframe = $("<iframe name='print' style='display:none'></iframe>").appendTo("body");
             }
 
