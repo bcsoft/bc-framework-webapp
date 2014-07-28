@@ -306,16 +306,27 @@ bc.photo.handler = {
 			format: $form.find(":hidden[name=format]").val(),
 			fname: $form.find(":text[name=fname]").val()
 		};
+
 		var dir = $form.find(":hidden[name=dir]").val();
-		if(dir.length > 0) image.dir = dir;
-		var path = $form.find(":hidden[name=path]").val();
-		if(path.length > 0) image.path = path;
-		var id = $form.find(":hidden[name=id]").val();
-		if(id.length > 0) image.id = id;
+		if (dir.length > 0) image.dir = dir;
 		var ptype = $form.find(":hidden[name=ptype]").val();
-		if(ptype.length > 0) image.ptype = ptype;
+		if (ptype.length > 0) image.ptype = ptype;
 		var puid = $form.find(":hidden[name=puid]").val();
-		if(puid.length > 0) image.puid = puid;
+		if (puid.length > 0) image.puid = puid;
+
+		var id = $form.find(":hidden[name=id]").val();
+		var edit2new = false;
+		if(id.length > 0) {
+			var id_cfg = id.split(":");
+			if(id_cfg.length > 2 && id_cfg[2] == "true"){// 编辑现有附件后生成新的附件的处理
+				edit2new = true;
+			}
+		}
+		if(!edit2new){
+			if (id.length > 0) image.id = id;
+			var path = $form.find(":hidden[name=path]").val();
+			if (path.length > 0) image.path = path;
+		}
 
 		// 上传
 		$.ajax({
