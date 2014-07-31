@@ -22,6 +22,15 @@ bc.attach={
 			url += "&to=" + to;
 		return window.open(url, "_blank");
 	},
+	/** 在线打开所有附件 */
+	inlineAll: function() {
+	    //在新窗口中打开文件
+        var url = bc.root + "/bc/attach/inline?id=";
+        var args = arguments; // 获取所有参数
+        for (var i = 0; i < args.length; i++){
+            window.open(url + args[i], "_blank");
+        }
+	},
 	/** 下载附件 */
 	download: function(attachEl,callback){
 		window.open(bc.root + "/bc/attach/download?id=" + $(attachEl).attr("data-id"), "blank");
