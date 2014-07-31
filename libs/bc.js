@@ -4149,13 +4149,37 @@ bc.form = {
 
 var $document = $(document);
 //表单域内的选择按钮鼠标样式切换
-$document.delegate("li.inputIcon",{
+$document.delegate(".inputIcon",{
 	mouseover: function() {
 		$(this).addClass("hover");
 	},
-	mouseout: function() {
-		$(this).removeClass("hover");
-	}
+    mouseout: function() {
+        $(this).removeClass("hover");
+    },
+    click: function() {
+        var $this = $(this);
+        // 获取回调函数
+        var _fn = $this.attr("data-click");
+        if(!_fn) return;
+        var fn = bc.getNested(_fn);
+        if(!fn){
+            alert("函数 " + _fn + " 没有定义！");
+            return;
+        }
+
+        // 获取函数参数，调用回调函数
+        var args = $this.attr("data-click-args");
+        if(args){
+            args = eval("(" + args + ")");
+            if($.isArray(args)){
+                fn.apply(this, args);
+            }else{
+                fn.call(this, args);
+            }
+        }else{
+            fn.call(this);
+        }
+    }
 });
 /**
  * 清空选择的自动处理
@@ -4750,6 +4774,15 @@ bc.attach={
 		if(to && to.length > 0)
 			url += "&to=" + to;
 		return window.open(url, "_blank");
+	},
+	/** 在线打开所有附件 */
+	inlineAll: function() {
+	    //在新窗口中打开文件
+        var url = bc.root + "/bc/attach/inline?id=";
+        var args = arguments; // 获取所有参数
+        for (var i = 0; i < args.length; i++){
+            window.open(url + args[i], "_blank");
+        }
 	},
 	/** 下载附件 */
 	download: function(attachEl,callback){
