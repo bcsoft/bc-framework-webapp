@@ -89,6 +89,22 @@ Date.addYear=function(_date,num){
 bc.id=0;
 bc.nextId=function(prefix){return (prefix ? prefix : "bc") + (bc.id++)};
 
+/**
+ * 获取一个新的UID
+ * @param {String} type 类别
+ * @param {Function} callback 回调函数，第一个参数为UID的值
+ */
+bc.nextUid = function (type, callback) {
+	bc.ajax({
+		url : bc.root + "/bc/nextuid",
+		data : {type: type},
+		dataType : "html",
+		success : function(uid) {
+			callback && callback.call(this, uid);
+		}
+	});
+};
+
 /** 获取使用符号"."连接的嵌套对象,如a.b.c返回window[a][b][c]或eval(a.b.c) */
 bc.getNested=function(nestedName){
 	try{
