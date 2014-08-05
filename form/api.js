@@ -96,33 +96,9 @@ bc.cform.delete_ = function(option){
 };
 
 /**
- * 升级创建新版本
- * @param {Integer} id 要升级的表单ID
- * @param {Function} onOk 【可选】升级成功的回调函数
- *
- */
-bc.cform.upgrade = function(id, onOk){
-	if (!id) {
-		bc.msg.alert("必须配置 id 参数 - bc.cform.upgrade");
-		return;
-	}
-	$.ajax({
-		method: "POST",
-		dataType: "json",
-		url: bc.root + "/cform/upgrade",
-		data: {id: id},
-		success: function(json){
-			if(typeof onOk == "function"){
-				onOk.call(this, json);
-			}
-		}
-	});
-};
-
-/**
  * 默认的表单初始化方法
  */
-bc.cform.init = function(){
+bc.cform.init = function(option, readonly){
 	var $page = $(this);
 	var ns = $page.attr("data-namespace");
 	if(ns && ns.length > 0){
@@ -134,6 +110,7 @@ bc.cform.init = function(){
 	}
 
 	// 监控记录表单的值
+	if(readonly) return;
 	bc.cform.monitorChange($page);
 };
 
@@ -165,10 +142,18 @@ bc.cform.monitorChange = function($page){
 		}
 		oldCheckValues[this.name] = this.value;
 	});
+
+	// 判断是否新建状态
+	var formId = $page.find("input:[name='id'][data-scope='form']").val();
+	var isNew = !(formId && formId.length > 0);
+	if(isNew) {
+		// 新建状态时，一些全局参数不要记录data值
+		$page.find("input:[data-scope='form']").removeData("oldValue");
+	};
 };
 
 /**
- * 获取已经修改数据{【name】:{value、type、scope(field默认|form)}}, ...}
+ * 获取已经修改的数据{【name】:{value、type、scope(field默认|form)}}, ...}
  */
 bc.cform.getChangedData = function($page){
 	var changedData = {}, c = 0, $this, value, type, scope, cfg;
@@ -184,7 +169,7 @@ bc.cform.getChangedData = function($page){
 				if(!scope && !type){
 					changedData[this.name] = value;
 				}else{
-					cfg = {	value: value};
+					cfg = {value: value};
 					if(scope) cfg.scope = scope;
 					if(type) cfg.type = type;
 					changedData[this.name] = cfg;
@@ -248,15 +233,38 @@ bc.cform.getChangedData = function($page){
 };
 
 /**
- * 默认的表单确认按钮
+ * 保存按钮
  */
-bc.cform.onOk = function(){
-	console.log("TODO: bc.cform.onOk")
+bc.cform.save = function(){
+	bc.cform.doSave.call(this, false);
+};
+
+/**
+ * 保存并关闭按钮
+ */
+bc.cform.saveAndClose = function(){
+	bc.cform.doSave.call(this, true);
+};
+
+/**
+ * 默认的表单保存方法
+ * @param closeAfterSave 保存成功后是否关闭窗口
+ */
+bc.cform.doSave = function(closeAfterSave, callback){
 	var $page = $(this);
 
 	// 表单验证
-	if (!bc.validator.validate($page))
-		return;
+	var ns = $page.attr("data-namespace");
+	var customValidate;
+	if(ns && ns.length > 0){
+		ns = bc.getNested(ns);
+		if(ns && ns["validate"]) customValidate = ns["validate"];
+	}
+	if(customValidate){
+		if (!customValidate.call(this)) return;// 调用模块自定义的表单验证方法
+	}else{
+		if (!bc.validator.validate($page)) return;// 调用默认的表单验证方法
+	}
 
 	// 判断是否正在保存，若是就返回
 	if ($page.data("saving"))
@@ -268,11 +276,11 @@ bc.cform.onOk = function(){
 		bc.msg.info("数据还没有修改过，无需保存！");
 		return;
 	}
-
-	console.log(changedData);
+	//console.log(changedData);
 
 	//表单是否为新建
-	var isNew = !!$page.find("input[name='id']").val();
+	var formId = $page.find("input:[name='id'][data-scope='form']").val();
+	var isNew = !(formId && formId.length > 0);
 
 	// 设置正在保存中
 	$page.data("saving", true);
@@ -286,7 +294,6 @@ bc.cform.onOk = function(){
 		data: $.toJSON(changedData)
 	}, null, "json")
 	.done(function(result) {
-		//console.log(result);
 		$page.data("saving", false);
 		if(result.success) {
 			bc.msg.slide(result.msg);
@@ -294,7 +301,14 @@ bc.cform.onOk = function(){
 				$page.find("input[name='id']").val(result.id);
 			}
 			$page.data("data-status", result);
-			$page.dialog("close");
+			if(closeAfterSave === true){
+				$page.dialog("close");
+			}else{
+				// 重新监控记录表单的值
+				bc.cform.monitorChange($page);
+			}
+
+			callback && callback.call(this, result);
 		}else{
 			bc.msg.alert(result.msg);
 		}
@@ -302,5 +316,55 @@ bc.cform.onOk = function(){
 	.fail(function(result) {
 		$page.data("saving", false);
 		bc.msg.alert("保存失败了！");
+	});
+};
+
+/**
+ * 获取表单当前的最新版本号
+ * @param {Object} option 配置参数
+ * @option {String} type [必填]表单业务类别，如：CarManCert（司机证件）
+ * @option {String} code [必填]表单业务编码，如：certIdentity（身份证）
+ * @option {Integer} pid [必填]表单业务ID，如：司机招聘表的ID
+ */
+bc.cform.nextVer = function(option){
+	$.post(bc.root + "/bc/cform/nextver", {
+		type: option.type,
+		code: option.code,
+		pid: option.pid
+	}, null, "html")
+	.done(function(newVer) {
+		option.onOk && option.onOk.call(this, newVer);
+	});
+};
+
+/**
+ * 存为新版本按钮
+ * @param {Boolean} closeAfterSave 成功后是否关闭窗口
+ * @param {Function} callback 成功后执行的回调函数
+ */
+bc.cform.save2NewVersion = function(closeAfterSave, callback){
+	var $page = $(this);
+	var $ver = $page.find("input[name='ver']");
+	var currentVer = $ver.val();
+	bc.cform.nextVer({
+		type: $page.find("input[name='type']").val(),
+		code: $page.find("input[name='code']").val(),
+		pid: $page.find("input[name='pid']").val(),
+		onOk: function(newVer) {
+			bc.msg.confirm("确定要将当前版本\"" + currentVer + "\"存为新版本\"" + newVer + "\"吗？", function(){
+				bc.nextUid("Form",function(uid) {
+					$ver.val(newVer);
+					$page.find("input[name='uid']").val(uid);
+					$page.find("input[name='id']").val("");
+
+					// 去除当前值的监控
+					$page.data("oldCheckValues", {});
+					$page.find("input:not(.ignore)").removeData("oldValue");
+					bc.cform.doSave.call($page, closeAfterSave, function () {
+						callback && callback.apply(this, arguments);
+					});
+				});
+			});
+		}
 	});
 };
