@@ -118,6 +118,11 @@ bc.cform.init = function(option, readonly){
  * 监控记录表单的值，方便日后修改后的对比
  */
 bc.cform.monitorChange = function($page){
+	// 判断是否新建状态: 新建状态时，不作记录
+	var formId = $page.find("input:[name='id'][data-scope='form']").val();
+	var isNew = !(formId && formId.length > 0);
+	if(isNew) return;
+
 	// 文本输入框、隐藏域、select
 	$page.find("input:text:not(.ignore), input:hidden:not(.ignore), textarea:not(.ignore), select:not(.ignore)")
 		.each(function() {
@@ -142,14 +147,6 @@ bc.cform.monitorChange = function($page){
 		}
 		oldCheckValues[this.name] = this.value;
 	});
-
-	// 判断是否新建状态
-	var formId = $page.find("input:[name='id'][data-scope='form']").val();
-	var isNew = !(formId && formId.length > 0);
-	if(isNew) {
-		// 新建状态时，一些全局参数不要记录data值
-		$page.find("input:[data-scope='form']").removeData("oldValue");
-	};
 };
 
 /**
