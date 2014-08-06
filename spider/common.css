@@ -17,12 +17,12 @@
 	color: red
 }
 
-.item {
+.spider .item {
 	width: 20em;
 	display: inline-block;
 }
 
-.field {
+.spider .field {
 	display: -webkit-box;
 	display: -moz-box;
 	display: box;
@@ -35,45 +35,45 @@
 	box-align: center;
 }
 
-.field>.label {
+.spider .field>.label {
 	width: 6em;
 	text-align: right;
 	padding-right: 0.25em;
 }
 
-.field>.value {
+.spider .field>.value {
 	-webkit-box-flex: 1;
 	-moz-box-flex: 1;
 	box-flex: 1;
 	position: relative;
 }
 
-.field>.value>input {
+.spider .field>.value>input {
 	width: 100%;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
-.field>.value>input.captcha {
+.spider .field>.value>input.captcha {
 	width: 50%;
 }
 
-img.captcha {
+.spider img.captcha {
 	vertical-align: middle;
 	cursor: pointer;
 	width: 50%;
 	box-sizing: border-box;
 }
 
-.vlayout {
+.spider .vlayout {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-box-pack: top;
 	-webkit-box-align: left;
 }
 
-.vlayout>.flex {
+.spider .vlayout>.flex {
 	-webkit-box-flex: 1;
 }
 
