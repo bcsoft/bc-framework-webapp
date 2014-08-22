@@ -430,13 +430,13 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	flex: auto;
 }
 .vlayout.hleft {
-	align-self: flex-start;
+	align-items: flex-start;
 }
 .vlayout.hright {
-	align-self: flex-end;
+	align-items: flex-end;
 }
 .vlayout.hcenter {
-	align-self: center;
+	align-items: center;
 }
 .vlayout.vtop {
 	justify-content: flex-start;
