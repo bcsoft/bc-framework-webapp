@@ -13,7 +13,7 @@
                 <pre style="margin:0" class="msg">请将图片<br>拖放到这里</pre>
                 <a href="#" style="font-size:24px;color:blue;">取消</a>
             </div>
-            <video autoplay style="display:none;width: 100%; height: 100%;position:absolute;left:0;top:0;background-color:#000" title="双击截图"></video>
+            <%--<video autoplay style="display:none;width: 100%; height: 100%;position:absolute;left:0;top:0;background-color:#000" title="双击截图"></video>--%>
         </div>
     </div>
     <div class="nav ui-widget-content vlayout hleft" style="width: 180px;border-color:#27292A;border-width:0 0 0 1px;/*background-image:none;background-color:#3C3F41;*/">

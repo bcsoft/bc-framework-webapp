@@ -6,6 +6,7 @@ bc.namespace("bc.photo");
  * @option {String} dir [可选]图片存放的相对于"/bdata"目录下的子路径
  * @option {String} path [可选]图片相对dir下的物理路径
  * @option {String} fname [可选]图片显示的名称(前缀f用于避免与bc.page.newWin函数的name参数冲突)
+ * @option {String} format [可选]图片的首选格式，如 png、jpg
  * @option {String} ptype [可选]创建Attach附件时使用
  * @option {String} puid [可选]创建Attach附件时使用
  * @option {Function} onOk 处理完毕后的回调函数，函数第一个参数为处理结果的json信息描述，格式为：
@@ -32,14 +33,27 @@ bc.photo.handle = function (option) {
 	if (option.dir) option.data.dir = option.dir;
 	if (option.path) option.data.path = option.path;
 	if (option.fname) option.data.fname = option.fname;
+	if (option.format) option.data.format = option.format;
 	if (option.ptype) option.data.ptype = option.ptype;
 	if (option.puid) option.data.puid = option.puid;
 
+	console.log("handle");
 	option = $.extend({
 		method: 'post',
 		mid: 'bc.photo.handle',
 		name: '图片处理器',
 		url: bc.root + '/bc/photo/main',
+		beforeClose: function(status){
+			var $page= $(this);
+			var $video = $page.find("#cameraVideo");
+			var stream = $video.data("stream");
+
+			// 关闭摄像头
+			stream && stream.stop();
+
+			// 移动 cameraVideo 标签到 body 缓存起来
+			$video.hide().appendTo("body").removeData("stream").removeData("connected").attr("src", null);
+		},
 		afterClose: function(status){
 			if(status && typeof(option.onOk) == "function"){
 				option.onOk(status);
