@@ -4138,7 +4138,7 @@ bc.form = {
 				else
 					this.readOnly=true;
 			});
-			$form.find("ul.inputIcons,span.selectButton").each(function(){
+			$form.find("ul.inputIcons:not('.ignore'),span.selectButton").each(function(){
 				$(this).hide();
 			});
 		}
