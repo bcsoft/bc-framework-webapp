@@ -19,7 +19,7 @@ bc.photo.handler = {
 		// 默认值
 		var defaultImage = {};
 		$form.data("image", defaultImage);
-
+		console.log("image:", $form.data("image"));
 		var $displayContainer = $form.find(".container");
 		var $imgDisplayer = $displayContainer.children("img");
 		var $imgProxy = $form.find("img.proxy");
@@ -351,7 +351,16 @@ bc.photo.handler = {
 	/** 拍照 */
 	captureCamera: function () {
 		var $form = $(this);
-		var $video = $form.find("video");
+		var $video = $("#cameraVideo");
+		if($video.size() == 0){
+			$video = $('<video id="cameraVideo" autoplay style="display:none;width: 100%; height: 100%;position:absolute' +
+				';left:0;top:0;background-color:#000" title="双击截图"></video>')
+				.appendTo($form.find(".helper"));
+		}else{
+			if(!$video.parent().is(".helper")){
+				$video.appendTo($form.find(".helper"));
+			}
+		}
 		$video.show();
 
 		// 如果摄像头已连接，返回不处理
@@ -387,6 +396,7 @@ bc.photo.handler = {
 			console.log("camera connected successful");
 			// 记录已连接成功
 			$video.data("connected", true);
+			$video.data("stream", stream);
 
 			var video = $video[0];
 			// Firefox 使用mozSrcObject的属性，而Opera和Chrome使用src属性。
@@ -414,7 +424,7 @@ bc.photo.handler = {
 		var camera = navigator.getUserMedia(constraints, successCallback, errorCallback);
 	},
 	snapshot: function ($video) {
-		var $form = $(this);
+		var $form = $video.closest(".bc-page");
 		var video = $video[0];
 		var canvas = $form.find("canvas")[0];
 		var ctx = canvas.getContext('2d');
@@ -439,12 +449,17 @@ bc.photo.handler = {
 		// 显示截图
 		var $fname = $form.find(":text[name=fname]");
 		var fname = $fname.val();
-		if($.trim(fname).length > 0){
+		if($.trim(fname).length == 0){
 			$fname.val("截图");
 		}
-		$form.find(":hidden[name=format]").val("jpg");
+		var $format = $form.find(":hidden[name=format]");
+		var format = $format.val();
+		if(!format || format.length == 0){
+			format = "png";
+			$format.val(format);
+		}
 		var image = $form.data("image");
-		image.data = canvas.toDataURL("image/jpg");
+		image.data = canvas.toDataURL("image/" + format);
 		$form.find("img.proxy")[0].src = image.data;
 
 		// 隐藏video控件

@@ -393,86 +393,57 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	word-break: break-all;
 }
 
-/** 弹性框模型 */
+/* 垂直弹性布局: IE11+, Firefox22+, Chrome29+*/
+.vlayout {
+	/* 定义弹性容器，flex值表示容器为块级,inline-flex值表示容器为原子行级元素 */
+	display: flex;
+	/* 定义主轴方向 http://www.w3.org/TR/css3-flexbox/#flex-direction-property
+	row | row-reverse | column | column-reverse*/
+	flex-direction: column;
+	/* 定义伸缩容器是单行韩式多行 http://www.w3.org/TR/css3-flexbox/#propdef-flex-wrap
+	nowrap | wrap | wrap-reverse*/
+	flex-wrap: nowrap;
+	/* 定义子元素如何沿着主轴排列 http://www.w3.org/TR/css3-flexbox/#justify-content-property
+	flex-start | flex-end | center | space-between | space-around */
+	justify-content: flex-start;
+	/* 定义子元素如何沿着侧轴排列 http://www.w3.org/TR/css3-flexbox/#align-items-property
+	flex-start | flex-end | center | baseline | stretch */
+	align-items: flex-start;
+}
 /* 水平弹性布局 */
 .hlayout {
-    display: -ms-box;
-    -ms-box-orient: horizontal;
-
-    display: -moz-box;
-    -moz-box-orient: horizontal;
-
-    display: -webkit-box;
-    -webkit-box-orient: horizontal;
-
-    display:box;
-    box-orient: horizontal;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: flex-start;
 }
-
-/* 垂直弹性布局 */
-.vlayout {
-    display: -ms-box;
-    -ms-box-orient: vertical;
-    -ms-box-pack: start;
-    -ms-box-align: stretch;
-
-    display: -moz-box;
-    -moz-box-orient: vertical;
-    -moz-box-pack: start;
-    -moz-box-align: stretch;
-
-    display: -webkit-box;
-    -webkit-box-orient: vertical; /* 子代排列方向 - 轴向*/
-    -webkit-box-pack: start;   /* 子代轴向的排列方式：*start | end | center | justify*/
-    -webkit-box-align: stretch;  /* 子代垂直于轴向的排列方式：start | end | center | baseline | *stretch*/
-
-    display:box;
-    box-orient: vertical;
-    box-pack: start;
-    box-align: stretch;
+.vlayout > .unflex, .vlayout > *, .hlayout > .unflex, .hlayout > * {
+	/* 覆盖父元素的align-items属性，定义自己如何沿着侧轴排列
+	auto | flex-start | flex-end | center | baseline | stretch */
+	align-self: stretch;
+	/* 子代的弹性比 */
+	flex: none;
+}
+.vlayout > .autoflex, .vlayout > .flex, .hlayout > .autoflex, .hlayout > .flex {
+	align-self: stretch;
+	flex: auto;
 }
 .vlayout.hleft {
-    -ms-box-align: start;
-    -moz-box-align: start;
-    -webkit-box-align: start;
-    box-align: start;
+	align-items: flex-start;
 }
 .vlayout.hright {
-    -ms-box-align: end;
-    -moz-box-align: end;
-    -webkit-box-align: end;
-    box-align: end;
+	align-items: flex-end;
 }
 .vlayout.hcenter {
-    -ms-box-align: center;
-    -moz-box-align: center;
-    -webkit-box-align: center;
-    box-align: center;
+	align-items: center;
 }
 .vlayout.vtop {
-    -ms-box-pack: start;
-    -moz-box-pack: start;
-    -webkit-box-pack: start;
-    box-pack: start;
+	justify-content: flex-start;
 }
 .vlayout.vbottom {
-    -ms-box-pack: end;
-    -moz-box-pack: end;
-    -webkit-box-pack: end;
-    box-pack: end;
+	justify-content: flex-end;
 }
 .vlayout.vcenter {
-    -ms-box-pack: center;
-    -moz-box-pack: center;
-    -webkit-box-pack: center;
-    box-pack: center;
-}
-/** 子代的弹性比。弹性比为 1 的子代占据父代框的空间是弹性比为 2 的同级属性的两倍。其默认值为 0，也就是不具有弹性。
- * 值：0 | 任意整数
- */
-.vlayout>.flex,.hlayout>.flex {
-    -ms-box-flex:1;
-    -moz-box-flex: 1;
-    -webkit-box-flex:1;
-    box-flex: 1;
+	justify-content: center;
 }
