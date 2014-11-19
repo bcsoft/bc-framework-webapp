@@ -15,7 +15,7 @@
 						<td style="width: 80px;"></td>
 						<td style="">&nbsp;</td>
 					</tr>
-					<!-- 模板格式 排序号 -->
+					<!-- 类型 排序号 -->
 					<tr>
 						<td class="label">*<s:text name="template.type"/>:</td>
 						<td >
@@ -29,10 +29,10 @@
 					<tr>
 						<td class="label">*<s:text name="template.category"/>:</td>
 						<td class="value" colspan="3">
-							<div id="categorys" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;" class="ui-widget-content" 
+							<div id="categorys" style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;font-weight: normal;" class="ui-widget-content"
 								data-removeTitle='<s:text name="title.click2remove"/>'>
 								<%-- 判断是否是点击创建按钮 --%>
-								<s:if test="%{cids == null && cNames == null}">
+								<s:if test="%{!isReadonly()}">
 									<ul class="inputIcons" style="top:10px">
 										<li class="inputIcon ui-icon ui-icon-circle-plus" title='<s:text name="点击添加所属分类"/>' id="addCategory">
 									</ul>
@@ -49,8 +49,8 @@
 									</li>
 									</s:iterator>
 									</ul>
-								</s:if>	
-							</div>	
+								</s:if>
+							</div>
 						</td>
 					</tr>
 					<!-- 编码 -->
