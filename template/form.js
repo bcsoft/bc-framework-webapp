@@ -10,7 +10,7 @@ bc.templateForm = {
 			$form.find("#idTplContent").hide();	
 	
 		//根据格式化的值，显示后隐藏参数
-		if($form.find(":input[e.formatted]:checked").val() == "false")
+		if($form.find(":input[name='e.formatted']:checked").val() == "false")
 			$form.find("#idTplParam").hide();
 		
 		
