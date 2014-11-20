@@ -19,8 +19,8 @@ bc.templateList = {
 					return win;
 				}
 			}else{
-				var n = $tr.find(">td:eq(4)").attr("data-value");// 获取文件名
-				var f = "template/" + $tr.find(">td:eq(7)").attr("data-value");// 获取附件相对路径
+				var n = $tr.find(">td[data-column='t.subject']").attr("data-value");// 获取文件名
+				var f = "template/" + $hidden.path;// 获取附件相对路径	
 				
 				// 预览文件
 				var option = {f: f, n: n,ptype:"Template",puid:$hidden.uid};
