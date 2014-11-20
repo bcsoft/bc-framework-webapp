@@ -272,6 +272,13 @@ bc.templateForm = {
 		//验证表单
 		if(!bc.validator.validate($form)) return;
 
+		//验证所属分类
+		var $categorys = $form.find("#categorys ul.horizontal>li");
+		if ($categorys.size() == 0) {
+			bc.msg.alert('请选择所属分类');
+			return;
+		}
+
 		//模板分类
 		//将分类的id合并到隐藏域
 		ids=[];
