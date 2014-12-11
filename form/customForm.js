@@ -16,7 +16,7 @@ bc.customForm = {
 	 * @option {boolean} isNew [可选]强制指定表单为新建状态 true时指定为新建状态 false时指定为非新建状态
 	 * 								,默认为undefined,即不对表单状态作指定,表单的状态有后台action控制
 	 * @option {boolean} readonly [可选]是否只读-- true为只读 false为可编辑,默认为false
-	 * @option {Object} extraData [可选]附带数据 如[{name : "sex",value : 1,type :
+	 * @option {Object} data [可选]附带数据 如[{name : "sex",value : 1,type :
 	 *         "int"}]
 	 * @option {String} afterOpen [可选]窗口新建好后的回调函数
 	 * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
