@@ -1,7 +1,6 @@
 bc.templateForm = {
 	init : function(option,readonly) {
 		var $form = $(this);
-		var namespace = $form.find("input[name='namespace']").val();
 		
 		//根据模板类型显示模板文件或模板内容
 		if($form.find("#templateTypeCode").val() == 'custom'){
@@ -14,8 +13,6 @@ bc.templateForm = {
 		if($form.find(":input[name='e.formatted']:checked").val() == "false")
 			$form.find("#idTplParam").hide();
 		
-		
-		if(readonly) return;
 			
 		//绑定清除按钮事件
 		$form.find("#cleanFileId").click(function(){
@@ -107,7 +104,7 @@ bc.templateForm = {
 			var selecteds="";
 			$lis.each(function(i){selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));});
 			bc.page.newWin({
-					url: bc.root + "/bc" + namespace + "/selectCategory/paging",
+					url: bc.root + "/bc/tpl/selectCategory/paging",
 					multiple: true,
 					title:'选择所属分类',
 					name: '选择所属分类',
@@ -127,7 +124,7 @@ bc.templateForm = {
 								//绑定查看事件
 								$liObj.find("span.text").click(function(){
 									bc.page.newWin({
-										url: bc.root + "/bc" + namespace + "/form?id="+param.id,
+										url: bc.root + "/bc/tpl/form?id="+param.id,
 										title: "所属分类",
 										name: "所属分类",
 										mid:  "templateCategory"+param.id
@@ -200,9 +197,9 @@ bc.templateForm = {
 		var $objs = $form.find('.horizontal.categoryLi').children('span.text');
 		$.each($objs,function(i,obj){
 			//绑定查看
-			$(obj).click(function(){
+			$(obj).delegate($(this), "click", function() {
 				bc.page.newWin({
-					url: bc.root + "/bc" + namespace + "/form?id="+$(obj).parent().attr('data-id'),
+					url: bc.root + "/bc/tpl/form?id="+$(obj).parent().attr('data-id'),
 					title: "所属分类",
 					name: "所属分类",
 					mid:  "templateParam"+$(obj).parent().attr('data-id')
