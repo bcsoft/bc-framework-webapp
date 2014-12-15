@@ -1994,15 +1994,20 @@ bc.toolbar = {
 					for(var i=0;i<vv.length;i++)
 						values.push(vv[i]);
 				});
+				var op;
 				if(values.length == 1){//单个值
-					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + "=?",value:values[0]});
+					op = {type:c.type,ql: c.ql ? c.ql : c.key + "=?",value:values[0]};
 				}else if(values.length > 1){//多个值
 					var ins = " in (";
 					for(var i=0;i<values.length;i++){
 						ins += (i==0 ? "?" : ",?");
 					}
 					ins += ")";
-					conditions.push({type:c.type,ql: c.ql ? c.ql : c.key + ins,value: values});
+					op = {type:c.type,ql: c.ql ? c.ql : c.key + ins,value: values};
+				}
+				if(op) {
+					if(c.name) op.name=c.name;
+					conditions.push(op);
 				}
 			}else if($this.is(".multi")){//多值混合类型
 				c = this.getAttribute("data-condition");
@@ -2038,10 +2043,15 @@ bc.toolbar = {
 					}else{// 部分有值的情况
 						qlkey = "ql" + qlkey;
 					}
+					var op;
 					if(values.length == 1){
-						conditions.push({type: values[0].type,ql: c[qlkey],value: values[0].value,like: !!values[0].like});
+						op = {type: values[0].type,ql: c[qlkey],value: values[0].value,like: !!values[0].like};
 					}else{
-						conditions.push({type:"multi",ql: c[qlkey],value: values});
+						op = {type:"multi",ql: c[qlkey],value: values};
+					}
+					if(op) {
+						if(c.name) op.name=c.name;
+						conditions.push(op);
 					}
 				}
 			}else{
