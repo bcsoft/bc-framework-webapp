@@ -166,6 +166,7 @@
 		<s:hidden name="e.author.id" />
 		<s:hidden name="templateCategoryIds" />
 		<s:hidden name="templateParamIds" />
+		<s:hidden name="namespace" />
 		<input type="hidden" name="e.fileDate" value='<s:date format="yyyy-MM-dd HH:mm:ss" name="e.fileDate" />'/>
 		<input type="hidden" id="templateTypeCode" value='<s:property value="e.templateType.code" />'/>
 		<input type="hidden" id="templateTypeExt" value='<s:property value="e.templateType.extension" />'/>
