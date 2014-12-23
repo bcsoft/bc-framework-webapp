@@ -466,6 +466,8 @@ bc.msg = {
 	CANCEL: "取消",
 	YES: "是",
 	NO: "否",
+	TRUE: true,
+	FALSE: false,
 	
     /** 提示框 
      * @param {String} msg 提示信息
@@ -476,6 +478,34 @@ bc.msg = {
     alert: function(msg, title, onOk, icon){
     	return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (msg || 'no message.') + '</div>').dialog({
 			modal: true, title: title || bc.msg.DEFAULT_TITLE
+		}).bind("dialogclose",function(event,ui){
+			$(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
+			if(typeof onOk == "function")
+				onOk.call();
+		});
+    },
+    /** 自定义提示框
+     * @param {String} msg 提示信息
+     * @param {String} onOk [可选]点击确认按钮的回调函数
+     * @param {String} title [可选]标题,默认为OZ.Messager.DEFAULT_TITLE
+     * @param {String} w [可选]宽度，默认 300
+     * @param {String} h [可选]高度，默认 'auto'
+     * @param {String} miW [可选]最小宽度，默认 150
+     * @param {String} miH [可选]最小高度，默认 150
+     * @param {String} maW [可选]最大宽度
+     * @param {String} maH [可选]最大高度
+     * @param {String} isModal [可选]是否模式对话框，默认false
+     */
+    customAlert: function(msg, title, onOk, w, h, miW, miH, maW, maH, isModal){
+    	return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (msg || 'no message.') + '</div>').dialog({
+			modal: isModal || bc.msg.FALSE, 
+			title: title || bc.msg.DEFAULT_TITLE,
+			width: w,
+			height: h,
+			minWidth: miW,
+			minHeight: miH,
+			maxWidth: maW,
+			maxHeight: maH
 		}).bind("dialogclose",function(event,ui){
 			$(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
 			if(typeof onOk == "function")
