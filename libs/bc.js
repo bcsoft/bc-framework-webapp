@@ -467,7 +467,8 @@ bc.msg = {
 	YES: "是",
 	NO: "否",
 	WITH: 300,
-	HEIGHT: 300,
+	MINWIDTH: 150,
+	MINHEIGHT: 150,
 	MAXWITH: 900,
 	MAXHEIGHT:560,
 	AUTO: 'auto',
@@ -479,9 +480,9 @@ bc.msg = {
      * @msg.icon {String} [可选]显示的图标类型：error,question,info,warning，默认不显示图标
      * @msg.title {String} [可选]标题,默认为bc.msg.DEFAULT_TITLE
      * @msg.width {number} [可选]宽度,默认为bc.msg.WITH
-     * @msg.height {number} [可选]高度,默认为bc.msg.HEIGHT
-     * @msg.minWidth {number} [可选]最小宽度,默认为bc.msg.WITH
-     * @msg.minHeight {number} [可选]最小高度,默认为bc.msg.HEIGHT
+     * @msg.height {number} [可选]高度,默认为bc.msg.AUTO
+     * @msg.minWidth {number} [可选]最小宽度,默认为bc.msg.MINWIDTH
+     * @msg.minHeight {number} [可选]最小高度,默认为bc.msg.MINHEIGHT
      * @msg.maxWidth {number} [可选]最大宽度,默认为bc.msg.MAXWITH
      * @msg.maxHeight {number} [可选]最大高度,默认为bc.msg.MAXHEIGHT
      * @param {String} onOk [可选]点击确认按钮的回调函数
@@ -507,8 +508,8 @@ bc.msg = {
 			title: option.title || bc.msg.DEFAULT_TITLE,
 			width: option.width || bc.msg.WITH,
 			height: option.height || bc.msg.AUTO,
-			minWidth: option.minWidth || bc.msg.WITH,
-			minHeight: option.minHeight || bc.msg.HEIGHT,
+			minWidth: option.minWidth || bc.msg.MINWIDTH,
+			minHeight: option.minHeight || bc.msg.MINHEIGHT,
 			maxWidth: option.maxWidth || bc.msg.MAXWITH,
 			maxHeight: option.maxHeight || bc.msg.MAXHEIGHT
 		};
