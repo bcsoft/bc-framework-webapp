@@ -459,20 +459,20 @@ jQuery(function($){
  */
 bc.msg = {
 	id:0,
-	
-	/** 默认的对话框常数定义 */
-	DEFAULT_TITLE: "系统提示",
-	OK: "确定",
-	CANCEL: "取消",
-	YES: "是",
-	NO: "否",
-	WITH: 300,
-	MINWIDTH: 150,
-	MINHEIGHT: 150,
-	MAXWITH: 900,
-	MAXHEIGHT:560,
-	AUTO: 'auto',
-	
+    
+    /** 默认的对话框常数定义 */
+    DEFAULT_TITLE: "系统提示",
+    OK: "确定",
+    CANCEL: "取消",
+    YES: "是",
+    NO: "否",
+    WITH: 300,
+    MINWIDTH: 150,
+    MINHEIGHT: 150,
+    MAXWITH: 900,
+    MAXHEIGHT:560,
+    AUTO: 'auto',
+    
     /** 提示框 
      * @param {String || Object} msg 提示信息 || json对象
      * @msg.modal {boolean} 是否背景遮掩
@@ -490,36 +490,36 @@ bc.msg = {
      * @param {String} icon [可选]显示的图标类型：error,question,info,warning，默认不显示图标
      */
     alert: function(msg, title, onOk, icon){
-    	var option;
-    	if (typeof msg == 'string') {//第一个参数为字符串则按旧实现方式实现
-    		option = {msg: msg};
-			if(title) option.title = title;
-			if(onOk) option.onOk = onOk;
-			if(icon) option.icon = icon;
-		} else {//第一个参数是对象
-			option = msg;
-		}
+        var option;
+        if (typeof msg == 'string') {//第一个参数为字符串则按旧实现方式实现
+            option = {msg: msg};
+            if(title) option.title = title;
+            if(onOk) option.onOk = onOk;
+            if(icon) option.icon = icon;
+        } else {//第一个参数是对象
+            option = msg;
+        }
 
-		option = {
-			msg: option.msg || null,
-			modal: option.modal ? option.modal : true, 
-			onOk: option.onOk || null,
-			icon: option.icon || null,
-			title: option.title || bc.msg.DEFAULT_TITLE,
-			width: option.width || bc.msg.WITH,
-			height: option.height || bc.msg.AUTO,
-			minWidth: option.minWidth || bc.msg.MINWIDTH,
-			minHeight: option.minHeight || bc.msg.MINHEIGHT,
-			maxWidth: option.maxWidth || bc.msg.MAXWITH,
-			maxHeight: option.maxHeight || bc.msg.MAXHEIGHT
-		};
+        option = {
+            msg: option.msg || null,
+            modal: option.modal ? option.modal : true, 
+            onOk: option.onOk || null,
+            icon: option.icon || null,
+            title: option.title || bc.msg.DEFAULT_TITLE,
+            width: option.width || bc.msg.WITH,
+            height: option.height || bc.msg.AUTO,
+            minWidth: option.minWidth || bc.msg.MINWIDTH,
+            minHeight: option.minHeight || bc.msg.MINHEIGHT,
+            maxWidth: option.maxWidth || bc.msg.MAXWITH,
+            maxHeight: option.maxHeight || bc.msg.MAXHEIGHT
+        };
 
-    	return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (option.msg || 'no message.') + '</div>')
-    		.dialog(option).bind("dialogclose",function(event,ui){
-				$(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
-				if(typeof option.onOk == "function")
-					option.onOk.call();
-			});
+        return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (option.msg || 'no message.') + '</div>')
+            .dialog(option).bind("dialogclose",function(event,ui){
+                $(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
+                if(typeof option.onOk == "function")
+                    option.onOk.call();
+            });
     },
     /** 确认框 
      * @param {String} msg 提示信息
