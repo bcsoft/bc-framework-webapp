@@ -268,18 +268,18 @@ $document.delegate(".autoHeight",{
 	keyup: function() {
 		var $this = $(this);
 		$this.height(0);
-		var maxHeight = parseInt($this.css("max-height"));// 最大高度
+		var maxHeight = parseInt($this.css("max-height")) || 2000;// 最大高度
+		var minHeight = parseInt($this.css("min-height")) || 0;// 最小高度
 		var h;
-		if(maxHeight){
-			if(maxHeight < this.scrollHeight){
-				h = maxHeight;
-				$this.css("overflow", "auto");
-			}else{
-				h = this.scrollHeight;
-				$this.css("overflow", "hidden");
-			}
+		if(maxHeight < this.scrollHeight){
+			h = maxHeight;
+			$this.css("overflow", "auto");
+		}else if(minHeight > this.scrollHeight){
+			h = minHeight;
+			$this.css("overflow", "auto");
 		}else{
 			h = this.scrollHeight;
+			$this.css("overflow", "hidden");
 		}
 		$this.height(h + ($.browser.mozilla ? 10 : 2));
 	}

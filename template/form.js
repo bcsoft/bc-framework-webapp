@@ -10,11 +10,9 @@ bc.templateForm = {
 			$form.find("#idTplContent").hide();	
 	
 		//根据格式化的值，显示后隐藏参数
-		if($form.find(":input[e.formatted]:checked").val() == "false")
+		if($form.find(":input[name='e.formatted']:checked").val() == "false")
 			$form.find("#idTplParam").hide();
 		
-		
-		if(readonly) return;
 			
 		//绑定清除按钮事件
 		$form.find("#cleanFileId").click(function(){
@@ -92,6 +90,59 @@ bc.templateForm = {
 		});
 		
 		
+		var liTplCate = '<li class="horizontal categoryLi ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
+		'style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">'+
+		'<span class="text"><a href="#">{1}</a></span>'+
+		'<span class="click2remove verticalMiddle ui-icon ui-icon-close" style="margin: -8px -2px;" title={2}></span></li>';
+		var ulTplCate = '<ul class="horizontal categoryUl" style="padding: 0 45px 0 0;"></ul>';
+		var titleCate = $form.find("#categorys").attr("data-removeTitle");
+
+		//绑定添加模板分类的按钮事件处理
+		$form.find("#addCategory").click(function(){
+			var $ul = $form.find("#categorys .categoryUl");
+			var $lis = $ul.find("li");
+			var selecteds="";
+			$lis.each(function(i){selecteds+=(i > 0 ? "," : "") + ($(this).attr("data-id"));});
+			bc.page.newWin({
+					url: bc.root + "/bc/tpl/selectCategory/paging",
+					multiple: true,
+					title:'选择所属分类',
+					name: '选择所属分类',
+					data: {'multiSelect':'yes'},
+					mid: 'selectTemplateCategorys',
+					afterClose: function(params){
+						$.each(params,function(i,param){
+							if($lis.filter("[data-id='" + param.id + "']").size() > 0){//已存在
+								logger.info("duplicate select: id=" + param.id + ",name=" + param.name);
+							}else{//新添加的
+								if(!$ul.size())//先创建ul元素
+									$ul = $(ulTplCate).appendTo($form.find("#categorys"));
+								
+								var $liObj=$(liTplCate.format(param.id,param.name,titleCate))
+								.appendTo($ul);
+								
+								//绑定查看事件
+								$liObj.find("span.text").click(function(){
+									bc.page.newWin({
+										url: bc.root + "/bc/tpl/form?id="+param.id,
+										title: "所属分类",
+										name: "所属分类",
+										mid:  "templateCategory"+param.id
+									})
+								});
+								
+								//绑定删除事件
+								$liObj.find("span.click2remove")
+								.click(function(){
+									$(this).parent().remove();
+								});
+							}
+						});
+					}
+			});
+		});
+
+
 		var liTpl = '<li class="horizontal templateParamLi ui-widget-content ui-corner-all ui-state-highlight" data-id="{0}"'+
 		'style="position: relative;margin:0 2px;float: left;padding: 0;border-width: 0;">'+
 		'<span class="text"><a href="#">{1}</a></span>'+
@@ -141,9 +192,23 @@ bc.templateForm = {
 					}
 			});
 		});
+
+		//绑定查看模板分类的按钮事件处理
+		var $objs = $form.find('.horizontal.categoryLi').children('span.text');
+		$.each($objs,function(i,obj){
+			//绑定查看
+			$(obj).delegate($(this), "click", function() {
+				bc.page.newWin({
+					url: bc.root + "/bc/tpl/form?id="+$(obj).parent().attr('data-id'),
+					title: "所属分类",
+					name: "所属分类",
+					mid:  "templateParam"+$(obj).parent().attr('data-id')
+				})
+			});
+		});
 		
 		//绑定查看模板参数的按钮事件处理
-		var $objs = $form.find('.horizontal').children('span.text');
+		var $objs = $form.find('.horizontal.templateParamLi').children('span.text');
 		$.each($objs,function(i,obj){
 			//绑定查看
 			$(obj).click(function(){
@@ -204,6 +269,21 @@ bc.templateForm = {
 		
 		//验证表单
 		if(!bc.validator.validate($form)) return;
+
+		//验证所属分类
+		var $categorys = $form.find("#categorys ul.horizontal>li");
+		if ($categorys.size() == 0) {
+			bc.msg.alert('请选择所属分类');
+			return;
+		}
+
+		//模板分类
+		//将分类的id合并到隐藏域
+		ids=[];
+		$form.find("#categorys .categoryLi").each(function(){
+			ids.push($(this).attr("data-id"));
+		});
+		$form.find(":input[name='templateCategoryIds']").val(ids.join(","));
 		
 		//模板参数
 		//将用户的id合并到隐藏域
