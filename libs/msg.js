@@ -50,7 +50,7 @@ bc.msg = {
 
         option = {
             msg: option.msg || null,
-            modal: option.modal ? option.modal : true, 
+            modal: option.modal && option.modal=='false' ? false : true, 
             onOk: option.onOk || null,
             icon: option.icon || null,
             title: option.title || bc.msg.DEFAULT_TITLE,
