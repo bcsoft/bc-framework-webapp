@@ -250,12 +250,16 @@ bc.spider = {
 			url: bc.root+"/bc/spider/captcha",
 			data: {group: group, url: url},
 			success: function(json){
-				console.log(json);
-				$status.html("获取验证码成功！");
-				$captcha.attr("src",bc.root+"/bc/file/inline?f="+json.path);
-				// 显示破解出来的验证码
-				if(json.captcha){
-					$captcha.siblings().val(json.captcha);
+				if(json.success) {
+					console.log(json);
+					$status.html("获取验证码成功！");
+					$captcha.attr("src", bc.root + "/bc/file/inline?f=" + json.path);
+					// 显示破解出来的验证码
+					if (json.captcha) {
+						$captcha.siblings().val(json.captcha);
+					}
+				}else{
+					$status.html("获取验证码失败，请重新重试！");
 				}
 			},
 			error: function(jHRX,status,e){
