@@ -14,7 +14,7 @@
 			</ul>
 		</div>
 		<div class="params">
-			<s:text name="formData" />
+			<%--<s:text name="formData" />--%>
 		</div>
 	</div>
 	<div class="ui-widget-content flex vlayout"
