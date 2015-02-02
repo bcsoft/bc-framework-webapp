@@ -459,28 +459,67 @@ jQuery(function($){
  */
 bc.msg = {
 	id:0,
-	
-	/** 默认的对话框常数定义 */
-	DEFAULT_TITLE: "系统提示",
-	OK: "确定",
-	CANCEL: "取消",
-	YES: "是",
-	NO: "否",
-	
+    
+    /** 默认的对话框常数定义 */
+    DEFAULT_TITLE: "系统提示",
+    OK: "确定",
+    CANCEL: "取消",
+    YES: "是",
+    NO: "否",
+    WITH: 300,
+    MINWIDTH: 150,
+    MINHEIGHT: 150,
+    MAXWITH: 900,
+    MAXHEIGHT:560,
+    AUTO: 'auto',
+    
     /** 提示框 
-     * @param {String} msg 提示信息
+     * @param {String || Object} msg 提示信息 || json对象
+     * @msg.modal {boolean} 是否背景遮掩
+     * @msg.onOk {String} [可选]点击确认按钮的回调函数
+     * @msg.icon {String} [可选]显示的图标类型：error,question,info,warning，默认不显示图标
+     * @msg.title {String} [可选]标题,默认为bc.msg.DEFAULT_TITLE
+     * @msg.width {number} [可选]宽度,默认为bc.msg.WITH
+     * @msg.height {number} [可选]高度,默认为bc.msg.AUTO
+     * @msg.minWidth {number} [可选]最小宽度,默认为bc.msg.MINWIDTH
+     * @msg.minHeight {number} [可选]最小高度,默认为bc.msg.MINHEIGHT
+     * @msg.maxWidth {number} [可选]最大宽度,默认为bc.msg.MAXWITH
+     * @msg.maxHeight {number} [可选]最大高度,默认为bc.msg.MAXHEIGHT
      * @param {String} onOk [可选]点击确认按钮的回调函数
      * @param {String} title [可选]标题,默认为OZ.Messager.DEFAULT_TITLE
      * @param {String} icon [可选]显示的图标类型：error,question,info,warning，默认不显示图标
      */
     alert: function(msg, title, onOk, icon){
-    	return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (msg || 'no message.') + '</div>').dialog({
-			modal: true, title: title || bc.msg.DEFAULT_TITLE
-		}).bind("dialogclose",function(event,ui){
-			$(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
-			if(typeof onOk == "function")
-				onOk.call();
-		});
+        var option;
+        if (typeof msg == 'string') {//第一个参数为字符串则按旧实现方式实现
+            option = {msg: msg};
+            if(title) option.title = title;
+            if(onOk) option.onOk = onOk;
+            if(icon) option.icon = icon;
+        } else {//第一个参数是对象
+            option = msg;
+        }
+
+        option = {
+            msg: option.msg || null,
+            modal: option.modal && option.modal=='false' ? false : true, 
+            onOk: option.onOk || null,
+            icon: option.icon || null,
+            title: option.title || bc.msg.DEFAULT_TITLE,
+            width: option.width || bc.msg.WITH,
+            height: option.height || bc.msg.AUTO,
+            minWidth: option.minWidth || bc.msg.MINWIDTH,
+            minHeight: option.minHeight || bc.msg.MINHEIGHT,
+            maxWidth: option.maxWidth || bc.msg.MAXWITH,
+            maxHeight: option.maxHeight || bc.msg.MAXHEIGHT
+        };
+
+        return $('<div data-type="msg" id="msg-' + (bc.msg.id++) + '">' + (option.msg || 'no message.') + '</div>')
+            .dialog(option).bind("dialogclose",function(event,ui){
+                $(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
+                if(typeof option.onOk == "function")
+                    option.onOk.call();
+            });
     },
     /** 确认框 
      * @param {String} msg 提示信息
@@ -3431,8 +3470,10 @@ $(".bc-grid>.header>.right tr.row>td.sortable").live("click",function(){
  * @depend list.js
  */
 (function($) {
+// 最大导出条目数
+var VIEW_EXPORT_MAX_COUNT = 2500;
 
-/**
+	/**
  * 显示导出视图数据的配置界面-->用户选择-->导出excel
  * @param $grid 表格的jquery对象
  * @param el 导出按钮对应的dom元素
@@ -3541,6 +3582,17 @@ bc.grid.export2Excel = function($grid,el) {
 		if(paging && data.exportScope != "2"){//视图为分页视图，并且用户没有选择导出范围为"全部"
 			data["page.pageNo"] = $pager_seek.find("#pageNo").text();
 			data["page.pageSize"] = $pager_seek.parent().find("li.size>a.ui-state-active>span.pageSize").text();
+		}
+
+		// 对分页视图的导出全部作导出限制
+		if(paging && data.exportScope == "2") {
+			var totalCount = parseInt($pager_seek.find("#totalCount").text());
+			if(totalCount > VIEW_EXPORT_MAX_COUNT){
+				//console.log("totalCount=%d", totalCount);
+				bc.msg.info("系统限制每次最多导出 " + VIEW_EXPORT_MAX_COUNT + " 条数据，当前共有 "
+				+ totalCount + " 条数据，已超出限制，无法导出。请先通过条件搜索减少导出数据的条目数！");
+				return false;
+			}
 		}
 		
 		//附加页面的data-extras参数
@@ -4375,18 +4427,18 @@ $document.delegate(".autoHeight",{
 	keyup: function() {
 		var $this = $(this);
 		$this.height(0);
-		var maxHeight = parseInt($this.css("max-height"));// 最大高度
+		var maxHeight = parseInt($this.css("max-height")) || 2000;// 最大高度
+		var minHeight = parseInt($this.css("min-height")) || 0;// 最小高度
 		var h;
-		if(maxHeight){
-			if(maxHeight < this.scrollHeight){
-				h = maxHeight;
-				$this.css("overflow", "auto");
-			}else{
-				h = this.scrollHeight;
-				$this.css("overflow", "hidden");
-			}
+		if(maxHeight < this.scrollHeight){
+			h = maxHeight;
+			$this.css("overflow", "auto");
+		}else if(minHeight > this.scrollHeight){
+			h = minHeight;
+			$this.css("overflow", "auto");
 		}else{
 			h = this.scrollHeight;
+			$this.css("overflow", "hidden");
 		}
 		$this.height(h + ($.browser.mozilla ? 10 : 2));
 	}

@@ -6,8 +6,10 @@
  * @depend list.js
  */
 (function($) {
+// 最大导出条目数
+var VIEW_EXPORT_MAX_COUNT = 2500;
 
-/**
+	/**
  * 显示导出视图数据的配置界面-->用户选择-->导出excel
  * @param $grid 表格的jquery对象
  * @param el 导出按钮对应的dom元素
@@ -116,6 +118,17 @@ bc.grid.export2Excel = function($grid,el) {
 		if(paging && data.exportScope != "2"){//视图为分页视图，并且用户没有选择导出范围为"全部"
 			data["page.pageNo"] = $pager_seek.find("#pageNo").text();
 			data["page.pageSize"] = $pager_seek.parent().find("li.size>a.ui-state-active>span.pageSize").text();
+		}
+
+		// 对分页视图的导出全部作导出限制
+		if(paging && data.exportScope == "2") {
+			var totalCount = parseInt($pager_seek.find("#totalCount").text());
+			if(totalCount > VIEW_EXPORT_MAX_COUNT){
+				//console.log("totalCount=%d", totalCount);
+				bc.msg.info("系统限制每次最多导出 " + VIEW_EXPORT_MAX_COUNT + " 条数据，当前共有 "
+				+ totalCount + " 条数据，已超出限制，无法导出。请先通过条件搜索减少导出数据的条目数！");
+				return false;
+			}
 		}
 		
 		//附加页面的data-extras参数
