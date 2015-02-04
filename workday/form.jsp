@@ -17,7 +17,12 @@
 				<tr>
 					<td class="label">*<s:text name="workday.dayoff"/>:</td>
 					<td class="value" colspan="3">
-						<s:radio name="e.dayOff" list="dayoffList" cssStyle="width:auto;" data-validate="required"></s:radio>
+						<s:if test="e.isNew()">
+							<s:radio name="e.dayOff" list="dayoffList"  cssStyle="width:auto;" data-validate="required" value="2"></s:radio>
+						</s:if>
+						<s:else>
+							<s:radio name="e.dayOff" list="dayoffList"  cssStyle="width:auto;" data-validate="required"></s:radio>
+						</s:else>
 					</td>									
 				</tr>	
 				<tr>
@@ -30,7 +35,7 @@
 								<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
 							</ul>
 						</div>到<div class="bc-dateContainer">
-							<input type="text" name="e.toDate" value='<s:date format="yyyy-MM-dd" name="e.toDate" />' class="bc-date ui-widget-content" data-validate='{"type":"custom","method":"bc.workday.checkToDate","msg" :"不能为空且大于左边的日期" ,"required":true}' style="width:9em;">
+							<input type="text" name="e.toDate" value='<s:date format="yyyy-MM-dd" name="e.toDate" />' class="bc-date ui-widget-content" data-validate='{"type":"custom","method":"bc.workday.checkToDate","msg" :"结束日期必须大于或等于开始日期" ,"required":true}' style="width:9em;">
 							<ul class="inputIcons">
 								<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"></li>
 								<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
@@ -43,7 +48,7 @@
 				<tr>
 					<td class="label">*<s:text name="workday.desc"/>:</td>
 					<td class="value" colspan="3">
-						<s:textfield name="e.desc_" cssStyle="width:20em;" cssClass="ui-widget-content" readonly="false"/>
+						<s:textfield name="e.desc_" cssStyle="width:20em;" cssClass="ui-widget-content" data-validate="required" readonly="false"/>
 					</td>		
 				</tr>	
 				<tr>
