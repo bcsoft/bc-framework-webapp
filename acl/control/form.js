@@ -165,8 +165,7 @@ bc.accessControlForm = {
 			//字符串反转
 			role=role.split("").reverse().join("");
 			data.push({
-				aid:$(this).find(".access_actor").attr("data-id"),
-				orderNo:index,
+				id:$(this).find(".access_actor").attr("data-id"),
 				role:role
 			});
 		});	
