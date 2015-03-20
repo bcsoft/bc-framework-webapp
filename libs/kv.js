@@ -57,8 +57,9 @@ bc.kv = {
 	set: function(kv){
 		// 单个键值对的设置的简易使用方式：.set(key, value)
 		if(typeof(kv) == "string"){
+			var key = arguments[0];
 			kv = {};
-			kv[arguments[0]] = arguments[1];
+			kv[key] = arguments[1];
 		}
 
 		if(bc.kv.TYPE == bc.kv._TYPE_LOCAL){// 本地存储
