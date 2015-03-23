@@ -58,8 +58,9 @@ bc.kv = {
 	set: function(kv){
 		// 单个键值对的设置的简易使用方式：.set(key, value)
 		if(typeof(kv) == "string"){
+			var key = arguments[0];
 			kv = {};
-			kv[arguments[0]] = arguments[1];
+			kv[key] = arguments[1];
 		}
 
 		if(bc.kv.TYPE == bc.kv._TYPE_LOCAL){// 本地存储
@@ -130,10 +131,11 @@ bc.kv = {
 					key = localStorage.key(i);
 					if(key.indexOf(keyPrefix) == 0){
 						localStorage.removeItem(key);
+						--i;// 防止 localStorage.removeItem(key) 执行后长度减1 不完全遍历
 					}
 				};
 			} else {
-				localStorage.clear(key);
+				localStorage.clear();
 			}
 			return {success: true, msg: "清空成功。"};
 		} else {// 远程存储
