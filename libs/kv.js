@@ -4,6 +4,7 @@ bc.namespace("bc.kv");
  * @ref http://api.jquery.com/category/deferred-object
  * @ref http://api.jquery.com/jQuery.when
  * @ref http://www.ruanyifeng.com/blog/2011/08/a_detailed_explanation_of_jquery_deferred_object.html
+ * @ref http://www.oschina.net/translate/whats-so-great-about-javascript-promises
  */
 bc.kv = {
 	TYPE: 1, // 1-使用本地存储、2-使用远程存储
