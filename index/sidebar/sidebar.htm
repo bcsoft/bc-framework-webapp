@@ -1,0 +1,37 @@
+<div class="header ui-widget-header">
+    <div class="btns">
+        <div class="btn refresh" title="刷新" ng-click="refresh()">
+            <span class="ui-icon ui-icon-refresh"></span>
+        </div>
+        <div class="btn toggle" title="点击展开|折叠全部" ng-click="toggleAll()">
+            <span class="ui-icon ui-icon-carat-2-n-s"></span>
+        </div>
+    </div>
+    <div class="label">通知中心</div>
+    <div class="search"><a href="#" class="ui-icon ui-icon-search"></a><input type="text"
+                                                                                             class="ui-widget-content"
+                                                                                             placeholder="搜索"
+                                                                                             ng-model="query"></div>
+</div>
+<div class="groups ui-widget-content">
+    <div ng-repeat="g in groups | orderBy:'order'" ng-class="{group: true, collapse: g.collapse}">
+        <div class="header row ui-widget-header">
+            <div class="icon u i-icon ui-icon-mail-closed"></div>
+            <div class="label"><span class="title" ng-click="openGroup(g)">{{g.title}}</span> (<span class="count">{{g.count}}</span>)</div>
+            <div class="btn toggle ui-icon" title="点击折叠|展开"
+                 ng-class="{'ui-icon-triangle-1-n': !g.collapse, 'ui-icon-triangle-1-s': g.collapse}"
+                 ng-click="g.collapse = !g.collapse"></div>
+        </div>
+        <div class="rows">
+            <div class="row" ng-repeat="item in items | filter:{type:g.type} | orderBy:'-time'" ng-click="openItem(item)">
+                <div class="header row">
+                    <div class="icon ui-icon {{g.itemIconClass}}"></div>
+                    <div class="label" title="{{item.title}}">{{item.title}}</div>
+                    <div class="time">{{item.time4moment}}</div>
+                </div>
+                <pre class="detail" title="{{item.content}}">{{item.content}}</pre>
+            </div>
+            <div class="empty" ng-if="g.count < 1">(无)</div>
+        </div>
+    </div>
+</div>
