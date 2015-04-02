@@ -20,12 +20,12 @@ bc.selectResource = {
 			for (var i = 0; i < select.length; i++){
 				if (select.options[i].selected){
 					var value = select.options[i].value.split(",");
-					item.push({id: value[0],name: value[1],fname: select.options[i].text});
+					item.push({id: value[0],name: value[2],fname: select.options[i].text});
 				}
 			}
 		}else{
 			var value = select.value.split(",");
-			item={id: value[0],name: value[1],fname: select.options[select.selectedIndex].text};
+			item={id: value[0],name: value[2],fname: select.options[select.selectedIndex].text};
 		}
 		$page.data("data-status",item);
 		$page.dialog("close");
@@ -50,7 +50,7 @@ bc.resourceSelectDialog = {
 	            data = {};
 	            data.id = $tds.attr("data-id");
 	            var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
-	            data.name = $trs.find("td:eq(0)").attr("data-value");
+	            data.name = $trs.find("td:eq(1)").attr("data-value");
 	            $.extend(data,$trs.data("hidden"));
 	        }else{//多选
 	            data = [];
@@ -58,7 +58,7 @@ bc.resourceSelectDialog = {
 	            $tds.each(function(i){
 	                data.push($.extend({
 	                    id: $(this).attr("data-id"),
-	                    name:$($trs.get(i)).find("td:eq(0)").attr("data-value")
+	                    name:$($trs.get(i)).find("td:eq(1)").attr("data-value")
 	                },$($trs.get(i)).data("hidden")));
 	            });
 	        }
