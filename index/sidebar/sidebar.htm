@@ -17,8 +17,9 @@
 																			  placeholder="搜索"
 																			  ng-model="query"></div>
 </div>
-<div class="groups ui-widget-content">
-	<div ng-repeat="g in groups | orderBy:['order', 'title']" class="group" ng-class="{collapse: g.collapse}">
+<div class="groups ui-widget-content vlayout">
+	<div ng-repeat="g in groups | orderBy:['order', 'title']" class="group flex vlayout" ng-class="{collapse: g.collapse}"
+		 ng-style="{flex:{{g.flex}}}">
 		<div class="header row ui-widget-header">
 			<div class="icon u i-icon ui-icon-mail-closed"></div>
 			<div class="label"><span class="title" title="{{g.title}}" ng-click="openType(g)">{{g.title}}</span>
@@ -28,8 +29,8 @@
 				 ng-class="{'ui-icon-triangle-1-n': !g.collapse, 'ui-icon-triangle-1-s': g.collapse}"
 				 ng-click="g.collapse = !g.collapse"></div>
 		</div>
-		<div class="rows">
-			<div class="row" ng-repeat="item in g.items | orderBy:'-time'" ng-click="openItem(item)">
+		<div class="rows flex">
+			<div class="row" ng-repeat="item in g.items | filter:query | orderBy:'-time'" ng-click="openItem(item)">
 				<div class="header row">
 					<div class="icon ui-icon {{g.type.itemIconClass}}"></div>
 					<div class="label" title="{{item.title}}">{{item.title}}</div>

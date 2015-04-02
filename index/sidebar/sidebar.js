@@ -2,8 +2,8 @@ var sidebarApp = angular.module('sidebarApp', []);
 sidebarApp.controller('SidebarCtrl', ['$scope', '$http', '$interval', '$window', function ($scope, $http, $interval, $window) {
 	$scope.press = bc.kv.get("sidebar:press") === 'true'; // false-按邮件、待办分组, true-按流程名称分组
 	$scope.query = '';
-	$scope.types = [
-		{	id: "email",
+	$scope.types = {
+		email: {
 			mid: "myEmails",
 			title: "邮件",
 			url: "bc/emailTos/paging",
@@ -11,8 +11,9 @@ sidebarApp.controller('SidebarCtrl', ['$scope', '$http', '$interval', '$window',
 			itemData: "openType=2&id={0}",
 			iconClass: "ui-icon-mail-closed",
 			itemIconClass: "ui-icon-mail-closed",
-			order: 1},
-		{	id: "todo",
+			order: 1
+		},
+		todo: {
 			mid: "workspace",
 			title: "个人待办",
 			url: "bc-workflow/todo/personals/list",			// 视图url
@@ -20,8 +21,9 @@ sidebarApp.controller('SidebarCtrl', ['$scope', '$http', '$interval', '$window',
 			itemData: "id={0}",
 			iconClass: "ui-icon-calendar",
 			itemIconClass: "ui-icon-check",
-			order: 2},
-		{	id: "groupTodo",
+			order: 2
+		},
+		groupTodo: {
 			mid: "workspace",
 			title: "岗位待办",
 			url: "bc-workflow/todo/personals/list",
@@ -29,24 +31,20 @@ sidebarApp.controller('SidebarCtrl', ['$scope', '$http', '$interval', '$window',
 			itemData: "id={0}",
 			iconClass: "ui-icon-calendar",
 			itemIconClass: "ui-icon-person",
-			order: 3}
-	];
-	$scope.typeIndex = {};
-	angular.forEach($scope.types, function(type, index) {
-		$scope.typeIndex[type.id] = index;
-	});
-	console.log("sidebar: typeIndex", $scope.typeIndex);
+			order: 3
+		}
+	};
 
 	// 打开单条信息
 	$scope.openItem = function(item){
 		console.log("openItem", item);
-		var g = $scope.types[$scope.typeIndex[item.type]];
+		var type = $scope.types[item.type];
 		if(item.type == 'email'){	//邮件
 			bc.page.newWin({
 				name: item.title || "(无)",
 				mid: item.type + item.dbid,
-				url: g.itemUrl,
-				data: g.itemData.format(item.dbid)
+				url: type.itemUrl,
+				data: type.itemData.format(item.dbid)
 			});
 		}else{						// 待办
 			bc.flow.openWorkspace({
@@ -102,7 +100,7 @@ sidebarApp.controller('SidebarCtrl', ['$scope', '$http', '$interval', '$window',
 		$scope.groups = [];
 		var type, group, title;
 		angular.forEach($scope.items, function(item) {
-			type = $scope.types[$scope.typeIndex[item.type]];
+			type = $scope.types[item.type];
 			if(!type) return;		// 不支持的类型
 			title = $scope.press ? item.type2 : type.title;
 			group = $scope.getGroup(title);
@@ -112,22 +110,30 @@ sidebarApp.controller('SidebarCtrl', ['$scope', '$http', '$interval', '$window',
 					type: type,
 					count: 0,
 					items: [],
-					order: type.id == 'email' ? 0 : 1	// 保证邮件排在最前
+					order: type.title == '邮件' ? 0 : 1	// 保证邮件排在最前
 				};
 				$scope.groups.push(group);
 			}
 			group.count += 1;
 			group.items.push(item);
 		});
+		// 计算flex
+		angular.forEach($scope.groups, function(g) {
+			if($scope.items.length == 0){
+				g.flex = 'none';
+			}else {
+				g.flex = g.items.length || 'none';
+			}
+		});
 		console.log("groups=%o", $scope.groups);
-	}
+	};
 	$scope.getGroup = function(title){
 		for(var i = 0; i < $scope.groups.length; i++){
 			if($scope.groups[i].title == title)
 			return $scope.groups[i];
 		}
 		return null;
-	}
+	};
 
 	// 更新相对时间
 	$scope.time4moment = function(){
