@@ -4,6 +4,7 @@ bc.namespace("bc.kv");
  * @ref http://api.jquery.com/category/deferred-object
  * @ref http://api.jquery.com/jQuery.when
  * @ref http://www.ruanyifeng.com/blog/2011/08/a_detailed_explanation_of_jquery_deferred_object.html
+ * @ref http://www.oschina.net/translate/whats-so-great-about-javascript-promises
  */
 bc.kv = {
 	TYPE: 1, // 1-使用本地存储、2-使用远程存储
@@ -57,8 +58,9 @@ bc.kv = {
 	set: function(kv){
 		// 单个键值对的设置的简易使用方式：.set(key, value)
 		if(typeof(kv) == "string"){
+			var key = arguments[0];
 			kv = {};
-			kv[arguments[0]] = arguments[1];
+			kv[key] = arguments[1];
 		}
 
 		if(bc.kv.TYPE == bc.kv._TYPE_LOCAL){// 本地存储
@@ -129,10 +131,11 @@ bc.kv = {
 					key = localStorage.key(i);
 					if(key.indexOf(keyPrefix) == 0){
 						localStorage.removeItem(key);
+						--i;// 防止 localStorage.removeItem(key) 执行后长度减1 不完全遍历
 					}
 				};
 			} else {
-				localStorage.clear(key);
+				localStorage.clear();
 			}
 			return {success: true, msg: "清空成功。"};
 		} else {// 远程存储
