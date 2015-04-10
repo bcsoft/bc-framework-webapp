@@ -83,7 +83,7 @@ sidebarApp.controller('SidebarCtrl', ['$scope', '$http', '$interval', '$window',
 	$scope.refresh = function(){
 		console.log("sidebar: refresh", new Date());
 		$scope.refreshing = true;
-		$http.get('/sidebar').success(function(data) {
+		$http.get('sidebar').success(function(data) {
 			$scope.items = data;
 			$scope.refreshing = false;
 
