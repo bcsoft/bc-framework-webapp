@@ -31,7 +31,7 @@
 		<div class="rows">
 			<div class="row" ng-repeat="item in g.items | filter:query | orderBy:'-time'" ng-click="openItem(item)">
 				<div class="header row">
-					<div class="icon ui-icon {{g.type.itemIconClass}}"></div>
+					<div class="icon ui-icon {{types[item.type].itemIconClass}}"></div>
 					<div class="label" title="{{item.title}}">{{item.title}}</div>
 					<div class="time">{{item.time4moment}}</div>
 				</div>
