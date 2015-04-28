@@ -8,13 +8,19 @@ bc.privilege = {
 	addUser : function() {
 		$page = $(this);
 		roleId = $('#edit_e_id').val();
+		var userId = "";
 		bc.identity.selectUser({
-			onOk : function(user) {
+			multiple : true,
+			onOk : function(userIds) {
+				for(var i=0; i<userIds.length; i++) {
+					if(i>0) userId+=",";
+					userId += userIds[i].id;
+				}
 				jQuery.ajax({
 					url : bc.root + "/bc/role/addUser",
 					data : {
 						roleId:roleId,
-						userId:user.id
+						userId:userId
 					},
 					dataType : "json",
 					success : function(json) {
@@ -29,13 +35,19 @@ bc.privilege = {
 	addGroup : function() {
 		$page = $(this);
 		roleId = $('#edit_e_id').val();
+		var groupId = "";
 		bc.identity.selectGroup({
-			onOk : function(group) {
+			multiple : true,
+			onOk : function(groupIds) {
+				for(var i=0; i<groupIds.length; i++) {
+					if(i>0) groupId+=",";
+					groupId += groupIds[i].id;
+				}
 				jQuery.ajax({
 					url : bc.root + "/bc/role/addGroup",
 					data : {
 						roleId:roleId,
-						groupId:group.id
+						groupId:groupId
 					},
 					dataType : "json",
 					success : function(json) {
@@ -49,13 +61,19 @@ bc.privilege = {
 	addUnitOrDep : function() {
 		$page = $(this);
 		roleId = $('#edit_e_id').val();
+		var unitOrDepId = "";
 		bc.identity.selectUnitOrDepartment({
-			onOk : function(unitOrDepId) {
+			multiple : true,
+			onOk : function(unitOrDepIds) {
+				for(var i=0; i<unitOrDepIds.length; i++) {
+					if(i>0) unitOrDepId+=",";
+					unitOrDepId += unitOrDepIds[i].id;
+				}
 				jQuery.ajax({
 					url : bc.root + "/bc/role/addUnitOrDep",
 					data : {
 						roleId:roleId,
-						unitOrDepId:unitOrDepId.id
+						unitOrDepId:unitOrDepId
 					},
 					dataType : "json",
 					success : function(json) {
@@ -112,13 +130,19 @@ bc.privilege = {
 	addResource : function() {
 		$page = $(this);
 		roleId = $('#edit_e_id').val();
+		var resourceId ="";
 		bc.identity.selectResource({
-			onOk : function(resourceId) {
+			multiple : true,
+			onOk : function(resourceIds) {
+				for(var i=0; i<resourceIds.length; i++) {
+					if(i>0) resourceId+=",";
+					resourceId += resourceIds[i].id;
+				}
 				jQuery.ajax({
 					url : bc.root + "/bc/role/addResource",
 					data : {
 						roleId:roleId,
-						resourceId:resourceId.id
+						resourceId:resourceId
 					},
 					dataType : "json",
 					success : function(json) {
