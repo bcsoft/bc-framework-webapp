@@ -22,6 +22,7 @@
 			</div>
 			<div class="contentContainer ui-helper-reset ui-widget-content">
 				<div id="otherFormFields" class="content active" >
+				<div style="width:615px;">
 				<table class="formFields" cellspacing="2" cellpadding="0">
 					<tbody>
 						<tr class="widthMarker">
@@ -45,6 +46,7 @@
 				<p class="formComment">
 					<s:text name="role.form.comment" />
 				</p>
+				</div>
 				</div>
 			</div>
 		</div>

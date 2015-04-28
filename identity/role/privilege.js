@@ -76,35 +76,37 @@ bc.privilege = {
 	            return false;
 	        }
         // 获取选中的数据
-        var data;
-        var $grid = $page.find(".bc-grid");
-        if($grid.hasClass("singleSelect")){//单选
-            data = {};
-            data.id = $tds.attr("data-id");
-        }else{//多选
-            data = [];
-            var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
-            $tds.each(function(i){
-                data.push($(this).attr("data-id"));
-            });
-        }
-       
-        if(data instanceof Array) {
-        	actorId = data.join(",");
-        } else {
-        	actorId = data.id;
-        }
-        jQuery.ajax({
-			url : bc.root + "/bc/privilege/deleteActor",
-			data : {
-				roleId:roleId,
-				actorId:actorId
-			},
-			dataType : "json",
-			success : function(json) {
-				bc.grid.reloadData($page);
-			}
-		});
+	    bc.msg.confirm("你确定要删除吗？", function() {
+		    var data;
+		    var $grid = $page.find(".bc-grid");
+		    if($grid.hasClass("singleSelect")){//单选
+		        data = {};
+		        data.id = $tds.attr("data-id");
+		    }else{//多选
+		        data = [];
+		        var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
+		        $tds.each(function(i){
+		            data.push($(this).attr("data-id"));
+		        });
+		    }
+		   
+		    if(data instanceof Array) {
+		    	actorId = data.join(",");
+		    } else {
+		    	actorId = data.id;
+		    }
+		    jQuery.ajax({
+				url : bc.root + "/bc/privilege/deleteActor",
+				data : {
+					roleId:roleId,
+					actorId:actorId
+				},
+				dataType : "json",
+				success : function(json) {
+					bc.grid.reloadData($page);
+				}
+			});
+	    });
 	},
 	
 	addResource : function() {
@@ -136,36 +138,38 @@ bc.privilege = {
 	        	bc.msg.info("请先选择！");
 	            return false;
 	        }
-        // 获取选中的数据
-        var data;
-        var $grid = $page.find(".bc-grid");
-        if($grid.hasClass("singleSelect")){//单选
-            data = {};
-            data.id = $tds.attr("data-id");
-        }else{//多选
-            data = [];
-            var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
-            $tds.each(function(i){
-                data.push($(this).attr("data-id"));
-            });
-        }
-       
-        if(data instanceof Array) {
-        	resourceId = data.join(",");
-        } else {
-        	resourceId = data.id;
-        }
-        jQuery.ajax({
-			url : bc.root + "/bc/privilege/deleteResource",
-			data : {
-				roleId:roleId,
-				resourceId:resourceId
-			},
-			dataType : "json",
-			success : function(json) {
-				bc.grid.reloadData($page);
-			}
-		});
+	    bc.msg.confirm("你确定要删除吗？", function() {
+	        // 获取选中的数据
+	        var data;
+	        var $grid = $page.find(".bc-grid");
+	        if($grid.hasClass("singleSelect")){//单选
+	            data = {};
+	            data.id = $tds.attr("data-id");
+	        }else{//多选
+	            data = [];
+	            var $trs = $grid.find(">.data>.right tr.ui-state-highlight");
+	            $tds.each(function(i){
+	                data.push($(this).attr("data-id"));
+	            });
+	        }
+	       
+	        if(data instanceof Array) {
+	        	resourceId = data.join(",");
+	        } else {
+	        	resourceId = data.id;
+	        }
+	        jQuery.ajax({
+				url : bc.root + "/bc/privilege/deleteResource",
+				data : {
+					roleId:roleId,
+					resourceId:resourceId
+				},
+				dataType : "json",
+				success : function(json) {
+					bc.grid.reloadData($page);
+				}
+			});
+	    });
 	},
 	
 	LookActor : function() {
