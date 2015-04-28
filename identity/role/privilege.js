@@ -11,7 +11,7 @@ bc.privilege = {
 		bc.identity.selectUser({
 			onOk : function(user) {
 				jQuery.ajax({
-					url : bc.root + "/bc/privilege/addUser",
+					url : bc.root + "/bc/role/addUser",
 					data : {
 						roleId:roleId,
 						userId:user.id
@@ -32,7 +32,7 @@ bc.privilege = {
 		bc.identity.selectGroup({
 			onOk : function(group) {
 				jQuery.ajax({
-					url : bc.root + "/bc/privilege/addGroup",
+					url : bc.root + "/bc/role/addGroup",
 					data : {
 						roleId:roleId,
 						groupId:group.id
@@ -52,7 +52,7 @@ bc.privilege = {
 		bc.identity.selectUnitOrDepartment({
 			onOk : function(unitOrDepId) {
 				jQuery.ajax({
-					url : bc.root + "/bc/privilege/addUnitOrDep",
+					url : bc.root + "/bc/role/addUnitOrDep",
 					data : {
 						roleId:roleId,
 						unitOrDepId:unitOrDepId.id
@@ -72,11 +72,11 @@ bc.privilege = {
 		actorId = null;
 		 var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 	        if($tds.length == 0){
-	        	bc.msg.info("请先选择！");
+	        	bc.msg.slide("请先选择要删除的条目！");
 	            return false;
 	        }
         // 获取选中的数据
-	    bc.msg.confirm("你确定要删除吗？", function() {
+	    bc.msg.confirm("确定要删除选定的"+$tds.length+"项吗？", function() {
 		    var data;
 		    var $grid = $page.find(".bc-grid");
 		    if($grid.hasClass("singleSelect")){//单选
@@ -96,7 +96,7 @@ bc.privilege = {
 		    	actorId = data.id;
 		    }
 		    jQuery.ajax({
-				url : bc.root + "/bc/privilege/deleteActor",
+				url : bc.root + "/bc/role/deleteActor",
 				data : {
 					roleId:roleId,
 					actorId:actorId
@@ -115,7 +115,7 @@ bc.privilege = {
 		bc.identity.selectResource({
 			onOk : function(resourceId) {
 				jQuery.ajax({
-					url : bc.root + "/bc/privilege/addResource",
+					url : bc.root + "/bc/role/addResource",
 					data : {
 						roleId:roleId,
 						resourceId:resourceId.id
@@ -135,10 +135,11 @@ bc.privilege = {
 		resourceId = null;
 		var $tds = $page.find(".bc-grid>.data>.left tr.ui-state-highlight>td.id");
 	        if($tds.length == 0){
-	        	bc.msg.info("请先选择！");
+	        	bc.msg.slide("请先选择要删除的条目！");
 	            return false;
 	        }
-	    bc.msg.confirm("你确定要删除吗？", function() {
+	    
+	    bc.msg.confirm("确定要删除选定的"+$tds.length+"项吗？", function() {
 	        // 获取选中的数据
 	        var data;
 	        var $grid = $page.find(".bc-grid");
@@ -159,7 +160,7 @@ bc.privilege = {
 	        	resourceId = data.id;
 	        }
 	        jQuery.ajax({
-				url : bc.root + "/bc/privilege/deleteResource",
+				url : bc.root + "/bc/role/deleteResource",
 				data : {
 					roleId:roleId,
 					resourceId:resourceId
@@ -206,6 +207,7 @@ bc.privilege = {
 				}
 			}
 		});
-	}
+	},
+	
 	
 };
