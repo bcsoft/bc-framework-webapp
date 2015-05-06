@@ -98,7 +98,7 @@
 		</div>
 		
 		<!-- 右边栏 -->
-		<div id="right" class="ui-widget-content unselectable" unselectable="on">
+		<div id="right" class="ui-widget-content unselectable sidebar" unselectable="on" ng-app="sidebarApp" ng-controller="SidebarCtrl" ng-include="'bc/index/sidebar/sidebar.htm'">
 		</div>
 	</div>
 	
@@ -131,8 +131,7 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/mustache/0.6.0/mustache.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/moment/2.0.0/moment.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/moment/2.0.0/lang/zh-cn.js' />"></script>
-<script type="text/javascript" src="<s:url value='/ui-libs/underscore/1.4.4/underscore-min.js' />"></script>
-<script type="text/javascript" src="<s:url value='/ui-libs/backbone/1.0.0/backbone-min.js' />"></script>
+<script type="text/javascript" src="<s:url value='/ui-libs/angular/1.3.15/angular.min.js' />"></script>
 <script type="text/javascript">
 	bc={};
 	bc.syskey = '<s:text name="app.name" />';

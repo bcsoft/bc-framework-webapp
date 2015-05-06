@@ -38,10 +38,17 @@
 
 .sidebar>.header>.btns {
 	position: absolute;
-	right: 2px;
 	top: 0.5em;
 	padding: 0;
 	margin: 0;
+}
+
+.sidebar>.header>.btns.left {
+	left: 0.4em;
+}
+
+.sidebar>.header>.btns.right {
+	right: 0.4em;
 }
 
 .sidebar>.header>.btns>.btn.ui-state-default {
@@ -100,6 +107,12 @@
 	cursor: pointer;
 }
 
+.sidebar .group .row>.count {
+	position: absolute;
+	right: 18px;
+	top: 0.1em;
+}
+
 .sidebar .group .row>.label {
 	margin: 0 18px 0 18px;
 	white-space: nowrap; /* 加上这个才能让中文也显示省略号，否则中文会自动换行 */
@@ -107,6 +120,9 @@
 	overflow: hidden;
 	height: 1.6em;
 	line-height: 1.6em;
+}
+.sidebar .group > .row>.label {
+	margin: 0 18px 0 0.4em;
 }
 
 /* 信息分组  */
@@ -143,7 +159,7 @@
 	/* max-height: 8em;  */
 }
 
-.sidebar .group>.rows>.empty {
+.sidebar .group>.rows>.empty, .sidebar .groups>.empty {
 	cursor: default;
 	height: auto;
 	font-style: italic;
