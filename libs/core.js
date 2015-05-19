@@ -49,32 +49,32 @@ String.prototype.format=function(){
 /**
  * 日期格式化处理函数
  * 对Date的扩展，将 Date 转化为指定格式的String
- * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
- * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) 
- * 例子： 
- * (new Date()).format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423 
- * (new Date()).format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
+ * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+ * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+ * 例子：
+ * (new Date()).format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+ * (new Date()).format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
  */
 Date.format=function(_date){
 	var args = Array.prototype.slice.call(arguments, 1);
 	return _date.format.apply(_date,args);
 };
-Date.prototype.format = function(format){ 
+Date.prototype.format = function(format){
   var o = {
-    "M+" : this.getMonth()+1, //month 
-    "d+" : this.getDate(),    //day 
-    "h+" : this.getHours(),   //hour 
-    "m+" : this.getMinutes(), //minute 
-    "s+" : this.getSeconds(), //second 
-    "q+" : Math.floor((this.getMonth()+3)/3),  //quarter 
-    "S" : this.getMilliseconds() //millisecond 
-  } 
-  if(/(y+)/.test(format)) 
-	  format=format.replace(RegExp.$1,(this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+    "M+" : this.getMonth()+1, //month
+    "d+" : this.getDate(),    //day
+    "h+" : this.getHours(),   //hour
+    "m+" : this.getMinutes(), //minute
+    "s+" : this.getSeconds(), //second
+    "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+    "S" : this.getMilliseconds() //millisecond
+  }
+  if(/(y+)/.test(format))
+	  format=format.replace(RegExp.$1,(this.getFullYear()+"").substr(4 - RegExp.$1.length));
   for(var k in o)
-	  if(new RegExp("("+ k +")").test(format)) 
-		  format = format.replace(RegExp.$1,RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length)); 
-  return format; 
+	  if(new RegExp("("+ k +")").test(format))
+		  format = format.replace(RegExp.$1,RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+  return format;
 }
 /** 返回指定日期类型字符串(以yyyy开头)添加指定年度后的字符串 */
 Date.addYear=function(_date,num){
@@ -123,15 +123,15 @@ bc.getNested=function(nestedName){
 	}
 };
 /** 得到字符串的真实长度（双字节换算为两个单字节）*/
-bc.getStringActualLen=function(sourceString){  
-    return sourceString.replace(/[^\x00-\xff]/g,"xx").length;  
+bc.getStringActualLen=function(sourceString){
+    return sourceString.replace(/[^\x00-\xff]/g,"xx").length;
 };
 /** 向指定的url路径末端添加参数
  * @param url url路径
  * @param keyValue 名值对，格式为“key=value”
  * @return 添加参数/值后的url
  */
-bc.addParamToUrl=function(url,keyValue){  
+bc.addParamToUrl=function(url,keyValue){
     if (url == null) return url;
     if (!keyValue) return url;
     var hasParam = (url.indexOf("?") != -1);
@@ -142,21 +142,21 @@ bc.addParamToUrl=function(url,keyValue){
     }
 };
 
-/** 
- * 格式化数字显示方式  
- * 用法 
- * bc.formatNumber(12345.999,'#,##0.00'); 
- * bc.formatNumber(12345.999,'#,##0.##'); 
- * bc.formatNumber(123,'000000'); 
- * @param num 
- * @param pattern 
- */  
+/**
+ * 格式化数字显示方式
+ * 用法
+ * bc.formatNumber(12345.999,'#,##0.00');
+ * bc.formatNumber(12345.999,'#,##0.##');
+ * bc.formatNumber(123,'000000');
+ * @param num
+ * @param pattern
+ */
 bc.formatNumber = function(num, pattern) {
 	var strarr = num ? num.toString().split('.') : [ '0' ];
 	var fmtarr = pattern ? pattern.split('.') : [ '' ];
 	var retstr = '';
 
-	// 整数部分  
+	// 整数部分
 	var str = strarr[0];
 	var fmt = fmtarr[0];
 	var i = str.length - 1;
@@ -192,7 +192,7 @@ bc.formatNumber = function(num, pattern) {
 	}
 
 	retstr = retstr + '.';
-	// 处理小数部分  
+	// 处理小数部分
 	str = strarr.length > 1 ? strarr[1] : '';
 	fmt = fmtarr.length > 1 ? fmtarr[1] : '';
 	i = 0;
@@ -214,7 +214,7 @@ bc.formatNumber = function(num, pattern) {
 };
 
 /** 获取当前客户端的时间信息，格式为HH:mm:ss
- * @return 
+ * @return
  */
 bc.getTime = function(){
 	var now = new Date();
@@ -232,7 +232,7 @@ bc.getTime = function(){
 	return time;
 };
 /** 格式化时间信息，格式为HH:mm:ss
- * @return 
+ * @return
  */
 bc.formatTime = function(hour,minute,second,millisecond){
 	var time = (hour < 10 ? "0" : "") + hour;//时
@@ -242,11 +242,11 @@ bc.formatTime = function(hour,minute,second,millisecond){
 		time += (second < 10 ? ":0" : ":") + second;//秒
 	if(typeof millisecond != "undefined")
 		time += millisecond;//豪秒
-	return time; 
+	return time;
 };
 /**
  * 计算指定时间范围内的耗时描述信息
- * 
+ *
  * @param startTime 开始时间
  * @param endTime 结束时间
  * @return
@@ -267,7 +267,7 @@ bc.getWasteTime = function(startTime,endTime){
 
 /**
  * 从配置中解析出要加载的js、css文件
- * 
+ *
  * @param cfg 配置，多个js、css文件间用逗号连接：js:[key],subpath/to/your.js
  * @return
  */
@@ -276,7 +276,7 @@ bc.getJsCss = function(cfg){
 		return [];
 	if(typeof cfg == "string")
 		cfg = cfg.split(",");
-	
+
 	var t;
 	for(var i=0;i<cfg.length;i++){
 		if(cfg[i].indexOf("js:") == 0){//预定义的js文件
@@ -301,7 +301,7 @@ bc.getJsCss = function(cfg){
 
 /**
  * 获取模板信息
- * 
+ *
  * @param source {String} 源配置，如果以字符"TPL."开头，则当作模板的key从模版库中获取，否则直接返回source
  * @return
  */
@@ -317,7 +317,7 @@ bc.getTpl = function(source){
 
 /**
  * 用指定的参数格式化模板
- * 
+ *
  * @param source {String} 模板，如果以字符"TPL."开头，则当作模板的key从模版库中获取后再进行格式化
  * @param params {Object|Array} 格式化参数
  * @return
