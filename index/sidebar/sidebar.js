@@ -38,7 +38,7 @@ define(["angular"], function(angular) {
 
 		// 打开单条信息
 		$scope.openItem = function (item) {
-			console.log("openItem", item);
+			//console.log("openItem", item);
 			var type = $scope.types[item.type];
 			if (item.type == 'email') {	//邮件
 				bc.page.newWin({
@@ -57,7 +57,7 @@ define(["angular"], function(angular) {
 
 		// 打开各区域的视图
 		$scope.openType = function (group) {
-			console.log("openType", group.type);
+			//console.log("openType", group.type);
 			bc.page.newWin({
 				name: group.type.title,
 				mid: group.type.mid,
@@ -74,7 +74,7 @@ define(["angular"], function(angular) {
 
 		// 切换分组方式
 		$scope.toggleGroupWay = function () {
-			console.log("sidebar: toggleGroupWay");
+			//console.log("sidebar: toggleGroupWay");
 			$scope.press = !$scope.press;
 			bc.kv.set({"sidebar:press": $scope.press});	// 记住用户设置的分组方式
 			$scope.buildGroups();
@@ -82,7 +82,7 @@ define(["angular"], function(angular) {
 
 		// 重新加载数据
 		$scope.refresh = function () {
-			console.log("sidebar: refresh", new Date());
+			//console.log("sidebar: refresh", new Date());
 			$scope.refreshing = true;
 			$http.get('sidebar').success(function (data) {
 				$scope.items = data;
@@ -126,7 +126,7 @@ define(["angular"], function(angular) {
 					g.flex = g.items.length || 'none';
 				}
 			});
-			console.log("groups=%o", $scope.groups);
+			//console.log("groups=%o", $scope.groups);
 		};
 		$scope.getGroup = function (title) {
 			for (var i = 0; i < $scope.groups.length; i++) {
@@ -138,7 +138,7 @@ define(["angular"], function(angular) {
 
 		// 更新相对时间
 		$scope.time4moment = function () {
-			console.log("sidebar: update time4moment", new Date());
+			//console.log("sidebar: update time4moment", new Date());
 			angular.forEach($scope.items, function (item) {
 				item.time4moment = moment(item.time, "YYYY-MM-DD HH:mm:ss").fromNow();
 			});
@@ -159,7 +159,7 @@ define(["angular"], function(angular) {
 		var outsideRefresh = 0;
 		$interval(function () {
 			if (outsideRefresh != $window.outsideRefresh) {
-				console.log("do outsideRefresh");
+				//console.log("do outsideRefresh");
 				outsideRefresh = $window.outsideRefresh;
 				$scope.refresh();
 			}
@@ -173,7 +173,7 @@ define(["angular"], function(angular) {
 	window.outsideRefresh = 0;
 	bc.namespace("bc.sidebar");
 	bc.sidebar.refresh = function () {
-		console.log("call bc.sidebar.refresh");
+		//console.log("call bc.sidebar.refresh");
 		window.outsideRefresh += 1;
 	};
 

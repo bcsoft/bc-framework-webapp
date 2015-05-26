@@ -128,23 +128,6 @@
 	var userCode = '<s:property value="context.user.code" />';
 	var userName = '<s:property value="context.user.name" escapeHtml="false"/>';
 </script>
-<s:if test='%{getText("app.debug") == "true"}'>
-	<script type="text/javascript" src="<s:url value='/ui-libs/requirejs/2.1.17/require.min.js' />" data-main="<s:url value='/main.debug.js' />" async></script>
-</s:if>
-<s:else>
-	<script type="text/javascript" src="<s:url value='/ui-libs/requirejs/2.1.17/require.min.js' />" data-main="<s:url value='/main.js' />"></script>
-	<script type="text/javascript" src="<s:url value='/bc/libs/bc.js' ><s:param name='ts' value='ts'/></s:url>"></script>
-	<script type="text/javascript">
-	if(!window['logger']){
-		/** JavaScript日志组件的幻象，实际的见logger.js */
-		window['logger'] = {
-			debugEnabled:false,infoEnabled:false,warnEnabled:false,profileEnabled:false,
-			clear:$.noop,debug:$.noop,info:$.noop,warn:$.noop,error:$.noop,
-			profile:$.noop,enable:$.noop,disabled:$.noop,show:$.noop,test:true
-		};
-	}
-	</script>
-	<script type="text/javascript" src="<s:url value='/bc/photo/photo.js'><s:param name='ts' value='ts'/></s:url>"></script>
-</s:else>
+<script type="text/javascript" async src="<s:url value='/ui-libs/requirejs/2.1.17/require.min.js' />" data-main="<s:url value='/main%{getText("app.debug") == "true" ? ".debug" : ""}.js' />"></script>
 </body>
 </html>

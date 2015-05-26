@@ -322,7 +322,7 @@ bc.page = {
 
 		// 加载js、css文件
 		var jsCfg = $dom.data("js");
-		console.log("jsCfg type=%s", typeof(jsCfg));
+		//console.log("jsCfg type=%s", typeof(jsCfg));
 		if (!jsCfg || (typeof jsCfg == "string")) {// 原始的js加载
 			//console.log("原始的js加载");
 			var dataJs = bc.getJsCss(jsCfg);
