@@ -79,9 +79,15 @@ bc.form = {
 			}else{
 				cfg = {};
 			}
-			if(typeof cfg.onSelect == "string"){
-				var fn = bc.getNested(cfg.onSelect);
-				if(typeof fn != "function"){
+			if(typeof cfg.onSelect == "string") {
+				var $page = $this.closest(".bc-page");
+				var fn;
+				if ($page.size() > 0 && $page.data("scope")) {
+					fn = $page.data("scope")[cfg.onSelect];
+				} else {
+					fn = bc.getNested(cfg.onSelect);
+				}
+				if (typeof fn != "function") {
 					alert('函数“' + cfg.onSelect + '”没有定义！');
 					return false;
 				}
