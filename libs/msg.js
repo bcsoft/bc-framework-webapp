@@ -178,5 +178,13 @@ bc.msg = {
     	alert("TODO");
     }
 };
+
+// support requirejs
+//if (typeof define === "function" && define.amd) {
+//    define("BCMsg", [], function () {
+//        return bc.msg;
+//    });
+//}
+
 $.pnotify.defaults.pnotify_delay = 2000;
 $.pnotify.defaults.pnotify_history=false;

@@ -1037,3 +1037,10 @@ bc.page.defaultBcTabsOption = {
 	/** 内容容器的高度是否自动根据tabs容器的高度变化 */
 	autoResize: true
 };
+
+// support requirejs
+//if (typeof define === "function" && define.amd) {
+//	define("BCPage", [], function () {
+//		return bc.page;
+//	});
+//}

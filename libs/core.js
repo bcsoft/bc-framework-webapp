@@ -424,3 +424,9 @@ bc.print = function(option) {
         }
     }
 };
+// support requirejs
+if (typeof define === "function" && define.amd) {
+	define("bc", [], function () {
+		return bc;
+	});
+}

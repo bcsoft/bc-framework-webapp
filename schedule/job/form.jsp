@@ -1,14 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="scheduleJob.title"/>' data-type='form' class="bc-page bc-autoScroll"
-	data-saveUrl='<s:url value="/bc/schedule/job/save" />'
-	data-js='<s:url value="/bc/schedule/job/form.js" />'
-	data-initMethod='bc.scheduleJobForm.init'
-	data-option='{
-		"buttons":[{"text":"<s:text name="label.save"/>","action":"save"}],
-		"width":635,"minWidth":280,"minHeight":200,"modal":false
-	}'>
-	<s:form name="scheduleJobForm" theme="simple">
+	data-namespace='<s:property value="pageNamespace"/>'
+	data-js='<s:property value="pageJsCss"/>'
+	data-option='<s:property value="pageOption"/>'>
+	<s:form name="form" theme="simple">
 		<div class="formFields ui-widget-content">
 			<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 				<tbody>
@@ -40,7 +36,7 @@
 		</div>
 		<s:hidden name="e.id"/>
 		<s:hidden name="e.status"/>
-		<s:hidden name="e.groupn" value="bc"/>
+		<s:hidden name="e.groupn"/>
 		<p class="formComment"><s:text name="scheduleJob.form.comment"/></p>
 	</s:form>
 </div>

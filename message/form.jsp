@@ -1,8 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="message.title"/>' class='bc-page'
-	data-type='form' data-option='{"minWidth":400,"minHeight":300}'>
-	<s:form name="messageForm" theme="simple" cssClass="bc-form">
+<div title='<s:text name="message.title"/>' class='bc-page' data-type='form'
+	data-namespace='<s:property value="pageNamespace"/>'
+	data-js='<s:property value="pageJsCss"/>'
+	data-option='<s:property value="pageOption"/>'>
+	<s:form name="form" theme="simple" cssClass="bc-form">
 		<table class="formTable" cellspacing="2">
 			<tbody>
 				<tr>

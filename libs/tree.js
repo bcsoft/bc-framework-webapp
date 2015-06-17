@@ -219,12 +219,11 @@ bc.tree = {
 };
 
 // 节点的事件监听
-$(".treeNode>.item").live("mouseover mouseout click dblclick",function(e){
+$(document).on("mouseover mouseout click dblclick", ".treeNode > .item",function(e){
 	e.stopPropagation();
 	var $nodeItem = $(this);
 	var $node = $nodeItem.parent();
 	if (e.type == 'click') {										// 单击节点
-		console.log("click");
 		bc.tree.selectNode($node);
 		if ($(e.target).is(".nav-icon:visible")){
 			bc.tree.toggleNode($node);
@@ -236,19 +235,24 @@ $(".treeNode>.item").live("mouseover mouseout click dblclick",function(e){
 		var $tree = $node.closest("." + bc.tree.option.class_container);
 		var cfg = $tree.data("cfg");
 		if(cfg && cfg.clickNode){// 点击节点调用的函数
-			var _fn = cfg.clickNode;
+			var fn = cfg.clickNode;
 			if(typeof cfg.clickNode == "string"){
-				cfg.clickNode = bc.getNested(cfg.clickNode);
+				var $page = $tree.closest(".bc-page");
+				if ($page.size() > 0 && $page.data("scope")) {
+					fn = $page.data("scope")[cfg.clickNode];
+				} else {
+					fn = bc.getNested(cfg.clickNode);
+				}
 			}
-			if(typeof cfg.clickNode == "function"){
+			if(typeof fn == "function"){
 				// 上下文为树，第一个参数为选中的节点值，格式为：{id:..., name:...,el:...}
-				cfg.clickNode.call($tree.get(0),{
+				fn.call($tree.get(0),{
 					id: $nodeItem.attr("data-id"),
 					name: $nodeItem.children(".text").text(),
 					el: $nodeItem.get(0)
 				});
 			}else{
-				alert("回调函数没有定义：" + _fn);
+				alert("回调函数没有定义：" + cfg.clickNode);
 			}
 		}
 	}else if (e.type == 'dblclick') {								// 双击节点
@@ -261,7 +265,7 @@ $(".treeNode>.item").live("mouseover mouseout click dblclick",function(e){
 });
 
 // 节点右侧操作按钮的事件监听 TODO
-$(".treeNode>.item>ul.buttons>li").live("mouseover mouseout click",function(e){
+$(document).on("mouseover mouseout click", ".treeNode>.item>ul.buttons>li", function(e){
 	e.stopPropagation();
 	var $button = $(this);
 	var $node = $button.closest(".node");

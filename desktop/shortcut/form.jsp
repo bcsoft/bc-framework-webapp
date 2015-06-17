@@ -1,14 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="shortcut.form.title"/>' data-type='form' class='bc-page' style="overflow:auto;"
-	data-js='<s:url value="/bc/desktop/shortcut/form.js" />'
-	data-saveUrl='<s:url value="/bc/shortcut/save" />'
-	data-initMethod='bc.shortcutForm.init'
-	data-option='{
-		"buttons":[{"text":"<s:text name="label.save"/>","action":"save"}],
-		"width":415,"minWidth":300,"minHeight":200,minimizable:true,maximizable:false
-	}'>
-	<s:form name="shortcutForm" theme="simple">
+	data-namespace='<s:property value="pageNamespace"/>'
+	data-js='<s:property value="pageJsCss"/>'
+	data-option='<s:property value="pageOption"/>'>
+	<s:form name="form" theme="simple">
 		<table class="formTable ui-widget-content" cellspacing="2" cellpadding="0">
 			<tr class="widthMarker">
 				<td style="width: 80px;">&nbsp;</td>

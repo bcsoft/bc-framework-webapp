@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <div title='<s:text name="scheduleLog.title"/>' data-type='form' class="bc-page"
-	data-option='{"width":618,"minWidth":250,"minHeight":150,"modal":false}'
-	data-js='<s:url value="/bc/schedule/log/form.js" />'
-	data-initMethod='bc.scheduleLogForm.init'>
+	data-namespace='<s:property value="pageNamespace"/>'
+	data-js='<s:property value="pageJsCss"/>'
+	data-option='<s:property value="pageOption"/>'>
 	<s:form name="scheduleLogForm" theme="simple">
 		<table class="formTable2 ui-widget-content" cellspacing="2" cellpadding="0">
 			<tbody>
