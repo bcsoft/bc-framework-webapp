@@ -278,7 +278,7 @@ $document.on({
 			break;
 		}
 	}
-}, ".bc-button");
+}, ".bc-button:not('.bc-menuButton')");
 
 //右侧的搜索框处理：回车执行搜索（TODO alt+enter执行本地搜索）
 $document.on("keyup", ".bc-toolbar #searchText", function(e) {
