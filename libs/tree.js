@@ -236,17 +236,14 @@ $(document).on("mouseover mouseout click dblclick", ".treeNode > .item",function
 		var cfg = $tree.data("cfg");
 		if(cfg && cfg.clickNode){// 点击节点调用的函数
 			var fn = cfg.clickNode;
+			var $page = $tree.closest(".bc-page");
+			var scope = $page.data("scope");
 			if(typeof cfg.clickNode == "string"){
-				var $page = $tree.closest(".bc-page");
-				if ($page.size() > 0 && $page.data("scope")) {
-					fn = $page.data("scope")[cfg.clickNode];
-				} else {
-					fn = bc.getNested(cfg.clickNode);
-				}
+				fn = scope ? scope[cfg.clickNode] : bc.getNested(cfg.clickNode);
 			}
 			if(typeof fn == "function"){
-				// 上下文为树，第一个参数为选中的节点值，格式为：{id:..., name:...,el:...}
-				fn.call($tree.get(0),{
+				// 上下文为树或页面实例，第一个参数为选中的节点值，格式为：{id:..., name:...,el:...}
+				fn.call(scope && $page.data("scopeType") === "instance" ? scope : $tree.get(0),{
 					id: $nodeItem.attr("data-id"),
 					name: $nodeItem.children(".text").text(),
 					el: $nodeItem.get(0)
