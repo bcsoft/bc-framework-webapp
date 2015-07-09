@@ -4496,25 +4496,29 @@ $document.delegate(".inputIcon",{
     click: function() {
         var $this = $(this);
         // 获取回调函数
-        var _fn = $this.attr("data-click");
-        if(!_fn) return;
-        var fn = bc.getNested(_fn);
-        if(!fn){
-            alert("函数 " + _fn + " 没有定义！");
-            return;
-        }
+        var fn = $this.attr("data-click");
+        if(!fn) return;
+
+	    var $page = $this.closest(".bc-page");
+	    var scope = $page.data("scope");
+	    var fn = scope ? scope[fn] : bc.getNested(fn);
+	    if(typeof fn != "function") {
+		    alert("回调函数没有定义：" + $this.attr("data-click"));
+		    return;
+	    }
 
         // 获取函数参数，调用回调函数
         var args = $this.attr("data-click-args");
-        if(args){
-            args = eval("(" + args + ")");
+	    var context = scope && $page.data("scopeType") === "instance" ? scope : $page.get(0);
+	    if(args){
+	        args = eval("(" + args + ")");
             if($.isArray(args)){
-                fn.apply(this, args);
+                fn.apply(context, args);
             }else{
-                fn.call(this, args);
+                fn.call(context, args);
             }
         }else{
-            fn.call(this);
+            fn.call(context);
         }
     }
 });
