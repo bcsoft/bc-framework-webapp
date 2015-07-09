@@ -287,6 +287,7 @@ $document.delegate(".autoHeight",{
 			h = this.scrollHeight;
 			$this.css("overflow", "hidden");
 		}
-		$this.height(h + ($.browser.mozilla ? 10 : 2));
+		//console.log("minHeight=%s, scrollHeight=%s, h=%s", minHeight, this.scrollHeight, h);
+		$this.height(h);// + ($.browser.mozilla ? 10 : 2));
 	}
 });
