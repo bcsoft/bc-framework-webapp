@@ -263,15 +263,15 @@ $document.on({
 			break;
 		default ://调用自定义的函数
 			var fn = $this.attr("data-click");
+			var scope = $page.data("scope");
 			if(typeof fn == "string") {
-				if ($page.size() > 0 && $page.data("scope")) {
-					fn = $page.data("scope")[fn];
-				} else {
-					fn = bc.getNested(fn);
-				}
+				fn = scope ? scope[fn] : bc.getNested(fn);
 			}
 			if(typeof fn == "function") {
-				fn.call(pageEl, {callback: callback, extras: extras}, this);
+				// 上线文为页面DOM或页面实例
+				fn.call(scope && $page.data("scopeType") === "instance" ? scope : pageEl, {
+					callback: callback, extras: extras
+				}, this);
 			}else{
 				alert("回调函数没有定义：" + $this.attr("data-click"));
 			}
@@ -510,6 +510,7 @@ $document.on("click", ".bc-button.bc-menuButton", function() {
 $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 	if(logger.infoEnabled)logger.info("e.type="+e.type);
 	var $this = $(this);
+	var $input;
 	if($this.is("input[type='text']")){//文本框
 		$input = $this;
 	}else if($this.is(".inputIcon")){//文本框右侧的按钮
@@ -518,6 +519,8 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 	}
 	
 	if($input.attr("data-bcselectInit") != "true"){
+		var cfg = $input.data("cfg");
+		//console.log("bc-select.click: t=%s, cfg=%o", typeof(cfg), cfg);
 		// 获取自定义的配置
 		var option = $.extend({
 			autoFocus: false,		// 不自动聚焦
@@ -546,7 +549,7 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 				if(autofill){// 自动填充值
 					// 设置显示值
 					$input.val(labelMapping ? bc.formatTpl(labelMapping, ui.item) : ui.item.label);
-					
+
 					// 设置隐藏域字段的值
 					$input.next().val(valueMapping ? bc.formatTpl(valueMapping, ui.item) : ui.item.value);
 				}
@@ -554,7 +557,7 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 				// 返回false禁止autocomplete自动填写值到$input
 				return false;
 			}
-		},$input.data("cfg"));
+		},cfg);
 		
 		// 获取下拉列表的数据源
 		var source = $input.data("source");
@@ -573,7 +576,10 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 		
 		// 合并自定义的回调函数
 		if(typeof option.callback == "string"){
-			var callback = bc.getNested(option.callback);
+			var $page = $this.closest(".bc-page");
+			var scope = $page.data("scope");
+			console.log("$page=%o, scope=%o, data=%o", $page, $page.data("scope"), $page.data());
+			var callback = scope ? scope[option.callback] : bc.getNested(option.callback);
 			if(typeof callback != "function"){
 				alert("没有定义的回调函数：callback=" + option.callback);
 			}else{
@@ -585,7 +591,10 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 						originSelectFn.apply(this,arguments);
 					
 					// 再调用自定义的回调函数：返回非true禁止autocomplete自动填写值到$input
-					return option.callback.apply(this,arguments) === true;
+					if(scope)
+						return option.callback.call(scope, ui.item, ui) === true;
+					else
+						return option.callback.apply(this,arguments) === true;
 				}
 			}
 		}
