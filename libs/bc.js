@@ -903,7 +903,7 @@ bc.validator = {
 		var $el = $(element);
 		//alert(element.name);
 		//滚动元素到可视区域
-		var $scrollContainer = $el.closest("div.content,div.bc-page");
+		var $scrollContainer = $el.closest("div.content,.bc-page");
 		var pOffset = $scrollContainer.offset();
 		var myOffset = $el.offset();
 		if(logger.debugEnabled){
@@ -1069,7 +1069,7 @@ bc.page = {
 
 			if (option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
 
-			$dom.dialog($.extend(bc.page._rebuildWinOption(cfg), {
+			$dom.dialog($.extend(bc.page._rebuildWinOption.call($dom, cfg), {
 				open: function (event, ui) {
 					var dataType = $dom.attr("data-type");
 					if (!("ontouchend" in document)) {// 触摸屏不聚焦，避免输入法框的弹出
@@ -1182,7 +1182,7 @@ bc.page = {
 					}
 					if (typeof method == "function") {
 						if ($dom.data("scopeType") === "instance") {
-							method(cfg, cfg.readonly);// 调用实例方法
+							method.call(scope, cfg, cfg.readonly);// 调用实例方法
 						} else if ($dom.data("scopeType") === "module") {
 							method.call($dom, cfg, cfg.readonly); // 调用类的静态方法
 						}
@@ -1341,7 +1341,9 @@ bc.page = {
 	innerInit: function () {
 
 	},
+	/** 上下文为 $dom */
 	_rebuildWinOption: function (option) {
+		var $page = this;
 		var _option = option || {};
 		if (_option.buttons) {
 			var btn;
@@ -1373,10 +1375,18 @@ bc.page = {
 
 				//如果click为字符串，当成是函数名称处理
 				if (typeof btn.click == "string") {
-					var c = btn.click;
-					btn.click = bc.getNested(btn.click);
-					if (!btn.click)
-						alert("函数'" + c + "'没有定义！");
+					btn.click = jQuery.proxy(function() {
+						var fnName = this.fnName;
+						//console.log("fnName=", fnName);
+						var scope = $page.data("scope");
+						var fn = scope ? scope[fnName] : bc.getNested(fnName);
+						if(typeof fn == "function") {
+							// 上下文为页面DOM或页面实例
+							return fn.apply(scope && $page.data("scopeType") === "instance" ? scope : $page.get(0), arguments);
+						}else{
+							alert("回调函数没有定义：" + fnName);
+						}
+					}, {fnName: btn.click});
 				}
 			}
 			//delete _option.buttons;
@@ -1407,7 +1417,7 @@ bc.page = {
 			}
 		}
 		if (logger.infoEnabled)logger.info("saveUrl=" + url);
-		var $form = $("form", $page);
+		var $form = $page.is("form") ? $page : $("form", $page);
 
 		//判断是否正在保存，若是就返回
 		if ($page.data("saving")) return;
@@ -1415,7 +1425,13 @@ bc.page = {
 		$page.data("saving", true);
 
 		//表单验证
-		if (isValidation && !bc.validator.validate($form)) {
+		var scope = $page.data("scope");
+		var customValidate = scope && scope["validateForm"];
+		if (isValidation && !(
+				customValidate ? (
+					scope["validateForm"].call($page.data("scopeType") === "instance" ? scope : $form)
+				) : bc.validator.validate($form)
+			)) {
 			$page.data("saving", false);
 			return;
 		}
@@ -2261,15 +2277,15 @@ $document.on({
 			break;
 		default ://调用自定义的函数
 			var fn = $this.attr("data-click");
+			var scope = $page.data("scope");
 			if(typeof fn == "string") {
-				if ($page.size() > 0 && $page.data("scope")) {
-					fn = $page.data("scope")[fn];
-				} else {
-					fn = bc.getNested(fn);
-				}
+				fn = scope ? scope[fn] : bc.getNested(fn);
 			}
 			if(typeof fn == "function") {
-				fn.call(pageEl, {callback: callback, extras: extras}, this);
+				// 上线文为页面DOM或页面实例
+				fn.call(scope && $page.data("scopeType") === "instance" ? scope : pageEl, {
+					callback: callback, extras: extras
+				}, this);
 			}else{
 				alert("回调函数没有定义：" + $this.attr("data-click"));
 			}
@@ -2508,6 +2524,7 @@ $document.on("click", ".bc-button.bc-menuButton", function() {
 $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 	if(logger.infoEnabled)logger.info("e.type="+e.type);
 	var $this = $(this);
+	var $input;
 	if($this.is("input[type='text']")){//文本框
 		$input = $this;
 	}else if($this.is(".inputIcon")){//文本框右侧的按钮
@@ -2516,6 +2533,8 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 	}
 	
 	if($input.attr("data-bcselectInit") != "true"){
+		var cfg = $input.data("cfg");
+		//console.log("bc-select.click: t=%s, cfg=%o", typeof(cfg), cfg);
 		// 获取自定义的配置
 		var option = $.extend({
 			autoFocus: false,		// 不自动聚焦
@@ -2544,7 +2563,7 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 				if(autofill){// 自动填充值
 					// 设置显示值
 					$input.val(labelMapping ? bc.formatTpl(labelMapping, ui.item) : ui.item.label);
-					
+
 					// 设置隐藏域字段的值
 					$input.next().val(valueMapping ? bc.formatTpl(valueMapping, ui.item) : ui.item.value);
 				}
@@ -2552,7 +2571,7 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 				// 返回false禁止autocomplete自动填写值到$input
 				return false;
 			}
-		},$input.data("cfg"));
+		},cfg);
 		
 		// 获取下拉列表的数据源
 		var source = $input.data("source");
@@ -2571,7 +2590,10 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 		
 		// 合并自定义的回调函数
 		if(typeof option.callback == "string"){
-			var callback = bc.getNested(option.callback);
+			var $page = $this.closest(".bc-page");
+			var scope = $page.data("scope");
+			console.log("$page=%o, scope=%o, data=%o", $page, $page.data("scope"), $page.data());
+			var callback = scope ? scope[option.callback] : bc.getNested(option.callback);
 			if(typeof callback != "function"){
 				alert("没有定义的回调函数：callback=" + option.callback);
 			}else{
@@ -2583,7 +2605,10 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 						originSelectFn.apply(this,arguments);
 					
 					// 再调用自定义的回调函数：返回非true禁止autocomplete自动填写值到$input
-					return option.callback.apply(this,arguments) === true;
+					if(scope)
+						return option.callback.call(scope, ui.item, ui) === true;
+					else
+						return option.callback.apply(this,arguments) === true;
 				}
 			}
 		}
@@ -4261,17 +4286,14 @@ $(document).on("mouseover mouseout click dblclick", ".treeNode > .item",function
 		var cfg = $tree.data("cfg");
 		if(cfg && cfg.clickNode){// 点击节点调用的函数
 			var fn = cfg.clickNode;
+			var $page = $tree.closest(".bc-page");
+			var scope = $page.data("scope");
 			if(typeof cfg.clickNode == "string"){
-				var $page = $tree.closest(".bc-page");
-				if ($page.size() > 0 && $page.data("scope")) {
-					fn = $page.data("scope")[cfg.clickNode];
-				} else {
-					fn = bc.getNested(cfg.clickNode);
-				}
+				fn = scope ? scope[cfg.clickNode] : bc.getNested(cfg.clickNode);
 			}
 			if(typeof fn == "function"){
-				// 上下文为树，第一个参数为选中的节点值，格式为：{id:..., name:...,el:...}
-				fn.call($tree.get(0),{
+				// 上下文为树或页面实例，第一个参数为选中的节点值，格式为：{id:..., name:...,el:...}
+				fn.call(scope && $page.data("scopeType") === "instance" ? scope : $tree.get(0),{
 					id: $nodeItem.attr("data-id"),
 					name: $nodeItem.children(".text").text(),
 					el: $nodeItem.get(0)
@@ -4592,7 +4614,8 @@ $document.delegate(".autoHeight",{
 			h = this.scrollHeight;
 			$this.css("overflow", "hidden");
 		}
-		$this.height(h + ($.browser.mozilla ? 10 : 2));
+		//console.log("minHeight=%s, scrollHeight=%s, h=%s", minHeight, this.scrollHeight, h);
+		$this.height(h);// + ($.browser.mozilla ? 10 : 2));
 	}
 });
 /**

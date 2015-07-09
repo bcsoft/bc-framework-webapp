@@ -1710,7 +1710,7 @@ td.value input,td.value textarea,td.value div.input {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 0;
-	padding: 0;
+	padding: 1px 2px;
 }
 
 td.value div.input {
@@ -1814,7 +1814,7 @@ textarea.nooutline,input.nooutline {
 textarea.autoHeight {
 	overflow: hidden;
 	resize: none;
-	min-height: 1.7em;
+	min-height: 1.6em;
 }
 
 div.bc-editor {
