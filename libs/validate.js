@@ -255,7 +255,7 @@ bc.validator = {
 		var $el = $(element);
 		//alert(element.name);
 		//滚动元素到可视区域
-		var $scrollContainer = $el.closest("div.content,div.bc-page");
+		var $scrollContainer = $el.closest("div.content,.bc-page");
 		var pOffset = $scrollContainer.offset();
 		var myOffset = $el.offset();
 		if(logger.debugEnabled){
