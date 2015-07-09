@@ -117,7 +117,7 @@ bc.page = {
 
 			if (option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
 
-			$dom.dialog($.extend(bc.page._rebuildWinOption(cfg), {
+			$dom.dialog($.extend(bc.page._rebuildWinOption.call($dom, cfg), {
 				open: function (event, ui) {
 					var dataType = $dom.attr("data-type");
 					if (!("ontouchend" in document)) {// 触摸屏不聚焦，避免输入法框的弹出
@@ -230,7 +230,7 @@ bc.page = {
 					}
 					if (typeof method == "function") {
 						if ($dom.data("scopeType") === "instance") {
-							method(cfg, cfg.readonly);// 调用实例方法
+							method.call(scope, cfg, cfg.readonly);// 调用实例方法
 						} else if ($dom.data("scopeType") === "module") {
 							method.call($dom, cfg, cfg.readonly); // 调用类的静态方法
 						}
@@ -389,7 +389,9 @@ bc.page = {
 	innerInit: function () {
 
 	},
+	/** 上下文为 $dom */
 	_rebuildWinOption: function (option) {
+		var $page = this;
 		var _option = option || {};
 		if (_option.buttons) {
 			var btn;
@@ -421,10 +423,18 @@ bc.page = {
 
 				//如果click为字符串，当成是函数名称处理
 				if (typeof btn.click == "string") {
-					var c = btn.click;
-					btn.click = bc.getNested(btn.click);
-					if (!btn.click)
-						alert("函数'" + c + "'没有定义！");
+					btn.click = jQuery.proxy(function() {
+						var fnName = this.fnName;
+						//console.log("fnName=", fnName);
+						var scope = $page.data("scope");
+						var fn = scope ? scope[fnName] : bc.getNested(fnName);
+						if(typeof fn == "function") {
+							// 上下文为页面DOM或页面实例
+							return fn.apply(scope && $page.data("scopeType") === "instance" ? scope : $page.get(0), arguments);
+						}else{
+							alert("回调函数没有定义：" + fnName);
+						}
+					}, {fnName: btn.click});
 				}
 			}
 			//delete _option.buttons;
@@ -455,7 +465,7 @@ bc.page = {
 			}
 		}
 		if (logger.infoEnabled)logger.info("saveUrl=" + url);
-		var $form = $("form", $page);
+		var $form = $page.is("form") ? $page : $("form", $page);
 
 		//判断是否正在保存，若是就返回
 		if ($page.data("saving")) return;
@@ -463,7 +473,13 @@ bc.page = {
 		$page.data("saving", true);
 
 		//表单验证
-		if (isValidation && !bc.validator.validate($form)) {
+		var scope = $page.data("scope");
+		var customValidate = scope && scope["validateForm"];
+		if (isValidation && !(
+				customValidate ? (
+					scope["validateForm"].call($page.data("scopeType") === "instance" ? scope : $form)
+				) : bc.validator.validate($form)
+			)) {
 			$page.data("saving", false);
 			return;
 		}
