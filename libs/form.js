@@ -48,8 +48,7 @@ bc.form = {
 		
 		// 绑定多页签处理
 		$form.find(".formTabs").filter(":not('.custom')").each(function(){
-			$this = $(this);
-			var $tabs = $this.bctabs(bc.page.defaultBcTabsOption);
+			var $tabs = $(this).bctabs(bc.page.defaultBcTabsOption);
 			$form.bind("dialogresize", function(event, ui) {
 				bc.form.resizeFromTabs.call($tabs,$form);
 			});

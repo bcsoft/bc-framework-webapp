@@ -974,26 +974,46 @@ bc.page.defaultTabsOption = {
 //页签中页面的加载处理
 function _initBcTabsLoad() {
 	var $page = this;
+
 	//执行组件指定的额外初始化方法，上下文为$dom
+	if ($page.data("requirejs")) { // 使用requirejs的初始化处理
+		var module = arguments[arguments.length - 1];
+		if (typeof module === "function") {                              // 定义为类时
+			var instance = new module($page, cfg, cfg.readonly);          // 实例化类
+			$page.data("scope", instance).data("scopeType", "instance");   // 记录此实例
+		} else if (typeof module === "object") {                         // 定义为 literal object 时
+			$page.data("scope", module).data("scopeType", "module");       // 记录此类
+		}
+	}
 	var method = $page.attr("data-initMethod");
 	logger.debug("bctabs:initMethod=" + method);
 	if (method) {
-		method = bc.getNested(method);
-		if (typeof method == "function") {
-			var cfg = $page.attr("data-option");
-			//logger.info("cfg=" + cfg);
-			if (cfg && /^\{/.test($.trim(cfg))) {
-				//对json格式进行解释
-				cfg = eval("(" + cfg + ")");
+		if ($page.data("requirejs")) {   // requirejs
+			var scope = $page.data("scope");
+			if (typeof scope === "object") {
+				method = scope[method];
 			} else {
-				cfg = {};
+				method = null;
 			}
-			method.call($page, cfg, cfg.readonly);
-		} else {
-			alert("undefined function: " + $page.attr("data-initMethod"));
+			if (typeof method == "function") {
+				if ($page.data("scopeType") === "instance") {
+					method.call(scope, cfg, cfg.readonly);// 调用实例方法
+				} else if ($page.data("scopeType") === "module") {
+					method.call($page, cfg, cfg.readonly); // 调用类的静态方法
+				}
+			} else {
+				alert("undefined function: " + $page.attr("data-initMethod"));
+			}
+		} else { // 原始的初始化处理
+			method = bc.getNested(method);
+			if (typeof method == "function") {
+				method.call($page, cfg, cfg.readonly);
+			} else {
+				alert("undefined function: " + $page.attr("data-initMethod"));
+			}
 		}
 	}
-}
+};
 
 /**
  * 表单中的bctabs页签的默认配置
@@ -1007,15 +1027,24 @@ bc.page.defaultBcTabsOption = {
 		if (!$page.size()) return;
 
 		// 加载js、css文件
-		var dataJs = $page.attr("data-js");
-		if (dataJs && dataJs.length > 0) {
-			//先加载js文件后执行模块指定的初始化方法
-			dataJs = dataJs.split(",");//逗号分隔多个文件
-			dataJs.push(jQuery.proxy(_initBcTabsLoad, $page));
-			bc.load(dataJs);
-		} else {
-			//执行模块指定的初始化方法
-			_initBcTabsLoad.call($page);
+		var jsCfg = $page.data("js");
+		//console.log("jsCfg type=%s", typeof(jsCfg));
+		if (!jsCfg || (typeof jsCfg == "string")) {// 原始的js加载
+			//console.log("原始的js加载");
+			var dataJs = bc.getJsCss(jsCfg);
+			if (dataJs && dataJs.length > 0) {
+				dataJs.push(jQuery.proxy(_initBcTabsLoad, $page));
+				bc.load(dataJs);
+			} else {
+				//执行模块指定的初始化方法
+				_initBcTabsLoad.call($page);
+			}
+		} else if (jQuery.isArray(jsCfg)) {    // 使用 requireJs
+			//console.log("使用 requireJs");
+			$page.data("requirejs", true);
+			require(jsCfg, function () {
+				_initBcTabsLoad.apply($page, arguments);
+			});
 		}
 
 		//对视图和表单执行额外的初始化

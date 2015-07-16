@@ -96,6 +96,8 @@
 					return false;
 				});
 			}
+
+			this.resize();
 		},
 
 		_destroy : function() {
@@ -297,12 +299,12 @@
 				$content.empty().append(html);
 				
 				// 设置内部页签的一些属性参数:与 bc.page.newWin的处理一致
-				var $tabBCPage = $content.children("div.bc-page");
+				var $tabBCPage = $content.children(".bc-page");
 				if($tabBCPage.size() > 0){
 					$tabBCPage.attr("data-src",url);
 					
 					// 获取父页面的data-mid
-					var pmid = $content.closest("div.bc-page").attr("data-mid");
+					var pmid = $content.closest(".bc-page").attr("data-mid");
 					if(!pmid){
 						pmid = new Date();
 					}
@@ -388,7 +390,7 @@
 			var cwh = $tabs.parent()[_this.options.val.wh](false);
 			var mlt = parseInt($tabs.css(_this.options.val.marginLT));
 			$lis.each(function(index) {
-				$li = $(this);
+				var $li = $(this);
 				var wh = $li[_this.options.val.wh](true);
 				var lt = $li.position()[_this.options.val.lt];
 				if(logger.debugEnabled)logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
