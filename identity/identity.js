@@ -160,7 +160,7 @@ bc.identity = {
 			option.data.multiple = true;
 
 		option = jQuery.extend({
-			url: bc.root + "/bc/selectRoles/paging", // 备份旧版本 url: bc.root + "/bc/selectRole",
+			url: bc.root + "/bc/identity/role/select/paging",
 			name: "选择角色信息",
 			mid: "selectRole",
 			afterClose: function(status){
