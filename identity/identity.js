@@ -197,7 +197,7 @@ bc.identity = {
 			option.data.types = option.types;
 		
 		option = jQuery.extend({
-			url: bc.root + "/bc/selectResources/paging",// 备份旧版本 url: bc.root + "/bc/selectResource"
+			url: bc.root + "/bc/identity/resource/select/paging",
 			name: "选择资源信息",
 			mid: "selectResource",
 			afterClose: function(status){
