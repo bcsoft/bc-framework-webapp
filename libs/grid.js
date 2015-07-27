@@ -346,7 +346,7 @@
 			} else {//单选
 				if (all) {
 					// 获取id列的数据
-					var row = {"id": $(this).attr("data-id")};
+					var row = {"id": $tds.attr("data-id")};
 
 					var $tr = $grid.find(">.data>.right tr.ui-state-highlight");
 					// 获取可见列的数据
@@ -537,14 +537,17 @@
 			var $page = $this.closest(".bc-page");
 			var $grid = $this.closest(".bc-grid");
 
-			var dblClickRowFnStr = $grid.attr("data-dblclickrow");// 双击行的回调函数
-			if (dblClickRowFnStr && dblClickRowFnStr.length >= 0) {
-				var dblClickRowFn = bc.getNested(dblClickRowFnStr);
-				if (!dblClickRowFn) {
-					alert("函数'" + dblClickRowFnStr + "'没有定义！");
-				} else {
-					//上下文为页面
-					dblClickRowFn.call($page[0]);
+			var fn = $grid.attr("data-dblclickrow");// 双击行的回调函数
+			if (fn && fn.length >= 0) {
+				var scope = $page.data("scope");
+				if(typeof fn == "string") {
+					fn = scope ? scope[fn] : bc.getNested(fn);
+				}
+				if(typeof fn == "function") {
+					// 上线文为页面DOM或页面实例
+					fn.call(scope && $page.data("scopeType") === "instance" ? scope : $page[0], this, $grid);
+				}else{
+					alert("回调函数没有定义：" + $grid.attr("data-dblclickrow"));
 				}
 			}
 		} else if (event.type == 'mouseover' || event.type == 'mouseout') {	// 鼠标悬停及离开行
