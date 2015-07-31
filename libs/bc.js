@@ -1940,6 +1940,15 @@ function _initBcTabsLoad() {
 	var method = $page.attr("data-initMethod");
 	logger.debug("bctabs:initMethod=" + method);
 	if (method) {
+		var cfg = $page.attr("data-option");
+		//logger.info("cfg=" + cfg);
+		if (cfg && /^\{/.test($.trim(cfg))) {
+			//对json格式进行解释
+			cfg = eval("(" + cfg + ")");
+		} else {
+			cfg = {};
+		}
+
 		if ($page.data("requirejs")) {   // requirejs
 			var scope = $page.data("scope");
 			if (typeof scope === "object") {
