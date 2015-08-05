@@ -537,17 +537,17 @@
 			var $page = $this.closest(".bc-page");
 			var $grid = $this.closest(".bc-grid");
 
-			var fn = $grid.attr("data-dblclickrow");// 双击行的回调函数
-			if (fn && fn.length >= 0) {
+			var fnName = $grid.attr("data-dblclickrow");// 双击行的回调函数
+			if (fnName && fnName.length >= 0) {
 				var scope = $page.data("scope");
-				if(typeof fn == "string") {
-					fn = scope ? scope[fn] : bc.getNested(fn);
-				}
+				var fnIsInScope = scope && scope[fnName];
+				var fn = scope ? scope[fnName] : null; // 先从上下文取
+				if(!fn) fn = bc.getNested(fnName);		// 无,再从全局区
 				if(typeof fn == "function") {
 					// 上线文为页面DOM或页面实例
-					fn.call(scope && $page.data("scopeType") === "instance" ? scope : $page[0], this, $grid);
+					fn.call(fnIsInScope && $page.data("scopeType") === "instance" ? scope : $page[0], this, $grid);
 				}else{
-					alert("回调函数没有定义：" + $grid.attr("data-dblclickrow"));
+					alert("回调函数没有定义：" + fnName);
 				}
 			}
 		} else if (event.type == 'mouseover' || event.type == 'mouseout') {	// 鼠标悬停及离开行
