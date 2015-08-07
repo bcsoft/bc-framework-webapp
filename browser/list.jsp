@@ -3,7 +3,7 @@
 <div title='<s:text name="browser.title"/>' data-type='form' class="bc-page"
 	data-js='<s:url value="/bc/libs/themes/default/browser.css" />,<s:url value="/bc/browser/list.js" />'
 	data-initMethod="bc.browser.init"
-	data-option='{"width":445,"minWidth":250,"minHeight":250,"height":320,"modal":true,minimizable:true,maximizable:false}' 
+	data-option='{"width":530,"minWidth":250,"minHeight":250,"height":500,"modal":true,minimizable:true,maximizable:false}'
 	style="overflow-y:auto;">
 	<s:form name="browserForm" theme="simple">
 		<ul class="browsers">
