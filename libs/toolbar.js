@@ -264,12 +264,13 @@ $document.on({
 		default ://调用自定义的函数
 			var fn = $this.attr("data-click");
 			var scope = $page.data("scope");
+			var useGlobalFn = $this.attr("data-scope") === "global";
 			if(typeof fn == "string") {
-				fn = scope ? scope[fn] : bc.getNested(fn);
+				fn = scope && !useGlobalFn ? scope[fn] : bc.getNested(fn);
 			}
 			if(typeof fn == "function") {
-				// 上线文为页面DOM或页面实例
-				fn.call(scope && $page.data("scopeType") === "instance" ? scope : pageEl, {
+				// 上下文为页面DOM或页面实例
+				fn.call(scope && $page.data("scopeType") === "instance" && !useGlobalFn ? scope : pageEl, {
 					callback: callback, extras: extras
 				}, this);
 			}else{

@@ -2316,12 +2316,13 @@ $document.on({
 		default ://调用自定义的函数
 			var fn = $this.attr("data-click");
 			var scope = $page.data("scope");
+			var useGlobalFn = $this.attr("data-scope") === "global";
 			if(typeof fn == "string") {
-				fn = scope ? scope[fn] : bc.getNested(fn);
+				fn = scope && !useGlobalFn ? scope[fn] : bc.getNested(fn);
 			}
 			if(typeof fn == "function") {
-				// 上线文为页面DOM或页面实例
-				fn.call(scope && $page.data("scopeType") === "instance" ? scope : pageEl, {
+				// 上下文为页面DOM或页面实例
+				fn.call(scope && $page.data("scopeType") === "instance" && !useGlobalFn ? scope : pageEl, {
 					callback: callback, extras: extras
 				}, this);
 			}else{
@@ -2798,7 +2799,7 @@ $.widget( "ui.bcsearch", {
 			
 			// 搜索按钮
 			tpl += '<button id="doSearchBtn" class="bc-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" '+
-						'data-click="bc.toolbar.doAdvanceSearch">'+
+						'data-click="bc.toolbar.doAdvanceSearch" data-scope="global">'+
 						'<span class="ui-button-icon-primary ui-icon ui-icon-search"></span>'+
 						'<span class="ui-button-text">查询</span>'+
 					'</button>';
@@ -2806,7 +2807,7 @@ $.widget( "ui.bcsearch", {
 			// 清空按钮
 			if(this.options.useCleanButton){
 				tpl += '<button id="doCleanBtn" class="bc-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" '+
-							'data-click="bc.toolbar.doAdvanceClean">'+
+							'data-click="bc.toolbar.doAdvanceClean" data-scope="global">'+
 							'<span class="ui-button-icon-primary ui-icon ui-icon-minus"></span>'+
 							'<span class="ui-button-text">清空</span>'+
 						'</button>';
