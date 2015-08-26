@@ -327,7 +327,7 @@ span.inputIcon{
 span.ui-icon.verticalMiddle {position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:4px;cursor:pointer;}
 td.relative,div.relative{
 	position: relative;
-	display: block; /*for firefox*/
+	/*display: block; for firefox 低版本, 40+经测试此问题已修复*/
 }
 
 /*普通的标题*/
