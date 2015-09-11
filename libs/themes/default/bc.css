@@ -427,7 +427,7 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 }
 .vlayout > .autoflex, .vlayout > .flex, .hlayout > .autoflex, .hlayout > .flex {
 	align-self: stretch;
-	flex: auto;
+	flex: 1 1 0%;
 }
 .vlayout.hleft {
 	align-items: flex-start;
