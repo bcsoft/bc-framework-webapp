@@ -579,7 +579,7 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 		if(typeof option.callback == "string"){
 			var $page = $this.closest(".bc-page");
 			var scope = $page.data("scope");
-			console.log("$page=%o, scope=%o, data=%o", $page, $page.data("scope"), $page.data());
+			//console.log("$page=%o, scope=%o, data=%o", $page, $page.data("scope"), $page.data());
 			var callback = scope ? scope[option.callback] : bc.getNested(option.callback);
 			if(typeof callback != "function"){
 				alert("没有定义的回调函数：callback=" + option.callback);
