@@ -1719,6 +1719,19 @@ td.value div.input {
 	margin: 0;
 	font-weight: normal;
 }
+
+/* 文本两端对齐 http://www.cnblogs.com/rubylouvre/archive/2012/11/28/2792504.html */
+.justify, td.justify{
+	text-align:justify;
+	-moz-text-align:justify;/*ff*/
+	-moz-text-align-last:justify;/*ff*/
+	text-align-last:justify;
+	text-justify:distribute-all-lines;
+}
+_:-webkit-any-link, :root td.justify {
+	text-align:right;
+}
+
 /*只能读*/
 .readonly {
 	-moz-box-sizing: border-box;
