@@ -14,7 +14,7 @@
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
-						<td style="text-align: center;font-size: 30px;" title="${e.subject}" colspan="2"><s:text name="e.subject"/></td>
+						<td style="text-align: center;font-size: 30px;" title="${e.subject}" colspan="2"><s:property value="e.subject"/></td>
 					</tr>
 					<tr>
 						<td style="font-weight: normal;text-align: left;padding-left:15px;
@@ -33,8 +33,8 @@
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
-			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
-			               		<s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:property value="orderNo"/>.</span>
+			               		<s:property value="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
 			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
@@ -44,7 +44,7 @@
 								<td class="value" style="padding-left: 30px;">
 									<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
 										<s:radio cssClass="standard" name="%{'standard'+#b.orderNo}"  list="#{'true':''}" cssStyle="width:auto;width:1em;"/>
-										<s:text name="subject"/>
+										<s:property value="subject"/>
 									</div>
 								</td>
 							</tr>
@@ -56,8 +56,8 @@
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
-			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
-			               		<s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:property value="orderNo"/>.</span>
+			               		<s:property value="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必选)</span></s:if>
 			               		&nbsp;<s:if test="seperateScore==true"><span style="color: red;">(全对方得分)</span></s:if>
 			               		&nbsp;(<s:property value="%{score}"></s:property>分)
@@ -68,7 +68,7 @@
 							<td class="value" style="padding-left: 30px;">
 								<div style="position:relative;margin: 0;padding: 1px 0;min-height:19px;margin: 0;display: inline-block;">
 									<s:checkbox cssClass="standard" name="%{'standard'+#b.orderNo}" cssStyle="width:1em;"/>
-									<s:text name="subject" />
+									<s:property value="subject" />
 								</div>
 							</td>
 						</tr>
@@ -80,8 +80,8 @@
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-type="<s:property value='type'/>" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
-			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
-			               		<s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:property value="orderNo"/>.</span>
+			               		<s:property value="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
 			               		&nbsp;(<s:property value="%{score}"></s:property>分)
 		               		</td>
@@ -98,8 +98,8 @@
 				<table class="ui-widget-content" cellspacing="2" cellpadding="0" style="width:100%;border-width: 1px 0 0 0;" data-required='<s:property value="required"/>'>
 					<tbody>
 						<tr>
-			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:text name="orderNo"/>.</span>
-			               		<s:text name="subject"/>
+			               	<td style="font-weight: normal;text-align: left;padding-left:15px;"><span style="color: red;"><s:property value="orderNo"/>.</span>
+			               		<s:property value="subject"/>
 			               		&nbsp;<s:if test="required==true"><span style="color: red;">(必答)</span></s:if>
 			               		&nbsp;<s:if test="grade==true"><span style="color: red;">(需要评分)</span></s:if>
 			               		&nbsp;(<s:property value="%{score}"></s:property>分)

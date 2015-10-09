@@ -143,7 +143,7 @@
 										<td >&nbsp;</td>
 									</tr>
 									<tr>
-										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:property value="orderNo"/></span>题</td>
 						               	<td style="font-weight: normal;text-align: right;">题型:</td>
 										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
@@ -204,7 +204,7 @@
 										<td >&nbsp;</td>
 									</tr>
 									<tr>
-										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:property value="orderNo"/></span>题</td>
 						               	<td style="font-weight: normal;text-align: right;">题型:</td>
 										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
@@ -265,7 +265,7 @@
 										<td >&nbsp;</td>
 									</tr>
 									<tr>
-										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:property value="orderNo"/></span>题</td>
 						               	<td style="font-weight: normal;text-align: right;">题型:</td>
 										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
@@ -317,7 +317,7 @@
 										<td >&nbsp;</td>
 									</tr>
 									<tr>
-										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:text name="orderNo"/></span>题</td>
+										<td style="font-weight: normal;text-align: left;">第<span style="color: red;"><s:property value="orderNo"/></span>题</td>
 						               	<td style="font-weight: normal;text-align: right;">题型:</td>
 										<td class="value"><div class="ui-widget-content" style="display: inline-block;border-width: 0 1px 0 0;padding-right: 2px;">
 											<s:checkbox name="required" cssStyle="width:1em;" cssClass="required"/><label>必选题</label></div>
