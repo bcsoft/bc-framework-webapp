@@ -17,7 +17,7 @@
 				<tr>
 					<td style="padding-left: 5px;"><s:text name="share.file"/>:</td>
 					<td class="value">
-						<s:label style="width:100%;height:100%;border:none;margin:0;padding:0 0 0 2px;"type="text" class="ui-widget-content"
+						<s:label style="width:100%;height:100%;border:none;margin:0;padding:0 0 0 2px;" type="text" class="ui-widget-content"
 							 	value="%{e.name}"/>
 					</td>
 				</tr>
