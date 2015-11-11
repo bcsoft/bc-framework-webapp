@@ -447,6 +447,34 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 .vlayout.vcenter {
 	justify-content: center;
 }
+
+/**
+ * table 的简易样式控制
+ *
+ * @author rongjihuang@gmail.com
+ * @date 2015-11-11
+ */
+table.simple {
+	table-layout: fixed;
+	border-spacing: 0;
+	background: none;
+	padding: 0;
+	margin: 0;
+	cursor: default;
+	border-collapse:collapse
+}
+table.simple > tbody > tr > td:first-child{
+	border-left: none;
+}
+table.simple > tbody > tr > td:last-child{
+	border-right: none;
+}
+table.simple > tbody > tr.no-top-border > td{
+	border-top: none;
+}
+table.simple > tbody > tr.no-bottom-border > td{
+	border-bottom: none;
+}
 /**
  * tabs组件水平布局的样式设置
  *
