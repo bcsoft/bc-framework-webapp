@@ -593,9 +593,9 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 					
 					// 再调用自定义的回调函数：返回非true禁止autocomplete自动填写值到$input
 					if(scope)
-						return option.callback.call(scope, ui.item, ui) === true;
+						return option.callback.call(scope, ui.item, ui, event, this) === true;
 					else
-						return option.callback.apply(this,arguments) === true;
+						return option.callback.apply(this, arguments) === true;
 				}
 			}
 		}
