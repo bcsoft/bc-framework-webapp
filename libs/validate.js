@@ -30,7 +30,7 @@ bc.validator = {
 	 */
 	validate: function($form,ignoreFileds) {
 		var ok = true;
-		$form.find("div.input[data-validate],:input:enabled:not(input[type='hidden']):not(:button):not(textarea.bc-editor)")
+		$form.find("div.input[data-validate],:input:enabled:not(input[type='hidden'], .hide, :button):not(textarea.bc-editor)")
 		//添加内部特殊的div模拟input控件的验证
 		.each(function(i, n){
 			//判断查找中的对象存在ignoreFileds(忽略必填验证域的name属性值)中就返回不作验证

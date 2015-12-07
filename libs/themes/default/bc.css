@@ -18,39 +18,43 @@ body {
 	border: 0;
 	font-family: "微软雅黑", "宋体", sans-serif;
 	/*font-size: 62.5%;使1em=12px,浏览器默认为1em=16px,ie:_font-size: 63%;*/
-	font-size: 14px;/*调整为默认14px | 0.87em*/
-	background-color:#f5f5f5;
+	font-size: 14px; /*调整为默认14px | 0.87em*/
+	background-color: #f5f5f5;
 }
 
-.hide{display:none;}
+.hide {
+	display: none;
+}
 
 /**内容溢出控制*/
 .ellipsis {
-	overflow:hidden;
-	text-overflow:ellipsis;
-	-o-text-overflow:ellipsis;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
 	-icab-text-overflow: ellipsis;
 	-khtml-text-overflow: ellipsis;
 	-moz-text-overflow: ellipsis;
 	-webkit-text-overflow: ellipsis;
-	white-space:nowrap;
+	white-space: nowrap;
 	/*-moz-binding: url('ellipsis.xml#ellipsis'); firefox7已经开始支持ellipsis了*/
 }
-.text-overflow-ellipsis{
+
+.text-overflow-ellipsis {
 	text-overflow: ellipsis;
-	white-space:nowrap;
-	overflow:hidden;
+	white-space: nowrap;
+	overflow: hidden;
 }
+
 /**不可选择文本控制*/
-.unselectable,.bc-page[data-type='list'],.bc-ui-dialog.list {
-    -moz-user-select: none;
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    /*cursor:not-allowed; makes it even more obvious*/
+.unselectable, .bc-page[data-type='list'], .bc-ui-dialog.list {
+	-moz-user-select: none;
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	/*cursor:not-allowed; makes it even more obvious*/
 }
 
 /**
@@ -60,21 +64,34 @@ body {
  * @date 2011-04-13
  */
 /**修改字体*/
-.bc .ui-widget {font-family: "微软雅黑", "宋体", sans-serif;}
-.bc .ui-widget input,.bc .ui-widget select,.bc .ui-widget textarea,.bc .ui-widget button,.bc .ui-widget div.input{
+.bc .ui-widget {
 	font-family: "微软雅黑", "宋体", sans-serif;
 }
+
+.bc .ui-widget input, .bc .ui-widget select, .bc .ui-widget textarea, .bc .ui-widget button, .bc .ui-widget div.input {
+	font-family: "微软雅黑", "宋体", sans-serif;
+}
+
 /**修改对话框*/
 .bc-ui-dialog {
 	padding: 0 6px 6px 6px;
-	box-shadow:1px 1px 10px #000;
+	box-shadow: 1px 1px 10px #000;
 	/**fix ie:记得将ie-css3.htc文件放在网站的根目录下哦，用相对路径是不行的！<--拖动对话框会见到大块的黑色背景，还是没法使用
 	behavior: url(ie-css3.htc);*/
 
 	overflow: visible;
 }
-.bc-ui-dialog.ui-widget-header {background-position: 0 200%; background-repeat: repeat-x;}
-.bc-ui-dialog .ui-dialog-titlebar.ui-widget-header {border-width: 0;background: none;}
+
+.bc-ui-dialog.ui-widget-header {
+	background-position: 0 200%;
+	background-repeat: repeat-x;
+}
+
+.bc-ui-dialog .ui-dialog-titlebar.ui-widget-header {
+	border-width: 0;
+	background: none;
+}
+
 /*
 .bc-ui-dialog .ui-widget-header.ui-corner-all {
 	border-top-right-radius: 0;border-top-left-radius: 0;
@@ -84,10 +101,16 @@ body {
 	padding: 0;
 	/*margin: 0 8px 8px 8px;*/
 }
-.bc-ui-dialog .bc-toolbar.ui-widget-content  {
-	border-top:0;border-left:0;border-right:0;
+
+.bc-ui-dialog .bc-toolbar.ui-widget-content {
+	border-top: 0;
+	border-left: 0;
+	border-right: 0;
 }
-.bc-ui-dialog .ui-dialog-buttonpane{margin:0;}
+
+.bc-ui-dialog .ui-dialog-buttonpane {
+	margin: 0;
+}
 
 /** 对话框最大化后的样式控制 */
 .bc-ui-dialog.maximized {
@@ -96,7 +119,9 @@ body {
 }
 
 /**jquery-ui tabs */
-.formTabs.ui-tabs .ui-tabs-panel {padding:0;}
+.formTabs.ui-tabs .ui-tabs-panel {
+	padding: 0;
+}
 
 .bc-slide {
 	position: absolute;
@@ -104,91 +129,106 @@ body {
 	min-height: 50px;
 	_height: 50px;
 	z-index: 10000;
-	padding:4px;
-	right:2px;
-	bottom:2px;
+	padding: 4px;
+	right: 2px;
+	bottom: 2px;
 }
+
 .bc-slide .ui-widget-content {
 	cursor: default;
 }
-.clickToSelect{
+
+.clickToSelect {
 	cursor: pointer;
 }
 
-
-.bc-page{
+.bc-page {
 	width: 100%;
 	height: 100%;
 }
-.bc-page,.bc-page.ui-dialog-content{
-	overflow: hidden;
-}
-.bc-autoScroll,.bc-autoScroll.ui-dialog-content{
-	overflow: auto;
-}
-.bc-autoScroll-x{
-	overflow-x: auto;
-	overflow-y: hidden;
-}
-.bc-autoScroll-y{
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-.bc-noScroll{
+
+.bc-page, .bc-page.ui-dialog-content {
 	overflow: hidden;
 }
 
-.bc-toolbar{
-	position:relative;
-	padding:0.2em;
+.bc-autoScroll, .bc-autoScroll.ui-dialog-content {
+	overflow: auto;
 }
-.bc-buttonGroup,.bc-radioGroup,.bc-separatorButton,.bc-searchButton{
+
+.bc-autoScroll-x {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.bc-autoScroll-y {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.bc-noScroll {
+	overflow: hidden;
+}
+
+.bc-toolbar {
+	position: relative;
+	padding: 0.2em;
+}
+
+.bc-buttonGroup, .bc-radioGroup, .bc-separatorButton, .bc-searchButton {
 	display: inline-block;
-	margin-left:0.6em;
-	margin-right:0.6em;
+	margin-left: 0.6em;
+	margin-right: 0.6em;
 }
-.bc-toolbar .ui-button-text{
+
+.bc-toolbar .ui-button-text {
 	/*padding-top: 0.2em;
 	padding-bottom: 0.2em;*/
 }
-.bc-radioGroup .ui-button-text{
+
+.bc-radioGroup .ui-button-text {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 }
 
 /** 搜索框 */
-.bc-searchButton{
+.bc-searchButton {
 	position: absolute;
 	top: 0.4em;
 	right: 0.4em;
 }
-.bc-rightButtons{
+
+.bc-rightButtons {
 	display: inline-block;
 	position: absolute;
 	top: 0.4em;
 	right: 0;
 }
-.bc-rightButtons .bc-searchButton{
+
+.bc-rightButtons .bc-searchButton {
 	position: relative;
 	margin-left: 0.4em;
 	margin-right: 0;
 	top: 0;
 }
-.bc-searchButton a#searchBtn{
+
+.bc-searchButton a#searchBtn {
 	position: absolute;
 	top: 50%;
 	margin-top: -8px;
 	left: 0.12em;
 }
-.bc-searchButton input#searchText{
+
+.bc-searchButton input#searchText {
 	padding-left: 1.4em;
 	width: 180px;
 }
-.bc-searchButton.advance input#searchText{
+
+.bc-searchButton.advance input#searchText {
 	padding-right: 1.4em;
 	width: 162px;
 }
-.bc-searchButton.advance a#advanceSearchBtn{
+
+.bc-searchButton.advance a#advanceSearchBtn {
 	position: absolute;
 	top: 50%;
 	margin-top: -8px;
@@ -196,95 +236,188 @@ body {
 }
 
 /** 高级搜索 */
-.bc-conditionsForm{
+.bc-conditionsForm {
 	position: absolute;
 	padding: 8px 8px 4px 8px;
 	display: inline-block;
 }
-.bc-conditionsForm a.closeBtn{
+
+.bc-conditionsForm a.closeBtn {
 	position: absolute;
 	top: 2px;
 	right: 2px;
 }
-.bc-conditionsForm .conditions{
+
+.bc-conditionsForm .conditions {
 	list-style: none;
 	margin: 0;
-	padding:0;
+	padding: 0;
 	cursor: default;
 }
-.bc-conditionsForm .conditions .condition{
-	clear:both;
+
+.bc-conditionsForm .conditions .condition {
+	clear: both;
 	margin: 6px 0 6px 0;
 }
-.bc-condition-autocomplete{
+
+.bc-condition-autocomplete {
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 }
-.bc-conditionsForm .conditions .condition.first{
+
+.bc-conditionsForm .conditions .condition.first {
 	margin-top: 0;
 }
-.bc-conditionsForm .conditions .condition>.label{
+
+.bc-conditionsForm .conditions .condition > .label {
 	text-align: left;
 	padding-left: 2px;
 }
-.bc-conditionsForm .conditions .condition>.value{
+
+.bc-conditionsForm .conditions .condition > .value {
 	position: relative;
 }
-.bc-conditionsForm .conditions .condition>.value label>span{
+
+.bc-conditionsForm .conditions .condition > .value label > span {
 	margin: 0 4px 0 2px;
 }
-.bc-conditionsForm .conditions .condition>.value input[type='text']{
+
+.bc-conditionsForm .conditions .condition > .value input[type='text'] {
 	width: 99%;
 	margin: 0;
 	padding: 0;
 }
-.bc-conditionsForm .conditions .condition>.value select{
+
+.bc-conditionsForm .conditions .condition > .value select {
 	width: 99%;
 	margin: 0;
 	padding: 0;
 }
-.bc-conditionsForm .conditions .condition>.value input[type='radio'],
-.bc-conditionsForm .conditions .condition>.value input[type='checkbox']{
+
+.bc-conditionsForm .conditions .condition > .value input[type='radio'],
+.bc-conditionsForm .conditions .condition > .value input[type='checkbox'] {
 	margin: 0;
 }
-div.clear{
-	clear:both;
-	width:auto;
-	height:0
+
+div.clear {
+	clear: both;
+	width: auto;
+	height: 0
 }
-div.bc-dateContainer,div.bc-relativeContainer{
+
+div.bc-dateContainer, div.bc-relativeContainer {
 	position: relative;
 	display: inline-block;
 }
 
 /** 常用宽度 */
-.w60{width: 60px;}
-.w80{width: 80px;}
-.w100{width: 100px;}
-.w120{width: 20px;}
-.w150{width: 150px;}
-.w200{width: 200px;}
-.w220{width: 220px;}
-.w250{width: 250px;}
-.w300{width: 300px;}
-.w400{width: 400px;}
-.w500{width: 500px;}
-.w600{width: 600px;}
-.w650{width: 650px;}
-.w700{width: 700px;}
-.w750{width: 750px;}
-.w800{width: 800px;}
-.w820{width: 820px;}
-.m4{margin: 4px;}
-.m6{margin: 6px;}
-.m8{margin: 8px;}
-.m10{margin: 10px;}
+.w60 {
+	width: 60px;
+}
+
+.w80 {
+	width: 80px;
+}
+
+.w100 {
+	width: 100px;
+}
+
+.w120 {
+	width: 20px;
+}
+
+.w150 {
+	width: 150px;
+}
+
+.w200 {
+	width: 200px;
+}
+
+.w220 {
+	width: 220px;
+}
+
+.w250 {
+	width: 250px;
+}
+
+.w300 {
+	width: 300px;
+}
+
+.w400 {
+	width: 400px;
+}
+
+.w500 {
+	width: 500px;
+}
+
+.w600 {
+	width: 600px;
+}
+
+.w650 {
+	width: 650px;
+}
+
+.w700 {
+	width: 700px;
+}
+
+.w750 {
+	width: 750px;
+}
+
+.w800 {
+	width: 800px;
+}
+
+.w820 {
+	width: 820px;
+}
+
+.m4 {
+	margin: 4px;
+}
+
+.m6 {
+	margin: 6px;
+}
+
+.m8 {
+	margin: 8px;
+}
+
+.m10 {
+	margin: 10px;
+}
 
 /*水平排列li元素的通用样式*/
-ul.horizontal,div.horizontal{overflow:auto;list-style:none;padding:4px;margin:0;}
-li.horizontal{position:relative;margin:2px 4px 2px 0;float:left;padding:2px 4px;}
-li.horizontal span.text{margin-right:16px;cursor:default;}
-li.horizontal span.text2{cursor:default;}
+ul.horizontal, div.horizontal {
+	overflow: auto;
+	list-style: none;
+	padding: 4px;
+	margin: 0;
+}
+
+li.horizontal {
+	position: relative;
+	margin: 2px 4px 2px 0;
+	float: left;
+	padding: 2px 4px;
+}
+
+li.horizontal span.text {
+	margin-right: 16px;
+	cursor: default;
+}
+
+li.horizontal span.text2 {
+	cursor: default;
+}
 
 /*input文本框内置的操作按钮样式控制*/
 ul.inputIcons {
@@ -295,7 +428,8 @@ ul.inputIcons {
 	margin: -8px 0 0 0;
 	right: 4px;
 }
-ul.inputIcons li.inputIcon{
+
+ul.inputIcons li.inputIcon {
 	width: 16px;
 	height: 16px;
 	cursor: pointer;
@@ -305,34 +439,49 @@ ul.inputIcons li.inputIcon{
 	opacity: 0.7;
 	filter: alpha(opacity=70);
 }
-li.inputIcon.hover{
+
+li.inputIcon.hover {
 	opacity: 1;
 	filter: alpha(opacity=100);
 }
-span.inputIcon{
-    opacity: 1;
-    filter: alpha(opacity=100);
-    text-decoration: underline;
-    cursor: pointer;
+
+span.inputIcon {
+	opacity: 1;
+	filter: alpha(opacity=100);
+	text-decoration: underline;
+	cursor: pointer;
 }
+
 /* 放在Grid的td内时 */
 .inputIcons.incell {
-    display: inline-block;
-    position: relative;
-    margin: 0;
-    top: 0.15em;
-    right: auto;
+	display: inline-block;
+	position: relative;
+	margin: 0;
+	top: 0.15em;
+	right: auto;
 }
+
 /*让td元素支持相对定位*/
-span.ui-icon.verticalMiddle {position:absolute;top:50%;margin-top:-8px;width:16px;height:16px;right:4px;cursor:pointer;}
-td.relative,div.relative{
+span.ui-icon.verticalMiddle {
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+	width: 16px;
+	height: 16px;
+	right: 4px;
+	cursor: pointer;
+}
+
+td.relative, div.relative {
 	position: relative;
 	/*display: block; for firefox 低版本, 40+经测试此问题已修复*/
 }
 
 /*普通的标题*/
-.title{border-width:0 0 1px 0 !important;padding:0.25em;}
-
+.title {
+	border-width: 0 0 1px 0 !important;
+	padding: 0.25em;
+}
 
 /* Alternate stack initial positioning. */
 .ui-pnotify.stack-topleft {
@@ -340,12 +489,14 @@ td.relative,div.relative{
 	left: 15px;
 	right: auto;
 }
+
 .ui-pnotify.stack-bottomleft {
 	bottom: 15px;
 	left: 15px;
 	top: auto;
 	right: auto;
 }
+
 /* This one is done through code, to show how it is done. Look down
    at the stack_bottomright variable in the JavaScript below. */
 .ui-pnotify.stack-bottomright {
@@ -355,13 +506,26 @@ td.relative,div.relative{
 }
 
 /*jQueryUI Tabs 在表单中的样式修改*/
-.formTabs.ui-tabs { border: 0; background: none;}
-.formTabs.ui-tabs .ui-tabs-nav { border: 0; background: none;}
-.formTabs.ui-tabs .ui-tabs-panel {border-width: 1px;background-color: transparent;}
-.formTabs.ui-tabs .ui-tabs-nav li { margin-bottom: 0;}
+.formTabs.ui-tabs {
+	border: 0;
+	background: none;
+}
 
+.formTabs.ui-tabs .ui-tabs-nav {
+	border: 0;
+	background: none;
+}
 
-ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
+.formTabs.ui-tabs .ui-tabs-panel {
+	border-width: 1px;
+	background-color: transparent;
+}
+
+.formTabs.ui-tabs .ui-tabs-nav li {
+	margin-bottom: 0;
+}
+
+ul.bc-menu > li.ui-menu-item > a, .horizontal.ui-widget-content a {
 	color: inherit;
 }
 
@@ -375,18 +539,32 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	height: 18px;
 	padding: 0;
 }
-.ui-dialog .ui-dialog-titlebar-buttons a{cursor: pointer; padding: 1px; margin: 0; float: left;}
-.ui-dialog .ui-dialog-titlebar-buttons a span {display: block; margin: 1px;}
-.ui-dialog .ui-dialog-titlebar-buttons a:hover, .ui-dialog .ui-dialog-titlebar-buttons a:focus {padding: 0;}
+
+.ui-dialog .ui-dialog-titlebar-buttons a {
+	cursor: pointer;
+	padding: 1px;
+	margin: 0;
+	float: left;
+}
+
+.ui-dialog .ui-dialog-titlebar-buttons a span {
+	display: block;
+	margin: 1px;
+}
+
+.ui-dialog .ui-dialog-titlebar-buttons a:hover, .ui-dialog .ui-dialog-titlebar-buttons a:focus {
+	padding: 0;
+}
 
 /* 禁止文本溢自动换行，文字溢出就显示省略号 */
-.nowrap,.nowrap>th,.nowrap>td{
+.nowrap, .nowrap > th, .nowrap > td {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
 /* 文本自动换行 */
-.autowrap,.autowrap>th,.autowrap>td{
+.autowrap, .autowrap > th, .autowrap > td {
 	white-space: normal;
 	overflow: auto;
 	word-wrap: break-word;
@@ -410,6 +588,7 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	flex-start | flex-end | center | baseline | stretch */
 	align-items: flex-start;
 }
+
 /* 水平弹性布局 */
 .hlayout {
 	display: flex;
@@ -418,6 +597,7 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	justify-content: flex-start;
 	align-items: flex-start;
 }
+
 .vlayout > .unflex, .vlayout > *, .hlayout > .unflex, .hlayout > * {
 	/* 覆盖父元素的align-items属性，定义自己如何沿着侧轴排列
 	auto | flex-start | flex-end | center | baseline | stretch */
@@ -425,32 +605,39 @@ ul.bc-menu>li.ui-menu-item>a,.horizontal.ui-widget-content a {
 	/* 子代的弹性比 */
 	flex: none;
 }
+
 .vlayout > .autoflex, .vlayout > .flex, .hlayout > .autoflex, .hlayout > .flex {
 	align-self: stretch;
 	flex: 1 1 0%;
 }
+
 .vlayout.hleft {
 	align-items: flex-start;
 }
+
 .vlayout.hright {
 	align-items: flex-end;
 }
+
 .vlayout.hcenter {
 	align-items: center;
 }
+
 .vlayout.vtop {
 	justify-content: flex-start;
 }
+
 .vlayout.vbottom {
 	justify-content: flex-end;
 }
+
 .vlayout.vcenter {
 	justify-content: center;
 }
 
 /**
  * table 的简易样式控制
- *
+ * 用于将列表信息嵌入到表单中
  * @author rongjihuang@gmail.com
  * @date 2015-11-11
  */
@@ -461,19 +648,50 @@ table.simple {
 	padding: 0;
 	margin: 0;
 	cursor: default;
-	border-collapse:collapse
+	border-collapse: collapse
 }
-table.simple > tbody > tr > td:first-child{
+
+table.simple > tbody > tr {
+	height: 1.8em;
+}
+
+table.simple > tbody > tr > td {
+	padding: 0;
+}
+
+table.simple > tbody > tr > td.text {
+	padding: 0 0.25em;
+}
+table.simple > tbody > tr > td.input {
+	border-width: 2px;
+}
+
+table.simple > tbody > tr > td:first-child {
 	border-left: none;
 }
-table.simple > tbody > tr > td:last-child{
+
+table.simple > tbody > tr > td:last-child {
 	border-right: none;
 }
-table.simple > tbody > tr.no-top-border > td{
+
+table.simple > tbody > tr.no-top-border > td {
 	border-top: none;
 }
-table.simple > tbody > tr.no-bottom-border > td{
+
+table.simple > tbody > tr.no-bottom-border > td {
 	border-bottom: none;
+}
+
+table.simple > tbody > tr > td > .text,
+table.simple > tbody > tr > td > input[type="text"],
+table.simple > tbody > tr > td > select {
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0 0.25em;
+	border: none;
+	background: none;
 }
 /**
  * tabs组件水平布局的样式设置
