@@ -667,7 +667,8 @@ bc.validator = {
 	 * 8) time 时间 HH:mm[:ss]
 	 * 9) phone 电话号码
 	 * 10) money 金额
-	 * 11) custom 自定义验证，需要指定验证的正则表达式regexp和提示信息info
+	 * 11) regexp 正则验证，需要指定验证的正则表达式模式 pattern 和提示信息 msg
+	 * 12) custom 自定义验证
 	 * min的值控制数字的最小值
 	 * max的值控制数字的最大值
 	 * minLen的值控制字符串的最小长度(中文按两个字符长度计算)
