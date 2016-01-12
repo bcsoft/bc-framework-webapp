@@ -38,14 +38,14 @@
 			<div class="value">
 				<div class="bc-dateContainer">
 					<input type="text" class="bc-date ui-widget-content" data-validate="date" style="width:9em;"
-						data-condition='{"type":"startDate","ql":"a.file_date>=?"}'>
+						data-condition='{"type":"startDate","ql":"a.start_date>=?"}'>
 					<ul class="inputIcons">
 						<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"></li>
 						<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
 					</ul>
 				</div><div style="width:12px;display:inline-block;">～</div><div class="bc-dateContainer">
 					<input type="text" class="bc-date ui-widget-content" data-validate="date" style="width:9em;"
-						data-condition='{"type":"endDate","ql":"a.file_date<=?"}'>
+						data-condition='{"type":"endDate","ql":"a.start_date<=?"}'>
 					<ul class="inputIcons">
 						<li class="selectCalendar inputIcon ui-icon ui-icon-calendar"></li>
 						<li class="clearSelect inputIcon ui-icon ui-icon-close" title='<s:text name="title.click2clear"/>'></li>
