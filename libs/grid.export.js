@@ -44,7 +44,7 @@ bc.grid.export2Excel = function($grid,el) {
 	//获取列的定义信息
 	var headerIds=[],headerNames=[];
 	var fields = []
-	var columns = $grid.find("div.header>div.right>table.table td");
+	var columns = $grid.find("div.header>div.right>table.table td[data-id]");
 	var maxh = 12;											// 控制1列最多输出的条目数
 	var totalCount = columns.size();						// 总条目数
 	var splitCount,headerCount;
