@@ -3332,7 +3332,7 @@ $.widget( "ui.bcsearch", {
 					var rows = [];
 					// 获取id列的数据
 					$tds.each(function () {
-						rows.push({"id": $(this).attr("data-id")});
+						rows.push({"id": $(this).attr("data-id"), "rowLabel": $(this).attr("data-name")});
 					});
 
 					var hiddenData;
@@ -3364,7 +3364,7 @@ $.widget( "ui.bcsearch", {
 			} else {//单选
 				if (all) {
 					// 获取id列的数据
-					var row = {"id": $tds.attr("data-id")};
+					var row = {"id": $tds.attr("data-id"), "rowLabel": $tds.attr("data-name")};
 
 					var $tr = $grid.find(">.data>.right tr.ui-state-highlight");
 					// 获取可见列的数据
