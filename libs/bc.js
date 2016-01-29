@@ -2717,6 +2717,15 @@ $document.on("click", ".bc-select:not(.ignore)", function richInputFn(e) {
 		if(option.itemMapping){
 			$input.autocomplete().data("autocomplete")._renderItem = function( ul, item ) {
 				if(logger.debugEnabled)logger.debug("item1=" + $.toJSON(item));
+				if(option.extendDataFn){
+					var $page = $this.closest(".bc-page");
+					var scope = $page.data("scope");
+					var extendDataFn = scope ? scope[option.extendDataFn] : bc.getNested(option.extendDataFn);
+					if(typeof extendDataFn != "function"){
+						alert("没有定义的扩展函数：extendDataFn=" + option.extendDataFn);
+					}
+					extendDataFn.call(scope ? scope : this, item);
+				}
 				return $( "<li><a></a></li>" )
 					.data( "item.autocomplete", item )
 					.children("a").append(bc.formatTpl(option.itemMapping, item))
