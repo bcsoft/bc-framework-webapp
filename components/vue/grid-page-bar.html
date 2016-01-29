@@ -1,0 +1,43 @@
+<div class="bc-grid">
+	<ul class="pager ui-widget-content" style="border-top-width:0">
+		<li class="pagerIcon ui-state-default ui-corner-all" title="刷新" @click="this.$dispatch('reload')">
+			<span class="ui-icon ui-icon-refresh"></span>
+		</li>
+		<li class="pagerIconGroup ui-state-default ui-corner-all">
+			<a href="#" class="pagerIcon ui-state-default ui-corner-all" @click="this.pageNo = 1">
+				<span class="ui-icon ui-icon-seek-first" title="首页"></span>
+			</a>
+			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
+			   @click="this.pageNo = Math.max(this.pageNo - 1, 1)">
+				<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>
+			</a>
+			<span class="pageNo">
+				<span>{{pageNo}}</span>/<span>{{pageCount}}</span>(<span>{{totalCount}}</span>)
+			</span>
+			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
+			   @click="this.pageNo = Math.min(this.pageNo + 1, this.pageCount)">
+				<span class="ui-icon ui-icon-seek-next" title="下一页"></span>
+			</a>
+			<a href="#" class="pagerIcon ui-state-default ui-corner-all" @click="this.pageNo = this.pageCount">
+				<span class="ui-icon ui-icon-seek-end" title="尾页"></span>
+			</a>
+		</li>
+		<li class="pagerIconGroup ui-state-default ui-corner-all" title="每页显示的数量">
+			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
+			   :class="{'ui-state-active': pageSize == 25}" @click="pageSize = 25">
+				<span class="pageSize">25</span>
+			</a>
+			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
+			   :class="{'ui-state-active': pageSize == 50}" @click="pageSize = 50">
+				<span class="pageSize">50</span>
+			</a>
+			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
+			   :class="{'ui-state-active': pageSize == 100}" @click="pageSize = 100">
+				<span class="pageSize">100</span>
+			</a>
+		</li>
+		<li class="pagerIcon ui-state-default ui-corner-all" title="导出" @click="export">
+			<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>
+		</li>
+	</ul>
+</div>
