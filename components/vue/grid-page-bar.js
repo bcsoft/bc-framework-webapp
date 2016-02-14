@@ -18,6 +18,7 @@ define(['bc', 'vue', 'text!bc/components/vue/grid-page-bar.html'], function (bc,
 	'use strict';
 	// 注册为全局组件
 	var id = 'bc-grid-page-bar';
+	var PAGE_SIZES = [25, 50, 100];
 	Vue.component(id, {
 		template: template,
 		props: {
@@ -26,7 +27,7 @@ define(['bc', 'vue', 'text!bc/components/vue/grid-page-bar.html'], function (bc,
 			//totalCount: {type: Number, default: 0, twoWay: false}
 		},
 		data: function () {
-			return {pageNo: 0, pageSize: 25, pageCount: 0, totalCount: 0}
+			return {pageNo: 0, pageSize: PAGE_SIZES[0], pageCount: 0, totalCount: 0, pageSizes: PAGE_SIZES}
 		},
 		created: function () {
 			console.log("pageBar:created");

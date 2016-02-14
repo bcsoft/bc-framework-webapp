@@ -23,17 +23,9 @@
 			</a>
 		</li>
 		<li class="pagerIconGroup ui-state-default ui-corner-all" title="每页显示的数量">
-			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
-			   :class="{'ui-state-active': pageSize == 25}" @click="changePageSize(25)">
-				<span class="pageSize">25</span>
-			</a>
-			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
-			   :class="{'ui-state-active': pageSize == 50}" @click="changePageSize(50)">
-				<span class="pageSize">50</span>
-			</a>
-			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
-			   :class="{'ui-state-active': pageSize == 100}" @click="changePageSize(100)">
-				<span class="pageSize">100</span>
+			<a href="#" v-for="s in pageSizes" class="pagerIcon ui-state-default ui-corner-all"
+			   :class="{'ui-state-active': pageSize == s}" @click="changePageSize(s)">
+				<span class="pageSize">{{s}}</span>
 			</a>
 		</li>
 		<li class="pagerIcon ui-state-default ui-corner-all" title="导出" @click="export">
