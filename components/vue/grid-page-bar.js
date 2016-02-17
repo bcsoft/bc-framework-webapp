@@ -24,18 +24,18 @@ define(['bc', 'vue', 'text!bc/components/vue/grid-page-bar.html'], function (bc,
 		props: {
 			//pageNo: {type: Number, default: 0, twoWay: true},
 			//pageSize: {type: Number, default: 25, twoWay: true},
-			//totalCount: {type: Number, default: 0, twoWay: false}
+			//count: {type: Number, default: 0, twoWay: false}
 		},
 		data: function () {
-			return {pageNo: 0, pageSize: PAGE_SIZES[0], pageCount: 0, totalCount: 0, pageSizes: PAGE_SIZES}
+			return {pageNo: 0, pageSize: PAGE_SIZES[0], pageCount: 0, count: 0, pageSizes: PAGE_SIZES}
 		},
 		created: function () {
 			console.log("pageBar:created");
-			this.pageCount = Math.ceil(this.totalCount / this.pageSize);
+			this.pageCount = Math.ceil(this.count / this.pageSize);
 		},
 		watch: {
-			totalCount: function (val, oldVal) {
-				console.log('pageBar.watch.totalCount: new=%s, old=%s', val, oldVal);
+			count: function (val, oldVal) {
+				console.log('pageBar.watch.count: new=%s, old=%s', val, oldVal);
 				this.pageCount = Math.ceil(val / this.pageSize);
 			}
 		},

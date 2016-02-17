@@ -12,7 +12,7 @@
 				<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>
 			</a>
 			<span class="pageNo">
-				<span>{{pageNo}}</span>/<span>{{pageCount}}</span>(<span>{{totalCount}}</span>)
+				<span>{{pageNo}}</span>/<span>{{pageCount}}</span>(<span>{{count}}</span>)
 			</span>
 			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
 			   @click="toPage(Math.min(this.pageNo + 1, this.pageCount))">
