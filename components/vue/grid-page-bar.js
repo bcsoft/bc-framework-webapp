@@ -2,7 +2,7 @@
  * Grid 分页条
  * <pre>
  *     使用范例：
- *     <bc-grid-page-bar v-ref:page-bar @reload="reloadMethod" @export="exportMethod"/>
+ *     <bc-grid-page-bar v-ref:page-bar @reload="reloadMethod" @export="exportMethod" pageable="true|false"/>
  *     其中：
  *     <ul>
  *         <li>reload {Event} 分页参数变动、点击刷新按钮触发的事件。
@@ -11,6 +11,7 @@
  *              事件第 3 个参数为 pageSize 的值
  *         </li>
  *         <li>export {Event} 点击导出按钮触发的事件。事件第 1 个参数为要导出的页码(pageNo)，-1 代表导出全部</li>
+ *         <li>pageable {Boolean} 是否分页。如果没有加这个参数，默认为分页</li>
  *     </ul>
  * </pre>
  */
@@ -22,6 +23,7 @@ define(['bc', 'vue', 'text!bc/components/vue/grid-page-bar.html'], function (bc,
 	Vue.component(id, {
 		template: template,
 		props: {
+			pageable: {type: Boolean, default: true, twoWay: false}
 			//pageNo: {type: Number, default: 0, twoWay: true},
 			//pageSize: {type: Number, default: 25, twoWay: true},
 			//count: {type: Number, default: 0, twoWay: false}

@@ -3,31 +3,33 @@
 		<li class="pagerIcon ui-state-default ui-corner-all" title="刷新" @click="this.$dispatch('reload', 'refresh', pageNo, pageSize)">
 			<span class="ui-icon ui-icon-refresh"></span>
 		</li>
-		<li class="pagerIconGroup ui-state-default ui-corner-all">
-			<a href="#" class="pagerIcon ui-state-default ui-corner-all" @click="toPage(1)">
-				<span class="ui-icon ui-icon-seek-first" title="首页"></span>
-			</a>
-			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
-			   @click="toPage(Math.max(this.pageNo - 1, 1))">
-				<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>
-			</a>
-			<span class="pageNo">
-				<span>{{pageNo}}</span>/<span>{{pageCount}}</span>(<span>{{count}}</span>)
-			</span>
-			<a href="#" class="pagerIcon ui-state-default ui-corner-all"
-			   @click="toPage(Math.min(this.pageNo + 1, this.pageCount))">
-				<span class="ui-icon ui-icon-seek-next" title="下一页"></span>
-			</a>
-			<a href="#" class="pagerIcon ui-state-default ui-corner-all" @click="toPage(this.pageCount)">
-				<span class="ui-icon ui-icon-seek-end" title="尾页"></span>
-			</a>
-		</li>
-		<li class="pagerIconGroup ui-state-default ui-corner-all" title="每页显示的数量">
-			<a href="#" v-for="s in pageSizes" class="pagerIcon ui-state-default ui-corner-all"
-			   :class="{'ui-state-active': pageSize == s}" @click="changePageSize(s)">
-				<span class="pageSize">{{s}}</span>
-			</a>
-		</li>
+		<template v-if="pageable">
+			<li class="pagerIconGroup ui-state-default ui-corner-all">
+				<a href="#" class="pagerIcon ui-state-default ui-corner-all" @click="toPage(1)">
+					<span class="ui-icon ui-icon-seek-first" title="首页"></span>
+				</a>
+				<a href="#" class="pagerIcon ui-state-default ui-corner-all"
+				   @click="toPage(Math.max(this.pageNo - 1, 1))">
+					<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>
+				</a>
+				<span class="pageNo">
+					<span>{{pageNo}}</span>/<span>{{pageCount}}</span>(<span>{{count}}</span>)
+				</span>
+				<a href="#" class="pagerIcon ui-state-default ui-corner-all"
+				   @click="toPage(Math.min(this.pageNo + 1, this.pageCount))">
+					<span class="ui-icon ui-icon-seek-next" title="下一页"></span>
+				</a>
+				<a href="#" class="pagerIcon ui-state-default ui-corner-all" @click="toPage(this.pageCount)">
+					<span class="ui-icon ui-icon-seek-end" title="尾页"></span>
+				</a>
+			</li>
+			<li class="pagerIconGroup ui-state-default ui-corner-all" title="每页显示的数量">
+				<a href="#" v-for="s in pageSizes" class="pagerIcon ui-state-default ui-corner-all"
+				   :class="{'ui-state-active': pageSize == s}" @click="changePageSize(s)">
+					<span class="pageSize">{{s}}</span>
+				</a>
+			</li>
+		</template>
 		<li class="pagerIcon ui-state-default ui-corner-all" title="导出" @click="export">
 			<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>
 		</li>
