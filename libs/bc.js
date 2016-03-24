@@ -4080,7 +4080,12 @@ bc.grid.import = function($grid,el) {
 						
 						// 构建数据行
 						html.push('<tbody>');
-						var hri = cfg.headerRowIndex + 2;
+						var hri;
+						if (cfg.dataRowIndex) {
+							hri = cfg.dataRowIndex + 1;
+						} else {
+							hri = cfg.headerRowIndex + 2;
+						}
 						for(var i=0;i<d.length;i++){
 							html.push('<tr>');
 							html.push('<td>'+(hri+parseInt(d[i].index))+'</td>');
