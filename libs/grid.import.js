@@ -186,7 +186,7 @@ bc.grid.import = function($grid,el) {
 							var v;
 							for(var j=0;j<columnNames.length;j++){
 								v = d[i][columnNames[j]];
-								html.push('<td>'+(v?v:"")+'</td>');
+								html.push('<td>'+(v == 0 || v ? v : "")+'</td>');
 							}
 							html.push('</tr>');
 						}
