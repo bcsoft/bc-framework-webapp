@@ -2529,11 +2529,16 @@ $document.on("click", ".bc-button.bc-menuButton", function() {
 		$contextmenu.css("min-width", $this.width() + "px");
 
 		//获取回调函数
-		var change = $this.attr("data-change");
-		if(change){
-			change = bc.getNested(change);//将函数名称转换为函数
-			if(typeof change != "function"){
-				alert("没有定义函数: " + $this.attr("data-change"));
+		var $page = $this.closest(".bc-page");
+		var fn = $this.attr("data-change");
+		if(fn) {
+			var scope = $page.data("scope");
+			var useGlobalFn = $this.attr("data-scope") === "global";
+			if (typeof fn == "string") {
+				fn = scope && !useGlobalFn ? scope[fn] : bc.getNested(fn);
+			}
+			if (typeof fn != "function") {
+				alert("回调函数没有定义：" + $this.attr("data-change"));
 			}
 		}
 
@@ -2541,9 +2546,9 @@ $document.on("click", ".bc-button.bc-menuButton", function() {
 		$contextmenu.menu({
 			select: function(event, ui) {
 				$(this).popup("close");
-				//$this.button("option", "label", ui.item.text());
-				if(typeof change == "function"){
-					change.call($this.closest(".bc-page")[0],{
+				if(typeof fn == "function"){
+					// 上下文为页面DOM或页面实例
+					fn.call(scope && $page.data("scopeType") === "instance" && !useGlobalFn ? scope : $page[0],{
 						text: ui.item.attr("data-text"),
 						value: ui.item.attr("data-value")
 					});
