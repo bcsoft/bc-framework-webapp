@@ -698,6 +698,14 @@ bc.validator = {
 						validate = '{"required":false,"type":"' + validate + '"}';//默认非必填
 				}
 				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
+
+				// 要求必填但又无值时直接提示
+				if(validate.required && (!value || value.length == 0)){
+					ok = false;
+					bc.validator.remind(this, validate.type, null, validate);
+					return false;
+				}
+
 				var method = bc.validator.methods[validate.type];
 				var value = $(this).val();
 				if(method){
