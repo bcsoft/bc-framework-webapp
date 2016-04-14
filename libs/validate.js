@@ -50,6 +50,7 @@ bc.validator = {
 						validate = '{"required":false,"type":"' + validate + '"}';//默认非必填
 				}
 				validate =eval("(" + validate + ")");// jQuery.parseJSON(validate);
+				var value = this.nodeName.toLowerCase() != 'div' ? $(this).val() : $.trim($(this).text());
 
 				// 要求必填但又无值时直接提示
 				if(validate.required && (!value || value.length == 0)){
@@ -59,7 +60,6 @@ bc.validator = {
 				}
 
 				var method = bc.validator.methods[validate.type];
-				var value = $(this).val();
 				if(method){
 					if(validate.required || (value && value.length > 0)){//必填或有值时
 						ok = method.call(validate, this, $form);//类型验证
@@ -149,7 +149,7 @@ bc.validator = {
 				return val && val.length > 0;
 			case 'div':
 				// 添加内部特殊的div模拟input控件的验证
-				$el = $(element);
+				var $el = $(element);
 				if($el.is("div.input[data-validate]")){
 					var t = $el.text()
 					return t && $.trim(t).length > 0;
