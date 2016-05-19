@@ -1762,7 +1762,7 @@ table.table { /*width: 100%;
 	bottom: 0;
 	left: 0;
 	right: 0;
-	top: 36px;
+	top: 2.799em; /* start from chrome 49 */
 	border: 0;
 }
 
