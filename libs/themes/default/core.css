@@ -564,8 +564,8 @@ ul.bc-menu > li.ui-menu-item > a, .horizontal.ui-widget-content a {
 }
 
 /* 文本自动换行 */
-.autowrap, .autowrap > th, .autowrap > td {
-	white-space: normal;
+.autowrap, .autowrap > th, .autowrap > td, pre.text {
+	white-space: pre-wrap; /* fixe for chrome 49+ */
 	overflow: auto;
 	word-wrap: break-word;
 	word-break: break-all;
