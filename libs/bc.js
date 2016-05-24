@@ -1160,16 +1160,7 @@ bc.page = {
 				$dom.attr("data-fromType", option.fromType);
 			}
 
-			var dataType = $dom.attr("data-type");
-			if (dataType == "list") {//视图
-				if ($dom.find(".bc-grid").size()) {//表格的额外处理
-					bc.grid.init($dom, cfg, cfg.readonly);
-				}
-			} else if (dataType == "form") {//表单
-				bc.form.init($dom, cfg, cfg.readonly);//如绑定日期选择事件等
-			}
-
-			//执行组件指定的额外初始化方法，上下文为$dom
+			// requirejs 模块的处理
 			if ($dom.data("requirejs")) { // 使用requirejs的初始化处理
 				var module = arguments[arguments.length - 1];
 				if (typeof module === "function") {                              // 定义为类时
@@ -1179,6 +1170,18 @@ bc.page = {
 					$dom.data("scope", module).data("scopeType", "module");       // 记录此类
 				}
 			}
+
+			// 全局视图、表单的初始化
+			var dataType = $dom.attr("data-type");
+			if (dataType == "list") {//视图
+				if ($dom.find(".bc-grid").size()) {//表格的额外处理
+					bc.grid.init($dom, cfg, cfg.readonly);
+				}
+			} else if (dataType == "form") {//表单
+				bc.form.init($dom, cfg, cfg.readonly);//如绑定日期选择事件等
+			}
+
+			// 执行组件指定的额外初始化方法，上下文为$dom
 			var method = $dom.attr("data-initMethod");
 			logger.debug("initMethod=" + method);
 			if (method) {
