@@ -4466,6 +4466,7 @@ bc.form = {
 		$form.find('.bc-date[readonly!="readonly"],.bc-time[readonly!="readonly"],.bc-datetime[readonly!="readonly"]')
 		.filter(":not('.custom')")
 		.each(function bindSelectCalendar(){
+			// 获取用户配置
 			var $this = $(this);
 			var cfg = $this.attr("data-cfg");
 			if(cfg && cfg.length > 0){
@@ -4473,8 +4474,10 @@ bc.form = {
 			}else{
 				cfg = {};
 			}
+			var $page = $this.closest(".bc-page");
+
+			// 重构 onSelect 配置
 			if(typeof cfg.onSelect == "string") {
-				var $page = $this.closest(".bc-page");
 				var fn;
 				if ($page.size() > 0 && $page.data("scope")) {
 					fn = $page.data("scope")[cfg.onSelect];
@@ -4487,6 +4490,23 @@ bc.form = {
 				}
 				cfg.onSelect = fn;
 			}
+
+			// 重构 onClose 配置
+			if(typeof cfg.onClose == "string") {
+				var fn;
+				if ($page.size() > 0 && $page.data("scope")) {
+					fn = $page.data("scope")[cfg.onClose];
+				} else {
+					fn = bc.getNested(cfg.onClose);
+				}
+				if (typeof fn != "function") {
+					alert('函数“' + cfg.onClose + '”没有定义！');
+					return false;
+				}
+				cfg.onClose = fn;
+			}
+
+			// 添加默认配置
 			cfg = jQuery.extend({
 				//showWeek: true,//显示第几周
 				//showButtonPanel: true,//显示今天按钮
@@ -4536,10 +4556,16 @@ bc.form = {
 				}
 			}
 			
-			//重构回调函数，使控件重新获取焦点
+			// 重构 onClose 回调函数，使控件重新获取焦点再调用用户自定义的 onClose 函数
+			var customOnClose = cfg.onClose;
 			cfg.onClose = function(){
 				$this.focus();
-			}
+
+				// 调用用户自定义的 onClose 函数
+				if(typeof customOnClose == "function"){
+					return customOnClose.apply(this, arguments);
+				}
+			};
 			
 			if($this.hasClass('bc-date'))
 				$this.datepicker(cfg);
