@@ -80,12 +80,13 @@ bc.form = {
 				cfg = {};
 			}
 			var $page = $this.closest(".bc-page");
+			var scope = $page.data("scope");
 
 			// 重构 onSelect 配置
 			if(typeof cfg.onSelect == "string") {
 				var fn;
-				if ($page.size() > 0 && $page.data("scope")) {
-					fn = $page.data("scope")[cfg.onSelect];
+				if ($page.size() > 0 && scope) {
+					fn = scope[cfg.onSelect];
 				} else {
 					fn = bc.getNested(cfg.onSelect);
 				}
@@ -99,8 +100,8 @@ bc.form = {
 			// 重构 onClose 配置
 			if(typeof cfg.onClose == "string") {
 				var fn;
-				if ($page.size() > 0 && $page.data("scope")) {
-					fn = $page.data("scope")[cfg.onClose];
+				if ($page.size() > 0 && scope) {
+					fn = scope[cfg.onClose];
 				} else {
 					fn = bc.getNested(cfg.onClose);
 				}
@@ -155,7 +156,7 @@ bc.form = {
 						
 						//调用原来的回调函数
 						if(typeof oldFun == "function"){
-							return oldFun.call(this,dateText,inst);
+							return oldFun.call(scope || this, dateText, inst);
 						}
 					};
 				}
@@ -168,7 +169,7 @@ bc.form = {
 
 				// 调用用户自定义的 onClose 函数
 				if(typeof customOnClose == "function"){
-					return customOnClose.apply(this, arguments);
+					return customOnClose.apply(scope || this, arguments);
 				}
 			};
 			
