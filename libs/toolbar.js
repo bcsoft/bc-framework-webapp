@@ -263,6 +263,7 @@ $document.on({
 			break;
 		default ://调用自定义的函数
 			var fn = $this.attr("data-click");
+			if(!fn) return false;
 			var scope = $page.data("scope");
 			var useGlobalFn = $this.attr("data-scope") === "global";
 			if(typeof fn == "string") {
