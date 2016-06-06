@@ -29,7 +29,7 @@ define(['bc', 'vue', 'text!bc/components/vue/grid-page-bar.html'], function (bc,
 			//count: {type: Number, default: 0, twoWay: false}
 		},
 		data: function () {
-			return {pageNo: 0, pageSize: PAGE_SIZES[0], pageCount: 0, count: 0, pageSizes: PAGE_SIZES}
+			return {pageNo: 1, pageSize: PAGE_SIZES[0], pageCount: 0, count: 0, pageSizes: PAGE_SIZES}
 		},
 		created: function () {
 			console.log("pageBar:created");
@@ -44,6 +44,7 @@ define(['bc', 'vue', 'text!bc/components/vue/grid-page-bar.html'], function (bc,
 		methods: {
 			/** 首页、上一页、下一页、尾页 */
 			toPage: function (pageNo) {
+				pageNo = Math.max(1, pageNo); // 最小为第一页
 				if (pageNo == this.pageNo) return;
 				console.log('pageBar.methods.toPage: new=%s, old=%s', pageNo, this.pageNo);
 				this.pageNo = pageNo;
