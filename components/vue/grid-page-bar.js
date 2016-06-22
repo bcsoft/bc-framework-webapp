@@ -54,7 +54,7 @@ define(['bc', 'vue', 'text!bc/components/vue/grid-page-bar.html'], function (bc,
 			changePageSize: function (pageSize) {
 				if (pageSize == this.pageSize) return;
 				console.log('pageBar.methods.changePageSize: new=%s, old=%s', pageSize, this.pageSize);
-				this.pageNo = this.pageNo < 2 ? this.pageNo : ((this.pageNo - 1) * this.pageSize / pageSize + 1);
+				this.pageNo = this.pageNo < 2 ? this.pageNo : Math.floor(((this.pageNo - 1) * this.pageSize / pageSize + 1));
 				this.pageSize = pageSize;
 				this.pageCount = Math.ceil(this.count / this.pageSize);
 				this.$dispatch('reload', 'pageSize', this.pageNo, this.pageSize);
