@@ -145,6 +145,10 @@ bc.grid.export2Excel = function($grid,el) {
 				data = $.extend(data, extras);
 			}
 		}
+		//  如果有search参数则删除掉，避免重复
+		if (data.search) {
+			delete data.search;
+		}
 		
 		//附加排序参数
 		var $sortColumn = $page.find(".bc-grid .header .table td.sortable.asc,.bc-grid .header .table td.sortable.desc");
