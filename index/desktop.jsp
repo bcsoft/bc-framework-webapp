@@ -128,6 +128,6 @@
 	var userCode = '<s:property value="context.user.code" />';
 	var userName = '<s:property value="context.user.name" escapeHtml="false"/>';
 </script>
-<script type="text/javascript" async src="<s:url value='/ui-libs/requirejs/2.1.17/require.min.js' />" data-main="<s:url value='/main%{getText("app.debug") == "true" ? ".debug" : ""}.js' />"></script>
+<script type="text/javascript" async src="<s:url value='/ui-libs/requirejs/2.2.0/require.min.js' />" data-main="<s:url value='/main%{getText("app.debug") == "true" ? ".debug" : ""}.js' />"></script>
 </body>
 </html>
