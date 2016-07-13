@@ -8,6 +8,7 @@ bc.page = {
 	/**创建窗口
 	 * @param {Object} option
 	 * @option {String} url 地址
+	 * @option {String} type 请求的方法 GET|POST|DELETE|PUT|...，默认 POST
 	 * @option {String} mid [可选]对话框的唯一标识id
 	 * @option {String} from [可选]打开此对话框的源对话框的mid
 	 * @option {String} name [可选]任务栏显示的名称或对话框的标题
@@ -43,6 +44,7 @@ bc.page = {
 		logger.debug("newWin:loading html from url=" + option.url);
 		bc.ajax({
 			url: option.url, data: option.data || null,
+			type: option.type || option.method || "POST",
 			dataType: "html",
 			success: function (html) {
 				logger.profile("newWin.ajax." + option.mid);
