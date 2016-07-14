@@ -1003,34 +1003,43 @@ bc.page = {
 
 		//内部处理
 		logger.debug("newWin:loading html from url=" + option.url);
-		bc.ajax({
-			url: option.url, data: option.data || null,
-			type: option.type || option.method || "POST",
-			dataType: "html",
-			success: function (html) {
-				logger.profile("newWin.ajax." + option.mid);
+		if(option.url.indexOf(":") == 0) {  // 前缀":"代表使用 require 加载 (结果被缓存)
+			require(option.url.substr(1).split(","), function success(html) {
+				logger.profile("newWin.require: mid=" + option.mid);
 				var _option = jQuery.extend({}, option);
-				//delete _option.url;
 				_option.html = html;
 				bc.page._createWin(_option);
-			},
-			error: function (request, textStatus, errorThrown) {
-				//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
-				//alert("喔唷，出错啦！");
-				//显示漂亮的错误提示窗口
-				bc.page.showError({
-					url: option.url,
-					more: request.responseText || request.responseHTML,
-					from: "bc.page.newWin->bc.ajax.error"
-				});
+			});
+		}else {
+			bc.ajax({
+				url: option.url, data: option.data || null,
+				type: option.type || option.method || "POST",
+				dataType: "html",
+				success: function (html) {
+					logger.profile("newWin.ajax: mid=" + option.mid);
+					var _option = jQuery.extend({}, option);
+					//delete _option.url;
+					_option.html = html;
+					bc.page._createWin(_option);
+				},
+				error: function (request, textStatus, errorThrown) {
+					//var msg = "bc.ajax: textStatus=" + textStatus + ";errorThrown=" + errorThrown;
+					//alert("喔唷，出错啦！");
+					//显示漂亮的错误提示窗口
+					bc.page.showError({
+						url: option.url,
+						more: request.responseText || request.responseHTML,
+						from: "bc.page.newWin->bc.ajax.error"
+					});
 
-				//删除任务栏对应的dom元素
-				$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
+					//删除任务栏对应的dom元素
+					$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
 
-				//出错后通知任务栏模块加载完毕，避免长期显示加载动画
-				//bc.page.quickbar.loaded(option.mid);
-			}
-		});
+					//出错后通知任务栏模块加载完毕，避免长期显示加载动画
+					//bc.page.quickbar.loaded(option.mid);
+				}
+			});
+		}
 	},
 	/**
 	 * 创建窗口
