@@ -6,9 +6,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title><s:text name="app.title" /></title>
+<title><s:text name="app.title.gf" /></title>
 <script type="text/javascript">var ts = '<s:property value="ts" />';</script>
-<link rel="shortcut icon" type="image/x-icon" href="<s:url value='/bc/libs/themes/default/images/favicon.png'><s:param name='ts' value='ts'/></s:url>"/>
+<link rel="shortcut icon" type="image/x-icon" href="<s:url value='/bc/libs/themes/default/images/logo-gf-48.png'><s:param name='ts' value='ts'/></s:url>"/>
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.9pre/themes/base/jquery-ui.css' />" />	
 <link rel="stylesheet" type="text/css" href="<s:url value='/ui-libs/jquery-ui/1.8.16/themes/%{personalConfig.theme}/jquery-ui.css' />" />	
 <s:if test='%{"true" == getText("app.debug")}'>
@@ -32,8 +32,8 @@
 <div id="desktop" class="bc-desktop">
 	<!-- 系统菜单条 -->
 	<div id="top" class="ui-widget-header unselectable" unselectable="on">
-		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo48.png' />"
-			title='<s:text name="app.title"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:property value="#session.loginTime" />'>
+		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo-gf-48.png' />"
+			title='<s:text name="app.title.gf"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:property value="#session.loginTime" />'>
 		<s:property value="startMenu" escapeHtml="false"/>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
@@ -94,7 +94,7 @@
 	
 	<!-- 任务条 -->
 	<div id="bottom" class="ui-widget-header">
-		<div id="copyrightBar"><a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright" /></a></div>
+		<div id="copyrightBar"><a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright.gf" /></a></div>
 		<div id="quickButtons"></div>
 		<table class="bottomIcons" cellpadding="0" cellspacing="0" border="0">
 			<tr>
@@ -110,7 +110,7 @@
 <script type="text/javascript">
 	bc={};
 	bc.syskey = '<s:text name="app.name" />';
-	bc.title = '<s:text name="app.title"/> v<s:text name="app.version"/>';
+	bc.title = '<s:text name="app.title.gf"/> v<s:text name="app.version"/>';
 	bc.root = "<%=request.getContextPath()%>";
 	bc.debug = <s:text name="app.debug" />;
 	bc.mobile = <s:property value="mobile" />;
