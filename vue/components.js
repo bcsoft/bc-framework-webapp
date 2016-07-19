@@ -522,8 +522,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                     }, 200);
                 },
                 dblclick: function() {
-                    cancelClick = !0, vm.$dispatch("dblclick-row", vm.rows[this.rowIndex], this.rowIndex), 
-                    stopPrope();
+                    cancelClick = !0, vm.$dispatch("dblclick-row", vm.rows[this.rowIndex], this.rowIndex);
                 }
             }, "tr.row"), this.autoLoad && this.reload();
         },
