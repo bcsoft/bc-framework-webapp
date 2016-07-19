@@ -1003,8 +1003,9 @@ bc.page = {
 
 		//内部处理
 		logger.debug("newWin:loading html from url=" + option.url);
-		if(option.url.indexOf(":") == 0) {  // 前缀":"代表使用 require 加载 (结果被缓存)
-			require(option.url.substr(1).split(","), function success(html) {
+		if(!option.url || option.url.indexOf(":") == 0) {  // 前缀":"代表使用 require 加载 (结果被缓存)
+			require(option.url ? option.url.substr(1).split(",") : [], function success(html) {
+				html = html || option.html;
 				logger.profile("newWin.require: mid=" + option.mid);
 				var _option = jQuery.extend({}, option);
 				_option.html = html;
@@ -1064,6 +1065,7 @@ bc.page = {
 			$(bc.page.quickbar.id).find(">a.quickButton[data-mid='" + option.mid + "']").unbind().remove();
 			return;
 		}
+		if(option.data) $dom.data("data", option.data);
 		function _init() {
 			//从dom构建并显示桌面组件
 			var cfg = $dom.attr("data-option");
