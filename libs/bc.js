@@ -450,10 +450,10 @@ jQuery(function($){
 			}
 		}
 	};
-	$.ajaxSetup(defaultAjaxOption);
+	//$.ajaxSetup(defaultAjaxOption);
 	bc.ajax = function(option){
 		option = $.extend({},defaultAjaxOption,option);
-		jQuery.ajax(option);
+		return jQuery.ajax(option);
 	};
 });
 /**
@@ -1111,13 +1111,13 @@ bc.page = {
 				containment: false//"#middle"
 			}));
 			$dom.bind("dialogbeforeclose", function (event, ui) {
-				var status = $dom.data("data-status");
+				var status = $dom.data("data-status") || $dom.data("status");
 				//调用回调函数
 				if (option.beforeClose)
 					return option.beforeClose.call($dom[0], status);
 			}).bind("dialogclose", function (event, ui) {
 				var $this = $(this);
-				var status = $dom.data("data-status");
+				var status = $dom.data("data-status") || $dom.data("status");
 
 				//在ie9，如果内含<object>,$this.remove()会报错,故先处理掉object
 				//ie8试过没问题
@@ -1475,7 +1475,7 @@ bc.page = {
 						$form.find("input[name='e.id']").val(json.id);
 					}
 					//记录已保存状态
-					$page.attr("data-status", "saved").data("data-status", "saved");
+					$page.attr("data-status", "saved").data("data-status", "saved").data("status", "saved");
 
 					//调用回调函数
 					var showMsg = true;
@@ -1507,7 +1507,7 @@ bc.page = {
 					;
 				} else {
 					bc.msg.slide("提交成功！");
-					$page.data("data-status", true);
+					$page.data("data-status", true).data("status", true);
 					$page.dialog("close");
 					return false;
 				}
