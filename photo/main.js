@@ -330,6 +330,7 @@ bc.photo.handler = {
 
 		// 上传
 		$.ajax({
+			type: "post",
 			method: "post",
 			dataType: "json",
 			url: bc.root + "/bc/photo/upload",
