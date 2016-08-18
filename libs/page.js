@@ -42,8 +42,16 @@ bc.page = {
 
 		//内部处理
 		logger.debug("newWin:loading html from url=" + option.url);
-		if(!option.url || option.url.indexOf(":") == 0) {  // 前缀":"代表使用 require 加载 (结果被缓存)
-			require(option.url ? option.url.substr(1).split(",") : [], function success(html) {
+		var isHtml = option.url && (option.url.lastIndexOf(".html") == option.url.length - 5 //  '.html' 结尾
+			|| option.url.lastIndexOf(".htm") == option.url.length - 4);    // '.htm' 结尾
+		var isText = option.url && option.url.indexOf("text!") == 0;        // 'text!' 开头
+		if(!option.url || isText || isHtml) {  // 前缀"text!"、html 和 htm 文件代表使用 require 加载 (结果被缓存)
+			var deps;
+			if (option.url) {
+				if (isText) deps = [option.url];
+				else if (isHtml) deps = ['text!' + option.url]; // html 路径自动添加 text! 前缀
+			} else deps = [];
+			require(deps, function success(html) {
 				html = html || option.html;
 				logger.profile("newWin.require: mid=" + option.mid);
 				var _option = jQuery.extend({}, option);
