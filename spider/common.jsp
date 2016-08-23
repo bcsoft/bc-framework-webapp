@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div title='<s:text name="title"></s:text>' data-type='form'
+<div title='<s:property value="title" />' data-type='form'
 	class="bc-page spider"
 	data-js='<s:url value="/bc/spider/common.css" />,<s:url value="/bc/spider/common.js" />'
 	data-initMethod='bc.spider.init'
