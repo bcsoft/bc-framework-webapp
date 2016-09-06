@@ -111,21 +111,23 @@ bc.grid.export2Excel = function($grid,el) {
 		
 		//导出范围
 		var exportScope = boxPointer.find(":radio:checked[name='exportScope']").val();
-		if(exportScope) data.exportScope=exportScope;
-		
+
 		//分页参数
 		var $pager_seek = $page.find("ul.pager>li.seek");
-		if(paging && data.exportScope != "2"){//视图为分页视图，并且用户没有选择导出范围为"全部"
+		if(paging && exportScope != "2"){//视图为分页视图，并且用户没有选择导出范围为"全部"
 			data["page.pageNo"] = $pager_seek.find("#pageNo").text();
 			data["page.pageSize"] = $pager_seek.parent().find("li.size>a.ui-state-active>span.pageSize").text();
 		}
 
 		// 对分页视图的导出全部作导出限制
-		if(paging && data.exportScope == "2") {
+		if(paging && exportScope == "2") {
 			var totalCount = parseInt($pager_seek.find("#totalCount").text());
-			if(totalCount > VIEW_EXPORT_MAX_COUNT){
+			//console.log("1--" + $page.find("ul.pager>li[data-action=export]").length);
+			//console.log("2--" + $page.find("ul.pager>li[data-action=export]").attr("data-max-count"));
+			var maxCount = parseInt($page.find("ul.pager>li[data-action=export]").attr("data-max-count")) || VIEW_EXPORT_MAX_COUNT;
+			if(totalCount > maxCount){
 				//console.log("totalCount=%d", totalCount);
-				bc.msg.info("系统限制每次最多导出 " + VIEW_EXPORT_MAX_COUNT + " 条数据，当前共有 "
+				bc.msg.info("系统限制每次最多导出 " + maxCount + " 条数据，当前共有 "
 				+ totalCount + " 条数据，已超出限制，无法导出。请先通过条件搜索减少导出数据的条目数！");
 				return false;
 			}
