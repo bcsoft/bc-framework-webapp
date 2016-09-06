@@ -1,6 +1,6 @@
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.2.1 2016-08-19
+ * @version v0.2.2 2016-09-06
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -11,6 +11,7 @@
  *             bc-page-bar
  *             bc-loading
  *             bc-grid
+ * @history v0.2.1 2016-08-19
  * @history v0.2.0 2016-08-15
  * @history v0.1.0 2016-07-08
  */
@@ -40,12 +41,12 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             size: {
                 type: Number,
                 required: !1,
-                "default": DEFAULT.UNIT_EM.SIZE
+                default: DEFAULT.UNIT_EM.SIZE
             },
             unit: {
                 type: String,
                 required: !1,
-                "default": DEFAULT.UNIT_EM.UNIT
+                default: DEFAULT.UNIT_EM.UNIT
             }
         },
         created: function() {
@@ -93,7 +94,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             text: {
                 type: String,
                 required: !1,
-                "default": "　"
+                default: "　"
             },
             iconClass: {
                 type: String,
@@ -135,7 +136,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             },
             value: {
                 required: !1,
-                "default": null
+                default: null
             }
         },
         created: function() {
@@ -159,7 +160,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         }
     });
 }), define("text!bc/vue/search.html", [], function() {
-    return '<div class="bc-vue-search">\r\n	<div class="fuzzy" :style="{\'text-align\': align}">\r\n		<div>\r\n			<span @click.stop="search" class="search ui-icon ui-icon-search" title="执行查询"></span>\r\n			<input debounce="200" @keyup.enter.stop="search" type="text" v-model="fuzzyValue" class="fuzzy ui-widget-content" :placeholder="placeholder" @change.stop>\r\n			<span v-if="advance && advance.length" @click.stop="addCondition" class="add ui-icon ui-icon-plusthick" title="添加特定条件"></span>\r\n		</div>\r\n	</div>\r\n	<div class="advance ui-widget-content" v-if="showAdvance">\r\n		<table cellspacing="0" cellpadding="0">\r\n			<tbody>\r\n				<tr v-for="c in displayList" class="condition">\r\n					<td class="ui-widget-content">\r\n						<select class="id ui-widget-content" v-model="c.id" @change.stop="editCondition(\'id\', c)">\r\n							<option v-for="cfg in advance" :value="cfg.id">{{cfg.label}}</option>\r\n						</select>\r\n					</td>\r\n					<td class="ui-widget-content">\r\n						<select class="operator ui-widget-content" v-model="c.operator" @change.stop="editCondition(\'operator\', c)">\r\n							<option v-for="o in operators(c.id)" :value="o.id">{{o.label}}</option>\r\n						</select>\r\n					</td>\r\n					<td class="ui-widget-content">\r\n						<input debounce="200" type="text" class="value ui-widget-content" v-model="c.value" @keyup.enter.stop="search" @change.stop="editCondition(\'value\', c)">\r\n					</td>\r\n					<td class="ui-widget-content">\r\n						<span @click.stop="deleteCondition($index)" class="delete ui-icon ui-icon-minusthick" title="移除此条件"></span>\r\n					</td>\r\n				</tr>\r\n			</tbody>\r\n		</table>\r\n	</div>\r\n</div>';
+    return '<div class="bc-vue-search">\r\n\t<div class="fuzzy" :style="{\'text-align\': align}">\r\n\t\t<div>\r\n\t\t\t<span @click.stop="search" class="search ui-icon ui-icon-search" title="执行查询"></span>\r\n\t\t\t<input debounce="200" @keyup.enter.stop="search" type="text" v-model="fuzzyValue" class="fuzzy ui-widget-content" :placeholder="placeholder" @change.stop>\r\n\t\t\t<span v-if="advance && advance.length" @click.stop="addCondition" class="add ui-icon ui-icon-plusthick" title="添加特定条件"></span>\r\n\t\t</div>\r\n\t</div>\r\n\t<div class="advance ui-widget-content" v-if="showAdvance">\r\n\t\t<table cellspacing="0" cellpadding="0">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr v-for="c in displayList" class="condition">\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<select class="id ui-widget-content" v-model="c.id" @change.stop="editCondition(\'id\', c)">\r\n\t\t\t\t\t\t\t<option v-for="cfg in advance" :value="cfg.id">{{cfg.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<select class="operator ui-widget-content" v-model="c.operator" @change.stop="editCondition(\'operator\', c)">\r\n\t\t\t\t\t\t\t<option v-for="o in operators(c.id)" :value="o.id">{{o.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<input debounce="200" type="text" class="value ui-widget-content" v-model="c.value" @keyup.enter.stop="search" @change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<span @click.stop="deleteCondition($index)" class="delete ui-icon ui-icon-minusthick" title="移除此条件"></span>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n</div>';
 }), define("css!bc/vue/search", [], function() {}), define("bc/vue/search", [ "vue", "text!bc/vue/search.html", "css!bc/vue/search" ], function(Vue, template) {
     "use strict";
     var FUZZY_ID = "_fuzzy_";
@@ -174,17 +175,17 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             align: {
                 type: String,
                 required: !1,
-                "default": "left"
+                default: "left"
             },
             quick: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             simple: {
                 type: Boolean,
                 required: !1,
-                "default": void 0
+                default: void 0
             },
             value: {
                 type: [ String, Array, Object ],
@@ -193,7 +194,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             advance: {
                 type: Array,
                 required: !1,
-                "default": function() {
+                default: function() {
                     return [];
                 }
             }
@@ -214,7 +215,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             },
             defaultDisplayList: function() {
                 var list = [];
-                if (this.advance) for (var i = 0; i < this.advance.length; i++) this.advance[i]["default"] && list.push({
+                if (this.advance) for (var i = 0; i < this.advance.length; i++) this.advance[i].default && list.push({
                     id: this.advance[i].id,
                     value: this.advance[i].value,
                     operator: this.advance[i].operator || "="
@@ -296,7 +297,9 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             },
             addCondition: function() {
                 this.showAdvance ? this.displayList.push({
-                    operator: "="
+                    id: null,
+                    operator: "=",
+                    value: null
                 }) : (this.initDisplayList(), this.showAdvance = !0);
             },
             deleteCondition: function(index) {
@@ -332,12 +335,12 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             addSn: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             addEmpty: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             }
         },
         computed: {
@@ -351,7 +354,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         }
     });
 }), define("text!bc/vue/page-bar.html", [], function() {
-    return '<ul class="bc-page-bar ui-widget-content ui-widget ui-helper-clearfix">\r\n	<li v-if="refreshable" class="icon ui-state-default ui-corner-all" title="刷新" @click="this.$dispatch(\'change\', \'clickRefresh\', this.pageNo, this.pageSize)">\r\n		<span class="ui-icon ui-icon-refresh"></span>\r\n	</li>\r\n	<template v-if="pageable">\r\n		<li class="icons ui-state-default ui-corner-all">\r\n			<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(1)">\r\n				<span class="ui-icon ui-icon-seek-first" title="首页"></span>\r\n			</a>\r\n			<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(Math.max(this.pageNo - 1, 1))">\r\n				<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>\r\n			</a>\r\n			<span class="pageNo">\r\n				<span>{{pageNo}}</span>/<span>{{pageCount}}</span>(<span>{{count}}</span>)\r\n			</span>\r\n			<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(Math.min(this.pageNo + 1, this.pageCount))">\r\n				<span class="ui-icon ui-icon-seek-next" title="下一页"></span>\r\n			</a>\r\n			<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(this.pageCount)">\r\n				<span class="ui-icon ui-icon-seek-end" title="尾页"></span>\r\n			</a>\r\n		</li>\r\n		<li class="icons ui-state-default ui-corner-all" title="每页显示的数量">\r\n			<a href="#" v-for="s in pageSizes" class="icon ui-state-default ui-corner-all" :class="{\'ui-state-active\': pageSize == s}" @click="changePageSize(s)">\r\n				<span class="pageSize">{{s}}</span>\r\n			</a>\r\n		</li>\r\n	</template>\r\n	<li v-if="exportable" class="icon ui-state-default ui-corner-all" title="导出" @click="this.$dispatch(\'export\', -1)">\r\n		<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>\r\n	</li>\r\n	<li v-if="importable" class="icon ui-state-default ui-corner-all" title="导入" @click="this.$dispatch(\'import\')">\r\n		<span class="ui-icon ui-icon-arrowthickstop-1-n"></span>\r\n	</li>\r\n</ul>';
+    return '<ul class="bc-page-bar ui-widget-content ui-widget ui-helper-clearfix">\r\n\t<li v-if="refreshable" class="icon ui-state-default ui-corner-all" title="刷新" @click="this.$dispatch(\'change\', \'clickRefresh\', this.pageNo, this.pageSize)">\r\n\t\t<span class="ui-icon ui-icon-refresh"></span>\r\n\t</li>\r\n\t<template v-if="pageable">\r\n\t\t<li class="icons ui-state-default ui-corner-all">\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(1)">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-first" title="首页"></span>\r\n\t\t\t</a>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(Math.max(this.pageNo - 1, 1))">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>\r\n\t\t\t</a>\r\n\t\t\t<span class="pageNo">\r\n\t\t\t\t<span>{{pageNo}}</span>/<span>{{pageCount}}</span>(<span>{{count}}</span>)\r\n\t\t\t</span>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(Math.min(this.pageNo + 1, this.pageCount))">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-next" title="下一页"></span>\r\n\t\t\t</a>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(this.pageCount)">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-end" title="尾页"></span>\r\n\t\t\t</a>\r\n\t\t</li>\r\n\t\t<li class="icons ui-state-default ui-corner-all" title="每页显示的数量">\r\n\t\t\t<a href="#" v-for="s in pageSizes" class="icon ui-state-default ui-corner-all" :class="{\'ui-state-active\': pageSize == s}" @click="changePageSize(s)">\r\n\t\t\t\t<span class="pageSize">{{s}}</span>\r\n\t\t\t</a>\r\n\t\t</li>\r\n\t</template>\r\n\t<li v-if="exportable" class="icon ui-state-default ui-corner-all" title="导出" @click="this.$dispatch(\'export\', -1)">\r\n\t\t<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>\r\n\t</li>\r\n\t<li v-if="importable" class="icon ui-state-default ui-corner-all" title="导入" @click="this.$dispatch(\'import\')">\r\n\t\t<span class="ui-icon ui-icon-arrowthickstop-1-n"></span>\r\n\t</li>\r\n</ul>';
 }), define("css!bc/vue/page-bar", [], function() {}), define("bc/vue/page-bar", [ "jquery", "vue", "text!bc/vue/page-bar.html", "css!bc/vue/page-bar" ], function($, Vue, template) {
     "use strict";
     var DEFAULT_PAGE_SIZES = [ 25, 50, 100 ];
@@ -362,44 +365,44 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             pageable: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             pageNo: {
                 type: Number,
                 required: !1,
-                "default": 1
+                default: 1
             },
             pageSize: {
                 type: Number,
                 required: !1,
-                "default": DEFAULT_PAGE_SIZES[0]
+                default: DEFAULT_PAGE_SIZES[0]
             },
             pageSizes: {
                 type: Array,
                 required: !1,
-                "default": function() {
+                default: function() {
                     return DEFAULT_PAGE_SIZES;
                 }
             },
             count: {
                 type: Number,
                 required: !1,
-                "default": 0
+                default: 0
             },
             refreshable: {
                 type: Boolean,
                 required: !1,
-                "default": !0
+                default: !0
             },
             exportable: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             importable: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             }
         },
         data: function() {
@@ -446,27 +449,27 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             size: {
                 type: String,
                 required: !1,
-                "default": "4.5em"
+                default: "4.5em"
             },
             speed: {
                 type: String,
                 required: !1,
-                "default": "1s"
+                default: "1s"
             },
             maskable: {
                 type: Boolean,
                 required: !1,
-                "default": !0
+                default: !0
             },
             countable: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             transparent: {
                 type: Boolean,
                 required: !1,
-                "default": !0
+                default: !0
             }
         },
         data: function() {
@@ -497,7 +500,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         }
     });
 }), define("text!bc/vue/grid.html", [], function() {
-    return '<div class="bc-vue-grid ui-widget-content">\r\n	<!-- 顶部扩展区 -->\r\n	<slot name="top"></slot>\r\n\r\n	<!-- 表头 -->\r\n	<table class="head" :style="{width:\'100%\',position:\'relative\',\'user-select\':\'initial\',left:v.scrollLeft + \'px\'}">\r\n		<colgroup v-ref:cols is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true">\r\n		</colgroup>\r\n		<thead>\r\n			<tr class="main head ui-widget-content">\r\n				<th rowspan="{{headRowspan}}" data-id="_sn" class="sn"><input type="checkbox" v-if="!singleChoice" v-model="v.selectAll" title="{{v.selectAll ? \'点击全部不选择\' : \'点击选择全部\'}}" @change.stop></th>\r\n				<th v-for="c in columns" class="cell text" :class="c.headCellClass" :style="c.headCellStyle" data-id="{{c.id}}" colspan="{{c.children && c.children.length > 0 ? c.children.length : 1}}" rowspan="{{c.children && c.children.length > 0 ? 1 : headRowspan}}">{{c.label}}</th>\r\n				<th rowspan="{{headRowspan}}" data-id="_empty" class="empty"></th>\r\n			</tr>\r\n			<!-- 分组的表头 -->\r\n			<tr class="sub head ui-widget-content" v-if="headRowspan > 1">\r\n				<template v-for="c in columns | filterBy isGroupColumn">\r\n					<th v-for="d in c.children" class="cell text" data-id="{{d.id}}">{{d.label}}</th>\r\n				</template>\r\n			</tr>\r\n		</thead>\r\n	</table>\r\n\r\n	<!-- 数据 -->\r\n	<div class="rows" :style="{overflow:\'auto\',\'user-select\':\'initial\'}" @scroll="v.scrollLeft = -1 * $event.target.scrollLeft">\r\n		<table class="rows" style="width:100%">\r\n			<colgroup is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true"></colgroup>\r\n			<tbody>\r\n				<tr class="row" v-for="r in rows" data-id="{{r.id}}" class="{{r.class}}" :class="{\'ui-state-highlight\': r.selected, \'ui-widget-content\': true}" :style="r.style">\r\n					<td class="sn" data-id="_sn"><span v-if="r.selected" class="ui-icon ui-icon-check"></span>{{$index + 1}}</td>\r\n					<template v-for="c in columns">\r\n						<td v-if="isGroupColumn(c)" v-for="d in c.children" class="cell text" :class="d.rowCellClass" :style="d.rowCellStyle" data-id="{{d.id}}">{{r[d.id]}}</td>\r\n						<td v-if="!isGroupColumn(c)" class="cell text" :class="c.rowCellClass" :style="c.rowCellStyle" data-id="{{c.id}}">{{r[c.id]}}</td>\r\n					</template>\r\n					<td class="empty" data-id="_empty"></td>\r\n				</tr>\r\n			</tbody>\r\n		</table>\r\n	</div>\r\n\r\n	<!-- 分页条 -->\r\n	<bc-page-bar v-if="showPageBar" style="border-width: 1px 0 0 0" :pageable="pageable" :page-no.sync="pageNo" :page-size.sync="pageSize" :page-sizes.sync="pageSizes" :count.sync="count" :refreshable="refreshable" :exportable="exportable" :importable="importable" @change="reload">\r\n	</bc-page-bar>\r\n\r\n	<!-- 加载器 -->\r\n	<bc-loading v-ref:loading v-if="v.loading"></bc-loading>\r\n\r\n	<!-- 底部扩展区 -->\r\n	<slot name="bottom"></slot>\r\n</div>';
+    return '<div class="bc-vue-grid ui-widget-content">\r\n\t<!-- 顶部扩展区 -->\r\n\t<slot name="top"></slot>\r\n\r\n\t<!-- 表头 -->\r\n\t<table class="head" :style="{width:\'100%\',position:\'relative\',\'user-select\':\'initial\',left:v.scrollLeft + \'px\'}">\r\n\t\t<colgroup v-ref:cols is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true">\r\n\t\t</colgroup>\r\n\t\t<thead>\r\n\t\t\t<tr class="main head ui-widget-content">\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_sn" class="sn"><input type="checkbox" v-if="!singleChoice" v-model="v.selectAll" title="{{v.selectAll ? \'点击全部不选择\' : \'点击选择全部\'}}" @change.stop></th>\r\n\t\t\t\t<th v-for="c in columns" class="cell text" :class="c.headCellClass" :style="c.headCellStyle" data-id="{{c.id}}" colspan="{{c.children && c.children.length > 0 ? c.children.length : 1}}" rowspan="{{c.children && c.children.length > 0 ? 1 : headRowspan}}">{{c.label}}</th>\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_empty" class="empty"></th>\r\n\t\t\t</tr>\r\n\t\t\t<!-- 分组的表头 -->\r\n\t\t\t<tr class="sub head ui-widget-content" v-if="headRowspan > 1">\r\n\t\t\t\t<template v-for="c in columns | filterBy isGroupColumn">\r\n\t\t\t\t\t<th v-for="d in c.children" class="cell text" data-id="{{d.id}}">{{d.label}}</th>\r\n\t\t\t\t</template>\r\n\t\t\t</tr>\r\n\t\t</thead>\r\n\t</table>\r\n\r\n\t<!-- 数据 -->\r\n\t<div class="rows" :style="{overflow:\'auto\',\'user-select\':\'initial\'}" @scroll="v.scrollLeft = -1 * $event.target.scrollLeft">\r\n\t\t<table class="rows" style="width:100%">\r\n\t\t\t<colgroup is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true"></colgroup>\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr class="row" v-for="r in rows" data-id="{{r.id}}" class="{{r.class}}" :class="{\'ui-state-highlight\': r.selected, \'ui-widget-content\': true}" :style="r.style">\r\n\t\t\t\t\t<td class="sn" data-id="_sn"><span v-if="r.selected" class="ui-icon ui-icon-check"></span>{{$index + 1}}</td>\r\n\t\t\t\t\t<template v-for="c in columns">\r\n\t\t\t\t\t\t<td v-if="isGroupColumn(c)" v-for="d in c.children" class="cell text" :class="d.rowCellClass" :style="d.rowCellStyle" data-id="{{d.id}}">{{r[d.id]}}</td>\r\n\t\t\t\t\t\t<td v-if="!isGroupColumn(c)" class="cell text" :class="c.rowCellClass" :style="c.rowCellStyle" data-id="{{c.id}}">{{r[c.id]}}</td>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t\t<td class="empty" data-id="_empty"></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n\r\n\t<!-- 分页条 -->\r\n\t<bc-page-bar v-if="showPageBar" style="border-width: 1px 0 0 0" :pageable="pageable" :page-no.sync="pageNo" :page-size.sync="pageSize" :page-sizes.sync="pageSizes" :count.sync="count" :refreshable="refreshable" :exportable="exportable" :importable="importable" @change="reload">\r\n\t</bc-page-bar>\r\n\r\n\t<!-- 加载器 -->\r\n\t<bc-loading v-ref:loading v-if="v.loading"></bc-loading>\r\n\r\n\t<!-- 底部扩展区 -->\r\n\t<slot name="bottom"></slot>\r\n</div>';
 }), define("css!bc/vue/grid", [], function() {}), define("bc/vue/grid", [ "jquery", "vue", "bc/vue/table-col", "bc/vue/page-bar", "text!bc/vue/grid.html", "css!bc/vue/grid", "bc/vue/loading" ], function($, Vue, tableCol, pageBar, template) {
     "use strict";
     var DEFAULT_PAGE_SIZES = [ 25, 50, 100 ];
@@ -508,19 +511,19 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             singleChoice: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             columns: {
                 type: Array,
                 required: !1,
-                "default": function() {
+                default: function() {
                     return [];
                 }
             },
             rows: {
                 type: Array,
                 required: !1,
-                "default": function() {
+                default: function() {
                     return [];
                 }
             },
@@ -534,54 +537,54 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             showPageBar: {
                 type: Boolean,
                 required: !1,
-                "default": !0
+                default: !0
             },
             pageable: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             pageNo: {
                 type: Number,
                 required: !1,
-                "default": 1
+                default: 1
             },
             pageSize: {
                 type: Number,
                 required: !1,
-                "default": DEFAULT_PAGE_SIZES[0]
+                default: DEFAULT_PAGE_SIZES[0]
             },
             pageSizes: {
                 type: Array,
                 required: !1,
-                "default": function() {
+                default: function() {
                     return DEFAULT_PAGE_SIZES;
                 }
             },
             count: {
                 type: Number,
                 required: !1,
-                "default": 0
+                default: 0
             },
             refreshable: {
                 type: Boolean,
                 required: !1,
-                "default": !0
+                default: !0
             },
             exportable: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             importable: {
                 type: Boolean,
                 required: !1,
-                "default": !1
+                default: !1
             },
             autoLoad: {
                 type: Boolean,
                 required: !1,
-                "default": !0
+                default: !0
             }
         },
         computed: {
