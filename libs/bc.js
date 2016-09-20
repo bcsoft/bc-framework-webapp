@@ -2174,7 +2174,7 @@ bc.toolbar = {
 		var $this,value,c;
 		$conditionsForm.find("[data-condition]").each(function(){
 			$this = $(this);
-			if($this.is("input[type='text'],input[type='hidden'],textarea,select")){//文本框、隐藏域、下拉选择框
+			if($this.is("input[type='text'],input[type='date'],input[type='datetime'],input[type='datetime-local'],input[type='month'],input[type='week'],input[type='time'],input[type='hidden'],textarea,select")){//文本框、隐藏域、下拉选择框
 				value = $this.val();
 				c = eval("(" + $this.attr("data-condition") + ")");
 				if(logger.debugEnabled)logger.debug("c1=" + $.toJSON(c));
@@ -2287,7 +2287,7 @@ bc.toolbar = {
 	doAdvanceClean: function(option,target) {
 		// 清除条件框的值
 		var $conditionsForm = $(target).closest(".bc-conditionsForm");
-		$conditionsForm.find("input[type='text'],input[type='hidden'],textarea,select").val("");
+		$conditionsForm.find("input[type='text'],input[type='date'],input[type='datetime'],input[type='datetime-local'],input[type='month'],input[type='week'],input[type='time'],input[type='hidden'],textarea,select").val("");
 		$conditionsForm.find(":checked").each(function(){
 			this.checked = false;
 		});
