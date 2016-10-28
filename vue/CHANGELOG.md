@@ -1,5 +1,16 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.3.0 - 2016-10-28 
+- add rowCellClick event for grid
+- change page-bar and grid components to not set default pageNo and pageSize prop
+- auto copy result files to target dir for build.sh
+- deal fetch error for grid
+- search refactor
+- use fetch API instead of $.ajax for grid
+- add beforeReload callback for grid (return false to cancel reload)
+- add afterReload event for grid
+- add queryKey and mothod prop for grid
+
 ## 0.2.3 - 2016-09-21 
 - bc-grid 组件单元格值增加过滤器配置 (通过 column.filter 配置)
 - bc-grid 组件如果加载数据失败，默认将响应的 responseText 作为提示信息
