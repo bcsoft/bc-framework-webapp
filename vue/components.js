@@ -1,6 +1,6 @@
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.3.0 2016-10-28
+ * @version v0.4.0 2016-11-14
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -11,6 +11,7 @@
  *             bc-page-bar
  *             bc-loading
  *             bc-grid
+ * @history v0.3.0 2016-10-28
  * @history v0.2.3 2016-09-21
  * @history v0.2.2 2016-09-06
  * @history v0.2.1 2016-08-19
@@ -162,9 +163,26 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         }
     });
 }), define("text!bc/vue/search.html", [], function() {
-    return '<div class="bc-vue-search">\r\n\t<div class="fuzzy" :style="{\'text-align\': align}">\r\n\t\t<div>\r\n\t\t\t<span @click.stop="search" class="search ui-icon ui-icon-search" title="执行查询"></span>\r\n\t\t\t<input debounce="200" @keyup.enter.stop="search" type="text" v-model="value" class="fuzzy ui-widget-content" :placeholder="placeholder" @change.stop>\r\n\t\t\t<span v-if="advanceConfig && advanceConfig.length" @click.stop="addCondition" class="add ui-icon ui-icon-plusthick" title="添加特定条件"></span>\r\n\t\t</div>\r\n\t</div>\r\n\t<div class="advance ui-widget-content" v-if="showAdvance">\r\n\t\t<table cellspacing="0" cellpadding="0">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr v-for="c in displayList" class="condition">\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<select class="id ui-widget-content" v-model="c.id" @change.stop="editCondition(\'id\', c)">\r\n\t\t\t\t\t\t\t<option v-for="cfg in advanceConfig" :value="cfg.id">{{cfg.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<select class="operator ui-widget-content" v-model="c.operator" @change.stop="editCondition(\'operator\', c)">\r\n\t\t\t\t\t\t\t<option v-for="o in operators(c.id)" :value="o.id">{{o.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<input debounce="200" type="text" class="value ui-widget-content" v-model="c.value" @keyup.enter.stop="search" @change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<span @click.stop="deleteCondition($index)" class="delete ui-icon ui-icon-minusthick" title="移除此条件"></span>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n</div>';
+    return '<div class="bc-vue-search">\r\n\t<div class="fuzzy" :style="{\'text-align\': align}">\r\n\t\t<div>\r\n\t\t\t<span @click.stop="search" class="search ui-icon ui-icon-search" title="执行查询"></span>\r\n\t\t\t<input debounce="200" @keyup.enter.stop="search" type="text" v-model="value" class="fuzzy ui-widget-content" :placeholder="placeholder" @change.stop>\r\n\t\t\t<span v-if="advanceConfig" @click.stop="toggleAdvance" class="add ui-icon ui-icon-triangle-1-{{showAdvance ? \'n\' : \'s\'}}" title="{{showAdvance ? \'隐藏高级搜索\' : \'显示高级搜索\'}}"></span>\r\n\t\t</div>\r\n\t</div>\r\n\t<div class="advance ui-widget-content" v-if="showAdvance" :style="advanceStyle">\r\n\t\t<ul class="conditions">\r\n\t\t\t<li class="condition" v-for="c in displayConditions">\r\n\t\t\t\t<div class="label">{{c.label}}</div>\r\n\t\t\t\t<div class="value">\r\n\t\t\t\t\t<template v-if="!c.diadic">\r\n\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t\t<template v-if="c.diadic">\r\n\t\t\t\t\t\t<div class="left">\r\n\t\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value[0]"\r\n\t\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value[0]"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t\t</select>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t<div class="center">～</div>\r\n\t\t\t\t\t\t<div class="right">\r\n\t\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value[1]"\r\n\t\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value[1]"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t\t</select>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t</div>\r\n\t\t\t</li>\r\n\t\t</ul>\r\n\t\t<div class="operate ui-widget-content">\r\n\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="search">\r\n\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-search"></span>\r\n\t\t\t\t<span class="ui-button-text">查询</span>\r\n\t\t\t</button>\r\n\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="clearCondition">\r\n\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-minus"></span>\r\n\t\t\t\t<span class="ui-button-text">清空</span>\r\n\t\t\t</button>\r\n\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="showAdvance = false">\r\n\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>\r\n\t\t\t\t<span class="ui-button-text">关闭</span>\r\n\t\t\t</button>\r\n\t\t</div>\r\n\t\t<table cellspacing="0" cellpadding="0" style="display:none">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr v-for="c in displayConditions" class="condition">\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<select class="id ui-widget-content" v-model="c.id" @change.stop="editCondition(\'id\', c)">\r\n\t\t\t\t\t\t\t<option v-for="cfg in advanceConfig.options" :value="cfg.id">{{cfg.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content" style="max-width:7em">\r\n\t\t\t\t\t\t<select class="operator ui-widget-content" v-model="c.operator" @change.stop="editCondition(\'operator\', c)">\r\n\t\t\t\t\t\t\t<option v-for="o in operators(c.id)" :value="o.id">{{o.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<span @click.stop="deleteCondition($index)" class="delete ui-icon ui-icon-minusthick" title="移除此条件"></span>\r\n\t\t\t\t\t\t<span @click.stop="c.value = \'\'" class="clear ui-icon ui-icon-cancel" title="清空条件值"></span>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr class="operate">\r\n\t\t\t\t\t<td class="ui-widget-content" colspan="4">\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="search">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-search"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">查询</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="clearCondition">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-minus"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">清空</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="addCondition">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-plus"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">添加</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="showAdvance = false">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">关闭</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n</div>';
 }), define("css!bc/vue/search", [], function() {}), define("bc/vue/search", [ "vue", "text!bc/vue/search.html", "css!bc/vue/search" ], function(Vue, template) {
     "use strict";
+    function isDiadic(operator) {
+        return /(^\[\]$)|(^\[\)$)|(^\(\]$)|(^\(\)$)/.test(operator);
+    }
+    function initAdvanceOptions(vm) {
+        if (vm.advanceConfig && vm.advanceConfig.options) {
+            vm.displayConditions.length = 0;
+            var cp;
+            vm.advanceConfig.options.forEach(function(option) {
+                if (option.diadic = isDiadic(option.operator), option.value = option.diadic ? [] : "", 
+                option.default !== !1) {
+                    cp = {};
+                    for (var key in option) cp[key] = option[key];
+                    vm.displayConditions.push(cp);
+                }
+            });
+        }
+    }
     var DEFAULT_FUZZY_ID = "fuzzy";
     return Vue.component("bc-search", {
         template: template,
@@ -198,39 +216,37 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                 required: !1
             },
             advanceConfig: {
-                type: Array,
+                type: [ String, Array, Object ],
                 required: !1,
-                default: function() {
-                    return [];
-                }
+                default: null
             }
         },
         data: function() {
             return {
-                displayList: [],
+                displayConditions: [],
                 showAdvance: !1
             };
         },
         computed: {
+            advanceStyle: function() {
+                return this.advanceConfig ? {
+                    maxHeight: this.advanceConfig.maxHeight,
+                    height: this.advanceConfig.height,
+                    width: this.advanceConfig.width,
+                    maxWidth: this.advanceConfig.maxWidth
+                } : null;
+            },
             fuzzyValueObj: function() {
                 return null !== this.value && "" !== this.value ? [ DEFAULT_FUZZY_ID, this.value ] : null;
             },
-            defaultDisplayList: function() {
-                var list = [];
-                if (this.advanceConfig) for (var i = 0; i < this.advanceConfig.length; i++) this.advanceConfig[i].default && list.push({
-                    id: this.advanceConfig[i].id,
-                    value: this.advanceConfig[i].value,
-                    operator: this.advanceConfig[i].operator,
-                    type: this.advanceConfig[i].type
-                });
-                return list;
-            },
             advanceValue_: function() {
-                if (!this.showAdvance || !this.advanceConfig || !this.advanceConfig.length) return null;
-                for (var d, rv, vc = [], i = 0; i < this.displayList.length; i++) d = this.displayList[i], 
-                d.id && d.operator && d.value && (rv = [ d.id, d.value ], d.type && rv.push(d.type), 
-                "=" != d.operator && (d.type || rv.push(null), rv.push(d.operator)), vc.push(rv));
-                return vc.length ? vc : null;
+                if (!this.advanceConfig) return null;
+                var one, value, all = [];
+                return this.displayConditions.forEach(function(d) {
+                    value = Array.isArray(d.value) ? d.value.length ? d.value : null : d.value, d.id && value && (one = [ d.id, d.value ], 
+                    d.type && one.push(d.type), d.operator && (d.type || one.push(null), one.push(d.operator)), 
+                    all.push(one));
+                }), all.length ? all : null;
             },
             advanceValueStr: function() {
                 return this.advanceValue_ ? JSON.stringify(this.advanceValue_) : this.advanceValue_;
@@ -243,32 +259,60 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         created: function() {
             this.$watch("value", function(value, old) {
                 this.change();
-            });
+            }), "string" == typeof this.advanceConfig ? (this.advanceConfig = {
+                url: this.advanceConfig
+            }, this.hasAdvance = !0) : Array.isArray(this.advanceConfig) ? (this.advanceConfig = {
+                options: this.advanceConfig
+            }, this.hasAdvance = !0) : "[object Object]" === Object.prototype.toString.call(this.advanceConfig) ? this.hasAdvance = !0 : (this.advanceConfig = null, 
+            this.hasAdvance = !1), initAdvanceOptions(this);
         },
         watch: {
-            advanceConfig: function(value, old) {
-                this.showAdvance = !1, this.initDisplayList();
-            },
             advanceValueStr: function(value, old) {
                 this.change();
             }
         },
+        ready: function() {
+            $(this.$el).on({
+                mouseover: function() {
+                    $(this).addClass("ui-state-hover");
+                },
+                mouseout: function() {
+                    $(this).removeClass("ui-state-hover");
+                }
+            }, ".operate button");
+        },
+        destroyed: function() {
+            console.log("[search] destroyed"), $(this.$el).off();
+        },
         methods: {
+            toggleAdvance: function() {
+                var vm = this;
+                if (!this.advanceConfig.loading) return this.advanceConfig.options ? void (this.showAdvance = !this.showAdvance) : this.advanceConfig.url ? (vm.advanceConfig.loading = !0, 
+                void fetch(this.advanceConfig.url, {
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8"
+                    },
+                    credentials: "include"
+                }).then(function(res) {
+                    return res.ok ? res.json() : res.text().then(function(msg) {
+                        throw new Error(msg);
+                    });
+                }).then(function(options) {
+                    Array.isArray(options) ? (vm.advanceConfig.options = options, initAdvanceOptions(vm), 
+                    vm.showAdvance = !0) : alert("高级搜索异步返回值不是数组格式！options=%s" + JSON.stringify(options)), 
+                    vm.advanceConfig.loading = !1;
+                }).catch(function(error) {
+                    console.log("[grid] reload error: url=%s, error=%o", vm.url, error);
+                    var msg = error.message || "加载高级搜索配置失败！";
+                    window.bc && bc.msg ? bc.msg.alert(msg) : alert(msg), vm.advanceConfig.loading = !1;
+                })) : void alert("缺少高级搜索的 advanceConfig.url 属性配置");
+            },
             change: function() {
                 this.mixValue = this.mixValue_, this.advanceValue = this.advanceValue_, this.$dispatch("change", this.value, this.advanceValue, this.mixValue), 
                 this.quick && this.$dispatch("search", this.value, this.advanceValue, this.mixValue);
             },
             search: function() {
                 this.$dispatch("search", this.value, this.advanceValue_, this.mixValue_);
-            },
-            initDisplayList: function() {
-                this.displayList.length = 0;
-                for (var i = 0; i < this.defaultDisplayList.length; i++) this.displayList.push({
-                    id: this.defaultDisplayList[i].id,
-                    value: this.defaultDisplayList[i].value,
-                    operator: this.defaultDisplayList[i].operator,
-                    type: this.defaultDisplayList[i].type
-                });
             },
             operators: function(id) {
                 var operators = [ {
@@ -296,15 +340,20 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                 }), operators;
             },
             addCondition: function() {
-                this.showAdvance ? this.displayList.push({
+                this.displayConditions.push({
                     id: null,
                     operator: "=",
                     value: null,
                     type: null
-                }) : (this.initDisplayList(), this.showAdvance = !0);
+                });
             },
             deleteCondition: function(index) {
-                this.displayList.splice(index, 1), this.displayList.length || (this.showAdvance = !1);
+                this.displayConditions.splice(index, 1), this.displayConditions.length || (this.showAdvance = !1);
+            },
+            clearCondition: function() {
+                this.displayConditions.forEach(function(c) {
+                    c.value = "";
+                });
             },
             getConditionConfig: function(id) {
                 if (this.advanceConfig) for (var i = 0; i < this.advanceConfig.length; i++) if (this.advanceConfig[i].id == id) return this.advanceConfig[i];
@@ -315,6 +364,45 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                     condition.value = null;
                     var cfg = this.getConditionConfig(condition.id);
                     condition.type = cfg.type;
+                }
+            },
+            getInputType: function(condition) {
+                switch (condition.type) {
+                  case "datetime":
+                    return "datetime-local";
+
+                  case "datetime-local":
+                    return "datetime-local";
+
+                  case "date":
+                    return "date";
+
+                  case "month":
+                    return "month";
+
+                  case "time":
+                    return "time";
+
+                  case "int":
+                    return "number";
+
+                  case "float":
+                    return "number";
+
+                  case "double":
+                    return "number";
+
+                  case "long":
+                    return "long";
+
+                  case "money":
+                    return "number";
+
+                  case "number":
+                    return "number";
+
+                  default:
+                    return "text";
                 }
             }
         }
@@ -359,7 +447,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         }
     });
 }), define("text!bc/vue/page-bar.html", [], function() {
-    return '<ul class="bc-page-bar ui-widget-content ui-widget ui-helper-clearfix">\r\n\t<li v-if="refreshable" class="icon ui-state-default ui-corner-all" title="刷新" @click="this.$dispatch(\'change\', \'clickRefresh\', this.pageNo, this.pageSize)">\r\n\t\t<span class="ui-icon ui-icon-refresh"></span>\r\n\t</li>\r\n\t<template v-if="pageable">\r\n\t\t<li class="icons ui-state-default ui-corner-all">\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(1)">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-first" title="首页"></span>\r\n\t\t\t</a>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(Math.max((this.pageNo || 1) - 1, 1))">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>\r\n\t\t\t</a>\r\n\t\t\t<span class="pageNo">\r\n\t\t\t\t<span>{{pageNo || 1}}</span>/<span>{{pageCount}}</span>(<span>{{count}}</span>)\r\n\t\t\t</span>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(Math.min((this.pageNo || 1) + 1, this.pageCount))">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-next" title="下一页"></span>\r\n\t\t\t</a>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click="toPage(this.pageCount)">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-end" title="尾页"></span>\r\n\t\t\t</a>\r\n\t\t</li>\r\n\t\t<li class="icons ui-state-default ui-corner-all" title="每页显示的数量">\r\n\t\t\t<a href="#" v-for="s in pageSizes" class="icon ui-state-default ui-corner-all" :class="{\'ui-state-active\': _pageSize == s}" @click="changePageSize(s)">\r\n\t\t\t\t<span class="pageSize">{{s}}</span>\r\n\t\t\t</a>\r\n\t\t</li>\r\n\t</template>\r\n\t<li v-if="exportable" class="icon ui-state-default ui-corner-all" title="导出" @click="this.$dispatch(\'export\', -1)">\r\n\t\t<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>\r\n\t</li>\r\n\t<li v-if="importable" class="icon ui-state-default ui-corner-all" title="导入" @click="this.$dispatch(\'import\')">\r\n\t\t<span class="ui-icon ui-icon-arrowthickstop-1-n"></span>\r\n\t</li>\r\n</ul>';
+    return '<ul class="bc-page-bar ui-widget-content ui-widget ui-helper-clearfix">\r\n\t<li v-if="refreshable" class="icon ui-state-default ui-corner-all" title="刷新" @click="this.$dispatch(\'change\', \'clickRefresh\', this.pageNo, this.pageSize)">\r\n\t\t<span class="ui-icon ui-icon-refresh"></span>\r\n\t</li>\r\n\t<template v-if="pageable">\r\n\t\t<li class="icons ui-state-default ui-corner-all">\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click.prevent.stop="toPage(1)">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-first" title="首页"></span>\r\n\t\t\t</a>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click.prevent.stop="toPage(Math.max((this.pageNo || 1) - 1, 1))">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-prev" title="上一页"></span>\r\n\t\t\t</a>\r\n\t\t\t<span class="pageNo">\r\n\t\t\t\t<span>{{pageNo || 1}}</span>/<span>{{pageCount}}</span>(<span>{{count}}</span>)\r\n\t\t\t</span>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click.prevent.stop="toPage(Math.min((this.pageNo || 1) + 1, this.pageCount))">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-next" title="下一页"></span>\r\n\t\t\t</a>\r\n\t\t\t<a href="#" class="icon ui-state-default ui-corner-all" @click.prevent.stop="toPage(this.pageCount)">\r\n\t\t\t\t<span class="ui-icon ui-icon-seek-end" title="尾页"></span>\r\n\t\t\t</a>\r\n\t\t</li>\r\n\t\t<li class="icons ui-state-default ui-corner-all" title="每页显示的数量">\r\n\t\t\t<a href="#" v-for="s in pageSizes" class="icon ui-state-default ui-corner-all" :class="{\'ui-state-active\': _pageSize == s}" @click.prevent.stop="changePageSize(s)">\r\n\t\t\t\t<span class="pageSize">{{s}}</span>\r\n\t\t\t</a>\r\n\t\t</li>\r\n\t</template>\r\n\t<li v-if="exportable" class="icon ui-state-default ui-corner-all" title="导出" @click="this.$dispatch(\'export\', -1)">\r\n\t\t<span class="ui-icon ui-icon-arrowthickstop-1-s"></span>\r\n\t</li>\r\n\t<li v-if="importable" class="icon ui-state-default ui-corner-all" title="导入" @click="this.$dispatch(\'import\')">\r\n\t\t<span class="ui-icon ui-icon-arrowthickstop-1-n"></span>\r\n\t</li>\r\n</ul>';
 }), define("css!bc/vue/page-bar", [], function() {}), define("bc/vue/page-bar", [ "jquery", "vue", "text!bc/vue/page-bar.html", "css!bc/vue/page-bar" ], function($, Vue, template) {
     "use strict";
     var DEFAULT_PAGE_SIZES = [ 25, 50, 100 ];
@@ -745,4 +833,4 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
 }), function(c) {
     var d = document, a = "appendChild", i = "styleSheet", s = d.createElement("style");
     s.type = "text/css", d.getElementsByTagName("head")[0][a](s), s[i] ? s[i].cssText = c : s[a](d.createTextNode(c));
-}(".bc-vue-search{position:relative;display:inline-block;}.bc-vue-search > .fuzzy > div{display:inline-block;position:relative;}.bc-vue-search > .fuzzy .search{position:absolute;top:50%;margin-top:-8px;left:2px;cursor:pointer;}.bc-vue-search > .fuzzy input.fuzzy{box-sizing:border-box;padding:.34em 18px;width:12em;font-family:inherit;font-size:1em;}.bc-vue-search > .fuzzy .add{position:absolute;top:50%;margin-top:-8px;right:2px;cursor:pointer;}.bc-vue-search > .advance{position:relative;margin-top:-2px;background-image:none;background-color:rgba(255,255,255,0.8);z-index:90;max-height:18em;overflow:auto;}.bc-vue-search > .advance > table{border-collapse:collapse;margin:0.4em;border:0;}.bc-vue-search .condition{position:relative;margin:0.4em;}.bc-vue-search .condition > td{vertical-align:middle;}.bc-vue-search .condition > td > *{padding:.4em;font-family:inherit;font-size:1em;box-sizing:border-box;border-width:0;}.bc-vue-search .condition > td > select{padding-right:1em;}.bc-vue-search .condition .id{min-width:5em;text-align:right;}.bc-vue-search .condition .operator{text-align:center;}.bc-vue-search .condition .value{width:10em;text-align:left;}.bc-vue-search .condition .delete{cursor:pointer;height:16px;}.bc-vue-toolbar{position:relative;padding:0;min-height:2.2em;word-spacing:-0.4em;font-weight:normal;}.bc-vue-toolbar > *{word-spacing:normal;font-family:inherit;font-size:1em;margin:0.2em;}.bc-vue-toolbar > .bc-vue-search{position:absolute;top:0.05em;right:0.06em;}.bc-vue-toolbar > .bc-vue-search:first-child{position:relative;margin-left:0.3em;}.bc-page-bar{clear:both;display:block;margin:0;padding:0;}.bc-page-bar li{list-style:none;cursor:default;position:relative;margin:0.2em;padding:4px 0;float:left;}.bc-page-bar .icon{cursor:pointer;}.bc-page-bar li span.ui-icon{float:left;margin:0 4px;}.bc-page-bar .icons{padding:2px 2px;}.bc-page-bar .icons a.icon{margin:0;border:0;}.bc-page-bar .icons span.ui-icon{margin:2px;}.bc-page-bar li span.pageNo,.bc-page-bar li span.pageSize{float:left;height:16px;font-size:12px;}.bc-page-bar li span.pageNo{margin:2px 4px;cursor:default;}.bc-page-bar li span.pageSize{margin:2px 4px;}.bc-page-bar li a{float:left;display:block;}.bc-vue-loading-container{position:absolute;top:0;left:0;width:100%;height:100%;}.bc-vue-loading-container > .counter,.bc-vue-loading-container > .actor{position:absolute;box-sizing:border-box;top:50%;left:50%;}.bc-vue-loading-container > .counter{width:6em;height:2em;line-height:2em;text-align:center;margin:-1em auto auto -3em;border:none;background:none;}.bc-vue-loading-container > .actor{opacity:0.8;width:3.5em;height:3.5em;margin:-1.75em auto auto -1.75em;border-width:0.5em;border-radius:50%;border-left-color:transparent;border-right-color:transparent;animation:bc-vue-loading-spin 1000ms infinite linear;}.bc-vue-loading-container > .actor.transparent{background:none;}@keyframes bc-vue-loading-spin{100%{transform:rotate(360deg);transform:rotate(360deg);}}.bc-page > .bc-vue-grid,.bc-vue-grid.fillup{position:absolute;top:0;bottom:0;left:0;right:0;overflow:hidden;}.bc-page > .bc-vue-grid,.bc-vue-grid.noborder{border-width:0;}.bc-vue-grid.border{border-width:1px;}.bc-vue-grid > .bc-vue-toolbar{border-width:0 0 1px 0;}.bc-vue-grid{display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;position:relative;font-weight:normal;}.bc-vue-grid > *{flex:none;}.bc-vue-grid > div.rows{flex:1 1 0%;}.bc-vue-grid table.head,.bc-vue-grid table.rows{table-layout:fixed;border-collapse:collapse;}.bc-vue-grid table.rows{margin-bottom:-1px;}.bc-vue-grid tr.head > th{font-weight:inherit;}.bc-vue-grid tr.head,.bc-vue-grid tr.row{height:2em;}.bc-vue-grid td.cell{text-align:left;white-space:normal;word-wrap:break-word;word-break:break-all;}.bc-vue-grid td.sn{text-align:center;cursor:default;}.bc-vue-grid td.sn > .ui-icon-check{display:inline-block;}.bc-vue-grid tr.main.head,.bc-vue-grid tr.row{border-width:1px 0 1px 0;}.bc-vue-grid tr.main.head:first-child,.bc-vue-grid tr.row:first-child,.bc-vue-grid tr.main.head:first-child > th,.bc-vue-grid tr.row:first-child > td{border-top:none;}.bc-vue-grid tr.main.head >:first-child,.bc-vue-grid tr.row >:first-child{border-left:none;}.bc-vue-grid tr.main.head >:last-child,.bc-vue-grid tr.row >:last-child{border-right:none;}.bc-vue-grid tr.head > *,.bc-vue-grid tr.row > *{padding:0;border-width:1px;border-color:inherit;border-style:inherit;}.bc-vue-grid td.cell.text,.bc-vue-grid th.cell.text{padding:0 0.4em;}");
+}(".bc-vue-search{position:relative;display:inline-block;}.bc-vue-search > .fuzzy > div{display:inline-block;position:relative;}.bc-vue-search > .fuzzy .search{position:absolute;top:50%;margin-top:-8px;left:2px;cursor:pointer;}.bc-vue-search > .fuzzy input.fuzzy{box-sizing:border-box;padding:.34em 18px;width:12em;font-family:inherit;font-size:1em;}.bc-vue-search > .fuzzy .add{position:absolute;top:50%;margin-top:-8px;right:2px;cursor:pointer;}.bc-vue-search > .advance{position:relative;margin-top:-2px;background-image:none;z-index:90;overflow:auto;display:flex;flex-direction:column;}.bc-vue-search > .advance > .conditions{border-collapse:collapse;margin:0;padding:0;list-style:none;overflow:auto;flex-grow:1;min-width:20em;}.bc-vue-search .operate{padding:0.4em;border-width:1px 0 0 0;}.bc-vue-search .condition{margin:0.4em;}.bc-vue-search .condition .label{opacity:0.8;}.bc-vue-search .condition .value{position:relative;display:flex;flex-direction:row;}.bc-vue-search .condition .value > div{display:inline-block;}.bc-vue-search .condition .value > div.left,.bc-vue-search .condition .value > div.right{flex-grow:1;background-color:gray;}.bc-vue-search .condition .value input,.bc-vue-search .condition .value select{box-sizing:border-box;min-width:9em;width:100%;padding:.34em 0 .34em .34em;font-family:inherit;font-size:1em;}.bc-vue-search .condition .value input{padding-left:calc(0.34em + 4px);}.bc-vue-search .condition .value .left,.bc-vue-search .condition .value .right{position:relative;}.bc-vue-search .operate button{font-family:inherit;}.bc-vue-toolbar{position:relative;padding:0;min-height:2.2em;word-spacing:-0.4em;font-weight:normal;}.bc-vue-toolbar > *{word-spacing:normal;font-family:inherit;font-size:1em;margin:0.2em;}.bc-vue-toolbar > .bc-vue-search{position:absolute;top:0.05em;right:0.06em;}.bc-vue-toolbar > .bc-vue-search:first-child{position:relative;margin-left:0.3em;}.bc-page-bar{clear:both;display:block;margin:0;padding:0;}.bc-page-bar li{list-style:none;cursor:default;position:relative;margin:0.2em;padding:4px 0;float:left;}.bc-page-bar .icon{cursor:pointer;}.bc-page-bar li span.ui-icon{float:left;margin:0 4px;}.bc-page-bar .icons{padding:2px 2px;}.bc-page-bar .icons a.icon{margin:0;border:0;}.bc-page-bar .icons span.ui-icon{margin:2px;}.bc-page-bar li span.pageNo,.bc-page-bar li span.pageSize{float:left;height:16px;font-size:12px;}.bc-page-bar li span.pageNo{margin:2px 4px;cursor:default;}.bc-page-bar li span.pageSize{margin:2px 4px;}.bc-page-bar li a{float:left;display:block;}.bc-vue-loading-container{position:absolute;top:0;left:0;width:100%;height:100%;}.bc-vue-loading-container > .counter,.bc-vue-loading-container > .actor{position:absolute;box-sizing:border-box;top:50%;left:50%;}.bc-vue-loading-container > .counter{width:6em;height:2em;line-height:2em;text-align:center;margin:-1em auto auto -3em;border:none;background:none;}.bc-vue-loading-container > .actor{opacity:0.8;width:3.5em;height:3.5em;margin:-1.75em auto auto -1.75em;border-width:0.5em;border-radius:50%;border-left-color:transparent;border-right-color:transparent;animation:bc-vue-loading-spin 1000ms infinite linear;}.bc-vue-loading-container > .actor.transparent{background:none;}@keyframes bc-vue-loading-spin{100%{transform:rotate(360deg);transform:rotate(360deg);}}.bc-page > .bc-vue-grid,.bc-vue-grid.fillup{position:absolute;top:0;bottom:0;left:0;right:0;overflow:hidden;}.bc-page > .bc-vue-grid,.bc-vue-grid.noborder{border-width:0;}.bc-vue-grid.border{border-width:1px;}.bc-vue-grid > .bc-vue-toolbar{border-width:0 0 1px 0;}.bc-vue-grid{display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;position:relative;font-weight:normal;}.bc-vue-grid > *{flex:none;}.bc-vue-grid > div.rows{flex:1 1 0%;}.bc-vue-grid table.head,.bc-vue-grid table.rows{table-layout:fixed;border-collapse:collapse;}.bc-vue-grid table.rows{margin-bottom:-1px;}.bc-vue-grid tr.head > th{font-weight:inherit;}.bc-vue-grid tr.head,.bc-vue-grid tr.row{height:2em;}.bc-vue-grid td.cell{text-align:left;white-space:normal;word-wrap:break-word;word-break:break-all;}.bc-vue-grid td.sn{text-align:center;cursor:default;}.bc-vue-grid td.sn > .ui-icon-check{display:inline-block;}.bc-vue-grid tr.main.head,.bc-vue-grid tr.row{border-width:1px 0 1px 0;}.bc-vue-grid tr.main.head:first-child,.bc-vue-grid tr.row:first-child,.bc-vue-grid tr.main.head:first-child > th,.bc-vue-grid tr.row:first-child > td{border-top:none;}.bc-vue-grid tr.main.head >:first-child,.bc-vue-grid tr.row >:first-child{border-left:none;}.bc-vue-grid tr.main.head >:last-child,.bc-vue-grid tr.row >:last-child{border-right:none;}.bc-vue-grid tr.head > *,.bc-vue-grid tr.row > *{padding:0;border-width:1px;border-color:inherit;border-style:inherit;}.bc-vue-grid td.cell.text,.bc-vue-grid th.cell.text{padding:0 0.4em;}");
