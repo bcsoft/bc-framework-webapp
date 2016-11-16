@@ -1,6 +1,6 @@
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.4.0 2016-11-14
+ * @version v0.4.1 2016-11-16
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -11,6 +11,7 @@
  *             bc-page-bar
  *             bc-loading
  *             bc-grid
+ * @history v0.4.0 2016-11-14
  * @history v0.3.0 2016-10-28
  * @history v0.2.3 2016-09-21
  * @history v0.2.2 2016-09-06
@@ -174,7 +175,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             vm.displayConditions.length = 0;
             var cp;
             vm.advanceConfig.options.forEach(function(option) {
-                if (option.diadic = isDiadic(option.operator), option.value = option.diadic ? [] : "", 
+                if (option.diadic = isDiadic(option.operator), option.value = option.diadic ? [] : null, 
                 option.default !== !1) {
                     cp = {};
                     for (var key in option) cp[key] = option[key];
@@ -243,7 +244,9 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                 if (!this.advanceConfig) return null;
                 var one, value, all = [];
                 return this.displayConditions.forEach(function(d) {
-                    value = Array.isArray(d.value) ? d.value.length ? d.value : null : d.value, d.id && value && (one = [ d.id, d.value ], 
+                    d.diadic ? (value = [], "" !== d.value[0] && null !== d.value[0] && void 0 !== d.value[0] && (value[0] = d.value[0]), 
+                    "" !== d.value[1] && null !== d.value[1] && void 0 !== d.value[1] && (value[1] = d.value[1]), 
+                    value.length || (value = null)) : value = "" !== d.value ? d.value : null, d.id && value && (one = [ d.id, value ], 
                     d.type && one.push(d.type), d.operator && (d.type || one.push(null), one.push(d.operator)), 
                     all.push(one));
                 }), all.length ? all : null;
@@ -352,7 +355,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             },
             clearCondition: function() {
                 this.displayConditions.forEach(function(c) {
-                    c.value = "";
+                    c.value = c.diadic ? [] : null;
                 });
             },
             getConditionConfig: function(id) {

@@ -1,5 +1,17 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.4.1 - 2016-11-16 
+- fix empty range value for search
+
+## 0.4.0 - 2016-11-14 
+- fixed search, grid component demo
+- optimise page-bar: not add '#' after url when change
+- search refactor:
+	1. add search, clean, close button
+	2. support date, datetime, month, time, number select
+	3. support range condition. like '[]', '[), '(]', '()'
+	4. can async load advance-config
+
 ## 0.3.0 - 2016-10-28 
 - add rowCellClick event for grid
 - change page-bar and grid components to not set default pageNo and pageSize prop
