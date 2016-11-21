@@ -32,7 +32,7 @@
 <div id="desktop" class="bc-desktop">
 	<!-- 系统菜单条 -->
 	<div id="top" class="ui-widget-header unselectable" unselectable="on">
-		<img class="sysIcon" src="<s:url value='bc/libs/themes/default/images/logo-gf-48.png' />"
+		<img class="sysIcon" src="<s:url value='/bc/libs/themes/default/images/logo-gf-48.png' />"
 			title='<s:text name="app.title.gf"/> v<s:text name="app.version"/>&#10;登录帐号：<s:property value="context.user.name" />(<s:property value="context.user.pname" />)&#10;登录时间：<s:property value="#session.loginTime" />'>
 		<s:property value="startMenu" escapeHtml="false"/>
 		<table class="topIcons" cellpadding="0" cellspacing="0" border="0">
@@ -79,7 +79,7 @@
 					data-order='<s:property value="order" />'
 					data-iconClass='<s:property value="iconClass" />'
 					data-name='<s:property value="name" />'
-					data-url='<s:property value="url" />'>
+					data-url='<s:url value="%{url}" />'>
 					<span class='icon <s:property value="iconClass" />'></span>
 					<span class="text"><s:property value="name" /></span>
 					<s:if test="%{cfg != null && !cfg.trim().isEmpty()}"><pre style="display:none"><s:property value="cfg" /></pre></s:if>
@@ -128,6 +128,6 @@
 	var userCode = '<s:property value="context.user.code" />';
 	var userName = '<s:property value="context.user.name" escapeHtml="false"/>';
 </script>
-<script type="text/javascript" async src="<s:url value='/ui-libs/requirejs/2.2.0/require.min.js' />" data-main="<s:url value='/main%{getText("app.debug") == "true" ? ".debug" : ""}.js' />"></script>
+<script type="text/javascript" async src="<s:url value='/ui-libs/requirejs/2.2.0/require.min.js' />" data-main="<s:url value='/main%{getText("app.debug") == "true" ? ".debug" : ""}.js?v=2' />"></script>
 </body>
 </html>
