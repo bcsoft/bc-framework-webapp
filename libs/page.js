@@ -113,6 +113,8 @@ bc.page = {
 			return;
 		}
 		if(option.data) $dom.data("data", option.data);
+		var params = bc.getUrlParams(option.url);
+		if(params) $dom.data("params", params);
 		function _init() {
 			//从dom构建并显示桌面组件
 			var cfg = $dom.attr("data-option");

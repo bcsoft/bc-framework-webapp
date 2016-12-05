@@ -142,6 +142,31 @@ bc.addParamToUrl=function(url,keyValue){
     }
 };
 
+/** 获取 url 中的参数
+ * @param url {String} url路径, 如 http://127.0.0.1/test?key1=value1&key2=value21&key2=value22
+ * @return {Object} 如 {key1: value1, key2: [value21, value22]}
+ */
+bc.getUrlParams=function(url) {
+	if (!url) return null;
+	var search = url.split('?')[1];
+	if (!search) return null;
+	var params = {};
+	var ps = search.split('&');
+	var kv;
+	for(var i = 0; i < ps.length; i++){
+		kv = ps[i].split('=');
+		// url 解码
+		if(typeof kv[1] !== "undefined") kv[1] = decodeURIComponent(kv[1]);
+
+		if (typeof params[kv[0]] === "undefined") {
+			params[kv[0]] = kv[1];
+		} else {    // 参数名字相同的处理: 转换为数组
+			params[kv[0]] = [].concat(params[kv[0]], kv[1]);
+		}
+	}
+	return params;
+}
+
 /**
  * 格式化数字显示方式
  * 用法
@@ -1074,6 +1099,8 @@ bc.page = {
 			return;
 		}
 		if(option.data) $dom.data("data", option.data);
+		var params = bc.getUrlParams(option.url);
+		if(params) $dom.data("params", params);
 		function _init() {
 			//从dom构建并显示桌面组件
 			var cfg = $dom.attr("data-option");
