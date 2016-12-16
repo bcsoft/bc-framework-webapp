@@ -1,5 +1,8 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.5.1 - 2016-12-16 
+- support cell text ellipsis
+
 ## 0.5.0 - 2016-12-13 
 - add cell title support
 
