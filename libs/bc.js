@@ -166,6 +166,14 @@ bc.getUrlParams=function(url) {
 	}
 	return params;
 }
+/** 删除 url 中的参数
+ * @param url {String} url路径, 如 http://127.0.0.1/test?key1=value1&key2=value21&key2=value22
+ * @return 没有参数的 url，如 http://127.0.0.1/test
+ */
+bc.removeUrlParams=function(url) {
+	if (!url) return null;
+	return url.split('?')[0];
+}
 
 /**
  * 格式化数字显示方式
@@ -1028,14 +1036,14 @@ bc.page = {
 
 		//内部处理
 		logger.debug("newWin:loading html from url=" + option.url);
-		var isHtml = option.url && (option.url.lastIndexOf(".html") == option.url.length - 5 //  '.html' 结尾
-			|| option.url.lastIndexOf(".htm") == option.url.length - 4);    // '.htm' 结尾
-		var isText = option.url && option.url.indexOf("text!") == 0;        // 'text!' 开头
+		var isHtml = /\.html?\??/gi.test(option.url); // 是否是 html 或 htm 文件
+		var isText = /^text!/gi.test(option.url);   // 'text!' 开头
 		if(!option.url || isText || isHtml) {  // 前缀"text!"、html 和 htm 文件代表使用 require 加载 (结果被缓存)
 			var deps;
 			if (option.url) {
-				if (isText) deps = [option.url];
-				else if (isHtml) deps = ['text!' + option.url]; // html 路径自动添加 text! 前缀
+				// 去除 url 参数，避免重复请求 html 或 htm
+				if (isText) deps = [bc.removeUrlParams(option.url)];
+				else if (isHtml) deps = ['text!' + bc.removeUrlParams(option.url)]; // html 路径自动添加 text! 前缀
 			} else deps = [];
 			require(deps, function success(html) {
 				html = html || option.html;
