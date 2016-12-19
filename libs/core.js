@@ -166,6 +166,14 @@ bc.getUrlParams=function(url) {
 	}
 	return params;
 }
+/** 删除 url 中的参数
+ * @param url {String} url路径, 如 http://127.0.0.1/test?key1=value1&key2=value21&key2=value22
+ * @return 没有参数的 url，如 http://127.0.0.1/test
+ */
+bc.removeUrlParams=function(url) {
+	if (!url) return null;
+	return url.split('?')[0];
+}
 
 /**
  * 格式化数字显示方式
