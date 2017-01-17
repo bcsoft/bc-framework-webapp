@@ -1,5 +1,9 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.6.0 - 2017-01-17 
+- change search component theme to classical
+- click any cell to select grid row
+
 ## 0.5.1 - 2016-12-16 
 - support cell text ellipsis
 
