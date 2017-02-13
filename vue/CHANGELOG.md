@@ -1,5 +1,8 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.6.1 - 2017-02-13 
+- add function support for rowCellStyle and rowCellClass with grid component
+
 ## 0.6.0 - 2017-01-17 
 - change search component theme to classical
 - click any cell to select grid row
