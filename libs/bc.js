@@ -483,6 +483,15 @@ jQuery(function($){
 			}
 		}
 	};
+
+	// 添加 JWT 认证头
+	var headers;
+	if(localStorage) {
+		var authorization = localStorage.getItem("authorization");
+		if(authorization) headers = {"Authorization": authorization};
+	}
+	if(headers) defaultAjaxOption.headers = headers;
+
 	//$.ajaxSetup(defaultAjaxOption);
 	bc.ajax = function(option){
 		option = $.extend({},defaultAjaxOption,option);
