@@ -1,6 +1,6 @@
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.6.1 2017-02-13
+ * @version v0.7.0 2017-05-12 
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -773,8 +773,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                         });
                     } else "string" == typeof this.query && (params[this.queryKey] = this.query);
                     var vm = this, url = this.url, settings = {
-                        method: "function" == typeof this.method ? this.method() : this.method || "GET",
-                        credentials: "include"
+                        method: "function" == typeof this.method ? this.method() : this.method || "GET"
                     };
                     if ("POST" == settings.method) settings.headers = {
                         "Content-Type": "application/json;charset=utf-8"
@@ -784,7 +783,9 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                             s.push(key + "=" + params[key]);
                         }), s.length && (url += "?" + s.join("&"));
                     }
-                    return this.beforeReload && this.beforeReload(settings) === !1 ? void (vm.v.loading = !1) : void fetch(url, settings).then(function(res) {
+                    return window && window.localStorage && window.localStorage.authorization ? (settings.headers || (settings.headers = {}), 
+                    settings.headers.Authorization = window.localStorage.authorization) : settings.credentials = "include", 
+                    this.beforeReload && this.beforeReload(settings) === !1 ? void (vm.v.loading = !1) : void fetch(url, settings).then(function(res) {
                         return res.ok ? res.json() : res.text().then(function(msg) {
                             throw new Error(msg);
                         });

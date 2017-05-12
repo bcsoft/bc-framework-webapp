@@ -1,5 +1,8 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.7.0 - 2017-05-12 
+- add CORS support for grid
+
 ## 0.6.1 - 2017-02-13 
 - add function support for rowCellStyle and rowCellClass with grid component
 
