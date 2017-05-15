@@ -1,6 +1,6 @@
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.7.0 2017-05-12 
+ * @version v0.7.2 2017-05-15 
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -712,6 +712,14 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             },
             headRowspan: function() {
                 return this.$refs.cols ? this.$refs.cols.rowspan : 1;
+            },
+            isCorsUrl: function() {
+                var url = this.url.toLowerCase();
+                if (0 === url.indexOf("http://") || 0 === url.indexOf("https://") || 0 === url.indexOf("//")) {
+                    var link = document.createElement("a");
+                    if (link.setAttribute("href", url), link.host !== location.host) return !0;
+                }
+                return !1;
             }
         },
         data: function() {
@@ -783,9 +791,9 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                             s.push(key + "=" + params[key]);
                         }), s.length && (url += "?" + s.join("&"));
                     }
-                    return window && window.localStorage && window.localStorage.authorization ? (settings.headers || (settings.headers = {}), 
+                    return window && window.localStorage && window.localStorage.authorization && this.isCorsUrl ? (settings.headers || (settings.headers = {}), 
                     settings.headers.Authorization = window.localStorage.authorization) : settings.credentials = "include", 
-                    settings.credentials || (settings.credentials = "include"), this.beforeReload && this.beforeReload(settings) === !1 ? void (vm.v.loading = !1) : void fetch(url, settings).then(function(res) {
+                    this.beforeReload && this.beforeReload(settings) === !1 ? void (vm.v.loading = !1) : void fetch(url, settings).then(function(res) {
                         return res.ok ? res.json() : res.text().then(function(msg) {
                             throw new Error(msg);
                         });
