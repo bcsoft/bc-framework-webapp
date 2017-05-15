@@ -785,7 +785,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                     }
                     return window && window.localStorage && window.localStorage.authorization ? (settings.headers || (settings.headers = {}), 
                     settings.headers.Authorization = window.localStorage.authorization) : settings.credentials = "include", 
-                    this.beforeReload && this.beforeReload(settings) === !1 ? void (vm.v.loading = !1) : void fetch(url, settings).then(function(res) {
+                    settings.credentials || (settings.credentials = "include"), this.beforeReload && this.beforeReload(settings) === !1 ? void (vm.v.loading = !1) : void fetch(url, settings).then(function(res) {
                         return res.ok ? res.json() : res.text().then(function(msg) {
                             throw new Error(msg);
                         });
