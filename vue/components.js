@@ -1,6 +1,6 @@
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.7.2 2017-05-15 
+ * @version v0.8.0 2017-05-16
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -798,11 +798,12 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                             throw new Error(msg);
                         });
                     }).then(function(j) {
-                        j.columns && vm.$set("columns", j.columns), j.rows && vm.$set("rows", j.rows), vm.pageable && (j.pageNo && vm.$set("pageNo", j.pageNo), 
+                        Array.isArray(j) ? vm.$set("rows", j) : (j.columns && vm.$set("columns", j.columns), 
+                        j.rows && vm.$set("rows", j.rows), vm.pageable && (j.pageNo && vm.$set("pageNo", j.pageNo), 
                         j.pageSize && vm.$set("pageSize", j.pageSize), j.pageSizes && vm.$set("pageSizes", j.pageSizes), 
                         j.count && vm.$set("count", j.count)), vm.showPageBar && (j.hasOwnProperty("refreshable") && vm.$set("refreshable", j.refreshable), 
                         j.hasOwnProperty("exportable") && vm.$set("exportable", j.exportable), j.hasOwnProperty("importable") && vm.$set("importable", j.importable)), 
-                        j.hasOwnProperty("singleChoice") && vm.$set("singleChoice", j.singleChoice), vm.$dispatch("after-reload", j), 
+                        j.hasOwnProperty("singleChoice") && vm.$set("singleChoice", j.singleChoice)), vm.$dispatch("after-reload", j), 
                         vm.v.loading = !1;
                     }).catch(function(error) {
                         console.log("[grid] reload error: url=%s, error=%o", vm.url, error);
