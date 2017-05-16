@@ -468,13 +468,21 @@ bc.page = {
 						var fnName = this.fnName;
 						//console.log("fnName=", fnName);
 						var scope = $page.data("scope");
-						var fn = scope ? scope[fnName] : bc.getNested(fnName);
-						if(typeof fn == "function") {
-							// 上下文为页面DOM或页面实例
-							return fn.apply(scope && $page.data("scopeType") === "instance" ? scope : $page.get(0), arguments);
-						}else{
-							alert("回调函数没有定义：" + fnName);
+						var fn;
+						if (scope) {
+							if (scope["vm"]) {
+								fn = scope["vm"][fnName];
+								if (typeof fn === "function") return fn.apply(scope["vm"], arguments);
+							} else {
+								fn = scope[fnName];
+								if (typeof fn === "function")
+									return fn.apply($page.data("scopeType") === "instance" ? scope : $page.get(0), arguments);
+							}
+						} else {
+							fn = bc.getNested(fnName);
+							if (typeof fn === "function") return fn.apply($page.get(0), arguments);
 						}
+						alert("回调函数没有定义：" + fnName);
 					}, {fnName: btn.click});
 				}
 			}
