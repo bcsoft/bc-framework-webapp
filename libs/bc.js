@@ -1145,6 +1145,19 @@ bc.page = {
 
 			if (option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
 
+			// 允许 requireJs 模块通过名为 option 的静态对象或方法自定义 data-option 的值，而不是通过 html 模板的 data-option 属性指定
+			if ($dom.data("requirejs")) { // 使用 requireJs 的初始化处理
+				var module_ = arguments[arguments.length - 1];
+				if (module_ && module_.option) {
+					var moduleOption;
+					if (typeof module_.option === "object") moduleOption = JSON.parse(JSON.stringify(module_.option)); // clone
+					else if (typeof module_.option === "function") moduleOption = module_.option.call($dom, cfg);
+
+					// 将自定义的 option 扩展到 cfg 内
+					if (moduleOption) $.extend(cfg, moduleOption);
+				}
+			}
+
 			$dom.dialog($.extend(bc.page._rebuildWinOption.call($dom, cfg), {
 				open: function (event, ui) {
 					var dataType = $dom.attr("data-type");
@@ -1458,13 +1471,21 @@ bc.page = {
 						var fnName = this.fnName;
 						//console.log("fnName=", fnName);
 						var scope = $page.data("scope");
-						var fn = scope ? scope[fnName] : bc.getNested(fnName);
-						if(typeof fn == "function") {
-							// 上下文为页面DOM或页面实例
-							return fn.apply(scope && $page.data("scopeType") === "instance" ? scope : $page.get(0), arguments);
-						}else{
-							alert("回调函数没有定义：" + fnName);
+						var fn;
+						if (scope) {
+							if (scope["vm"]) {
+								fn = scope["vm"][fnName];
+								if (typeof fn === "function") return fn.apply(scope["vm"], arguments);
+							} else {
+								fn = scope[fnName];
+								if (typeof fn === "function")
+									return fn.apply($page.data("scopeType") === "instance" ? scope : $page.get(0), arguments);
+							}
+						} else {
+							fn = bc.getNested(fnName);
+							if (typeof fn === "function") return fn.apply($page.get(0), arguments);
 						}
+						alert("回调函数没有定义：" + fnName);
 					}, {fnName: btn.click});
 				}
 			}
