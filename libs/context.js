@@ -1,7 +1,7 @@
 /**
  * 系统上下文组件
  */
-define(["bc"], function (bc) {
+define(["bc.core"], function (bc) {
 	'use strict';
 	let roles = [];
 
