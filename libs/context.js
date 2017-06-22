@@ -32,6 +32,18 @@ define(["bc.core"], function (bc) {
 			return true;
 		},
 		/**
+		 * 判断当前用户是否拥有指定的任一角色。函数的各个参数视作为角色编码。
+		 *
+		 * @return {Boolean} 拥有指定的任一角色返回 true，否则返回 false。
+		 */
+		isAny: function () {
+			if (arguments.length === 0) return false;
+			for (let i = 0; i < arguments.length; i++) {
+				if (context.roles.indexOf(arguments[i]) !== -1) return true;
+			}
+			return false;
+		},
+		/**
 		 * 所有微服务配置，格式为 {"{ID}": {"name": "Demo 演示", "address": "http://127.0.0.1:9000"}, ...}。
 		 *
 		 * 通过 context.services.{ID}.name|address 获取相应的配置值。
