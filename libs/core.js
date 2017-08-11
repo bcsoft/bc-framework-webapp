@@ -371,13 +371,13 @@ bc.formatTpl = function(source,params){
 bc.print = function(option) {
     var _option = option;
     option = {
-        isOpenNewWinL: false,       //是否在新窗口打开打印界面（默认false）
+        isOpenNewWin: false,       //是否在新窗口打开打印界面（默认false）
         autoPrint: true             //是否自动开始打印（默认true）
     };
     if(typeof _option == "string"){
         option = jQuery.extend(option,{
             url: _option,
-            isOpenNewWinL: (arguments.length > 1 ? arguments[1] : false),
+            isOpenNewWin: (arguments.length > 1 ? arguments[1] : false),
             autoPrint: (arguments.length > 2 ? arguments[2] : true),
             old: true
         });
@@ -452,7 +452,7 @@ bc.print = function(option) {
                 $iframe.attr("src","about:blank");
             });
         }else {// 在新窗口打印
-            var win = window.open(url, "_blank");
+            var win = window.open(option.url, "_blank");
             if(option.autoPrint) win.print();
         }
     }
