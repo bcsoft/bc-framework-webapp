@@ -1954,6 +1954,7 @@ td.value {
 }
 
 td.value input,td.value textarea,td.value div.input {
+	height: 1.6em;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	width: 100%;
@@ -2017,11 +2018,12 @@ td.value div.input .link {
 }
 
 td.value select {
+	height: 1.6em;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	width: 100%;
 	margin: 0;
-	padding: 0;
+	padding: 1px 2px;
 }
 .borderBox {
 	-moz-box-sizing: border-box;
@@ -2038,7 +2040,6 @@ td.value select {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 0;
-	padding: 0;
 }
 
 .webkit .bc-page select[disabled='disabled'] {
