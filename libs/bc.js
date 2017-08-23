@@ -6040,7 +6040,7 @@ bc.file={
 	inline: function(option){
 		//在新窗口中打开文件
 		var url = bc.root + "/bc/file/inline?f=" + option.f;
-		if(option.n) url += "&n=" + option.n;
+		if(option.n) url += "&n=" + encodeURI(option.n);
 		if(option.to) url += "&to=" + option.to;
 		if(option.from) url += "&from=" + option.from;
 		if(option.ptype) url += "&ptype=" + option.ptype;
@@ -6056,7 +6056,7 @@ bc.file={
 	download: function(option){
 		//在新窗口中打开文件
 		var url = bc.root + "/bc/file/download?f=" + option.f;
-		if(option.n) url += "&n=" + option.n;
+		if(option.n) url += "&n=" + encodeURI(option.n);
 		if(option.ptype) url += "&ptype=" + option.ptype;
 		if(option.puid) url += "&puid=" + option.puid;
 		var win = window.open(url, "blank");
