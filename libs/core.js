@@ -416,7 +416,8 @@ bc.print = function(option) {
             var $iframe = $("iframe[name='print']");
             if(!$iframe.length){
                 //console.log("create new iframe for print.");
-                $iframe = $("<iframe name='print' style='display:none'></iframe>").appendTo("body");
+                $iframe = $("<iframe name='print' style='width:0;height:0;visibility:hidden;border:none'></iframe>")
+	                .appendTo("body");
             }
             form.submit();  // 提交表单
 
@@ -443,7 +444,7 @@ bc.print = function(option) {
             var $iframe = $("iframe[name='print']");
             if(!$iframe.length){
                 //console.log("create new iframe for print.");
-                $iframe = $("<iframe name='print' style='display:none'></iframe>").appendTo("body");
+                $iframe = $("<iframe name='print' style='width:0;height:0;visibility:hidden;border:none'></iframe>").appendTo("body");
             }
 
             $iframe.attr("src", option.url);
