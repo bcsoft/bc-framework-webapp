@@ -1,6 +1,6 @@
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.8.0 2017-05-16
+ * @version v0.8.1 2017-09-30
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -100,14 +100,13 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         },
         computed: {
             btnClass: function() {
-                var c, hasText = this.text && "　" != this.text;
-                return c = hasText && this.iconClass ? "ui-button-text-icon-primary" : !hasText && this.iconClass ? "ui-button-icon-only" : (hasText && !this.iconClass, 
+                var hasText = this.text && "　" != this.text;
+                return hasText && this.iconClass ? "ui-button-text-icon-primary" : !hasText && this.iconClass ? "ui-button-icon-only" : (hasText && this.iconClass, 
                 "ui-button-text-only");
             }
         },
         ready: function() {
-            var $el = $(this.$el);
-            $el.on({
+            $(this.$el).on({
                 mouseover: function() {
                     $(this).addClass("ui-state-hover");
                 },
@@ -169,7 +168,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             var cp;
             vm.advanceConfig.options.forEach(function(option) {
                 if (option.diadic = isDiadic(option.operator), option.value = option.diadic ? [] : null, 
-                option.default !== !1) {
+                !1 !== option.default) {
                     cp = {};
                     for (var key in option) cp[key] = option[key];
                     vm.displayConditions.push(cp);
@@ -177,7 +176,6 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             });
         }
     }
-    var DEFAULT_FUZZY_ID = "fuzzy";
     return Vue.component("bc-search", {
         template: template,
         replace: !0,
@@ -231,7 +229,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                 } : null;
             },
             fuzzyValueObj: function() {
-                return null !== this.value && "" !== this.value ? [ DEFAULT_FUZZY_ID, this.value ] : null;
+                return null !== this.value && "" !== this.value ? [ "fuzzy", this.value ] : null;
             },
             advanceValue_: function() {
                 if (!this.advanceConfig) return null;
@@ -248,8 +246,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                 return this.advanceValue_ ? JSON.stringify(this.advanceValue_) : this.advanceValue_;
             },
             mixValue_: function() {
-                var v;
-                return v = this.advanceValue_ ? this.fuzzyValueObj ? [].concat(this.advanceValue_, [ this.fuzzyValueObj ]) : [].concat(this.advanceValue_) : this.fuzzyValueObj ? [ this.fuzzyValueObj ] : null;
+                return this.advanceValue_ ? this.fuzzyValueObj ? [].concat(this.advanceValue_, [ this.fuzzyValueObj ]) : [].concat(this.advanceValue_) : this.fuzzyValueObj ? [ this.fuzzyValueObj ] : null;
             }
         },
         created: function() {
@@ -365,8 +362,6 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             getInputType: function(condition) {
                 switch (condition.type) {
                   case "datetime":
-                    return "datetime-local";
-
                   case "datetime-local":
                     return "datetime-local";
 
@@ -380,11 +375,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                     return "time";
 
                   case "int":
-                    return "number";
-
                   case "float":
-                    return "number";
-
                   case "double":
                     return "number";
 
@@ -392,8 +383,6 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                     return "long";
 
                   case "money":
-                    return "number";
-
                   case "number":
                     return "number";
 
@@ -506,8 +495,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             }
         },
         ready: function() {
-            var $el = $(this.$el);
-            $el.on({
+            $(this.$el).on({
                 mouseover: function() {
                     $(this).addClass("ui-state-hover");
                 },
@@ -526,8 +514,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         },
         methods: {
             toPage: function(pageNo) {
-                pageNo = Math.max(1, pageNo) || 1, pageNo != this._pageNo && (this.pageNo = pageNo, 
-                this.$dispatch("change", "changePageNo", this.pageNo, this.pageSize));
+                (pageNo = Math.max(1, pageNo) || 1) != this._pageNo && (this.pageNo = pageNo, this.$dispatch("change", "changePageNo", this.pageNo, this.pageSize));
             },
             changePageSize: function(pageSize) {
                 pageSize != this._pageSize && (this.pageNo = Math.floor((this._pageNo - 1) * this._pageSize / pageSize + 1), 
@@ -584,9 +571,9 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
             }
         },
         ready: function() {
-            var self = this, max = 11;
+            var self = this;
             setInterval(function() {
-                self.seconds++, self.seconds == max && (self.seconds = 0, self.minutes++, self.minutes == max && (self.minutes = 0));
+                11 == ++self.seconds && (self.seconds = 0, 11 == ++self.minutes && (self.minutes = 0));
             }, 1e3);
         },
         methods: {
@@ -596,7 +583,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
         }
     });
 }), define("text!bc/vue/grid.html", [], function() {
-    return '<div class="bc-vue-grid ui-widget-content">\r\n\t<!-- 顶部扩展区 -->\r\n\t<slot name="top"></slot>\r\n\r\n\t<!-- 表头 -->\r\n\t<table class="head" :style="{width:\'100%\',position:\'relative\',\'user-select\':\'initial\',left:v.scrollLeft + \'px\'}">\r\n\t\t<colgroup v-ref:cols is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true">\r\n\t\t</colgroup>\r\n\t\t<thead>\r\n\t\t\t<tr class="main head ui-widget-content">\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_sn" class="sn"><input type="checkbox" v-if="!singleChoice" v-model="v.selectAll" title="{{v.selectAll ? \'点击全部不选择\' : \'点击选择全部\'}}" @change.stop></th>\r\n\t\t\t\t<th v-for="c in columns" class="cell text" :class="c.headCellClass" :style="c.headCellStyle" data-id="{{c.id}}" colspan="{{c.children && c.children.length > 0 ? c.children.length : 1}}" rowspan="{{c.children && c.children.length > 0 ? 1 : headRowspan}}">{{c.label}}</th>\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_empty" class="empty"></th>\r\n\t\t\t</tr>\r\n\t\t\t<!-- 分组的表头 -->\r\n\t\t\t<tr class="sub head ui-widget-content" v-if="headRowspan > 1">\r\n\t\t\t\t<template v-for="c in columns | filterBy isGroupColumn">\r\n\t\t\t\t\t<th v-for="d in c.children" class="cell text" data-id="{{d.id}}">{{d.label}}</th>\r\n\t\t\t\t</template>\r\n\t\t\t</tr>\r\n\t\t</thead>\r\n\t</table>\r\n\r\n\t<!-- 数据 -->\r\n\t<div class="rows" :style="{overflow:\'auto\',\'user-select\':\'initial\'}" @scroll="v.scrollLeft = -1 * $event.target.scrollLeft">\r\n\t\t<table class="rows" style="width:100%">\r\n\t\t\t<colgroup is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true"></colgroup>\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr class="row" v-for="r in rows" data-id="{{r.id}}" class="{{r.class}}" :class="{\'ui-state-highlight\': r.selected, \'ui-widget-content\': true}"\r\n\t\t\t\t    :style="(typeof rowStyle == \'function\') ? rowStyle(r) : rowStyle">\r\n\t\t\t\t\t<td class="sn" data-id="_sn"><span v-if="r.selected" class="ui-icon ui-icon-check"></span>{{$index + 1}}</td>\r\n\t\t\t\t\t<template v-for="c in columns">\r\n\t\t\t\t\t\t<td v-if="isGroupColumn(c)" v-for="d in c.children" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof d.rowCellClass == \'function\') ? d.rowCellClass(r[d.id], r, d) : d.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof d.rowCellStyle == \'function\') ? d.rowCellStyle(r[d.id], r, d) : d.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[d.id], r, d)" :title="rowCellTitle(r[d.id], r, d)">\r\n\t\t\t\t\t\t\t<template v-if="d.escape !== false">{{rowCellFilter(r[d.id], r, d)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="d.escape === false">{{{rowCellFilter(r[d.id], r, d)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td v-if="!isGroupColumn(c)" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof c.rowCellClass == \'function\') ? c.rowCellClass(r[c.id], r, c) : c.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof c.rowCellStyle == \'function\') ? c.rowCellStyle(r[c.id], r, c) : c.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[c.id], r, c)" :title="rowCellTitle(r[c.id], r, c)">\r\n\t\t\t\t\t\t\t<template v-if="c.escape !== false">{{rowCellFilter(r[c.id], r, c)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="c.escape === false">{{{rowCellFilter(r[c.id], r, c)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t\t<td class="empty" data-id="_empty"></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n\r\n\t<!-- 分页条 -->\r\n\t<bc-page-bar v-if="showPageBar" style="border-width: 1px 0 0 0" :pageable="pageable" :page-no.sync="pageNo" :page-size.sync="pageSize" :page-sizes.sync="pageSizes" :count.sync="count" :refreshable="refreshable" :exportable="exportable" :importable="importable" @change="reload">\r\n\t</bc-page-bar>\r\n\r\n\t<!-- 加载器 -->\r\n\t<bc-loading v-ref:loading v-if="v.loading"></bc-loading>\r\n\r\n\t<!-- 底部扩展区 -->\r\n\t<slot name="bottom"></slot>\r\n</div>';
+    return '<div class="bc-vue-grid ui-widget-content">\r\n\t\x3c!-- 顶部扩展区 --\x3e\r\n\t<slot name="top"></slot>\r\n\r\n\t\x3c!-- 表头 --\x3e\r\n\t<table class="head" :style="{width:\'100%\',position:\'relative\',\'user-select\':\'initial\',left:v.scrollLeft + \'px\'}">\r\n\t\t<colgroup v-ref:cols is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true">\r\n\t\t</colgroup>\r\n\t\t<thead>\r\n\t\t\t<tr class="main head ui-widget-content">\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_sn" class="sn"><input type="checkbox" v-if="!singleChoice" v-model="v.selectAll" title="{{v.selectAll ? \'点击全部不选择\' : \'点击选择全部\'}}" @change.stop></th>\r\n\t\t\t\t<th v-for="c in columns" class="cell text" :class="c.headCellClass" :style="c.headCellStyle" data-id="{{c.id}}" colspan="{{c.children && c.children.length > 0 ? c.children.length : 1}}" rowspan="{{c.children && c.children.length > 0 ? 1 : headRowspan}}">{{c.label}}</th>\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_empty" class="empty"></th>\r\n\t\t\t</tr>\r\n\t\t\t\x3c!-- 分组的表头 --\x3e\r\n\t\t\t<tr class="sub head ui-widget-content" v-if="headRowspan > 1">\r\n\t\t\t\t<template v-for="c in columns | filterBy isGroupColumn">\r\n\t\t\t\t\t<th v-for="d in c.children" class="cell text" data-id="{{d.id}}">{{d.label}}</th>\r\n\t\t\t\t</template>\r\n\t\t\t</tr>\r\n\t\t</thead>\r\n\t</table>\r\n\r\n\t\x3c!-- 数据 --\x3e\r\n\t<div class="rows" :style="{overflow:\'auto\',\'user-select\':\'initial\'}" @scroll="v.scrollLeft = -1 * $event.target.scrollLeft">\r\n\t\t<table class="rows" style="width:100%">\r\n\t\t\t<colgroup is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true"></colgroup>\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr class="row" v-for="r in rows" data-id="{{r.id}}" class="{{r.class}}" :class="{\'ui-state-highlight\': r.selected, \'ui-widget-content\': true}"\r\n\t\t\t\t    :style="(typeof rowStyle == \'function\') ? rowStyle(r) : rowStyle">\r\n\t\t\t\t\t<td class="sn" data-id="_sn"><span v-if="r.selected" class="ui-icon ui-icon-check"></span>{{$index + 1}}</td>\r\n\t\t\t\t\t<template v-for="c in columns">\r\n\t\t\t\t\t\t<td v-if="isGroupColumn(c)" v-for="d in c.children" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof d.rowCellClass == \'function\') ? d.rowCellClass(r[d.id], r, d) : d.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof d.rowCellStyle == \'function\') ? d.rowCellStyle(r[d.id], r, d) : d.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[d.id], r, d)" :title="rowCellTitle(r[d.id], r, d)">\r\n\t\t\t\t\t\t\t<template v-if="d.escape !== false">{{rowCellFilter(r[d.id], r, d)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="d.escape === false">{{{rowCellFilter(r[d.id], r, d)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td v-if="!isGroupColumn(c)" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof c.rowCellClass == \'function\') ? c.rowCellClass(r[c.id], r, c) : c.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof c.rowCellStyle == \'function\') ? c.rowCellStyle(r[c.id], r, c) : c.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[c.id], r, c, $event)" :title="rowCellTitle(r[c.id], r, c)">\r\n\t\t\t\t\t\t\t<template v-if="c.escape !== false">{{rowCellFilter(r[c.id], r, c)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="c.escape === false">{{{rowCellFilter(r[c.id], r, c)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t\t<td class="empty" data-id="_empty"></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n\r\n\t\x3c!-- 分页条 --\x3e\r\n\t<bc-page-bar v-if="showPageBar" style="border-width: 1px 0 0 0" :pageable="pageable" :page-no.sync="pageNo" :page-size.sync="pageSize" :page-sizes.sync="pageSizes" :count.sync="count" :refreshable="refreshable" :exportable="exportable" :importable="importable" @change="reload">\r\n\t</bc-page-bar>\r\n\r\n\t\x3c!-- 加载器 --\x3e\r\n\t<bc-loading v-ref:loading v-if="v.loading"></bc-loading>\r\n\r\n\t\x3c!-- 底部扩展区 --\x3e\r\n\t<slot name="bottom"></slot>\r\n</div>';
 }), define("css!bc/vue/grid", [], function() {}), define("bc/vue/grid", [ "vue", "bc/vue/table-col", "bc/vue/page-bar", "text!bc/vue/grid.html", "css!bc/vue/grid", "bc/vue/loading" ], function(Vue, tableCol, pageBar, template) {
     "use strict";
     var exportForm, DEFAULT_PAGE_SIZES = [ 25, 50, 100 ];
@@ -754,8 +741,7 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                     timer = setTimeout(function() {
                         if (delaying = !1, cancelClick) return void (cancelClick = !1);
                         if (vm.singleChoice) for (var i = 0; i < vm.rows.length; i++) i != rowIndex && vm.rows[i].selected && (vm.rows[i].selected = !1);
-                        var row = vm.rows[rowIndex];
-                        row.hasOwnProperty("selected") ? vm.rows[rowIndex].selected = !vm.rows[rowIndex].selected : vm.$set("rows[" + rowIndex + "].selected", !0), 
+                        vm.rows[rowIndex].hasOwnProperty("selected") ? vm.rows[rowIndex].selected = !vm.rows[rowIndex].selected : vm.$set("rows[" + rowIndex + "].selected", !0), 
                         delaying = !1;
                     }, 200);
                 },
@@ -791,9 +777,10 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                             s.push(key + "=" + params[key]);
                         }), s.length && (url += "?" + s.join("&"));
                     }
-                    return window && window.localStorage && window.localStorage.authorization && this.isCorsUrl ? (settings.headers || (settings.headers = {}), 
+                    if (window && window.localStorage && window.localStorage.authorization && this.isCorsUrl ? (settings.headers || (settings.headers = {}), 
                     settings.headers.Authorization = window.localStorage.authorization) : settings.credentials = "include", 
-                    this.beforeReload && this.beforeReload(settings) === !1 ? void (vm.v.loading = !1) : void fetch(url, settings).then(function(res) {
+                    this.beforeReload && !1 === this.beforeReload(settings)) return void (vm.v.loading = !1);
+                    fetch(url, settings).then(function(res) {
                         return res.ok ? res.json() : res.text().then(function(msg) {
                             throw new Error(msg);
                         });
@@ -823,13 +810,13 @@ define("bc/vue/theme", [ "jquery", "vue" ], function($, Vue) {
                     var args = cfg.slice(1);
                     return args.unshift(value), filter.apply(this, args);
                 }
-                return "function" == typeof column.filter ? column.filter(value, row, column) : void 0;
+                return "function" == typeof column.filter ? column.filter.apply(this, [ value, row, column ]) : void 0;
             },
             rowCellTitle: function(value, row, column) {
                 if (column.title) return "function" == typeof column.title ? column.title(value, row, column) : value;
             },
-            rowCellClick: function(value, row, column) {
-                column.rowCellClick && column.rowCellClick(value, row, column);
+            rowCellClick: function(value, row, column, e) {
+                column.rowCellClick && column.rowCellClick.apply(this, [ value, row, column, e ]);
             },
             getExportForm: function() {
                 return exportForm || (exportForm = $('<form name="bc-vue-grid-exporter" method="get" style="display:none"></form>')[0]), 

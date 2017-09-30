@@ -1,5 +1,8 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.8.1 - 2017-09-30 
+- set grid cell's filter and click function this to vm instance.
+
 ## 0.8.0 - 2017-05-16 
 - grid component supports `JsonArray` responseBody
 
