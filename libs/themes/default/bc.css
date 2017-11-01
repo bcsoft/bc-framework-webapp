@@ -1954,7 +1954,7 @@ td.value {
 }
 
 td.value input,td.value textarea,td.value div.input {
-	height: 1.6em;
+	min-height: 1.6em;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	width: 100%;
