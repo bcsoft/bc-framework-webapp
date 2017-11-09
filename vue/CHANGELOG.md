@@ -1,5 +1,9 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.8.2 - 2017-11-09 
+- Lost rowCellClick $event argument in grid group column
+- Upgrade uglify-js@2.4.x to uglify-es@3.1.x for minified es6
+
 ## 0.8.1 - 2017-09-30 
 - set grid cell's filter and click function this to vm instance.
 
