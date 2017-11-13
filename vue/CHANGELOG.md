@@ -1,5 +1,10 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.9.0 - 2017-11-13 
+- Add box-pointer component
+- Add page-bar-importer component
+- Add page-bar-exporter component
+
 ## 0.8.2 - 2017-11-09 
 - Lost rowCellClick $event argument in grid group column
 - Upgrade uglify-js@2.4.x to uglify-es@3.1.x for minified es6
