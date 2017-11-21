@@ -1,5 +1,9 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.10.0 - 2017-11-21 
+- Add tree component
+- Add cors component
+
 ## 0.9.0 - 2017-11-13 
 - Add box-pointer component
 - Add page-bar-importer component

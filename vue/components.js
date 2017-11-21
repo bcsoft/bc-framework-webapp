@@ -835,7 +835,7 @@ define('bc/vue/page-bar-importer',[
 			// 上传文件
 			upload: function(file){
 				if(!file) return;
-				console.log("name=" + file.name + ", type=" + file.type + ", size=" + file.size);
+				//console.log("name=" + file.name + ", type=" + file.type + ", size=" + file.size);
 
 				this.processing = this.loading = true;
 
@@ -1191,6 +1191,55 @@ define('bc/vue/page-bar',[
 		}
 	});
 });
+/**
+ * 跨域访问方法封装。
+ * 
+ * cors('my-url', 'GET')
+ * .then(data -> {...})  // 2xx 响应时
+ * .catch(error -> {...}) // error 或非 2xx 响应
+ */
+define('bc/vue/cors',[], function () {
+	"use strict";
+
+  function getAuthorizationHeaders() {
+    return {"Authorization": localStorage.authorization};
+	}
+
+  /** 跨域访问方法封装 */
+  function cors(url, method, body, contentType) {
+    let options = {headers: getAuthorizationHeaders()};
+    if (method) options.method = method;
+    if (body) options.body = body;
+    if (contentType) options.headers["Content-Type"] = contentType;
+    return fetch(url, options).then(function (res) {
+      return res.ok ? (res.status === 204 ? null : res.json()) : res.text().then(function (msg) {
+        throw new Error(msg)
+      });
+    });
+	}
+
+  // 附加 URL 参数
+  function appendUrlParams(url, params) {
+    if (!params) return url;
+
+    let kv = [];
+    for (let key in params) kv.push(key + '=' + encodeURIComponent(params[key]));
+    if (kv.length) url += (url.indexOf('?') !== -1 ? '&' : '?') + kv.join('&');
+    return url;
+	}
+	
+	return {
+		get: function(url){
+			return cors(url, 'GET');
+		},
+		post: function(url, body, contentType){
+			return cors(url, 'POST', body, contentType);
+		},
+		appendUrlParams: function(url, params){
+			return appendUrlParams(url, params);
+		}
+	};
+});
 
 define('text!bc/vue/grid.html',[],function () { return '<div class="bc-vue-grid ui-widget-content">\r\n\t<!-- 顶部扩展区 -->\r\n\t<slot name="top"></slot>\r\n\r\n\t<!-- 表头 -->\r\n\t<table class="head" :style="{width:\'100%\',position:\'relative\',\'user-select\':\'initial\',left:v.scrollLeft + \'px\'}">\r\n\t\t<colgroup v-ref:cols is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true">\r\n\t\t</colgroup>\r\n\t\t<thead>\r\n\t\t\t<tr class="main head ui-widget-content">\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_sn" class="sn"><input type="checkbox" v-if="!singleChoice" v-model="v.selectAll" title="{{v.selectAll ? \'点击全部不选择\' : \'点击选择全部\'}}" @change.stop></th>\r\n\t\t\t\t<th v-for="c in columns" class="cell text" :class="c.headCellClass" :style="c.headCellStyle" data-id="{{c.id}}" colspan="{{c.children && c.children.length > 0 ? c.children.length : 1}}" rowspan="{{c.children && c.children.length > 0 ? 1 : headRowspan}}">{{c.label}}</th>\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_empty" class="empty"></th>\r\n\t\t\t</tr>\r\n\t\t\t<!-- 分组的表头 -->\r\n\t\t\t<tr class="sub head ui-widget-content" v-if="headRowspan > 1">\r\n\t\t\t\t<template v-for="c in columns | filterBy isGroupColumn">\r\n\t\t\t\t\t<th v-for="d in c.children" class="cell text" data-id="{{d.id}}">{{d.label}}</th>\r\n\t\t\t\t</template>\r\n\t\t\t</tr>\r\n\t\t</thead>\r\n\t</table>\r\n\r\n\t<!-- 数据 -->\r\n\t<div class="rows" :style="{overflow:\'auto\',\'user-select\':\'initial\'}" @scroll="v.scrollLeft = -1 * $event.target.scrollLeft">\r\n\t\t<table class="rows" style="width:100%">\r\n\t\t\t<colgroup is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true"></colgroup>\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr class="row" v-for="r in rows" data-id="{{r.id}}" class="{{r.class}}" :class="{\'ui-state-highlight\': r.selected, \'ui-widget-content\': true}"\r\n\t\t\t\t    :style="(typeof rowStyle == \'function\') ? rowStyle(r) : rowStyle">\r\n\t\t\t\t\t<td class="sn" data-id="_sn"><span v-if="r.selected" class="ui-icon ui-icon-check"></span>{{$index + 1}}</td>\r\n\t\t\t\t\t<template v-for="c in columns">\r\n\t\t\t\t\t\t<td v-if="isGroupColumn(c)" v-for="d in c.children" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof d.rowCellClass == \'function\') ? d.rowCellClass(r[d.id], r, d) : d.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof d.rowCellStyle == \'function\') ? d.rowCellStyle(r[d.id], r, d) : d.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[d.id], r, d, $event)" :title="rowCellTitle(r[d.id], r, d)">\r\n\t\t\t\t\t\t\t<template v-if="d.escape !== false">{{rowCellFilter(r[d.id], r, d)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="d.escape === false">{{{rowCellFilter(r[d.id], r, d)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td v-if="!isGroupColumn(c)" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof c.rowCellClass == \'function\') ? c.rowCellClass(r[c.id], r, c) : c.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof c.rowCellStyle == \'function\') ? c.rowCellStyle(r[c.id], r, c) : c.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[c.id], r, c, $event)" :title="rowCellTitle(r[c.id], r, c)">\r\n\t\t\t\t\t\t\t<template v-if="c.escape !== false">{{rowCellFilter(r[c.id], r, c)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="c.escape === false">{{{rowCellFilter(r[c.id], r, c)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t\t<td class="empty" data-id="_empty"></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n\r\n\t<!-- 分页条 -->\r\n\t<bc-page-bar v-if="showPageBar" style="border-width: 1px 0 0 0" :pageable="pageable" :page-no.sync="pageNo" \r\n\t\t:page-size.sync="pageSize" :page-sizes.sync="pageSizes" :count.sync="count" :refreshable="refreshable"\r\n\t\t:exportable="exportable" :importable="importable" @change="reload">\r\n\t\t<!-- 分页条扩展按钮 -->\r\n\t\t<slot name="page-bar-button"></slot>\r\n\t</bc-page-bar>\r\n\r\n\t<!-- 加载器 -->\r\n\t<bc-loading v-ref:loading v-if="v.loading"></bc-loading>\r\n\r\n\t<!-- 底部扩展区 -->\r\n\t<slot name="bottom"></slot>\r\n</div>';});
 
@@ -1485,9 +1534,213 @@ define('bc/vue/grid',[
 		}
 	});
 });
+
+define('text!bc/vue/tree.html',[],function () { return '<div class="bc-vue-tree ui-widget-content">\r\n\t<div class="self" :class="{\'ui-state-hover\': hover, \'ui-state-focus\': selected}"\r\n\t\t@mouseenter="hover = true" @mouseleave="hover = false" @click="clickMe">\r\n\t\t<span class="indent" :style="{width: (depth * 16) + \'px\'}"></span>\r\n\t\t<span @click.stop="toggle" class="toggle ui-icon"\r\n\t\t\t:class="collapsed ? \'ui-icon-triangle-1-e\' : \'ui-icon-triangle-1-se\'"\r\n\t\t\t:style="{visibility: leaf ? \'hidden\' : \'visible\'}">\r\n\t\t</span>\r\n\t\t<span class="icon ui-icon {{iconClass}}"></span>\r\n\t\t<span class="label">{{label || id}}</span>\r\n\t</div>\r\n\t<div v-if="!leaf && !collapsed" class="children">\r\n\t\t<bc-tree v-for="item in items" :cfg_="item"/>\r\n\t</div>\r\n</div>';});
+
+
+define('css!bc/vue/tree',[],function(){});
+/**
+ * 树组件
+ * <pre>
+ *   UI 使用：
+ *   <bc-tree children="..." :collapsed="false"/>
+ * 
+ *   参数说明：
+ *   <ul>
+ *     <li>
+ *       1) id {Number, String}: 节点 ID，没有指定时默认为 null，一般只是根节点不指定，子节点必须指定，否则无法判断节点的唯一性。
+ *       2) label {String}：节点显示的文字，不指定时默认取 ID 的字符值代替。
+ *       3) collapsed {Boolean}：节点的折叠状态，true 为折叠、false 为展开；默认为 true。
+ *       4) leaf {Boolean}：是否是叶子节点，默认为 false，代表节点是可展开的。
+ *       5) selected {Boolean}：节点是否处于选中状态，默认为 false。
+ *       6) paramKey {String}：附加到 url 后的参数名称，默认为 pid。
+ *       7) children {Array, String}：子节点列表或获取子节点列表的 URL。
+ *         当为 String 时是指定获取子节点数据的 URL（这时也可使用 url 参数名代替 children 进行配置），
+ *         当为 Array 时是指定静态的子节点数据列表。
+ *           数据格式统一为：[node1, node2, ..., nodeN]
+ *             nodeN: {id, label, collapsed, children: [node1, node2, ..., nodeN]} 或单个 ID 值。
+ *             如：[2017, 2016, {id: 2015, leaf: false, months: [12, 11, ..., 1]]
+ *         当没有配置 children 但 leaf 为 false 时，如果配置了 url 的值，
+ *         则每当展开子节点时，都使用 url?pid=:id 的方式远程加载子节点的数据。
+ *       8) icon {String} 节点的 jq-ui 图标样式名，非叶子节点默认为文件夹图标、叶子节点默认为文档图标。
+ *     </li>
+ *   </ul>
+ * </pre>
+ */
+define('bc/vue/tree',[
+	'jquery', 'vue', 'bc/vue/cors', 'text!bc/vue/tree.html', 'css!bc/vue/tree', 'bc/vue/loading'
+], function ($, Vue, CORS, template) {
+	'use strict';
+	const INDENT = 16;
+
+	// 递归计算节点的深度：顶层节点的深度为 0
+	function caculateDepth(node) {
+		if (node.$parent && node.$parent.isTreeNode)
+			return 1 + caculateDepth(node.$parent);
+		else return 0;
+	}
+
+	// 获取节点所在树的根节点
+	function getRootNode(node) {
+		let p = node.$parent;
+		if (p && p.isTreeNode) return getRootNode(p);
+		else return node;
+	}
+
+	// 获取最接近的祖先节点的 url 配置，没有则返回 null
+	function getClosestUrl(node) {
+		if (!node) return null;
+		let s = typeof (node.children) === 'string';
+		if (node.isTreeRoot || s) return s ? node.children : null;
+		else return getClosestUrl(node.$parent);
+	}
+
+	// 获取最接近的祖先节点的 paramKey 配置，没有则返回 'pid'
+	function getClosestParamKey(node) {
+		if (!node) return 'pid';
+		else return node.paramKey ? node.paramKey : getClosestParamKey(node.$parent);
+	}
+
+	// 获取最接近的祖先节点的 converter 配置，没有则返回 null
+	function getClosestConverter(node) {
+		if (!node) return null;
+		else return node.converter ? node.converter : getClosestConverter(node.$parent);
+	}
+
+	return Vue.component('bc-tree', {
+		name: 'bc-tree',
+		template: template,
+		replace: true,
+		props: {
+			id: { type: [String, Number], required: false, default: null },
+			label: { type: String, required: false, default: null },
+			collapsed: { type: Boolean, required: false, default: true },
+			selected: { type: Boolean, required: false, default: false },
+			icon: { type: String, required: false, default: null },
+			leaf: { type: Boolean, required: false, default: false },
+			children: { type: [Array, String], required: false, default: null },
+
+			url: { type: String, required: false, default: null }, // children 为 string 的特殊情况
+			paramKey: { type: String, required: false, default: null },
+			// 节点值转换器，不配置默认使用父节点的 converter
+			converter: { type: Function, required: false, default: null },
+
+			// 上述所有配置的综合：尽在组件内部使用
+			cfg_: { type: [Object, String, Number], required: false, default: undefined }
+		},
+		data: function () {
+			return {
+				isTreeRoot: false,
+				isTreeNode: true,
+				loading: false,  // 远程数据是否正在加载中
+				hover: false,     // 节点是否处于鼠标悬停状态
+				items: []         // 子节点数据列表
+			}
+		},
+		computed: {
+			// 节点所在的深度：顶层节点的深度为 0
+			depth: function () {
+				return caculateDepth(this);
+			},
+			// 节点图标
+			iconClass: function () {
+				if (this.icon) return this.icon;
+				else return this.leaf ? "ui-icon-document" :
+					(this.collapsed === false ? "ui-icon-folder-open" : "ui-icon-folder-collapsed");
+			}
+		},
+		ready: function () {
+			// 如果使用了综合配置，则拆分到相应的属性中
+			if (typeof (this.cfg_) !== 'undefined') {
+				let convertedCfg = this.convert(this.cfg_);
+				if (typeof (convertedCfg) !== 'object') this.id = convertedCfg;
+				else {
+					for (let k in convertedCfg) Vue.set(this, k, convertedCfg[k]);
+				}
+			}
+
+			// 标记自身是否是根节点
+			this.isTreeRoot = !this.$parent || (this.$parent && this.$parent.isTreeRoot);
+
+			// 如果设置了 url，则将其转换为 children 配置
+			if (this.url) this.children = this.url;
+
+			// 如果设置为选中，则在树根上记录此节点
+			if (this.selected) getRootNode(this).selectedNode = this;
+
+			if (Array.isArray(this.children)) {   // 静态数据
+				this.items = this.children;
+			} else {                              // 远程数据
+				if (!this.collapsed) this.load();
+			}
+		},
+		methods: {
+			convert: function (cfg) {
+				let t = typeof (cfg) === 'object';
+				let converter = (t && cfg.converter) ? cfg.converter : getClosestConverter(this);
+				return converter ? converter.call(this, cfg) : cfg;
+			},
+			// 加载子节点列表数据
+			load: function () {
+				// 避免重复请求
+				if (this.loading) {
+					console.log("[tree] loading...");
+					return;
+				}
+
+				let url = getClosestUrl(this);
+				if (!url) return;
+				if (this.id) {
+					let params = {};
+					params[getClosestParamKey(this)] = this.id;
+					url = CORS.appendUrlParams(url, params);
+				}
+				CORS.get(url)
+					.then(array => {
+						this.loading = false;
+						this.items = array;
+					}).catch(error => {
+						this.loading = false;
+						console.log("[tree] load error: url=%s, error=%o", url, error);
+						var msg = error.message || "[tree] 数据加载失败！";
+						if (window['bc'] && bc.msg) bc.msg.alert(msg);
+						else alert(msg);
+					});
+			},
+			// 折叠展开节点
+			toggle: function () {
+				this.collapsed = !this.collapsed;
+				if (this.collapsed) return;
+
+				// 远程加载数据
+				let url = getClosestUrl(this);
+				if (url) this.load();
+			},
+			// 用户点击节点的处理：选中节点并触发 click-node、change 事件
+			clickMe: function () {
+				// 触发 click-node 事件
+				this.$dispatch("click-node", this);
+
+				if (this.selected) return; // 避免重复触发 change 事件
+				this.selected = true;
+
+				// 解除前一选中节点的选择
+				let treeRoot = getRootNode(this);
+				let preSelectedNode = treeRoot.selectedNode;
+				if (preSelectedNode) preSelectedNode.selected = false;
+
+				// 记录当前结点为新的选择节点
+				treeRoot.selectedNode = this;
+
+				// 触发 change 事件
+				this.$dispatch("change", this, preSelectedNode);
+			}
+		}
+	});
+});
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.9.0 2017-11-13
+ * @version v0.10.0 2017-11-21
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
@@ -1500,14 +1753,15 @@ define('bc/vue/grid',[
  *             bc-page-bar
  *             bc-page-bar-importer
  *             bc-grid
+ *             bc-tree
  */
 define('bc/vue/components',["bc/vue/theme", "bc/vue/button", "bc/vue/button-set", "bc/vue/search"
 	, "bc/vue/toolbar" , "bc/vue/box-pointer", "bc/vue/loading"
-	, "bc/vue/table-col", "bc/vue/page-bar"
-	, "bc/vue/grid"
+	, "bc/vue/table-col", "bc/vue/page-bar", "bc/vue/cors"
+	, "bc/vue/grid", "bc/vue/tree"
 ], function () {
 	return 0;
 });
 
 (function(c){var d=document,a='appendChild',i='styleSheet',s=d.createElement('style');s.type='text/css';d.getElementsByTagName('head')[0][a](s);s[i]?s[i].cssText=c:s[a](d.createTextNode(c));})
-('.bc-vue-search{position:relative;display:inline-block;}.bc-vue-search > .fuzzy > div{display:inline-block;position:relative;}.bc-vue-search > .fuzzy .search{position:absolute;top:50%;margin-top:-8px;left:2px;cursor:pointer;}.bc-vue-search > .fuzzy input.fuzzy{box-sizing:border-box;padding:.34em 18px;width:12em;font-family:inherit;font-size:1em;}.bc-vue-search > .fuzzy .add{position:absolute;top:50%;margin-top:-8px;right:2px;cursor:pointer;}.bc-vue-search > .advance{position:relative;margin-top:-2px;background-image:none;z-index:90;overflow:auto;display:flex;flex-direction:column;}.bc-vue-search > .advance > .conditions{border-collapse:collapse;margin:0;padding:0;list-style:none;overflow:auto;flex-grow:1;min-width:20em;}.bc-vue-search .operate{padding:0.4em;border-width:1px 0 0 0;}.bc-vue-search .condition{margin:0.4em;}.bc-vue-search .condition .label{font-weight:bold;}.bc-vue-search .condition .value{position:relative;display:flex;flex-direction:row;}.bc-vue-search .condition .value > div{display:inline-block;}.bc-vue-search .condition .value > div.left,.bc-vue-search .condition .value > div.right{flex-grow:1;background-color:gray;}.bc-vue-search .condition .value input,.bc-vue-search .condition .value select{box-sizing:border-box;min-width:9em;width:100%;padding:.34em 0 .34em .34em;font-family:inherit;font-size:1em;}.bc-vue-search .condition .value input{padding-left:calc(0.34em + 4px);}.bc-vue-search .condition .value .left,.bc-vue-search .condition .value .right{position:relative;}.bc-vue-search .operate button{font-family:inherit;}.bc-vue-toolbar{position:relative;padding:0;min-height:2.2em;word-spacing:-0.4em;font-weight:normal;}.bc-vue-toolbar > *{word-spacing:normal;font-family:inherit;font-size:1em;margin:0.2em;}.bc-vue-toolbar > .bc-vue-search{position:absolute;top:0.05em;right:0.06em;}.bc-vue-toolbar > .bc-vue-search:first-child{position:relative;margin-left:0.3em;}.bc-box-pointer{position:absolute;z-index:9999;left:0;top:0;border:none;}.bc-box-pointer > .pointer-border{position:absolute;display:block;height:0;width:0;border-width:10px;background:none;}.bc-box-pointer.left-top > .pointer-border{left:0;bottom:-12px;border-color:rgb(252,239,161) transparent transparent transparent;}.bc-box-pointer > .pointer-back{position:absolute;display:block;border:none;height:20px;width:20px;transform:translateY(-24px) rotateZ(45deg);transform-origin:50% 50% 0;}.bc-box-pointer > .box{_height:40px;position:absolute;min-width:6em;min-height:2em;bottom:5px;left:-2px;}.bc-box-pointer > .box > .content{margin:0.25em;cursor:default;}.bc-box-pointer > .box > .close{position:absolute;top:-8px;right:-8px;cursor:pointer;}.bc-vue-loading-container{position:absolute;top:0;left:0;width:100%;height:100%;}.bc-vue-loading-container > .counter,.bc-vue-loading-container > .actor{position:absolute;box-sizing:border-box;top:50%;left:50%;}.bc-vue-loading-container > .counter{width:6em;height:2em;line-height:2em;text-align:center;margin:-1em auto auto -3em;border:none;background:none;}.bc-vue-loading-container > .actor{opacity:0.8;width:3.5em;height:3.5em;margin:-1.75em auto auto -1.75em;border-width:0.5em;border-radius:50%;border-left-color:transparent;border-right-color:transparent;animation:bc-vue-loading-spin 1000ms infinite linear;}.bc-vue-loading-container > .actor.transparent{background:none;}@keyframes bc-vue-loading-spin{100%{transform:rotate(360deg);transform:rotate(360deg);}}.bc-page-bar{clear:both;display:block;margin:0;padding:0;}.bc-page-bar > li{list-style:none;cursor:default;position:relative;margin:0.2em;padding:4px 0;float:left;}.bc-page-bar .icon{cursor:pointer;}.bc-page-bar > li > span.ui-icon{float:left;margin:0 4px;}.bc-page-bar > .icons{padding:2px 2px;}.bc-page-bar > .icons > a.icon{margin:0;border:0;}.bc-page-bar > .icons span.ui-icon{margin:2px;}.bc-page-bar > li span.pageNo,.bc-page-bar > li span.pageSize{float:left;height:16px;font-size:12px;}.bc-page-bar > li span.pageNo{margin:2px 4px;cursor:default;}.bc-page-bar > li span.pageSize{margin:2px 4px;}.bc-page-bar > li > a{float:left;display:block;}.bc-page-bar-importer{position:relative;}.bc-page-bar-importer .info{width:14em;font-weight:normal;padding:5px;border:1px dashed #ccc;}.bc-page-bar-importer .buttons{position:relative;text-align:right;padding:0 4px;}.bc-page-bar-importer .buttons > .button{text-decoration:underline;cursor:pointer;position:relative;margin:auto .25em;}.bc-page-bar-importer .processing{position:absolute;left:0.25em;top:0.25em;right:0.25em;bottom:0.25em;text-align:center;border-style:dashed;line-height:1.5em;display:flex;align-items:center;padding:0.25em;}.bc-page-bar-importer .processing .show-result-detail{text-decoration:underline;cursor:pointer;margin-top:1em;}.bc-page-bar-exporter{position:relative;}.bc-page-bar-exporter .info{width:14em;font-weight:normal;padding:5px;border:1px dashed #ccc;min-height:4.5em;display:flex;align-items:center;}.bc-page-bar-exporter .buttons{position:relative;text-align:right;padding:0 4px;}.bc-page-bar-exporter .buttons > .button{text-decoration:underline;cursor:pointer;position:relative;margin:auto .25em;}.bc-page > .bc-vue-grid,.bc-vue-grid.fillup{position:absolute;top:0;bottom:0;left:0;right:0;overflow:hidden;}.bc-page > .bc-vue-grid,.bc-vue-grid.noborder{border-width:0;}.bc-vue-grid.border{border-width:1px;}.bc-vue-grid > .bc-vue-toolbar{border-width:0 0 1px 0;}.bc-vue-grid{display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;position:relative;font-weight:normal;}.bc-vue-grid > *{flex:none;}.bc-vue-grid > div.rows{flex:1 1 0%;}.bc-vue-grid table.head,.bc-vue-grid table.rows{table-layout:fixed;border-collapse:collapse;}.bc-vue-grid table.rows{margin-bottom:-1px;}.bc-vue-grid tr.head > th{font-weight:inherit;}.bc-vue-grid tr.head,.bc-vue-grid tr.row{height:2em;}.bc-vue-grid td.cell{text-align:left;white-space:normal;word-wrap:break-word;word-break:break-all;}.bc-vue-grid td.sn{text-align:center;cursor:default;}.bc-vue-grid td.sn > .ui-icon-check{display:inline-block;}.bc-vue-grid tr.main.head,.bc-vue-grid tr.row{border-width:1px 0 1px 0;}.bc-vue-grid tr.main.head:first-child,.bc-vue-grid tr.row:first-child,.bc-vue-grid tr.main.head:first-child > th,.bc-vue-grid tr.row:first-child > td{border-top:none;}.bc-vue-grid tr.main.head >:first-child,.bc-vue-grid tr.row >:first-child{border-left:none;}.bc-vue-grid tr.main.head >:last-child,.bc-vue-grid tr.row >:last-child{border-right:none;}.bc-vue-grid tr.head > *,.bc-vue-grid tr.row > *{padding:0;border-width:1px;border-color:inherit;border-style:inherit;}.bc-vue-grid td.cell.text,.bc-vue-grid th.cell.text{padding:0 0.4em;}.bc-vue-grid td.cell.text.ellipsis,.bc-vue-grid th.cell.text.ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}');
+('.bc-vue-search{position:relative;display:inline-block;}.bc-vue-search > .fuzzy > div{display:inline-block;position:relative;}.bc-vue-search > .fuzzy .search{position:absolute;top:50%;margin-top:-8px;left:2px;cursor:pointer;}.bc-vue-search > .fuzzy input.fuzzy{box-sizing:border-box;padding:.34em 18px;width:12em;font-family:inherit;font-size:1em;}.bc-vue-search > .fuzzy .add{position:absolute;top:50%;margin-top:-8px;right:2px;cursor:pointer;}.bc-vue-search > .advance{position:relative;margin-top:-2px;background-image:none;z-index:90;overflow:auto;display:flex;flex-direction:column;}.bc-vue-search > .advance > .conditions{border-collapse:collapse;margin:0;padding:0;list-style:none;overflow:auto;flex-grow:1;min-width:20em;}.bc-vue-search .operate{padding:0.4em;border-width:1px 0 0 0;}.bc-vue-search .condition{margin:0.4em;}.bc-vue-search .condition .label{font-weight:bold;}.bc-vue-search .condition .value{position:relative;display:flex;flex-direction:row;}.bc-vue-search .condition .value > div{display:inline-block;}.bc-vue-search .condition .value > div.left,.bc-vue-search .condition .value > div.right{flex-grow:1;background-color:gray;}.bc-vue-search .condition .value input,.bc-vue-search .condition .value select{box-sizing:border-box;min-width:9em;width:100%;padding:.34em 0 .34em .34em;font-family:inherit;font-size:1em;}.bc-vue-search .condition .value input{padding-left:calc(0.34em + 4px);}.bc-vue-search .condition .value .left,.bc-vue-search .condition .value .right{position:relative;}.bc-vue-search .operate button{font-family:inherit;}.bc-vue-toolbar{position:relative;padding:0;min-height:2.2em;word-spacing:-0.4em;font-weight:normal;}.bc-vue-toolbar > *{word-spacing:normal;font-family:inherit;font-size:1em;margin:0.2em;}.bc-vue-toolbar > .bc-vue-search{position:absolute;top:0.05em;right:0.06em;}.bc-vue-toolbar > .bc-vue-search:first-child{position:relative;margin-left:0.3em;}.bc-box-pointer{position:absolute;z-index:9999;left:0;top:0;border:none;}.bc-box-pointer > .pointer-border{position:absolute;display:block;height:0;width:0;border-width:10px;background:none;}.bc-box-pointer.left-top > .pointer-border{left:0;bottom:-12px;border-color:rgb(252,239,161) transparent transparent transparent;}.bc-box-pointer > .pointer-back{position:absolute;display:block;border:none;height:20px;width:20px;transform:translateY(-24px) rotateZ(45deg);transform-origin:50% 50% 0;}.bc-box-pointer > .box{_height:40px;position:absolute;min-width:6em;min-height:2em;bottom:5px;left:-2px;}.bc-box-pointer > .box > .content{margin:0.25em;cursor:default;}.bc-box-pointer > .box > .close{position:absolute;top:-8px;right:-8px;cursor:pointer;}.bc-vue-loading-container{position:absolute;top:0;left:0;width:100%;height:100%;}.bc-vue-loading-container > .counter,.bc-vue-loading-container > .actor{position:absolute;box-sizing:border-box;top:50%;left:50%;}.bc-vue-loading-container > .counter{width:6em;height:2em;line-height:2em;text-align:center;margin:-1em auto auto -3em;border:none;background:none;}.bc-vue-loading-container > .actor{opacity:0.8;width:3.5em;height:3.5em;margin:-1.75em auto auto -1.75em;border-width:0.5em;border-radius:50%;border-left-color:transparent;border-right-color:transparent;animation:bc-vue-loading-spin 1000ms infinite linear;}.bc-vue-loading-container > .actor.transparent{background:none;}@keyframes bc-vue-loading-spin{100%{transform:rotate(360deg);transform:rotate(360deg);}}.bc-page-bar{clear:both;display:block;margin:0;padding:0;}.bc-page-bar > li{list-style:none;cursor:default;position:relative;margin:0.2em;padding:4px 0;float:left;}.bc-page-bar .icon{cursor:pointer;}.bc-page-bar > li > span.ui-icon{float:left;margin:0 4px;}.bc-page-bar > .icons{padding:2px 2px;}.bc-page-bar > .icons > a.icon{margin:0;border:0;}.bc-page-bar > .icons span.ui-icon{margin:2px;}.bc-page-bar > li span.pageNo,.bc-page-bar > li span.pageSize{float:left;height:16px;font-size:12px;}.bc-page-bar > li span.pageNo{margin:2px 4px;cursor:default;}.bc-page-bar > li span.pageSize{margin:2px 4px;}.bc-page-bar > li > a{float:left;display:block;}.bc-page-bar-importer{position:relative;}.bc-page-bar-importer .info{width:14em;font-weight:normal;padding:5px;border:1px dashed #ccc;}.bc-page-bar-importer .buttons{position:relative;text-align:right;padding:0 4px;}.bc-page-bar-importer .buttons > .button{text-decoration:underline;cursor:pointer;position:relative;margin:auto .25em;}.bc-page-bar-importer .processing{position:absolute;left:0.25em;top:0.25em;right:0.25em;bottom:0.25em;text-align:center;border-style:dashed;line-height:1.5em;display:flex;align-items:center;padding:0.25em;}.bc-page-bar-importer .processing .show-result-detail{text-decoration:underline;cursor:pointer;margin-top:1em;}.bc-page-bar-exporter{position:relative;}.bc-page-bar-exporter .info{width:14em;font-weight:normal;padding:5px;border:1px dashed #ccc;min-height:4.5em;display:flex;align-items:center;}.bc-page-bar-exporter .buttons{position:relative;text-align:right;padding:0 4px;}.bc-page-bar-exporter .buttons > .button{text-decoration:underline;cursor:pointer;position:relative;margin:auto .25em;}.bc-page > .bc-vue-grid,.bc-vue-grid.fillup{position:absolute;top:0;bottom:0;left:0;right:0;overflow:hidden;}.bc-page > .bc-vue-grid,.bc-vue-grid.noborder{border-width:0;}.bc-vue-grid.border{border-width:1px;}.bc-vue-grid > .bc-vue-toolbar{border-width:0 0 1px 0;}.bc-vue-grid{display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;position:relative;font-weight:normal;}.bc-vue-grid > *{flex:none;}.bc-vue-grid > div.rows{flex:1 1 0%;}.bc-vue-grid table.head,.bc-vue-grid table.rows{table-layout:fixed;border-collapse:collapse;}.bc-vue-grid table.rows{margin-bottom:-1px;}.bc-vue-grid tr.head > th{font-weight:inherit;}.bc-vue-grid tr.head,.bc-vue-grid tr.row{height:2em;}.bc-vue-grid td.cell{text-align:left;white-space:normal;word-wrap:break-word;word-break:break-all;}.bc-vue-grid td.sn{text-align:center;cursor:default;}.bc-vue-grid td.sn > .ui-icon-check{display:inline-block;}.bc-vue-grid tr.main.head,.bc-vue-grid tr.row{border-width:1px 0 1px 0;}.bc-vue-grid tr.main.head:first-child,.bc-vue-grid tr.row:first-child,.bc-vue-grid tr.main.head:first-child > th,.bc-vue-grid tr.row:first-child > td{border-top:none;}.bc-vue-grid tr.main.head >:first-child,.bc-vue-grid tr.row >:first-child{border-left:none;}.bc-vue-grid tr.main.head >:last-child,.bc-vue-grid tr.row >:last-child{border-right:none;}.bc-vue-grid tr.head > *,.bc-vue-grid tr.row > *{padding:0;border-width:1px;border-color:inherit;border-style:inherit;}.bc-vue-grid td.cell.text,.bc-vue-grid th.cell.text{padding:0 0.4em;}.bc-vue-grid td.cell.text.ellipsis,.bc-vue-grid th.cell.text.ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.bc-vue-tree .bc-vue-tree.ui-widget-content{border-width:0;}.bc-vue-tree > div.self{position:relative;display:flex;flex-direction:row;border-width:0;cursor:default;line-height:1.8em;}.bc-vue-tree > .self > span{display:inline-block;flex:none;}.bc-vue-tree > .self > span:last-child{flex:1 1 0%;padding-right:0.25em;}.bc-vue-tree > .self > span.ui-icon{margin:calc((1.8em - 16px) / 2) 0;}.bc-page > .bc-vue-tree-view > .bc-vue-toolbar{border-width:0 0 1px 0;}.bc-page > .bc-vue-tree-view > .panel > .bc-vue-tree{border-width:0 1px 0 0;}.bc-page > .bc-vue-tree-view > .panel > .bc-vue-grid{border-width:0;}.bc-page > .bc-vue-tree-view.border > .bc-vue-toolbar{border-width:1px 1px 1px 1px;}.bc-page > .bc-vue-tree-view.border > .panel > .bc-vue-tree{border-width:0 1px 1px 1px;}.bc-page > .bc-vue-tree-view.border > .panel > .bc-vue-grid{border-width:0 1px 1px 0;}.bc-vue-tree-view{display:flex;flex-direction:column;width:100%;height:100%;border:none;font-weight:normal;}.bc-vue-tree-view > .bc-vue-toolbar{flex:none;}.bc-vue-tree-view > .panel{flex:1 1 0%;display:flex;flex-direction:row;}.bc-vue-tree-view > .panel > .bc-vue-tree{flex:none;overflow:auto;min-width:8em;border-top-width:0;}.bc-vue-tree-view > .panel > .bc-vue-grid{flex:1 1 0%;border-top-width:0;border-left-width:0;}');
