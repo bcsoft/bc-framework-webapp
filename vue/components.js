@@ -508,6 +508,8 @@ define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], 
 						return "datetime-local";
 					case 'date':
 						return "date";
+					case 'LocalDate':
+						return "date";
 					case 'month':
 						return "month";
 					case 'time':
