@@ -1565,6 +1565,15 @@ define('css!bc/vue/tree',[],function(){});
  *       8) icon {String} 节点的 jq-ui 图标样式名，非叶子节点默认为文件夹图标、叶子节点默认为文档图标。
  *     </li>
  *   </ul>
+ * 
+ *   根节点事件说明：
+ *   <ul>
+ *     <li>
+ *       1) clickNode 用户用鼠标点击节点后触发，第 1 个参数为用户点击的节点。
+ *       2) change 用户改变节点的选择后触发，第 1 个参数为选择的节点，第 2 个参数为之前选择的节点（无则为 null）。
+ *       3) initialized 首次加载完毕后触发，第 1 个参数为当前选择的节点（无则为 null）。
+ *     </li>
+ *   </ul>
  * </pre>
  */
 define('bc/vue/tree',[
@@ -1575,7 +1584,7 @@ define('bc/vue/tree',[
 
 	// 递归计算节点的深度：顶层节点的深度为 0
 	function caculateDepth(node) {
-		if (node.$parent && node.$parent.isTreeNode)
+		if (node.$parent && node.$parent.isNode)
 			return 1 + caculateDepth(node.$parent);
 		else return 0;
 	}
@@ -1583,7 +1592,7 @@ define('bc/vue/tree',[
 	// 获取节点所在树的根节点
 	function getRootNode(node) {
 		let p = node.$parent;
-		if (p && p.isTreeNode) return getRootNode(p);
+		if (p && p.isNode) return getRootNode(p);
 		else return node;
 	}
 
@@ -1591,7 +1600,7 @@ define('bc/vue/tree',[
 	function getClosestUrl(node) {
 		if (!node) return null;
 		let s = typeof (node.children) === 'string';
-		if (node.isTreeRoot || s) return s ? node.children : null;
+		if (node.isRootNode || s) return s ? node.children : null;
 		else return getClosestUrl(node.$parent);
 	}
 
@@ -1630,8 +1639,8 @@ define('bc/vue/tree',[
 		},
 		data: function () {
 			return {
-				isTreeRoot: false,
-				isTreeNode: true,
+				isRootNode: false,
+				isNode: true,
 				loading: false,  // 远程数据是否正在加载中
 				hover: false,     // 节点是否处于鼠标悬停状态
 				items: []         // 子节点数据列表
@@ -1660,18 +1669,31 @@ define('bc/vue/tree',[
 			}
 
 			// 标记自身是否是根节点
-			this.isTreeRoot = !this.$parent || (this.$parent && this.$parent.isTreeRoot);
+			this.isRootNode = !this.$parent || (this.$parent && !this.$parent.isNode);
+			//console.log("isRootNode=%s", this.isRootNode);
 
 			// 如果设置了 url，则将其转换为 children 配置
 			if (this.url) this.children = this.url;
 
 			// 如果设置为选中，则在树根上记录此节点
-			if (this.selected) getRootNode(this).selectedNode = this;
+			let rootNode = getRootNode(this);
+			if (this.selected) Vue.set(rootNode, 'selectedNode', this);
 
+			// 根据数据加载方式，再数据加载完毕后触发 initialized 事件
 			if (Array.isArray(this.children)) {   // 静态数据
 				this.items = this.children;
+				if (this.isRootNode) Vue.nextTick(() => {
+					this.$dispatch("initialized", rootNode.selectedNode, 'local');
+					if (rootNode.selectedNode) this.$dispatch("change", rootNode.selectedNode, null);
+				});
 			} else {                              // 远程数据
-				if (!this.collapsed) this.load();
+				if (!this.collapsed) {
+					this.load().then(() => {
+						if (this.isRootNode) Vue.nextTick(() => this.$dispatch("initialized", rootNode.selectedNode, 'remote'));
+					});
+				} else {
+					if (this.isRootNode) Vue.nextTick(() => this.$dispatch("initialized", rootNode.selectedNode, false));
+				}
 			}
 		},
 		methods: {
@@ -1695,7 +1717,7 @@ define('bc/vue/tree',[
 					params[getClosestParamKey(this)] = this.id;
 					url = CORS.appendUrlParams(url, params);
 				}
-				CORS.get(url)
+				return CORS.get(url)
 					.then(array => {
 						this.loading = false;
 						this.items = array;
@@ -1713,8 +1735,10 @@ define('bc/vue/tree',[
 				if (this.collapsed) return;
 
 				// 远程加载数据
-				let url = getClosestUrl(this);
-				if (url) this.load();
+				if (!Array.isArray(this.children)) {
+					let url = getClosestUrl(this);
+					if (url) this.load();
+				}
 			},
 			// 用户点击节点的处理：选中节点并触发 click-node、change 事件
 			clickMe: function () {
