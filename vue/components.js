@@ -209,19 +209,29 @@ define('css!bc/vue/search',[],function(){});
  *   <ul>
  *     <li>placeholder {String} [可选] 搜索框未输入信息时的背景文字</li>
  *     <li>value {String} [可选] 模糊搜索的默认值，即搜索框默认输入的文字</li>
- *     <li>advanceValue {Array} [可选] 高级搜索值，格式为 [[id, value[, operator, type]], ...]，operator 默认 '='，type 默认 'string'</li>
- *     <li>mixValue {Array} [可选] 搜索的混合值，包含模糊搜索和高级搜索</li>
+ *     <li>advanceValue {Array} [可选] 高级搜索值，格式为 [[id, value[, type, operator]], ...]，operator 默认 '='，type 默认 'string'</li>
+ *     <li>mixValue {Array} [可选] 搜索的混合值，包含模糊搜索和高级搜索。
+ *         模糊搜索的数据结构为 ['fuzzy', 'val'], 高级搜索的数据结构 advanceValue</li>
  *     <li>quick {Boolean} [可选] 是否即输即搜(输入值变化时就分发搜索事件)，默认 false (按回车键时触发)</li>
  *     <li>align {String} [可选] 高级搜索区出现时与模糊搜索区的对齐方式，left|center|right，默认 left</li>
- *     <li>advanceConfig {Array} [可选] 高级搜索条件的配置，不配置代表无高级搜索功能，格式为：
- *           [{id, label[, type][, default][, value]}[, ...]]
+ *     <li>advanceConfig {Array} [可选] 高级搜索条件的配置，不配置代表无高级搜索功能，可配置为 3 种格式。
+ *       格式1 - 数组类型，指定配置的条件列表：
+ *           [{id, label[, type][, ui][, operator][, hidden][, value]}[, ...]]
  *           <ul>
  *             <li>id {String} 条件的标识符</li>
  *             <li>label {String} 条件的显示文字</li>
- *             <li>type {String} [可选] 值的类型，string|int|float|double|long|date|month|time|datetime|money，默认 string</li>
- *             <li>default {Boolean} [可选] 默认是否显示，默认 false 不显示</li>
+ *             <li>type {String} [可选] 值的类型，string|int|float|double|long|date|month|time|datetime|money，无默认值</li>
+ *             <li>ui {String} [可选] UI 控件类型，现时支持 input 的 text|number|datetime-local|date|time|month，默认 text。
+ *                 对于 number 还可以额外配置 input 控件的 min、max、step 属性值</li>
+ *             <li>hidden {Boolean} [可选] 是否显示此条件，默认 false 显示，通过设置为 true 不显示，实现隐藏条件</li>
  *             <li>value {String} [可选] 默认值</li>
+ *             <li>operator {String} [可选] 操作符号：@ 包含、=、>、>=、<、<=、!=、[]、(]、[)、()、...，无默认值</li>
  *           </ul>
+ *       格式2 - 字符串类型，指定 url，通过异步加载此 url 的内容来获取格式 1 的配置值。
+ *       格式3 - 对象类型，结构为 {height: 15em, options: [...], url: '...'}，
+ *               height 用于指定高级搜索框的高度，条件太多超出高度则自动出现滚动条。
+ *               options 与格式 1 相同功能。
+ *               url 与格式 2 相同功能。
  *     </li>
  *     <li>search {Event} 分发的搜索事件，事件第 1 个参数为模糊搜索的值，第 2 个参数为高级搜索的值，第 3 个参数为混合搜索的值</li>
  *     <li>change {Event} 搜索条件变动时分发的事件，事件第 1 个参数为新的搜索值，参考 search 事件</li>
@@ -246,7 +256,7 @@ define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], 
 			vm.advanceConfig.options.forEach(function (option) {
 				option.diadic = isDiadic(option.operator); // 是否为双值条件
 				option.value = option.diadic ? [] : null;
-				if (option.default !== false) {
+				if (option.hidden !== true) {
 					cp = {};
 					for (var key in option) cp[key] = option[key];
 					vm.displayConditions.push(cp);
@@ -266,9 +276,6 @@ define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], 
 			value: { type: String, required: false, default: '' },
 			advanceValue: { type: Array, required: false },
 			mixValue: { type: Array, required: false },
-			// 数组-条件列表：[{id, label[, type][, default][, value]}, ...]
-			// String: 异步加载的 url
-			// 对象：{conditions: [{},...], style}
 			advanceConfig: { type: [String, Array, Object], required: false, default: null },
 		},
 		data: function () {
@@ -297,7 +304,7 @@ define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], 
 			advanceValue_: function () {
 				if (!this.advanceConfig) return null;
 				var all = [], one, value;
-				this.displayConditions.forEach(function(d) {
+				this.displayConditions.forEach(function (d) {
 					if (d.diadic) {
 						value = [];
 						if (d.value[0] !== "" && d.value[0] !== null && d.value[0] !== undefined) value[0] = d.value[0];
@@ -467,7 +474,7 @@ define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], 
 			},
 			/** 清空所有条件 */
 			clearCondition: function () {
-				this.displayConditions.forEach(function (c) { 
+				this.displayConditions.forEach(function (c) {
 					c.value = c.diadic ? [] : null;
 				});
 			},
@@ -500,33 +507,7 @@ define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], 
 			 * @param condition {Object} 条件
 			 */
 			getInputType: function (condition) {
-				// string|int|float|double|long|date|month|time|datetime|money
-				switch (condition.type) {
-					case 'datetime':
-						return "datetime-local";
-					case 'datetime-local':
-						return "datetime-local";
-					case 'date':
-						return "date";
-					case 'month':
-						return "month";
-					case 'time':
-						return "time";
-					case 'int':
-						return "number";
-					case 'float':
-						return "number";
-					case 'double':
-						return "number";
-					case 'long':
-						return "long";
-					case 'money':
-						return "number";
-					case 'number':
-						return "number";
-					default:
-						return "text";
-				}
+				 return condition.ui || condition.type || 'text';
 			}
 		}
 	});
@@ -1764,7 +1745,7 @@ define('bc/vue/tree',[
 });
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.10.0 2017-11-21
+ * @version v0.10.2 2017-12-03
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
