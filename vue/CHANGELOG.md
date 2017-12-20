@@ -1,5 +1,9 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 0.10.3 - 2017-12-20 
+- Auto CORS
+- Fixed exporter url error
+
 ## 0.10.2 - 2017-12-06 
 - Improve search component
 

@@ -194,6 +194,82 @@ define('bc/vue/button-set',['jquery', 'vue'], function ($, Vue) {
 		}
 	});
 });
+/**
+ * 跨域访问方法封装。
+ * 
+ * cors('my-url', 'GET')
+ * .then(data -> {...})  // 2xx 响应时
+ * .catch(error -> {...}) // error 或非 2xx 响应
+ */
+define('bc/vue/cors',[], function () {
+	"use strict";
+	let link4CheckCors = document.createElement('a');
+
+	// 判断 url 是否是跨域请求
+	function urlIsCors(url) {
+		let url_ = url.toLowerCase();
+		if (url_.indexOf("http://") === 0 || url_.indexOf("https://") === 0 || url_.indexOf("//") === 0) {
+			link4CheckCors.setAttribute('href', url_);
+			if (link4CheckCors.host !== location.host) return true;
+		}
+		return false;
+	}
+
+	// 自动处理跨域请求头或非跨域 cookies
+	function autoCorsSettings(url, settings, forceCors) {
+		if (!settings) settings = {};
+		if (forceCors || urlIsCors(url)) { 	// 跨域请求使用 Authorization 头
+			if (!settings.headers) settings.headers = {};
+			settings.headers["Authorization"] = window.localStorage.authorization;
+		} else { 														// 非跨域请求退回使用 cookies
+			settings.credentials = 'include';
+		}
+		return settings;
+	}
+
+	function getAuthorizationHeaders() {
+		return { "Authorization": localStorage.authorization };
+	}
+
+	/** 跨域访问方法封装 */
+	function cors(url, method, body, contentType, forceCors) {
+		let settings = {};
+		if (method) settings.method = method;
+		if (body) settings.body = body;
+		if (contentType) settings.headers = { "Content-Type": contentType };
+		return fetch(url, autoCorsSettings(url, settings, forceCors)).then(function (res) {
+			return res.ok ? (res.status === 204 ? null : res.json()) : res.text().then(function (msg) {
+				throw new Error(msg)
+			});
+		});
+	}
+
+	// 附加 URL 参数
+	function appendUrlParams(url, params) {
+		if (!params) return url;
+
+		let kv = [];
+		for (let key in params) kv.push(key + '=' + encodeURIComponent(params[key]));
+		if (kv.length) url += (url.indexOf('?') !== -1 ? '&' : '?') + kv.join('&');
+		return url;
+	}
+
+	return {
+		get: function (url) {
+			return cors(url, 'GET');
+		},
+		post: function (url, body, contentType) {
+			return cors(url, 'POST', body, contentType);
+		},
+		appendUrlParams: function (url, params) {
+			return appendUrlParams(url, params);
+		},
+		/** 判断 url 是否是跨域请求 */
+		urlIsCors: urlIsCors,
+		/** 自动处理跨域请求头或非跨域 cookies */
+		autoCorsSettings: autoCorsSettings
+	};
+});
 
 define('text!bc/vue/search.html',[],function () { return '<div class="bc-vue-search">\r\n\t<div class="fuzzy" :style="{\'text-align\': align}">\r\n\t\t<div>\r\n\t\t\t<span @click.stop="search" class="search ui-icon ui-icon-search" title="执行查询"></span>\r\n\t\t\t<input debounce="200" @keyup.enter.stop="search" type="text" v-model="value" class="fuzzy ui-widget-content" :placeholder="placeholder" @change.stop>\r\n\t\t\t<span v-if="advanceConfig" @click.stop="toggleAdvance" class="add ui-icon ui-icon-triangle-1-{{showAdvance ? \'n\' : \'s\'}}" title="{{showAdvance ? \'隐藏高级搜索\' : \'显示高级搜索\'}}"></span>\r\n\t\t</div>\r\n\t</div>\r\n\t<div class="advance ui-widget-content ui-state-highlight" v-if="showAdvance" :style="advanceStyle">\r\n\t\t<ul class="conditions">\r\n\t\t\t<li class="condition" v-for="c in displayConditions">\r\n\t\t\t\t<div class="label">{{c.label}}</div>\r\n\t\t\t\t<div class="value">\r\n\t\t\t\t\t<template v-if="!c.diadic">\r\n\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t\t<template v-if="c.diadic">\r\n\t\t\t\t\t\t<div class="left">\r\n\t\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value[0]"\r\n\t\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value[0]"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t\t</select>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t<div class="center">～</div>\r\n\t\t\t\t\t\t<div class="right">\r\n\t\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value[1]"\r\n\t\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value[1]"\r\n\t\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t\t</select>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t</div>\r\n\t\t\t</li>\r\n\t\t</ul>\r\n\t\t<div class="operate ui-widget-content">\r\n\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="search">\r\n\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-search"></span>\r\n\t\t\t\t<span class="ui-button-text">查询</span>\r\n\t\t\t</button>\r\n\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="clearCondition">\r\n\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-minus"></span>\r\n\t\t\t\t<span class="ui-button-text">清空</span>\r\n\t\t\t</button>\r\n\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="showAdvance = false">\r\n\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>\r\n\t\t\t\t<span class="ui-button-text">关闭</span>\r\n\t\t\t</button>\r\n\t\t</div>\r\n\t\t<table cellspacing="0" cellpadding="0" style="display:none">\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr v-for="c in displayConditions" class="condition">\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<select class="id ui-widget-content" v-model="c.id" @change.stop="editCondition(\'id\', c)">\r\n\t\t\t\t\t\t\t<option v-for="cfg in advanceConfig.options" :value="cfg.id">{{cfg.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content" style="max-width:7em">\r\n\t\t\t\t\t\t<select class="operator ui-widget-content" v-model="c.operator" @change.stop="editCondition(\'operator\', c)">\r\n\t\t\t\t\t\t\t<option v-for="o in operators(c.id)" :value="o.id">{{o.label}}</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<input v-if="!c.tag || c.tag == \'input\'" debounce="200" type="{{getInputType(c)}}" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t:step="c.step" :min="c.min" :max="c.max"\r\n\t\t\t\t\t\t\t@keyup.enter.stop="search"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t<select v-if="c.tag == \'select\'" class="value ui-widget-content" v-model="c.value"\r\n\t\t\t\t\t\t\t@change.stop="editCondition(\'value\', c)">\r\n\t\t\t\t\t\t\t<option v-for="option in c.options" v-bind:value="option.hasOwnProperty(\'value\') ? option.value : option">\r\n\t\t\t\t\t\t\t\t{{ option.hasOwnProperty(\'value\') ? option.text : option }}\r\n\t\t\t\t\t\t\t</option>\r\n\t\t\t\t\t\t</select>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t\t<td class="ui-widget-content">\r\n\t\t\t\t\t\t<span @click.stop="deleteCondition($index)" class="delete ui-icon ui-icon-minusthick" title="移除此条件"></span>\r\n\t\t\t\t\t\t<span @click.stop="c.value = \'\'" class="clear ui-icon ui-icon-cancel" title="清空条件值"></span>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t\t<tr class="operate">\r\n\t\t\t\t\t<td class="ui-widget-content" colspan="4">\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="search">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-search"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">查询</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="clearCondition">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-minus"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">清空</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="addCondition">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-plus"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">添加</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="button" @click.stop="showAdvance = false">\r\n\t\t\t\t\t\t\t<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>\r\n\t\t\t\t\t\t\t<span class="ui-button-text">关闭</span>\r\n\t\t\t\t\t\t</button>\r\n\t\t\t\t\t</td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n</div>';});
 
@@ -238,7 +314,7 @@ define('css!bc/vue/search',[],function(){});
  *   </ul>
  * </pre>
  */
-define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], function (Vue, template) {
+define('bc/vue/search',['vue', 'bc/vue/cors', 'text!bc/vue/search.html', 'css!bc/vue/search'], function (Vue, CORS, template) {
 	'use strict';
 	var DEFAULT_FUZZY_ID = 'fuzzy';
 
@@ -406,10 +482,9 @@ define('bc/vue/search',['vue', 'text!bc/vue/search.html', 'css!bc/vue/search'], 
 					}
 
 					vm.advanceConfig.loading = true;
-					fetch(this.advanceConfig.url, {
-						headers: { "Content-Type": "application/json;charset=utf-8" },
-						credentials: 'include'  // include cookies
-					}).then(function (res) {
+					fetch(this.advanceConfig.url, CORS.autoCorsSettings(this.advanceConfig.url, {
+						headers: { "Content-Type": "application/json;charset=utf-8" }
+					})).then(function (res) {
 						return res.ok ? res.json() : res.text().then(function (msg) { throw new Error(msg) });
 					}).then(function (options) {
 						if (Array.isArray(options)) {
@@ -821,15 +896,15 @@ define('bc/vue/page-bar-importer',[
 				this.processing = this.loading = true;
 
 				// ajax 上传
-				fetch(this.url || this.$parent.url + "/import", {
+				let url = this.url || this.$parent.url + "/import";
+				fetch(url, CORS.autoCorsSettings(url, {
 					method: 'POST',
 					headers: { 
-						'Authorization': window.localStorage.authorization,
 						'Content-Type': 'application/octet-stream',
 						'Content-Disposition': 'attachment; filename="' + encodeURIComponent(file.name) + '"'
 					},
 					body: file
-				}).then((res) => {
+				})).then((res) => {
 					return res.ok ? res.json() : res.text().then(function (msg) { throw new Error(msg) });
 				}).then((result) => {
 					this.loading = false;
@@ -946,9 +1021,9 @@ define('css!bc/vue/page-bar-exporter',[],function(){});
  * </pre>
  */
 define('bc/vue/page-bar-exporter',[
-	'jquery', 'vue', 'text!bc/vue/page-bar-exporter.html', 'css!bc/vue/page-bar-exporter',
+	'jquery', 'vue', 'bc/vue/cors', 'text!bc/vue/page-bar-exporter.html', 'css!bc/vue/page-bar-exporter',
 	'bc/vue/box-pointer', 'bc/vue/loading'
-], function ($, Vue, template) {
+], function ($, Vue, CORS, template) {
 	'use strict';
 
 	return Vue.component('bc-page-bar-exporter', {
@@ -1020,29 +1095,22 @@ define('bc/vue/page-bar-exporter',[
 				}
 
 				// 将参数附加到url后面
-				let url = this.url || grid.url + "/export";
-				let s = [];
-				Object.keys(params).forEach(function (key) {
-					s.push(key + "=" + params[key]);
-				});
-				if (s.length) url += "?" + s.join("&");
+				let url = CORS.appendUrlParams(this.url || grid.url + "/export", params);
 
 				// 异步下载文件
 				this.loading = true;
 				let filename;
-				fetch(url, {
-					method: 'GET',
-					headers: {
-						'Authorization': window.localStorage.authorization
-					}
-				}).then(res => {
+
+				fetch(url, CORS.autoCorsSettings(url, {
+					method: "GET"
+				})).then(res => {
 					if (!this.filename) {
 						// 从响应头中获取服务端指定的文件名
 						//for(let key of res.headers.keys()) console.log("key=" + key);
 						let h = res.headers.get('Content-Disposition');
 						if (h && h.includes('filename=')) {
 							filename = h.substring(h.indexOf('filename=') + 9);
-							if(filename.startsWith('"')) filename = filename.substring(1, filename.length - 1);
+							if (filename.startsWith('"')) filename = filename.substring(1, filename.length - 1);
 							filename = decodeURIComponent(filename);
 						} else {
 							h = res.headers.get('filename');
@@ -1172,55 +1240,6 @@ define('bc/vue/page-bar',[
 		}
 	});
 });
-/**
- * 跨域访问方法封装。
- * 
- * cors('my-url', 'GET')
- * .then(data -> {...})  // 2xx 响应时
- * .catch(error -> {...}) // error 或非 2xx 响应
- */
-define('bc/vue/cors',[], function () {
-	"use strict";
-
-  function getAuthorizationHeaders() {
-    return {"Authorization": localStorage.authorization};
-	}
-
-  /** 跨域访问方法封装 */
-  function cors(url, method, body, contentType) {
-    let options = {headers: getAuthorizationHeaders()};
-    if (method) options.method = method;
-    if (body) options.body = body;
-    if (contentType) options.headers["Content-Type"] = contentType;
-    return fetch(url, options).then(function (res) {
-      return res.ok ? (res.status === 204 ? null : res.json()) : res.text().then(function (msg) {
-        throw new Error(msg)
-      });
-    });
-	}
-
-  // 附加 URL 参数
-  function appendUrlParams(url, params) {
-    if (!params) return url;
-
-    let kv = [];
-    for (let key in params) kv.push(key + '=' + encodeURIComponent(params[key]));
-    if (kv.length) url += (url.indexOf('?') !== -1 ? '&' : '?') + kv.join('&');
-    return url;
-	}
-	
-	return {
-		get: function(url){
-			return cors(url, 'GET');
-		},
-		post: function(url, body, contentType){
-			return cors(url, 'POST', body, contentType);
-		},
-		appendUrlParams: function(url, params){
-			return appendUrlParams(url, params);
-		}
-	};
-});
 
 define('text!bc/vue/grid.html',[],function () { return '<div class="bc-vue-grid ui-widget-content">\r\n\t<!-- 顶部扩展区 -->\r\n\t<slot name="top"></slot>\r\n\r\n\t<!-- 表头 -->\r\n\t<table class="head" :style="{width:\'100%\',position:\'relative\',\'user-select\':\'initial\',left:v.scrollLeft + \'px\'}">\r\n\t\t<colgroup v-ref:cols is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true">\r\n\t\t</colgroup>\r\n\t\t<thead>\r\n\t\t\t<tr class="main head ui-widget-content">\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_sn" class="sn"><input type="checkbox" v-if="!singleChoice" v-model="v.selectAll" title="{{v.selectAll ? \'点击全部不选择\' : \'点击选择全部\'}}" @change.stop></th>\r\n\t\t\t\t<th v-for="c in columns" class="cell text" :class="c.headCellClass" :style="c.headCellStyle" data-id="{{c.id}}" colspan="{{c.children && c.children.length > 0 ? c.children.length : 1}}" rowspan="{{c.children && c.children.length > 0 ? 1 : headRowspan}}">{{c.label}}</th>\r\n\t\t\t\t<th rowspan="{{headRowspan}}" data-id="_empty" class="empty"></th>\r\n\t\t\t</tr>\r\n\t\t\t<!-- 分组的表头 -->\r\n\t\t\t<tr class="sub head ui-widget-content" v-if="headRowspan > 1">\r\n\t\t\t\t<template v-for="c in columns | filterBy isGroupColumn">\r\n\t\t\t\t\t<th v-for="d in c.children" class="cell text" data-id="{{d.id}}">{{d.label}}</th>\r\n\t\t\t\t</template>\r\n\t\t\t</tr>\r\n\t\t</thead>\r\n\t</table>\r\n\r\n\t<!-- 数据 -->\r\n\t<div class="rows" :style="{overflow:\'auto\',\'user-select\':\'initial\'}" @scroll="v.scrollLeft = -1 * $event.target.scrollLeft">\r\n\t\t<table class="rows" style="width:100%">\r\n\t\t\t<colgroup is="bc-table-col" :columns="columns" :add-sn="true" :add-empty="true"></colgroup>\r\n\t\t\t<tbody>\r\n\t\t\t\t<tr class="row" v-for="r in rows" data-id="{{r.id}}" class="{{r.class}}" :class="{\'ui-state-highlight\': r.selected, \'ui-widget-content\': true}"\r\n\t\t\t\t    :style="(typeof rowStyle == \'function\') ? rowStyle(r) : rowStyle">\r\n\t\t\t\t\t<td class="sn" data-id="_sn"><span v-if="r.selected" class="ui-icon ui-icon-check"></span>{{$index + 1}}</td>\r\n\t\t\t\t\t<template v-for="c in columns">\r\n\t\t\t\t\t\t<td v-if="isGroupColumn(c)" v-for="d in c.children" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof d.rowCellClass == \'function\') ? d.rowCellClass(r[d.id], r, d) : d.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof d.rowCellStyle == \'function\') ? d.rowCellStyle(r[d.id], r, d) : d.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[d.id], r, d, $event)" :title="rowCellTitle(r[d.id], r, d)">\r\n\t\t\t\t\t\t\t<template v-if="d.escape !== false">{{rowCellFilter(r[d.id], r, d)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="d.escape === false">{{{rowCellFilter(r[d.id], r, d)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t\t<td v-if="!isGroupColumn(c)" class="cell text"\r\n\t\t\t\t\t\t    :class="(typeof c.rowCellClass == \'function\') ? c.rowCellClass(r[c.id], r, c) : c.rowCellClass"\r\n\t\t\t\t\t\t    :style="(typeof c.rowCellStyle == \'function\') ? c.rowCellStyle(r[c.id], r, c) : c.rowCellStyle"\r\n\t\t\t\t\t\t    @click.prevent="rowCellClick(r[c.id], r, c, $event)" :title="rowCellTitle(r[c.id], r, c)">\r\n\t\t\t\t\t\t\t<template v-if="c.escape !== false">{{rowCellFilter(r[c.id], r, c)}}</template>\r\n\t\t\t\t\t\t\t<template v-if="c.escape === false">{{{rowCellFilter(r[c.id], r, c)}}}</template>\r\n\t\t\t\t\t\t</td>\r\n\t\t\t\t\t</template>\r\n\t\t\t\t\t<td class="empty" data-id="_empty"></td>\r\n\t\t\t\t</tr>\r\n\t\t\t</tbody>\r\n\t\t</table>\r\n\t</div>\r\n\r\n\t<!-- 分页条 -->\r\n\t<bc-page-bar v-if="showPageBar" style="border-width: 1px 0 0 0" :pageable="pageable" :page-no.sync="pageNo" \r\n\t\t:page-size.sync="pageSize" :page-sizes.sync="pageSizes" :count.sync="count" :refreshable="refreshable"\r\n\t\t:exportable="exportable" :importable="importable" @change="reload">\r\n\t\t<!-- 分页条扩展按钮 -->\r\n\t\t<slot name="page-bar-button"></slot>\r\n\t</bc-page-bar>\r\n\r\n\t<!-- 加载器 -->\r\n\t<bc-loading v-ref:loading v-if="v.loading"></bc-loading>\r\n\r\n\t<!-- 底部扩展区 -->\r\n\t<slot name="bottom"></slot>\r\n</div>';});
 
@@ -1230,9 +1249,9 @@ define('css!bc/vue/grid',[],function(){});
  * grid 组件
  */
 define('bc/vue/grid',[
-	'vue', 'bc/vue/table-col', 'bc/vue/page-bar', 
+	'vue', 'bc/vue/cors', 'bc/vue/table-col', 'bc/vue/page-bar',
 	'text!bc/vue/grid.html', 'css!bc/vue/grid', 'bc/vue/loading'
-], function (Vue, tableCol, pageBar, template) {
+], function (Vue, CORS, tableCol, pageBar, template) {
 	"use strict";
 	var exportForm;
 	var DEFAULT_PAGE_SIZES = [25, 50, 100];
@@ -1287,16 +1306,6 @@ define('bc/vue/grid',[
 			},
 			headRowspan: function () {
 				return this.$refs.cols ? this.$refs.cols.rowspan : 1;
-			},
-			// 判断 url 是否是跨域请求
-			isCorsUrl: function () {
-				var url = this.url.toLowerCase();
-				if(url.indexOf("http://") === 0 || url.indexOf("https://") === 0 || url.indexOf("//") === 0){
-					var link = document.createElement('a');
-					link.setAttribute('href', url);
-					if (link.host !== location.host) return true;
-				}
-				return false;
 			}
 		},
 		data: function () {
@@ -1384,8 +1393,8 @@ define('bc/vue/grid',[
 
 				var params = {};
 				if (this.pageable) {
-					if(this.pageNo) params.pageNo = this.pageNo;
-					if(this.pageSize) params.pageSize = this.pageSize;
+					if (this.pageNo) params.pageNo = this.pageNo;
+					if (this.pageSize) params.pageSize = this.pageSize;
 				}
 
 				// 附加搜索条件
@@ -1424,14 +1433,6 @@ define('bc/vue/grid',[
 					if (s.length) url += "?" + s.join("&");
 				}
 
-				// 处理 CORS 跨域请求: 有 localStorage.authorization 且 isCorsUrl = true 才当作跨域
-				if(window && window.localStorage && window.localStorage.authorization && this.isCorsUrl){
-					if (!settings.headers) settings.headers = {};
-					settings.headers["Authorization"] = window.localStorage.authorization;
-				} else { // 非 CORS 跨域请求退回使用 cookies
-					settings.credentials = 'include'  // include cookies
-				}
-
 				// 重新加载前允许用户预处理请求参数和取消请求
 				if (this.beforeReload && this.beforeReload(settings) === false) {
 					vm.v.loading = false;
@@ -1439,10 +1440,10 @@ define('bc/vue/grid',[
 				}
 
 				// 开始重新加载
-				fetch(url, settings).then(function (res) {
+				fetch(url, CORS.autoCorsSettings(url, settings)).then(function (res) {
 					return res.ok ? res.json() : res.text().then(function (msg) { throw new Error(msg) });
 				}).then(function (j) {
-					if(Array.isArray(j)) { // 非分页且直接返回 rows 值的情况
+					if (Array.isArray(j)) { // 非分页且直接返回 rows 值的情况
 						vm.$set('rows', j);
 					} else {
 						j.columns && vm.$set('columns', j.columns);
@@ -1504,7 +1505,7 @@ define('bc/vue/grid',[
 			},
 			/** 单元格点击函数 */
 			rowCellClick: function (value, row, column, e) {
-				if(column.rowCellClick) column.rowCellClick.apply(this, [value, row, column, e]);
+				if (column.rowCellClick) column.rowCellClick.apply(this, [value, row, column, e]);
 			},
 			// 获取用于导出报表的 form (如果没有会自动创建一个)
 			getExportForm: function () {
@@ -1745,7 +1746,7 @@ define('bc/vue/tree',[
 });
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.10.2 2017-12-03
+ * @version v0.10.3 2017-12-17
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
