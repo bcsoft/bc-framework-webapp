@@ -254,6 +254,37 @@ define('bc/vue/cors',[], function () {
 		return url;
 	}
 
+	// Ajax 下载文件
+	function download(url, filename) {
+		return fetch(url, autoCorsSettings(url, {
+			method: "GET"
+		})).then(res => {
+			if (!filename) {
+				// 从响应头中获取服务端指定的文件名
+				//for(let key of res.headers.keys()) console.log("key=" + key);
+				let h = res.headers.get('Content-Disposition');
+				if (h && h.includes('filename=')) {
+					filename = h.substring(h.indexOf('filename=') + 9);
+					if (filename.startsWith('"')) filename = filename.substring(1, filename.length - 1);
+					filename = decodeURIComponent(filename);
+				} else {
+					h = res.headers.get('filename');
+					filename = h ? decodeURIComponent(h) : null;
+				}
+			}
+
+			return res.ok ? res.blob() : res.text().then(function (msg) { throw new Error(msg) });
+		}).then(blob => {
+			// 100mb is test ok
+			// see https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
+			const data = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = data;
+			a.download = filename || "NONAME"; // 浏览器保存下载的文件时使用的文件名
+			a.click();
+		});
+	}
+
 	return {
 		get: function (url) {
 			return cors(url, 'GET');
@@ -267,7 +298,9 @@ define('bc/vue/cors',[], function () {
 		/** 判断 url 是否是跨域请求 */
 		urlIsCors: urlIsCors,
 		/** 自动处理跨域请求头或非跨域 cookies */
-		autoCorsSettings: autoCorsSettings
+		autoCorsSettings: autoCorsSettings,
+		/** Ajax 下载文件 */
+		download: download
 	};
 });
 
@@ -810,9 +843,9 @@ define('css!bc/vue/page-bar-importer',[],function(){});
  * </pre>
  */
 define('bc/vue/page-bar-importer',[
-	'jquery', 'vue', 'text!bc/vue/page-bar-importer.html', 'css!bc/vue/page-bar-importer', 
+	'jquery', 'vue', 'bc/vue/cors', 'text!bc/vue/page-bar-importer.html', 'css!bc/vue/page-bar-importer', 
 	'bc/vue/box-pointer', 'bc/vue/loading'
-], function ($, Vue, template) {
+], function ($, Vue, CORS, template) {
 	'use strict';
 
 	// common mapping for ext to accept
@@ -930,7 +963,9 @@ define('bc/vue/page-bar-importer',[
 			},
 			// 下载模板
 			download: function(){
-				window.open(this.tplUrl || this.url || this.$parent.url + "/import", "blank");
+				// window.open(this.tplUrl || this.url || this.$parent.url + "/import", "blank");
+				let url = this.tplUrl || this.url || this.$parent.url + "/import";
+				CORS.download(url, '物业租赁应收数据导入模板.xlsx');
 			},
 			// 显示导入结果
 			showResultDetail: function(){
@@ -1099,38 +1134,8 @@ define('bc/vue/page-bar-exporter',[
 
 				// 异步下载文件
 				this.loading = true;
-				let filename;
-
-				fetch(url, CORS.autoCorsSettings(url, {
-					method: "GET"
-				})).then(res => {
-					if (!this.filename) {
-						// 从响应头中获取服务端指定的文件名
-						//for(let key of res.headers.keys()) console.log("key=" + key);
-						let h = res.headers.get('Content-Disposition');
-						if (h && h.includes('filename=')) {
-							filename = h.substring(h.indexOf('filename=') + 9);
-							if (filename.startsWith('"')) filename = filename.substring(1, filename.length - 1);
-							filename = decodeURIComponent(filename);
-						} else {
-							h = res.headers.get('filename');
-							filename = h ? decodeURIComponent(h) : null;
-						}
-					} else filename = this.filename;
-
-					return res.ok ? res.blob() : res.text().then(function (msg) { throw new Error(msg) });
-				}).then(blob => {
-					// 100mb is test ok
-					// see https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-					const data = window.URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = data;
-					a.download = filename || "NONAME"; // 浏览器保存下载的文件时使用的文件名
-					a.click();
-
-					// 重置
-					this.reset();
-				}).catch(error => {
+				CORS.download(url, this.filename).then(() => this.reset())
+				.catch(error => {
 					this.loading = false;
 					this.serverError = "导出失败：<br>" + error.message;
 				});
@@ -1746,7 +1751,7 @@ define('bc/vue/tree',[
 });
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v0.10.3 2017-12-17
+ * @version v0.10.4 2017-12-22
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
