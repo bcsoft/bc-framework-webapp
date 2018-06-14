@@ -2,9 +2,9 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%
-	response.setHeader("Pragma", "No-cache");
-	response.setHeader("Cache-Control", "no-cache");
-	response.setDateHeader("Expires", 0);
+  response.setHeader("Pragma", "No-cache");
+  response.setHeader("Cache-Control", "no-cache");
+  response.setDateHeader("Expires", 0);
 %>
 <html>
 <head>
@@ -12,42 +12,42 @@
 </title>
 <link rel="shortcut icon" type="image/x-icon" href="<s:url value='/bc/libs/themes/default/images/favicon.png'><s:param name='ts' value='ts'/></s:url>"/>
 <link rel="stylesheet" type="text/css"
-	href="<s:url value='/bc/libs/themes/default/login.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
+  href="<s:url value='/bc/libs/themes/default/login.css' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>" />
 </head>
 <body>
-	<div id="debugInfo"><s:text name="app.debugInfo"/></div>
-	<div id="systemInfo"><s:text name="app.title"/>&nbsp;<a id="version" href="#">v<s:text name="app.version"/></a></div>
-	<table id="main" cellpadding="0" cellspacing="0" border="0">
-		<tbody>
-			<tr>
-				<td id="imgTd">
-					<div id="img"></div></td>
-				<td id="inputTd">
-					<div>
-						<div class="label">帐号：</div>
-						<div class="value">
-							<input type="text" id="name" />
-						</div>
-						<div class="label">密码：</div>
-						<div class="value">
-							<input type="password" id="password" />
-						</div>
-					</div></td>
-				<td id="btnTd">
-					<button type="button" id="loginBtn">登&nbsp;录</button></td>
-			</tr>
-		</tbody>
-	</table>
-	<div id="msg" data-auth='${bcauth}'></div>
-	<script type="text/javascript">
-		var bc={};
-		bc.root = "<%=request.getContextPath()%>";
-		bc.debug = <s:text name="app.debug" />;
-		bc.ts = bc.debug ? new Date().getTime() : "<s:text name="app.ts" />";
-	</script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7.2/jquery.min.js'/>"></script>
-	<script type="text/javascript" src="<s:url value='/ui-libs/jshash/2.2/md5-min.js'/>"></script>
-<%-- 	<script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/browser/browser.js'/>"></script> --%>
-	<script type="text/javascript" src="<s:url value='/bc/login/login.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
+  <div id="debugInfo"><s:text name="app.debugInfo"/></div>
+  <div id="systemInfo"><s:text name="app.title"/>&nbsp;<a id="version" href="#">v<s:text name="app.version"/></a></div>
+  <table id="main" cellpadding="0" cellspacing="0" border="0">
+    <tbody>
+      <tr>
+        <td id="imgTd">
+          <div id="img"></div></td>
+        <td id="inputTd">
+          <div>
+            <div class="label">帐号：</div>
+            <div class="value">
+              <input type="text" id="name" />
+            </div>
+            <div class="label">密码：</div>
+            <div class="value">
+              <input type="password" id="password" />
+            </div>
+          </div></td>
+        <td id="btnTd">
+          <button type="button" id="loginBtn">登&nbsp;录</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <div id="msg" data-auth='${bcauth}'></div>
+  <script type="text/javascript">
+    var bc={};
+    bc.root = "<%=request.getContextPath()%>";
+    bc.debug = <s:text name="app.debug" />;
+    bc.ts = bc.debug ? new Date().getTime() : "<s:text name="app.ts" />";
+  </script>
+  <script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7.2/jquery.min.js'/>"></script>
+  <script type="text/javascript" src="<s:url value='/ui-libs/jshash/2.2/md5-min.js'/>"></script>
+<%--   <script type="text/javascript" src="<s:url value='/ui-libs/jquery/plugins/browser/browser.js'/>"></script> --%>
+  <script type="text/javascript" src="<s:url value='/bc/login/login.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 </body>
 </html>

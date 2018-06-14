@@ -2,9 +2,9 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%
-	response.setHeader("Pragma", "No-cache");
-	response.setHeader("Cache-Control", "no-cache");
-	response.setDateHeader("Expires", 0);
+  response.setHeader("Pragma", "No-cache");
+  response.setHeader("Cache-Control", "no-cache");
+  response.setDateHeader("Expires", 0);
 %>
 <html>
 <head>
@@ -18,10 +18,10 @@
 <script type="text/javascript" src="<s:url value='/ui-libs/jquery/1.7.2/jquery.min.js'/>"></script>
 <script type="text/javascript" src="<s:url value='/ui-libs/jshash/2.2/md5-min.js'/>"></script>
 <script type="text/javascript">
-	var bc={};
-	bc.root = "<%=request.getContextPath()%>";
-	bc.debug = <s:text name="app.debug" />;
-	bc.ts = bc.debug ? new Date().getTime() : "<s:text name="app.ts" />";
+  var bc={};
+  bc.root = "<%=request.getContextPath()%>";
+  bc.debug = <s:text name="app.debug" />;
+  bc.ts = bc.debug ? new Date().getTime() : "<s:text name="app.ts" />";
 </script>
 <script type="text/javascript" src="<s:url value='/bc/login/mock.js' ><s:param name='ts' value='%{getText("app.ts")}'/></s:url>"></script>
 </body>
