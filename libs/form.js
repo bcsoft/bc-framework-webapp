@@ -87,6 +87,7 @@ bc.form = {
           var fn;
           if ($page.size() > 0 && scope) {
             fn = scope[cfg.onSelect];
+            if (typeof fn === "function") fn = fn.bind(scope)
           } else {
             fn = bc.getNested(cfg.onSelect);
           }
@@ -102,6 +103,7 @@ bc.form = {
           var fn;
           if ($page.size() > 0 && scope) {
             fn = scope[cfg.onClose];
+            if (typeof fn === "function") fn = fn.bind(scope)
           } else {
             fn = bc.getNested(cfg.onClose);
           }
