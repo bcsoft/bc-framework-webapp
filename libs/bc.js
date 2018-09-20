@@ -3091,19 +3091,19 @@ bc.page.defaultBcTabsOption = {
         this.element.find("#doClose").focus();
 
         /*
-			// set focus to the first tabbable element in the popup container
-			// if there are no tabbable elements, set focus on the popup itself
-			var tabbables = this.element.find( ":tabbable" );
-			this.removeTabIndex = false;
-			if ( !tabbables.length ) {
-				if ( !this.element.is(":tabbable") ) {
-					this.element.attr("tabindex", "0");
-					this.removeTabIndex = true;
-				}
-				tabbables = tabbables.add( this.element[ 0 ] );
-			}
-			tabbables.first().focus( 1 );
-			*/
+        // set focus to the first tabbable element in the popup container
+        // if there are no tabbable elements, set focus on the popup itself
+        var tabbables = this.element.find( ":tabbable" );
+        this.removeTabIndex = false;
+        if ( !tabbables.length ) {
+          if ( !this.element.is(":tabbable") ) {
+            this.element.attr("tabindex", "0");
+            this.removeTabIndex = true;
+          }
+          tabbables = tabbables.add( this.element[ 0 ] );
+        }
+        tabbables.first().focus( 1 );
+        */
       }
 
       // take trigger out of tab order to allow shift-tab to skip trigger
@@ -4592,6 +4592,7 @@ bc.form = {
           var fn;
           if ($page.size() > 0 && scope) {
             fn = scope[cfg.onSelect];
+            if (typeof fn === "function") fn = fn.bind(scope)
           } else {
             fn = bc.getNested(cfg.onSelect);
           }
@@ -4607,6 +4608,7 @@ bc.form = {
           var fn;
           if ($page.size() > 0 && scope) {
             fn = scope[cfg.onClose];
+            if (typeof fn === "function") fn = fn.bind(scope)
           } else {
             fn = bc.getNested(cfg.onClose);
           }
@@ -5203,7 +5205,7 @@ function array2string(array) {
 function rebuildArgs1(args,lastIsFn){
 	//用数组的第1个元素和剩余元素组成的数组生成新的数组
 	args=[args.shift(),args];
-
+	
 	//如果依然超过2个元素，递归处理
 	if(args[1].length > (lastIsFn ? 3 : 2)){
 		args[1] = rebuildArgs1(args[1],lastIsFn);
@@ -6279,7 +6281,7 @@ bc.file = {
 //						var $operations = tds.next();
 //						tds.remove();
 //						$operations.empty().append(bc.file.operationsTpl);
-//
+//						
 //						$attach.attr("data-id",json.msg.id)
 //							.attr("data-name",json.msg.localfile)
 //							.attr("data-url",json.msg.url)
