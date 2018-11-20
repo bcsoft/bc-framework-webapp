@@ -244,3 +244,14 @@ input.nostyle {
 	background: none;
 	border-width: 0;
 }
+
+/** 文本对齐 */
+.align-left {
+  text-align: left
+}
+.align-center {
+  text-align: center
+}
+.align-right {
+  text-align: right
+}
