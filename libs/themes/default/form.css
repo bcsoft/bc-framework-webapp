@@ -255,3 +255,36 @@ input.nostyle {
 .align-right {
   text-align: right
 }
+
+/** 表单可折叠区域布局 */
+.bc-region {
+  background: none;
+}
+.bc-region.ui-widget-content {
+  border-bottom-width: 0;
+}
+.bc-region > .header,
+.bc-region > .ui-widget-header,
+.bc-region > .ui-state-default {
+  line-height: 1.5em;
+  border-bottom-style: inherit;
+  border-bottom-color: inherit;
+  border-width: 0 0 1px 0;
+}
+.bc-region > .content,
+.bc-region > .ui-widget-content,
+.bc-region > table.formFields {
+  line-height: 1.5em;
+  background: none;
+}
+.bc-region .padding,
+.bc-region .text {
+  padding: 0.25em;
+}
+.bc-region .text {
+  display: inline-block;
+}
+.bc-region.last {
+  margin-bottom: 0.25em;
+  border-bottom-width: 1px;
+}
