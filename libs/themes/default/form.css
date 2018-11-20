@@ -4,286 +4,328 @@
  * @author rongjihuang@gmail.com
  * @date 2011-05-20
  */
+
 /** 表单*/
+
 .bc-form {
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .bc-form.ui-widget-content {
-	border: 0;
+  border: 0;
 }
+
 /** 表单右上角信息*/
-.formTopInfo,.fileInfo {
-	margin: 8px 8px 0 8px;
-	text-align: right;
-	color: #888;
-	font-size: 0.75em;
-	padding-right: 4px;
-	font-weight: normal;
+
+.formTopInfo, .fileInfo {
+  margin: 8px 8px 0 8px;
+  text-align: right;
+  color: #888;
+  font-size: 0.75em;
+  padding-right: 4px;
+  font-weight: normal;
 }
+
 /** 表单底部注释信息*/
+
 .formComment {
-	margin: 4px 8px;
-	padding: 0.25em;
-	color: #888;
-	font-size: 0.75em;
-	text-align: left;
+  margin: 4px 8px;
+  padding: 0.25em;
+  color: #888;
+  font-size: 0.75em;
+  text-align: left;
 }
 
 a.link {
-	color: blue;
+  color: blue;
 }
+
 /** 表单元素容器*/
+
 div.formFields {
-	margin: 8px;
+  margin: 8px;
 }
+
 /** 表单内顶部主体元素容器*/
+
 table.formFields {
-	width: 100%;
-	border-width: 0;
+  width: 100%;
+  border-width: 0;
 }
+
 /** 表单富文本编辑器容器*/
+
 div.formEditor {
-	margin: 8px;
+  margin: 8px;
 }
+
 /** 表单多页签容器*/
+
 div.formTabs {
-	margin: 0px;
+  margin: 0px;
 }
+
 /** 表单附件区容器*/
+
 div.formAttachs {
-	margin: 8px;
+  margin: 8px;
 }
 
 /** 单列(2个td)元素表单的元素容器*/
+
 .formTable {
-	margin: 8px;
-	width: 400px;
+  margin: 8px;
+  width: 400px;
 }
+
 /** 两列(4个td)元素表单的元素容器*/
+
 .formTable2 {
-	margin: 8px;
-	width: 600px;
+  margin: 8px;
+  width: 600px;
 }
 
 td.label {
-	text-align: right;
-	vertical-align: middle;
-	min-width: 6em;
-	width: 6em;
-	_width: 6em;
-	font-weight: normal;
+  text-align: right;
+  vertical-align: middle;
+  min-width: 6em;
+  width: 6em;
+  _width: 6em;
+  font-weight: normal;
 }
 
 td.label .little {
-	text-align: left;
-	font-size: 80%;
-	display: inline-block;
+  text-align: left;
+  font-size: 80%;
+  display: inline-block;
 }
 
 td.topLabel {
-	text-align: right;
-	vertical-align: top;
-	min-width: 6em;
-	_width: 6em;
-	font-weight: normal;
+  text-align: right;
+  vertical-align: top;
+  min-width: 6em;
+  _width: 6em;
+  font-weight: normal;
 }
 
 td.top {
-	vertical-align: top;
+  vertical-align: top;
 }
 
 td.value {
-	text-align: left;
-	font-weight: normal;
+  text-align: left;
+  font-weight: normal;
 }
 
-td.value input,td.value textarea,td.value div.input {
-	min-height: 1.6em;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	width: 100%;
-	margin: 0;
-	padding: 1px 2px;
+td.value input, td.value textarea, td.value div.input {
+  min-height: 1.6em;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 1px 2px;
 }
 
 td.value div.input {
-	height: 1.6em;
-	padding: 0;
-	margin: 0;
-	font-weight: normal;
+  height: 1.6em;
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
 }
 
 /* 文本两端对齐 http://www.cnblogs.com/rubylouvre/archive/2012/11/28/2792504.html */
-.justify, td.justify{
-	text-align:justify;
-	-moz-text-align:justify;/*ff*/
-	-moz-text-align-last:justify;/*ff*/
-	text-align-last:justify;
-	text-justify:distribute-all-lines;
+
+.justify, td.justify {
+  text-align: justify;
+  -moz-text-align: justify;
+  /*ff*/
+  -moz-text-align-last: justify;
+  /*ff*/
+  text-align-last: justify;
+  text-justify: distribute-all-lines;
 }
+
 _:-webkit-any-link, :root td.justify {
-	text-align:right;
+  text-align: right;
 }
 
 /*只能读*/
+
 .readonly {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	width: 100%;
-	min-height: 1.6em;
-	-webkit-user-modify: read-only;
-	-moz-user-modify: read-only;
-	user-modify: read-only;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 1.6em;
+  -webkit-user-modify: read-only;
+  -moz-user-modify: read-only;
+  user-modify: read-only;
 }
+
 /*可读可写*/
+
 .editable {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	width: 100%;
-	min-height: 1.6em;
-	-webkit-user-modify: read-write-plaintext-only;
-	-moz-user-modify: read-write;
-	-moz-user-modify: read-write-plaintext-only;/*firefox15 unsupport*/
-	user-modify: read-write-plaintext-only;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 1.6em;
+  -webkit-user-modify: read-write-plaintext-only;
+  -moz-user-modify: read-write;
+  -moz-user-modify: read-write-plaintext-only;
+  /*firefox15 unsupport*/
+  user-modify: read-write-plaintext-only;
 }
+
 .richeditable {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	width: 100%;
-	min-height: 1.6em;
-	-webkit-user-modify: read-write;
-	-moz-user-modify: read-write;
-	user-modify: read-write;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 1.6em;
+  -webkit-user-modify: read-write;
+  -moz-user-modify: read-write;
+  user-modify: read-write;
 }
 
 td.value div.input .link {
-	cursor: pointer;
-	text-decoration: underline;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 td.value select {
-	height: 1.6em;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	width: 100%;
-	margin: 0;
-	padding: 1px 2px;
+  height: 1.6em;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 1px 2px;
 }
+
 .borderBox {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .webkit .bc-page select {
-	/*height: 21px;*/
-	/*webkit的select背景无法透明的模拟修正*/
-	-webkit-appearance: none;
-	background: url('images/browser/webkit_select_down.png') no-repeat right
-		center;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	width: 100%;
-	margin: 0;
+  /*height: 21px;*/
+  /*webkit的select背景无法透明的模拟修正*/
+  -webkit-appearance: none;
+  background: url('images/browser/webkit_select_down.png') no-repeat right center;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
 }
 
 .webkit .bc-page select[disabled='disabled'] {
-	background: none;
+  background: none;
 }
 
 .webkit .bc-page select option {
-	background: none;
-	color: black;
+  background: none;
+  color: black;
 }
 
 /*
 td.value .ui-icon{
-	float: left;
-	margin-top: 4px;
+  float: left;
+  margin-top: 4px;
 }*/
+
 textarea.bc-editor {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	min-height: 300px;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-height: 300px;
 }
+
 /** 使WebKit内核浏览器textarea不可以任意拖动放大 */
+
 textarea.noresize {
-	resize: none;
+  resize: none;
 }
+
 /** 使WebKit内核浏览器input、textarea聚焦时无黄色边框 */
-textarea.nooutline,input.nooutline {
-	outline: none;
+
+textarea.nooutline, input.nooutline {
+  outline: none;
 }
+
 /** 使textarea自动内容高度：需要js的支持 */
+
 textarea.autoHeight {
-	overflow: hidden;
-	resize: none;
-	min-height: 1.6em;
+  overflow: hidden;
+  resize: none;
+  min-height: 1.6em;
 }
 
 div.bc-editor {
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	max-height: 300px;
-	overflow: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  max-height: 300px;
+  overflow: auto;
 }
 
 tr.widthMarker {
-	line-height: 1px;
+  line-height: 1px;
 }
+
 /** 使文本输入框无边框和背景 */
+
 input.nostyle {
-	background: none;
-	border-width: 0;
+  background: none;
+  border-width: 0;
 }
 
 /** 文本对齐 */
+
 .align-left {
   text-align: left
 }
+
 .align-center {
   text-align: center
 }
+
 .align-right {
   text-align: right
 }
 
 /** 表单可折叠区域布局 */
+
 .bc-region {
   background: none;
 }
+
 .bc-region.ui-widget-content {
   border-bottom-width: 0;
 }
-.bc-region > .header,
-.bc-region > .ui-widget-header,
-.bc-region > .ui-state-default {
+
+.bc-region>.header, .bc-region>.ui-widget-header, .bc-region>.ui-state-default {
   line-height: 1.5em;
   border-bottom-style: inherit;
   border-bottom-color: inherit;
   border-width: 0 0 1px 0;
 }
-.bc-region > .content,
-.bc-region > .ui-widget-content,
-.bc-region > table.formFields {
+
+.bc-region>.content, .bc-region>.ui-widget-content, .bc-region>table.formFields {
   line-height: 1.5em;
   background: none;
 }
-.bc-region .padding,
-.bc-region .text {
+
+.bc-region .padding, .bc-region .text {
   padding: 0.25em;
 }
+
 .bc-region .text {
   display: inline-block;
 }
+
 .bc-region.last {
   margin-bottom: 0.25em;
   border-bottom-width: 1px;
