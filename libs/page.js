@@ -1029,7 +1029,7 @@ function _initBcTabsLoad() {
   if ($page.data("requirejs")) { // 使用requirejs的初始化处理
     var module = arguments[arguments.length - 1];
     if (typeof module === "function") {                              // 定义为类时
-      var instance = new module($page, cfg, cfg.readonly);          // 实例化类
+      var instance = new module($page, cfg, cfg ? cfg.readonly : null);          // 实例化类
       $page.data("scope", instance).data("scopeType", "instance");   // 记录此实例
     } else if (typeof module === "object") {                         // 定义为 literal object 时
       $page.data("scope", module).data("scopeType", "module");       // 记录此类
