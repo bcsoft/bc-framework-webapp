@@ -1023,32 +1023,33 @@ bc.page.defaultTabsOption = {
   load: bc.page.initTabPageLoad
 };
 
-//页签中页面的加载处理
+// 页签中页面的加载处理
 function _initBcTabsLoad() {
   var $page = this;
 
-  //执行组件指定的额外初始化方法，上下文为$dom
-  if ($page.data("requirejs")) { // 使用requirejs的初始化处理
+  // 获取 option 配置
+  var cfg = $page.attr("data-option");
+  if (cfg && /^\{/.test($.trim(cfg))) {
+    // 对json格式进行解释
+    cfg = eval("(" + cfg + ")");
+  } else {
+    cfg = {};
+  }
+
+  // 执行组件指定的额外初始化方法，上下文为 $page
+  if ($page.data("requirejs")) { // 使用 requirejs 的初始化处理
     var module = arguments[arguments.length - 1];
     if (typeof module === "function") {                              // 定义为类时
-      var instance = new module($page, cfg, cfg ? cfg.readonly : null);          // 实例化类
+      var instance = new module($page, cfg, cfg.readonly);           // 实例化类
       $page.data("scope", instance).data("scopeType", "instance");   // 记录此实例
     } else if (typeof module === "object") {                         // 定义为 literal object 时
       $page.data("scope", module).data("scopeType", "module");       // 记录此类
     }
   }
+
   var method = $page.attr("data-initMethod");
   logger.debug("bctabs:initMethod=" + method);
   if (method) {
-    var cfg = $page.attr("data-option");
-    //logger.info("cfg=" + cfg);
-    if (cfg && /^\{/.test($.trim(cfg))) {
-      //对json格式进行解释
-      cfg = eval("(" + cfg + ")");
-    } else {
-      cfg = {};
-    }
-
     if ($page.data("requirejs")) {   // requirejs
       var scope = $page.data("scope");
       if (typeof scope === "object") {
