@@ -113,6 +113,8 @@ bc.page = {
       return;
     }
     if (option.data) $dom.data("data", option.data);
+
+    // 将 url 参数添加到 $page.data('params')
     var params = bc.getUrlParams(option.url);
     if (params) $dom.data("params", params);
 
@@ -1084,6 +1086,13 @@ bc.page.defaultBcTabsOption = {
     var $page = ui.content.children(".bc-page");
     if (logger.debugEnabled) logger.debug("tabs.load:bc-page.size=" + $page.size());
     if (!$page.size()) return;
+
+    // 将 url 参数添加到 $page.data('params')
+    var url = $page.attr("data-src");
+    if (url) {
+      var params = bc.getUrlParams(url);
+      if (params) $page.data("params", params);
+    }
 
     // 加载js、css文件
     var jsCfg = $page.data("js");
