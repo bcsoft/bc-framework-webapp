@@ -302,7 +302,9 @@
       this._showTab($tab, $content);
 
       var _this = this;
-      //通过ajax加载页签的内容
+      // 通过ajax加载页签的内容
+      // 为 url 添加时间锉
+      if (bc && bc.addParamToUrl) url = bc.addParamToUrl(url, 'ts=' + bc.ts);
       $.get(url, function (html) {
         $content.empty().append(html);
 
