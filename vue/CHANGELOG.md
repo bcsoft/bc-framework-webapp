@@ -1,5 +1,8 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 1.0.1 - 2018-12-21 
+- Fixed the exporter un-encode prop is lose efficacy
+
 ## 1.0.0 - 2018-12-20 
 - Add unEncode prop for exporter component
 

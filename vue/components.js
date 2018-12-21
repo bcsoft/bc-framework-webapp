@@ -296,8 +296,8 @@ define('bc/vue/cors',[], function () {
 		post: function (url, body, contentType) {
 			return cors(url, 'POST', body, contentType);
 		},
-		appendUrlParams: function (url, params) {
-			return appendUrlParams(url, params);
+		appendUrlParams: function (url, params, unEncode) {
+			return appendUrlParams(url, params, unEncode);
 		},
 		/** 判断 url 是否是跨域请求 */
 		urlIsCors: urlIsCors,
@@ -1774,7 +1774,7 @@ define('bc/vue/tree',[
 });
 /*! BC 平台的 vue 组件
  * @author dragon <rongjihuang@gmail.com>
- * @version v1.0.0 2018-12-20
+ * @version v1.0.1 2018-12-21
  * @license Apache License 2.0
  * @components bc-theme
  *             bc-button
