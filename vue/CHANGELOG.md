@@ -1,116 +1,55 @@
-# [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
+# simter-vue-table changelog
 
-## 1.0.1 - 2018-12-21 
-- Fixed the exporter un-encode prop is lose efficacy
+## 0.7.1 2018-12-26
 
-## 1.0.0 - 2018-12-20 
-- Add unEncode prop for exporter component
+- Fixed selection list did not change when the row data changed the row picked
 
-## 0.11.0 - 2018-05-11 
-- Add error callback for grid component
+## 0.7.0 2018-12-24
 
-## 0.10.4 - 2017-12-22 
-- Encapsulate Ajax download file
+- Enables row data to decide the picked value of picker component
+- Fixed the selection list is wrong when deselect
+- Fixed the rows are wrong when deselecit after add row
 
-## 0.10.3 - 2017-12-20 
-- Auto CORS
-- Fixed exporter url error
+## 0.6.1 2018-11-16
 
-## 0.10.2 - 2017-12-06 
-- Improve search component
+- Remove simter-vue-table-integration-jquery-ui build
+- Fixed 'rollup -c' warning
+- Perfect the row-picker: picked group if all its children are picked
 
-## 0.10.1 - 2017-11-29 
-- Add initialized event and fixed toggle method bug for tree component 
+## 0.6.0 2018-11-15
 
-## 0.10.0 - 2017-11-21 
-- Add tree component
-- Add cors component
+- Refactor group feature
 
-## 0.9.0 - 2017-11-13 
-- Add box-pointer component
-- Add page-bar-importer component
-- Add page-bar-exporter component
+## 0.5.0 2018-11-02
 
-## 0.8.2 - 2017-11-09 
-- Lost rowCellClick $event argument in grid group column
-- Upgrade uglify-js@2.4.x to uglify-es@3.1.x for minified es6
+- Add group support
 
-## 0.8.1 - 2017-09-30 
-- set grid cell's filter and click function this to vm instance.
+## 0.4.0 2018-10-10
 
-## 0.8.0 - 2017-05-16 
-- grid component supports `JsonArray` responseBody
+- Add classes and styles pros support
+- Docs link to jsDelivr (Open Source CDN)
+- Add jQueryUI integration
+- Add SemanticUI2 integration
+- Add Bootstrap3 integration
 
-## 0.7.2 - 2017-05-15 
-- only not cors to set `settings.credentials = 'include'`
+## 0.3.1 2018-03-02
 
-## 0.7.1 - 2017-05-15 
-- back to set `settings.credentials = 'include'` default
+- Fixed docs link
 
-## 0.7.0 - 2017-05-12 
-- add CORS support for grid
 
-## 0.6.1 - 2017-02-13 
-- add function support for rowCellStyle and rowCellClass with grid component
+## 0.3.0 2018-03-02
 
-## 0.6.0 - 2017-01-17 
-- change search component theme to classical
-- click any cell to select grid row
+- Add custom class for table, thead, tbody
+- Add Bootstrap4 integration
 
-## 0.5.1 - 2016-12-16 
-- support cell text ellipsis
+## 0.2.0 2018-03-01
 
-## 0.5.0 - 2016-12-13 
-- add cell title support
+- Add license comment
+- Support group column
+- Add rollup-plugin-node-resolve for [include external modules](https://github.com/rollup/rollup/wiki/Troubleshooting#treating-module-as-external-dependency)
+- Add unit test
+- Polishing docs
 
-## 0.4.1 - 2016-11-16 
-- fix empty range value for search
+## 0.1.0 2018-02-23
 
-## 0.4.0 - 2016-11-14 
-- fixed search, grid component demo
-- optimise page-bar: not add '#' after url when change
-- search refactor:
-	1. add search, clean, close button
-	2. support date, datetime, month, time, number select
-	3. support range condition. like '[]', '[), '(]', '()'
-	4. can async load advance-config
-
-## 0.3.0 - 2016-10-28 
-- add rowCellClick event for grid
-- change page-bar and grid components to not set default pageNo and pageSize prop
-- auto copy result files to target dir for build.sh
-- deal fetch error for grid
-- search refactor
-- use fetch API instead of $.ajax for grid
-- add beforeReload callback for grid (return false to cancel reload)
-- add afterReload event for grid
-- add queryKey and mothod prop for grid
-
-## 0.2.3 - 2016-09-21 
-- bc-grid 组件单元格值增加过滤器配置 (通过 column.filter 配置)
-- bc-grid 组件如果加载数据失败，默认将响应的 responseText 作为提示信息
-- bc-grid 组件不分页时不传输 pageNo、 pageSize 参数
-
-## 0.2.2 - 2016-09-06 
-- 修正 bc-search 组件高级搜索选择标识符后再输入值然后切换控件焦点会自动清空输入的值的问题
-
-## 0.2.1 - 2016-08-19 
-- bc-toolbar|button|search 组件样式优化
-
-## 0.2.0 - 2016-08-15 
-- [new] bc-search 组件增加高级搜索功能
-- [new] bc-grid 组件的 condition 属性更名为 query
-- bc-toolbar 组件无法设置 style 属性的修正
-- bc-theme 组件代码优化
-
-## 0.1.0 - 2016-07-08 
-- demo at [http://127.0.0.1:3000/examples/index.html]()
-- add bc-theme component
-- add bc-button component
-- add bc-button-set component
-- add bc-search component
-- add bc-toolbar component
-- add bc-loading component
-- add bc-page-bar component
-- add bc-table-col component
-- add bc-grid component
+- Init
