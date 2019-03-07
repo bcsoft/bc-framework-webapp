@@ -50,7 +50,8 @@ define(["bc.core"], function (bc) {
      * - name - 微服务名称
      * - address - 微服务访问地址
      */
-    services: {}
+    services: {},
+    loaded: false // 标识 services 的值是否已经加载完毕
   };
 
   // 异步获取系统上下文信息
@@ -61,8 +62,13 @@ define(["bc.core"], function (bc) {
     throw new Error(msg);
   })).then(json => {
     Object.assign(context, json);
-    //console.log("preload context=%s", JSON.stringify(context));
-  }).catch(error => bc.msg.info(error.message));
+    context.loaded = "success"; // 标识加载成功
+    console.log("load microservice config success");
+  }).catch(error => {
+    bc.msg.info(error.message);
+    context.loaded = "error";   // 标识加载失败
+    console.log("load microservice config failed");
+  });
 
   return context;
 });
