@@ -369,6 +369,7 @@ bc.formatTpl = function (source, params) {
  * @option data {Object} [可选]要传输的数据
  * @option isOpenNewWin {Boolean} [可选]是否在新窗口打开打印界面（默认false）
  * @option autoPrint {Boolean} [可选]是否自动开始打印（默认true）
+ * @option isMessage {Boolean}[可选]是否发送验证数据（默认false）
  * @option old {Boolean} [可选]true 使用 iframe，false 使用表单提交（默认true）
  */
 bc.print = function (option) {
@@ -428,6 +429,7 @@ bc.print = function (option) {
         this.contentWindow.print();
         //打单操作结束后，清空iframe内容节约资源
         $iframe.attr("src", "about:blank");
+        if (option.isMessage) $iframe[0].contentWindow.postMessage(localStorage.authorization, option.url)
       });
     } else {// 新窗口：不支持 autoPrint 参数
       form.submit();  // 提交表单
@@ -450,14 +452,15 @@ bc.print = function (option) {
       }
 
       $iframe.attr("src", option.url);
-      if (option.autoPrint) {
-        $iframe.one("load", function () {
+      $iframe.one("load", function () {
+        if (option.isMessage) $iframe[0].contentWindow.postMessage(localStorage.authorization, option.url);
+        if (option.autoPrint) {
           //调用打印方法打印iframe的内容
           this.contentWindow.print();
           //打单操作结束后，清空iframe内容节约资源
           $iframe.attr("src", "about:blank");
-        });
-      }
+        }
+      });
     } else {// 在新窗口打印
       var win = window.open(option.url, option.target);
       if (option.autoPrint) win.print();
