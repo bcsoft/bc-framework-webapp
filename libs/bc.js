@@ -362,6 +362,21 @@ bc.formatTpl = function (source, params) {
 };
 
 /**
+ * 判断指定的 url 与当前页面之间是否跨域。
+ * 
+ * 协议、域名或端口任一不同则为跨域。
+ * See https://stackoverflow.com/questions/6941533#26434126
+ *
+ * @param url {String} 要判断的 url
+ * @return
+ */
+bc.isCrossDomain = function (url) {
+  var target = new URL(url);
+  // host 属性格式为 "a.com:8080"
+  return target.protocol != window.location.protocol || target.host != window.location.host;
+};
+
+/**
  * 对指定的url地址，请求回来的内容进行打印
  * @param option {Object} 配置参数
  * @option url {String} url地址
