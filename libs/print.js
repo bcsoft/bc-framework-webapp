@@ -24,13 +24,13 @@ define(["bc.core"], function (bc) {
    * 
    * @param option {Object} 配置参数
    * @option url {String} 打印页面的 url 地址
-   * @option data {Object} [可选] 要传输的数据
-   * @option autoPrint {Boolean} [可选] 是否自动开始打印，默认 true
+   * @option data {Object} [可选] 要传输的数据（推荐使用 autoPrint 布尔属性来标识是否自动开始打印）
    * @option win {Object|Boolean} [可选] 使用 window.open 方式加载 url 的相关配置 {name, features}
    *         See <https://developer.mozilla.org/zh-CN/docs/Web/API/Window/open>
    * @option iframe {Object|Boolean} [可选] 使用 iframe 方式加载 url 的相关配置，此为默认使用的方式
    * @return {Promise} 
-   *         1. then 处理打印完毕，参数值为 true 代表打印成功，false 代表打印失败或用户取消打印
+   *         1. then 处理打印完毕，参数值为 true 代表打印成功，false 代表打印失败或用户取消打印。
+   *            由于技术限制当前无法检测打印机状态，故其值现时固定为 true。
    *         2. catch 处理其它未知异常。
    */
   return function (option) {
