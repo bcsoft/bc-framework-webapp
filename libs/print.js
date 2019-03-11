@@ -5,8 +5,8 @@ define(["bc.core"], function (bc) {
   'use strict';
   const TS = bc.ts;
   // 超时时间
-  const TIMEOUT_LOADED = 5000;   // 等待加载回信的超时时间：5 秒
-  const TIMEOUT_PRINTED = 30000; // 等待打印回信的超时时间：5 分钟
+  const TIMEOUT_LOADED = 5000;    // 等待加载回信的超时时间：5 秒
+  const TIMEOUT_PRINTED = 300000; // 等待打印回信的超时时间：5 分钟
   // 判断指定的 url 与当前页面之间是否跨域的函数
   const isCrossDomain = bc.isCrossDomain;
   // 向指定的 url 路径末端添加参数
