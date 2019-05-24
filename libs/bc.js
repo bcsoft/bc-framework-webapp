@@ -1038,6 +1038,7 @@ bc.page = {
    * @option {String} from [可选]打开此对话框的源对话框的mid
    * @option {String} name [可选]任务栏显示的名称或对话框的标题
    * @option {String} title [可选]对话框的标题,如果不指定则使用请求返回的值
+   * @option {String} modal [可选]是否背景遮掩
    * @option {String} data [可选]附加的数据
    * @option {String} afterOpen [可选]窗口新建好后的回调函数
    * @option {String} afterClose [可选]窗口关闭后的回调函数。function(event, ui)
@@ -1169,6 +1170,8 @@ bc.page = {
       }
 
       if (option.buttons) cfg.buttons = option.buttons;//使用传入的按钮配置
+
+      if (option.modal) cfg.modal = option.modal;//是否背景遮掩
 
       // 允许 requireJs 模块通过名为 option 的静态对象或方法自定义 data-option 的值，而不是通过 html 模板的 data-option 属性指定
       if ($dom.data("requirejs")) { // 使用 requireJs 的初始化处理
