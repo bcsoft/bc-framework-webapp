@@ -442,7 +442,7 @@ bc.print = function (option) {
         //调用打印方法打印iframe的内容
         this.contentWindow.print();
         //打单操作结束后，清空iframe内容节约资源
-        $iframe.attr("src", "about:blank");
+        setTimeout(function(){ $iframe.attr("src", "about:blank") }, 100);
       });
     } else {// 新窗口：不支持 autoPrint 参数
       form.submit();  // 提交表单
@@ -470,7 +470,7 @@ bc.print = function (option) {
           //调用打印方法打印iframe的内容
           this.contentWindow.print();
           //打单操作结束后，清空iframe内容节约资源
-          $iframe.attr("src", "about:blank");
+          setTimeout(function(){ $iframe.attr("src", "about:blank") }, 100);
         });
       }
     } else {// 在新窗口打印
