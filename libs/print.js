@@ -5,7 +5,7 @@ define(["bc.core"], function (bc) {
   'use strict';
   const TS = bc.ts;
   // 超时时间
-  const TIMEOUT_LOADED = 5000;    // 等待加载回信的超时时间：5 秒
+  const TIMEOUT_LOADED = 10000;   // 等待加载回信的超时时间：10 秒
   const TIMEOUT_PRINTED = 300000; // 等待打印回信的超时时间：5 分钟
   // 判断指定的 url 与当前页面之间是否跨域的函数
   const isCrossDomain = bc.isCrossDomain;
@@ -19,16 +19,16 @@ define(["bc.core"], function (bc) {
 
   /**
    * 打印指定 url 地址的页面。
-   * 
+   *
    * 此组件对跨域同域均通过 postMessage 方式与打印页面进行通信。
-   * 
+   *
    * @param option {Object} 配置参数
    * @option url {String} 打印页面的 url 地址
    * @option data {Object} [可选] 要传输的数据（推荐使用 autoPrint 布尔属性来标识是否自动开始打印）
    * @option win {Object|Boolean} [可选] 使用 window.open 方式加载 url 的相关配置 {name, features}
    *         See <https://developer.mozilla.org/zh-CN/docs/Web/API/Window/open>
    * @option iframe {Object|Boolean} [可选] 使用 iframe 方式加载 url 的相关配置，此为默认使用的方式
-   * @return {Promise} 
+   * @return {Promise}
    *         1. then 处理打印完毕，参数值为 true 代表打印成功，false 代表打印失败或用户取消打印。
    *            由于技术限制当前无法检测打印机状态，故其值现时固定为 true。
    *         2. catch 处理其它未知异常。
@@ -38,11 +38,11 @@ define(["bc.core"], function (bc) {
       if (!option) return reject(new Error("缺少打印配置的 option 参数！"));
       if (!option.url) return reject(new Error("缺少打印配置的 url 参数！"));
 
-      var startTime = new Date().getTime(); // 开始时间（毫秒）
-      var targetOrigin = new URL(option.url).origin;              // 目标窗口的 origin
+      const startTime = new Date().getTime(); // 开始时间（毫秒）
+      const targetOrigin = new URL(option.url).origin;              // 目标窗口的 origin
       if (TS) option.url = addParamToUrl(option.url, `ts=${TS}`); // 添加系统时间戳
-      var winLoaded = false;                // 标识打印窗口是否加载完毕
-      var printed = false;                  // 标识打印窗口是否已完成打印
+      let winLoaded = false;                // 标识打印窗口是否加载完毕
+      let printed = false;                  // 标识打印窗口是否已完成打印
 
       // 增加额外的内部标记符
       option.data = Object.assign({}, option.data, {
