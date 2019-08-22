@@ -65,11 +65,11 @@ define(["bc.core"], function (bc) {
       }
       // 监听打印窗口的反馈
       window.addEventListener("message", function feedback(event) {
+        console.debug("print-in-main/received: data=%o, from=%s", event.data, event.origin);
         // 不处理非打印窗口传来的消息
         if (event.origin !== targetOrigin) return;
 
-        console.log("main:print received data=%o, origin=%s", event.data, event.origin);
-        if (event.data === "loaded")  winLoaded = true;  // 打印窗口加载完毕
+        if (event.data === "loaded") winLoaded = true;  // 打印窗口加载完毕
         if (event.data === "printed") {
           printed = true;   // 打印窗口已完成打印操作
 
@@ -91,7 +91,7 @@ define(["bc.core"], function (bc) {
 
         // 没有就创建一个
         if (!iframe) {
-          console.log("create new iframe for print");
+          console.debug("print-in-main: create new iframe for print");
           iframe = document.createElement("iframe");
           for (let key in option.iframe) iframe.setAttribute(key, option.iframe[key]);
           document.body.appendChild(iframe);
@@ -108,9 +108,10 @@ define(["bc.core"], function (bc) {
       // 由打印窗口负责回信确认加载完毕和打印完毕两个信号。
       let repeater = setInterval(() => {
         if (!winLoaded) { // 等待打印页面加载完毕的回信
-          console.log("main:print: waiting loaded signal...");
           // 发送数据
+          console.debug("print-in-main/send: data=%o, to=%s", option.data, targetOrigin);
           targetWin.postMessage(option.data, targetOrigin);
+          console.debug("print-in-main/interval: waiting loaded signal...");
 
           // 超过处理，避免持续下去
           if (new Date().getTime() - startTime > TIMEOUT_LOADED) {
@@ -121,9 +122,9 @@ define(["bc.core"], function (bc) {
             reject(new Error(msg));
           }
         } else {         // 等待打印完毕的回信
-          console.log("main:print: waiting printed signal...");
-          if (!printed) { // 等待打印页面加载完毕的回信
-            // 超过处理，避免持续下去
+          console.debug("print-in-main/interval: waiting printed signal...");
+          if (!printed) { // 等待打印页面打印完毕的回信
+            // 超时处理，避免持续下去
             if (new Date().getTime() - startTime > TIMEOUT_PRINTED) {
               const msg = `已超过 ${TIMEOUT_PRINTED / 1000} 秒没有收到打印页面的打印结果，请重新打印！`;
               console.error(msg);
@@ -132,7 +133,7 @@ define(["bc.core"], function (bc) {
               reject(new Error(msg));
             }
           } else {
-            console.log("main:print received printed signal");
+            console.debug("print-in-main/interval: received printed signal");
             clearInterval(repeater); // 取消打印等待
             resolve(true);
           }
