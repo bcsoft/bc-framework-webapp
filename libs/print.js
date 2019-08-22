@@ -33,7 +33,7 @@ define(["bc.core"], function (bc) {
    *            由于技术限制当前无法检测打印机状态，故其值现时固定为 true。
    *         2. catch 处理其它未知异常。
    */
-  return function (option) {
+  return function (option, $event) {
     return new Promise(function (resolve, reject) {
       if (!option) return reject(new Error("缺少打印配置的 option 参数！"));
       if (!option.url) return reject(new Error("缺少打印配置的 url 参数！"));
@@ -49,6 +49,13 @@ define(["bc.core"], function (bc) {
         "$type": "print",
         "$origin": location.origin
       });
+
+      // 特殊配置：用于在生产环境进行调试
+      if ($event && $event.ctrlKey) option.win = true; // 按住 Ctrl 键则强制设置为 win=true
+      if ($event && $event.ctrlKey && $event.altKey) { // 按住 Ctrl+Alt 键则强制设置为 autoPrint=false
+        option.data = option.data || {};
+        option.data.autoPrint = false;
+      }
 
       // 将 win 参数的简易配置转换为标准配置
       if (option.win === true) {
