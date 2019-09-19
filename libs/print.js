@@ -40,7 +40,7 @@ define(["bc.core"], function (bc) {
 
       const startTime = new Date().getTime(); // 开始时间（毫秒）
       const targetOrigin = new URL(option.url).origin;              // 目标窗口的 origin
-      if (TS) option.url = addParamToUrl(option.url, `ts=${TS}`); // 添加系统时间戳
+      if (TS) option.url = addParamToUrl(option.url, `ts=${TS}`, true); // 添加系统时间戳
       let winLoaded = false;                // 标识打印窗口是否加载完毕
       let printed = false;                  // 标识打印窗口是否已完成打印
 
