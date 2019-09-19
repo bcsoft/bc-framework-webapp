@@ -131,13 +131,14 @@ bc.getStringActualLen = function (sourceString) {
 /** 向指定的url路径末端添加参数
  * @param url url路径
  * @param keyValue 名值对，格式为“key=value”
+ * @param ignoreIfExists 如果同名 key 已存在则忽略不重复添加
  * @return 添加参数/值后的url
  */
-bc.addParamToUrl = function (url, keyValue) {
+bc.addParamToUrl = function (url, keyValue, ignoreIfExists) {
   if (url == null) return url;
   if (!keyValue) return url;
   var hasParam = (url.indexOf("?") != -1);
-  if (url.indexOf("ts=0") != -1) {//强制不添加ts的配置
+  if (ignoreIfExists && url.indexOf(keyValue.substring(0, keyValue.indexOf("=") + 1)) !== -1) { // 不重复添加
     return url;
   } else {
     return url + (hasParam ? "&" : "?") + keyValue;
