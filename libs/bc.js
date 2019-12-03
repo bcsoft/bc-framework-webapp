@@ -628,26 +628,48 @@ bc.msg = {
     });
   },
   /** 输入框
-   * @param {String} msg 提示信息
+   * @param {String} title [可选]标题,默认为 bc.msg.DEFAULT_TITLE
    * @param {String} onOk 点击确认按钮的回调函数
    * @param {String} onCancel [可选]点击取消按钮的回调函数
    * @param {String} value [可选]文本输入框默认显示的内容
-   * @param {Boolean} multiline [可选]是否为多行文本输入，默认为false(单行文本输入)
-   * @param {String} title [可选]标题,默认为OZ.Messager.DEFAULT_TITLE
-   * @param {Boolean} isPassword [可选]是否是密码输入框，默认为false(文本输入框)，只有在multiline为非true的情况下有效
-   * @param {Boolean} showIcon [可选]是否显示图标，默认为false(不显示)
+   * @param {Boolean} required [可选]是否必填，默认为 true (必填)
+   * @param {Boolean} multiline [可选]是否为多行文本输入，默认为 true (多行文本输入)
+   * @param {Boolean} isPassword [可选]是否是密码输入框，默认为 false (文本输入框)，只有在 multiline 为 false 的情况下有效 TODO
+   * @param {Boolean} showIcon [可选]是否显示图标，默认为 false (不显示) TODO
    */
-  prompt: function (msg, onOk, onCancel, value, multiline, title, isPassword, showIcon) {
-    return $.messager.prompt(title || OZ.Messager.DEFAULT_TITLE, msg,
-      function (value, isOk, oldValue) {
-        if (isOk) {
-          if (typeof onOk == "function") onOk.call(this, value, oldValue);
-        } else {
-          if (typeof onCancel == "function") onCancel.call(this, value, oldValue);
-        }
-      },
-      value, multiline, isPassword, showIcon
-    );
+  prompt: function (title, onOk, onCancel, value, required, multiline, isPassword, showIcon) {
+    const validate = required === false ? '' : 'required';
+    const me = $('<div>' + multiline === false ? '<div class="bc-page"><input type="text" data-validate="' + validate + '" class="value ui-widget-content" ' +
+      'style="box-sizing:border-box; width: 100%;" value="' + (value || '') + '"></div>' : '<div class="bc-page" style="padding-top: 14px;">' +
+      '<textarea data-validate="' + validate + '" class="value ui-widget-content" style="box-sizing:border-box; height: 100%; width: 100%; resize:none;"></textarea></div>' + '</div>');
+    me.dialog({
+      modal: true, title: title || bc.msg.DEFAULT_TITLE,
+      buttons: [
+        {
+          text: bc.msg.OK,
+          click: function () {
+            if (typeof onOk == "function") {
+              if (bc.validator.validate(me)) {
+                onOk.call(this, me.find(".value").val());
+                $(this).dialog("destroy").remove();
+              }
+            } else {
+              $(this).dialog("destroy").remove();
+            }
+          }
+        }, {
+          text: bc.msg.CANCEL,
+          click: function () {
+            $(this).dialog("destroy").remove();
+            if (typeof onCancel == "function")
+              onCancel.call();
+          }
+        }]
+    }).bind("dialogclose", function (event, ui) {
+      $(this).dialog("destroy").remove();//彻底删除所有相关的dom元素
+      if (typeof onCancel == "function")
+        onCancel.call();
+    });
   },
   /** 信息提示框：提示框icon=info的简化使用版 */
   info: function (msg, title, onOk) {
