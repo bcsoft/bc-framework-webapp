@@ -91,7 +91,7 @@ define(["bc.core"], function (bc) {
         update(id, data, quiet) {
           return request({
             method: "PATCH",
-            url: `$modulePath/$id`,
+            url: `${modulePath}/${id}`,
             body: data ? JSON.stringify(data) : null,
             contentType: "application/json;charset=UTF-8",
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
@@ -100,7 +100,7 @@ define(["bc.core"], function (bc) {
         delete_(id, quiet) {
           return request({
             method: "DELETE",
-            url: `$modulePath/$id`,
+            url: `${modulePath}/${id}`,
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
           });
         },
@@ -112,7 +112,7 @@ define(["bc.core"], function (bc) {
         get(id, quiet) {
           return request({
             method: "GET",
-            url: `$modulePath/$id`,
+            url: `${modulePath}/${id}`,
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
           });
         },
