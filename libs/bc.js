@@ -7240,11 +7240,13 @@ bc.image = {
       $lis.each(function (index) {
         $li = $(this);
         var wh = $li[_this.options.val.wh](true);
-        var lt = $li.position()[_this.options.val.lt];
+        var lt = parseInt($li.position()[_this.options.val.lt]);
         if (logger.debugEnabled) logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
-        if ((wh + lt) >= 0) {
+        //console.log("i=" + index + ",wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+        if (lt < 0 && wh + lt + 1 >= 0) {
           var newmlt = lt - mlt - _this.options.offsetPrev;
           if (logger.debugEnabled) logger.debug("next:index=" + index + ",newmlt=" + newmlt);
+          //console.log("next:i=" + index + ",newmlt=" + newmlt);
 
           //显示这个页签
           if (_this.options.animate) {
@@ -7279,17 +7281,19 @@ bc.image = {
 
       //显示页签
       var $tabs = this.element.find("ul.tabs");
-      var $lis = $tabs.children('li');
-      var cwh = $tabs.parent()[_this.options.val.wh](false);
-      var mlt = parseInt($tabs.css(_this.options.val.marginLT));
+      var $lis = $tabs.children('li'); // 每个页签头对应一个 li
+      var cwh = $tabs.parent()[_this.options.val.wh](false); // ul 的容器的 outerWidth（水平tab）|outerHeight（垂直tab）
+      var mlt = parseInt($tabs.css(_this.options.val.marginLT)); // ul 的 marginLeft（水平tab）|marginTop（垂直tab）
       $lis.each(function (index) {
         var $li = $(this);
         var wh = $li[_this.options.val.wh](true);
-        var lt = $li.position()[_this.options.val.lt];
+        var lt = parseInt($li.position()[_this.options.val.lt]); // left（水平tab）|top（垂直tab）
         if (logger.debugEnabled) logger.debug("wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
+        //console.log("i=" + index + ",wh=" + wh + ",lt=" + lt + ",cwh=" + cwh + ",mlt=" + mlt);
         if ((wh + lt) > (cwh - _this.options.offsetNext)) {
           var newmlt = wh + lt - mlt + _this.options.offsetNext - cwh;
           if (logger.debugEnabled) logger.debug("next:index=" + index + ",newmlt=" + newmlt);
+          //console.log("next:i=" + index + ",newmlt=" + newmlt);
 
           //显示这个页签
           if (_this.options.animate) {
