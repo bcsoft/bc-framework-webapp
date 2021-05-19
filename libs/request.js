@@ -18,13 +18,14 @@ define(["bc.core"], function (bc) {
    * 2. 自动附加 jwt 需要的验证头 "Authorization"。
    * 3. 自动按照响应头 'Content-Type' 的值解析为文本或 json 对象。
    * 4. 非 2xx 的响应码自动解析响应体的 body 为异常信息，
-   *    如果没有设置 throwError=true，默认使用平台的 bc.msg.info 显示异常信息，
+   *    如果设置 quiet=true，使用平台的 bc.msg.info 显示异常信息，
    *    否则需由使用者通过 Promise.catch(e) 的方式来获取相关异常并自行处理。
    *
-   * @param options 选项参数，支持的键值为 {url, method, body, contentType, throwError}
+   * @param options 选项参数，支持的键值为 {url, method, body, contentType, quiet, externalResponseHandler}
    * @param [可选] quiet 对于非 2xx 响应，是否安静的处理掉，默认 false：
    *                      false-异常由使用者通过 catch 自行处理，非 2xx 响应返回的 Promise 为 rejected 状态
    *                      true-使用 bc.msg.info 显示异常信息，非 2xx 响应返回的 Promise 为 resolved 状态
+   * @param [可选] externalResponseHandler 响应体的额外处理函数，函数的第一个参数为响应体对象，可用于针对不同的 status 和 headers 作特殊处理
    */
   function request(options) { // url, method, body, contentType, quiet
     let fetchOptions = {headers: getAuthorizationHeaders()};
@@ -32,18 +33,28 @@ define(["bc.core"], function (bc) {
     if (options.body) fetchOptions.body = options.body;
     if (options.contentType) fetchOptions.headers["Content-Type"] = options.contentType;
     return fetch(options.url, fetchOptions).then(res => {
-      if (res.status === 204) return null;
-      else if (res.ok) {
-        let ct = res.headers.get('Content-Type').toLowerCase();
-        if (ct.indexOf('application/json') !== -1) return res.json() // json
-        else if (ct.startsWith('text/')) return res.text()           // text/plain、text/html
-        else return res.json() // 默认 json
-      } else {
-        return res.text().then(msg => {
-          if (options.quiet) bc.msg.info(msg);
-          else throw new Error(msg)
-        });
-      }
+      // 执行响应体的额外处理函数
+      let r;
+      if (typeof options.externalResponseHandler === "function") { 
+        r = options.externalResponseHandler.call(null, res);
+        if (!(r instanceof Promise)) r = Promise.resolve(r);
+      } else r = Promise.resolve();
+
+      // 解析 body
+      return r.then(() => {
+        if (res.status === 204) return null;
+        else if (res.ok) { // 响应 2xx 时自动根据 Content-Type 解析 body
+          let ct = res.headers.get('Content-Type').toLowerCase();
+          if (ct.indexOf('application/json') !== -1) return res.json() // json
+          else if (ct.startsWith('text/')) return res.text()           // text/plain、text/html
+          else return res.json() // 默认 json
+        } else {
+          return res.text().then(msg => {
+            if (options.quiet) bc.msg.info(msg);
+            else throw new Error(msg)
+          });
+        }
+      });
     });
   }
 
