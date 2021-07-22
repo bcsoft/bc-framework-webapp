@@ -60,7 +60,7 @@ define(["bc.core"], function (bc) {
             if (ct.indexOf('application/json') !== -1) return res.json() // json
             else if (ct.startsWith('text/')) return res.text()           // text/plain、text/html
           }
-          return res.json() // 默认 json
+          return res.text() // 默认 text
         } else {
           return res.text().then(msg => {
             if (options.quiet) bc.msg.info(msg);
