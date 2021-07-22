@@ -21,17 +21,27 @@ define(["bc.core"], function (bc) {
    *    如果设置 quiet=true，使用平台的 bc.msg.info 显示异常信息，
    *    否则需由使用者通过 Promise.catch(e) 的方式来获取相关异常并自行处理。
    *
-   * @param options 选项参数，支持的键值为 {url, method, body, contentType, quiet, externalResponseHandler}
+   * @param options 选项参数，支持的键值为 fetch 函数支持的所有初始化参数及附加 {url, contentType, quiet, externalResponseHandler } 参数
    * @param [可选] quiet 对于非 2xx 响应，是否安静的处理掉，默认 false：
-   *                      false-异常由使用者通过 catch 自行处理，非 2xx 响应返回的 Promise 为 rejected 状态
-   *                      true-使用 bc.msg.info 显示异常信息，非 2xx 响应返回的 Promise 为 resolved 状态
+   *        false-异常由使用者通过 catch 自行处理，非 2xx 响应返回的 Promise 为 rejected 状态
+   *        true-使用 bc.msg.info 显示异常信息，非 2xx 响应返回的 Promise 为 resolved 状态
    * @param [可选] externalResponseHandler 响应体的额外处理函数，函数的第一个参数为响应体对象，可用于针对不同的 status 和 headers 作特殊处理
    */
   function request(options) { // url, method, body, contentType, quiet
-    let fetchOptions = {headers: getAuthorizationHeaders()};
-    if (options.method) fetchOptions.method = options.method;
-    if (options.body) fetchOptions.body = options.body;
+    let fetchOptions = {};
+
+    // 合并 fetch 函数支持的初始化参数
+    // See https://developer.mozilla.org/zh-CN/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters
+    ["method", "body", "headers", "credentials", "mode", "cache", "redirect", "referrer", "referrerPolicy", "integrity"]
+    .forEach(key => { if (options.hasOwnProperty(key)) fetchOptions[key] = options[key] });
+
+    // 合并 jwt 认证信息
+    if (fetchOptions.hasOwnProperty("headers")) Object.assign(fetchOptions.headers, getAuthorizationHeaders());
+    else fetchOptions.headers = getAuthorizationHeaders();
+
+    // 特殊处理一下 contentType 简易参数
     if (options.contentType) fetchOptions.headers["Content-Type"] = options.contentType;
+
     return fetch(options.url, fetchOptions).then(res => {
       // 执行响应体的额外处理函数
       let r;
@@ -60,6 +70,7 @@ define(["bc.core"], function (bc) {
       });
     });
   }
+
 
   /**
    * 按 URL 标准方式附加查询参数。
