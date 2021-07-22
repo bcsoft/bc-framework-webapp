@@ -44,10 +44,13 @@ define(["bc.core"], function (bc) {
       return r.then(() => {
         if (res.status === 204) return null;
         else if (res.ok) { // 响应 2xx 时自动根据 Content-Type 解析 body
-          let ct = res.headers.get('Content-Type').toLowerCase();
-          if (ct.indexOf('application/json') !== -1) return res.json() // json
-          else if (ct.startsWith('text/')) return res.text()           // text/plain、text/html
-          else return res.json() // 默认 json
+          let ct = res.headers.get('Content-Type');
+          if (ct) {
+            ct = ct.toLowerCase();
+            if (ct.indexOf('application/json') !== -1) return res.json() // json
+            else if (ct.startsWith('text/')) return res.text()           // text/plain、text/html
+          }
+          return res.json() // 默认 json
         } else {
           return res.text().then(msg => {
             if (options.quiet) bc.msg.info(msg);
