@@ -25,6 +25,7 @@
 	display: block;
 	text-decoration: underline;
 	color: #2A5DB0;
+	cursor: pointer;
 }
 
 .attachs .header td {
@@ -38,10 +39,14 @@
 	top: 0;
 	width: 5em;
 	height: 1.5em;
-	filter: alpha(opacity =         10);
+	filter: alpha(opacity = 10);
 	opacity: 0;
 	cursor: pointer;
 	/*-moz-margin-start: -165px; Firefox的input:file宽度无法控制的处理，从v27.0发现此问题已经解决*/
+}
+/* chromes and blink button */
+.attachs .header input.uploadFile::-webkit-file-upload-button { 
+	cursor: pointer; 
 }
 
 /** 每个附加的总容器 */
