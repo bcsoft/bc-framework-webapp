@@ -1149,7 +1149,31 @@ bc.page.defaultBcTabsOption = {
     }
   },
   /** 内容容器的高度是否自动根据tabs容器的高度变化 */
-  autoResize: true
+  autoResize: true,
+  /** 
+   * 自定义tab 内容的记载器。
+   * 
+   * 对于 text! 开头的 url，使用 requireJs 加载。
+   * 其余使用 $.ajax 加载。
+   */
+  getTabContent: function (url) {
+    return new Promise(function (resolve, recject) {
+      if (/^text!/gi.test(url)) { // 使用 requireJs 加载页面内容
+        require(
+          [bc.removeUrlParams(url)],
+          function (content) { resolve(content); },
+          function (err) { recject(err); }
+        );
+      } else { // 默认的使用 jquery 加载页面内容
+        $.ajax({
+          method: 'GET',
+          url: url,
+          success: function (content) { resolve(content) },
+          error: function (jqXHR, textStatus, errorThrown) { recject(errorThrown); }
+        });
+      }
+    });
+  }
 };
 
 // support requirejs

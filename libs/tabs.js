@@ -26,7 +26,18 @@
       heightAnimateEasing: "easeInOutExpo",//内容区高度变化的动画擦除方法
       minHeight: 80,//内容区的最小高度
       height: 'auto',// tabs的总高度，默认根据内容的高度自动扩展
-      loadingText: "正在加载 ......"
+      loadingText: "正在加载 ......",
+      /** 加载页签内容的默认加载器，返回值需为 Promise 类型 */
+      getTabContent: function(url) {
+        return new Promise(function(resolve, recject) {
+          $.ajax({
+            method: 'GET',
+            url: url,
+            success: function(content) { resolve(content) },
+            error: function(jqXHR, textStatus, errorThrown) { recject(errorThrown); }
+          });
+        });
+      }
     },
 
     _create: function () {
@@ -302,12 +313,14 @@
       this._showTab($tab, $content);
 
       var _this = this;
-      // 通过ajax加载页签的内容
+
       // 为 url 添加时间锉
       if (bc && bc.addParamToUrl) url = bc.addParamToUrl(url, 'ts=' + bc.ts);
-      $.get(url, function (html) {
-        $content.empty().append(html);
 
+      // 加载页签的内容
+      this.options.getTabContent(url).then(function(html) {
+        $content.empty().append(html);
+  
         // 设置内部页签的一些属性参数:与 bc.page.newWin的处理一致
         var $tabBCPage = $content.children(".bc-page");
         if ($tabBCPage.size() > 0) {
