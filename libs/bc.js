@@ -2197,7 +2197,31 @@ bc.page.defaultBcTabsOption = {
     }
   },
   /** 内容容器的高度是否自动根据tabs容器的高度变化 */
-  autoResize: true
+  autoResize: true,
+  /** 
+   * 自定义tab 内容的记载器。
+   * 
+   * 对于 text! 开头的 url，使用 requireJs 加载。
+   * 其余使用 $.ajax 加载。
+   */
+  getTabContent: function (url) {
+    return new Promise(function (resolve, recject) {
+      if (/^text!/gi.test(url)) { // 使用 requireJs 加载页面内容
+        require(
+          [bc.removeUrlParams(url)],
+          function (content) { resolve(content); },
+          function (err) { recject(err); }
+        );
+      } else { // 默认的使用 jquery 加载页面内容
+        $.ajax({
+          method: 'GET',
+          url: url,
+          success: function (content) { resolve(content) },
+          error: function (jqXHR, textStatus, errorThrown) { recject(errorThrown); }
+        });
+      }
+    });
+  }
 };
 
 // support requirejs
@@ -6909,7 +6933,18 @@ bc.image = {
       heightAnimateEasing: "easeInOutExpo",//内容区高度变化的动画擦除方法
       minHeight: 80,//内容区的最小高度
       height: 'auto',// tabs的总高度，默认根据内容的高度自动扩展
-      loadingText: "正在加载 ......"
+      loadingText: "正在加载 ......",
+      /** 加载页签内容的默认加载器，返回值需为 Promise 类型 */
+      getTabContent: function(url) {
+        return new Promise(function(resolve, recject) {
+          $.ajax({
+            method: 'GET',
+            url: url,
+            success: function(content) { resolve(content) },
+            error: function(jqXHR, textStatus, errorThrown) { recject(errorThrown); }
+          });
+        });
+      }
     },
 
     _create: function () {
@@ -7185,12 +7220,15 @@ bc.image = {
       this._showTab($tab, $content);
 
       var _this = this;
-      // 通过ajax加载页签的内容
-      // 为 url 添加时间锉
-      if (bc && bc.addParamToUrl) url = bc.addParamToUrl(url, 'ts=' + bc.ts);
-      $.get(url, function (html) {
-        $content.empty().append(html);
 
+      // 为 url 添加时间锉
+      var params = bc.getUrlParams(url);
+      if (bc && bc.addParamToUrl) url = bc.addParamToUrl(url, 'ts=' + bc.ts);
+
+      // 加载页签的内容
+      this.options.getTabContent(url).then(function(html) {
+        $content.empty().append(html);
+  
         // 设置内部页签的一些属性参数:与 bc.page.newWin的处理一致
         var $tabBCPage = $content.children(".bc-page");
         if ($tabBCPage.size() > 0) {
@@ -7203,6 +7241,9 @@ bc.image = {
           }
           if (logger.debugEnabled) logger.debug("pmid=" + pmid);
           $tabBCPage.attr("data-mid", pmid + ".tab" + index).attr("data-isTabContent", "true");
+
+          // 将 url 参数添加到 $page.data('params')
+          if (params) $tabBCPage.data("params", params);
         }
 
         //抛出加载完毕事件

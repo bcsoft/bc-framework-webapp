@@ -816,7 +816,7 @@ div.bc-tabs.layout-top div.contentContainer {
 div.bc-tabs.layout-top div.contentContainer.noBottomBorder {
 	border-bottom-width: 0;;
 }
-div.bc-tabs.layout-top div.contentContainer div.content{
+div.bc-tabs.layout-top div.contentContainer > div.content{
 	position: relative;
 	display:none;
 	width:100%;
@@ -826,14 +826,14 @@ div.bc-tabs.layout-top div.contentContainer div.content{
 	padding:0;
 	border:0;
 }
-div.bc-tabs.layout-top div.contentContainer div.content div.loading{
+div.bc-tabs.layout-top div.contentContainer > div.content div.loading{
 	height:31px;
 	line-height:31px;
 	background: url(images/loader/loader02_32x32.gif) no-repeat;
 	text-indent: 40px;
 	margin:10px;
 }
-div.bc-tabs.layout-top div.contentContainer div.content.active,div.bc-tabs.layout-top div.contentContainer div.content.loading{
+div.bc-tabs.layout-top div.contentContainer > div.content.active,div.bc-tabs.layout-top div.contentContainer > div.content.loading{
 	display:block;
 }
 /**
