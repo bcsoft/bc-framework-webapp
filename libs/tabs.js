@@ -315,6 +315,7 @@
       var _this = this;
 
       // 为 url 添加时间锉
+      var params = bc.getUrlParams(url);
       if (bc && bc.addParamToUrl) url = bc.addParamToUrl(url, 'ts=' + bc.ts);
 
       // 加载页签的内容
@@ -333,6 +334,9 @@
           }
           if (logger.debugEnabled) logger.debug("pmid=" + pmid);
           $tabBCPage.attr("data-mid", pmid + ".tab" + index).attr("data-isTabContent", "true");
+
+          // 将 url 参数添加到 $page.data('params')
+          if (params) $tabBCPage.data("params", params);
         }
 
         //抛出加载完毕事件
