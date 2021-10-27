@@ -71,7 +71,6 @@ define(["bc.core"], function (bc) {
     });
   }
 
-
   /**
    * 按 URL 标准方式附加查询参数。
    *
@@ -96,10 +95,63 @@ define(["bc.core"], function (bc) {
     return url;
   }
 
+  /**
+   * 使用 fetch 函数下载文件的封装处理。
+   * 
+   * 注：默认使用 GET 方法发出请求，通过 html 的 a 组件的 download 属性下载文件。
+   * 
+   * @param options 配置参数
+   * @param url 请求的 url
+   * @options filename [可选] 下载为的文件名，没有指定则使用响应的 'Content-Disposition' 头内的 filename 属性值
+   * @options xxx [可选] 其它 fetch 函数支持的参数:
+   *   1. 如果没有指定 options.methos，默认设置为 GET
+   *   2. 如果没有指定 options.headers，默认会自动添加 jwt 认证头信息
+   *   3. 如果没有指定 options.quiret，默认 true，对错误信息使用 bc.msg.info 显示，不再冒泡
+   * @returns {Promise<unknown>}
+   */
+  function download(url, filename, options) {
+    options = options || {};
+    if (!options.hasOwnProperty("headers")) options.headers = getAuthorizationHeaders();
+    if (!options.hasOwnProperty("method")) options.method = "GET";
+    if (!options.hasOwnProperty("quiet")) options.quiet = true;
+      
+    return fetch(url, options).then(res => {
+      if (!filename) {
+        // 从响应头中获取服务端指定的文件名
+        let h = res.headers.get('Content-Disposition');
+        if (h && h.includes('filename=')) {
+          filename = h.substring(h.indexOf('filename=') + 9);
+          if (filename.startsWith('"')) filename = filename.substring(1, filename.length - 1);
+          filename = decodeURIComponent(filename);
+        } else {
+          h = res.headers.get('filename');
+          filename = h ? decodeURIComponent(h) : null;
+        }
+      }
+      return res.ok ? res.blob() : res.text().then(msg => {
+        throw new Error(msg)
+      });
+    }).then(blob => {
+      // 100mb test ok
+      const data = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const downloadFilename = filename || "NONAME"; // 浏览器保存下载的文件时使用的文件名
+      a.href = data;
+      a.download = downloadFilename;
+      a.click();
+      return downloadFilename;
+    }, error => {
+      if (options.quiet) bc.msg.info(error.message);
+      else throw error;
+    });
+  }
+
   return {
     appendUrlParams: appendUrlParams,
     showError: showError,
+    getAuthorizationHeaders: getAuthorizationHeaders,
     request: request,
+    download: download,
     /**
      * Create a module CRUD requester
      * 
@@ -172,33 +224,8 @@ define(["bc.core"], function (bc) {
           let url = `${modulePath}/export`;
           // 附加条件参数到 URL 后
           if (condition) url = appendUrlParams(url, condition);
-          return fetch(url, Object.assign({
-            headers: getAuthorizationHeaders(),
-            method: "GET"
-          }, options)).then(res => {
-            if (!filename) {
-              // 从响应头中获取服务端指定的文件名
-              let h = res.headers.get('Content-Disposition');
-              if (h && h.includes('filename=')) {
-                filename = h.substring(h.indexOf('filename=') + 9);
-                if (filename.startsWith('"')) filename = filename.substring(1, filename.length - 1);
-                filename = decodeURIComponent(filename);
-              } else {
-                h = res.headers.get('filename');
-                filename = h ? decodeURIComponent(h) : null;
-              }
-            }
-            return res.ok ? res.blob() : res.text().then(msg => {
-              throw new Error(msg)
-            });
-          }).then(blob => {
-            // 100mb test ok
-            const data = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = data;
-            a.download = filename || "NONAME"; // 浏览器保存下载的文件时使用的文件名
-            a.click();
-          }, error => bc.msg.info(error.message));
+
+          return download(url, filename, options);
         }
       }
     }
