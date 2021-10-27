@@ -100,34 +100,40 @@ define(["bc.core"], function (bc) {
     appendUrlParams: appendUrlParams,
     showError: showError,
     request: request,
-    // Create a module CRUD requester
-    forModule(modulePath, globalQuiet) {
+    /**
+     * Create a module CRUD requester
+     * 
+     * @param modulePath 模块路径
+     * @param globalQuiet [可选] 全局非 2xx 响应静默处理参数，默认 true
+     * @param options [可选] 额外的 fetch 函数参数，json 格式
+     */
+    forModule(modulePath, globalQuiet, options) {
       if (typeof globalQuiet === 'undefined') globalQuiet = true;
       return {
         create(data, quiet) {
-          return request({
+          return request(Object.assign({
             method: "POST",
             url: modulePath,
             body: data ? JSON.stringify(data) : null,
             contentType: "application/json;charset=UTF-8",
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
-          });
+          }, options));
         },
         update(id, data, quiet) {
-          return request({
+          return request(Object.assign({
             method: "PATCH",
             url: `${modulePath}/${id}`,
             body: data ? JSON.stringify(data) : null,
             contentType: "application/json;charset=UTF-8",
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
-          });
+          }, options));
         },
         delete_(id, quiet) {
-          return request({
+          return request(Object.assign({
             method: "DELETE",
             url: `${modulePath}/${id}`,
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
-          });
+          }, options));
         },
         /**
          * 查特定 ID 的实体。
@@ -135,11 +141,11 @@ define(["bc.core"], function (bc) {
          * @returns {Promise<Json>}
          */
         get(id, quiet) {
-          return request({
+          return request(Object.assign({
             method: "GET",
             url: `${modulePath}/${id}`,
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
-          });
+          }, options));
         },
         /**
          * 视图查询。
@@ -150,11 +156,11 @@ define(["bc.core"], function (bc) {
           let url = modulePath;
           // 附加条件参数到 URL 后
           if (condition) url = appendUrlParams(url, condition);
-          return request({
+          return request(Object.assign({
             method: "GET",
             url: url,
             quiet: typeof quiet === 'undefined' ? globalQuiet : quiet
-          });
+          }, options));
         },
         /**
          * 导出 Excel。
@@ -166,10 +172,10 @@ define(["bc.core"], function (bc) {
           let url = `${modulePath}/export`;
           // 附加条件参数到 URL 后
           if (condition) url = appendUrlParams(url, condition);
-          return fetch(url, {
+          return fetch(url, Object.assign({
             headers: getAuthorizationHeaders(),
             method: "GET"
-          }).then(res => {
+          }, options)).then(res => {
             if (!filename) {
               // 从响应头中获取服务端指定的文件名
               let h = res.headers.get('Content-Disposition');
