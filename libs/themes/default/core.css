@@ -688,6 +688,9 @@ table.simple > tbody > tr.no-bottom-border > td {
 
 table.simple > tbody > tr > td > .text,
 table.simple > tbody > tr > td > input[type="text"],
+table.simple > tbody > tr > td > input[type="number"],
+table.simple > tbody > tr > td > input[type="date"],
+table.simple > tbody > tr > td > input[type="time"],
 table.simple > tbody > tr > td > select {
 	box-sizing: border-box;
 	width: 100%;
