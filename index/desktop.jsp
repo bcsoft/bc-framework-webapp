@@ -94,7 +94,12 @@
   
   <!-- 任务条 -->
   <div id="bottom" class="ui-widget-header">
-    <div id="copyrightBar"><a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright.gf" /></a></div>
+    <div id="copyrightBar">
+      <a href='<s:text name="app.company.url" />' target="_blank"><s:text name="app.company.copyright.gf" /></a>
+      <s:if test='%{"" != getText("app.beiAn.code")}'>
+        &nbsp;&nbsp;<a href="<s:text name="app.beiAn.link" />" target="_blank"><s:text name="app.beiAn.code" /></a>
+      </s:if>
+    </div>
     <div id="quickButtons"></div>
     <table class="bottomIcons" cellpadding="0" cellspacing="0" border="0">
       <tr>
