@@ -480,6 +480,16 @@ bc.print = function (option) {
     }
   }
 };
+
+// 针对 chrome46 不支持的一些新函数的兼容性实现
+// 1. chrome-47+ Array.prototype.includes(searchElement, fromIndex)
+if (!Array.prototype.includes) Array.prototype.includes = function(searchElement, fromIndex) {
+  var i = this.indexOf(searchElement);
+  return arguments.length > 1 ? i >= fromIndex : i !== -1;
+}
+// 2. chrome-v93+ Object.hasOwn(instance, prop)
+if (!Object.hasOwn) Object.hasOwn = (instance, prop) => Object.prototype.hasOwnProperty.call(instance, prop);
+
 // support requirejs
 if (typeof define === "function" && define.amd) {
   define("bc", [], function () {
@@ -764,13 +774,13 @@ bc.validator = {
    * required的值控制是否必须填写true|false
    * @$form 表单form的jquery对象
    */
-  validate: function ($form, ignoreFileds) {
+  validate: function ($form, ignoreFields) {
     var ok = true;
     $form.find("div.input[data-validate],:input:enabled:not(input[type='hidden'], .hide, :button):not(textarea.bc-editor)")
     //添加内部特殊的div模拟input控件的验证
       .each(function (i, n) {
-        //判断查找中的对象存在ignoreFileds(忽略必填验证域的name属性值)中就返回不作验证
-        if (ignoreFileds && $.inArray(this.name, ignoreFileds) != -1)
+        //判断查找中的对象存在ignoreFields(忽略必填验证域的name属性值)中就返回不作验证
+        if (ignoreFields && $.inArray(this.name, ignoreFields) != -1)
           return;
         var $this = $(this);
         var validate = $this.attr("data-validate");
