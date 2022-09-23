@@ -104,9 +104,9 @@ define(["bc.core"], function (bc) {
    * @param url 请求的 url
    * @options filename [可选] 下载为的文件名，没有指定则使用响应的 'Content-Disposition' 头内的 filename 属性值
    * @options xxx [可选] 其它 fetch 函数支持的参数:
-   *   1. 如果没有指定 options.methos，默认设置为 GET
+   *   1. 如果没有指定 options.methods，默认设置为 GET
    *   2. 如果没有指定 options.headers，默认会自动添加 jwt 认证头信息
-   *   3. 如果没有指定 options.quiret，默认 true，对错误信息使用 bc.msg.info 显示，不再冒泡
+   *   3. 如果没有指定 options.quiet，默认 true，对错误信息使用 bc.msg.info 显示，不再冒泡
    * @returns {Promise<unknown>}
    */
   function download(url, filename, options) {
