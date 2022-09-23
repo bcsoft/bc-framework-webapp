@@ -480,6 +480,16 @@ bc.print = function (option) {
     }
   }
 };
+
+// 针对 chrome46 不支持的一些新函数的兼容性实现
+// 1. chrome-47+ Array.prototype.includes(searchElement, fromIndex)
+if (!Array.prototype.includes) Array.prototype.includes = function(searchElement, fromIndex) {
+  var i = this.indexOf(searchElement);
+  return arguments.length > 1 ? i >= fromIndex : i !== -1;
+}
+// 2. chrome-v93+ Object.hasOwn(instance, prop)
+if (!Object.hasOwn) Object.hasOwn = (instance, prop) => Object.prototype.hasOwnProperty.call(instance, prop);
+
 // support requirejs
 if (typeof define === "function" && define.amd) {
   define("bc", [], function () {
