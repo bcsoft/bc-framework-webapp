@@ -4907,7 +4907,7 @@ $document.delegate(".autoHeight", {
       $this.css("overflow", "hidden");
     }
     //console.log("minHeight=%s, scrollHeight=%s, h=%s", minHeight, this.scrollHeight, h);
-    $this.height(h);// + ($.browser.mozilla ? 10 : 2));
+    $this.height(h + 2);// + ($.browser.mozilla ? 10 : 2));
   }
 });
 /**
