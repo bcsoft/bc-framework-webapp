@@ -100,7 +100,7 @@
 
     //继续按钮
     boxPointer.find("#continue").click(function () {
-      var $page = $grid.parents(".bc-page");
+      var $page = $grid.closest(".bc-page");
       var url = $page.attr("data-namespace") + "/export";
       logger.info("export grid data by url=" + url);
       var data = {};
