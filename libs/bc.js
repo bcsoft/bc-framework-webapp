@@ -3993,7 +3993,7 @@ bc.page.defaultBcTabsOption = {
       var exportScope = boxPointer.find(":radio:checked[name='exportScope']").val();
 
       //分页参数
-      var $pager_seek = $page.find("ul.pager>li.seek");
+      var $pager_seek = $grid.find("ul.pager>li.seek");
       if (paging && exportScope != "2") {//视图为分页视图，并且用户没有选择导出范围为"全部"
         data["page.pageNo"] = $pager_seek.find("#pageNo").text();
         data["page.pageSize"] = $pager_seek.parent().find("li.size>a.ui-state-active>span.pageSize").text();
