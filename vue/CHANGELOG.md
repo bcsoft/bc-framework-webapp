@@ -1,5 +1,9 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 1.1.0 - 2023-06-05 
+- Support radio, checkbox, select for search component
+    > single value or multiple values
+
 ## 1.0.2 - 2022-01-14 
 - Fixed page-bar-importer download template filename error
     > Use tplFilename prop to define a custom downoad filename
