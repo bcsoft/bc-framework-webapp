@@ -96,6 +96,34 @@ define(["bc.core"], function (bc) {
   }
 
   /**
+   * 从 ContentDisposition 头中解析出文件名
+   * See https://stackoverflow.com/questions/40939380/how-to-get-file-name-from-content-disposition
+   * @param {string} disposition
+   * @returns 文件名
+   */
+  function getFileNameFromContentDisposition(disposition) {
+    const utf8FilenameRegex = /filename\*=UTF-8''([\w%\-\.]+)(?:; ?|$)/i
+    const asciiFilenameRegex = /^filename=(["']?)(.*?[^\\])\1(?:; ?|$)/i
+
+    let fileName
+    if (utf8FilenameRegex.test(disposition)) {
+      fileName = decodeURIComponent(utf8FilenameRegex.exec(disposition)[1])
+    } else {
+      // prevent ReDos attacks by anchoring the ascii regex to string start and
+      // slicing off everything before 'filename='
+      const filenameStart = disposition.toLowerCase().indexOf("filename=")
+      if (filenameStart >= 0) {
+        const partialDisposition = disposition.slice(filenameStart)
+        const matches = asciiFilenameRegex.exec(partialDisposition)
+        if (matches != null && matches[2]) {
+          fileName = matches[2]
+        }
+      }
+    }
+    return fileName
+  }
+
+  /**
    * 使用 fetch 函数下载文件的封装处理。
    * 
    * 注：默认使用 GET 方法发出请求，通过 html 的 a 组件的 download 属性下载文件。
@@ -118,14 +146,12 @@ define(["bc.core"], function (bc) {
     return fetch(url, options).then(res => {
       if (!filename) {
         // 从响应头中获取服务端指定的文件名
-        let h = res.headers.get('Content-Disposition');
-        if (h && h.includes('filename=')) {
-          filename = h.substring(h.indexOf('filename=') + 9);
-          if (filename.startsWith('"')) filename = filename.substring(1, filename.length - 1);
-          filename = decodeURIComponent(filename);
+        let h = res.headers.get("Content-Disposition");
+        if (h && h.includes("filename")) {
+          filename = getFileNameFromContentDisposition(h)
         } else {
-          h = res.headers.get('filename');
-          filename = h ? decodeURIComponent(h) : null;
+          h = res.headers.get("filename")
+          filename = h ? decodeURIComponent(h) : null
         }
       }
       return res.ok ? res.blob() : res.text().then(msg => {
@@ -134,7 +160,7 @@ define(["bc.core"], function (bc) {
     }).then(blob => {
       // 100mb test ok
       const data = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       const downloadFilename = filename || "NONAME"; // 浏览器保存下载的文件时使用的文件名
       a.href = data;
       a.download = downloadFilename;
