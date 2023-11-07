@@ -135,6 +135,9 @@ define(["bc.core"], function (bc) {
    *   1. 如果没有指定 options.methods，默认设置为 GET
    *   2. 如果没有指定 options.headers，默认会自动添加 jwt 认证头信息
    *   3. 如果没有指定 options.quiet，默认 true，对错误信息使用 bc.msg.info 显示，不再冒泡
+   *   4. 如果没有指定 options.confirm，默认 false，是否先让用户确认再下载
+   *   5. 如果没有指定 options.total，下载的总数据条目数
+   *   6. 如果没有指定 options.limit，每次最多下载的数据条目数，默认 2500，设为 false 则不限制
    * @returns {Promise<unknown>}
    */
   function download(url, filename, options) {
@@ -142,34 +145,53 @@ define(["bc.core"], function (bc) {
     if (!options.hasOwnProperty("headers")) options.headers = getAuthorizationHeaders();
     if (!options.hasOwnProperty("method")) options.method = "GET";
     if (!options.hasOwnProperty("quiet")) options.quiet = true;
-      
-    return fetch(url, options).then(res => {
-      if (!filename) {
-        // 从响应头中获取服务端指定的文件名
-        let h = res.headers.get("Content-Disposition");
-        if (h && h.includes("filename")) {
-          filename = getFileNameFromContentDisposition(h)
-        } else {
-          h = res.headers.get("filename")
-          filename = h ? decodeURIComponent(h) : null
+    if (!options.hasOwnProperty("limit")) options.limit = 2500
+    if (!options.hasOwnProperty("total")) options.total = options.limit
+
+    function doIt() {
+      return fetch(url, options).then(res => {
+        if (!filename) {
+          // 从响应头中获取服务端指定的文件名
+          let h = res.headers.get("Content-Disposition");
+          if (h && h.includes("filename")) {
+            filename = getFileNameFromContentDisposition(h)
+          } else {
+            h = res.headers.get("filename")
+            filename = h ? decodeURIComponent(h) : null
+          }
         }
-      }
-      return res.ok ? res.blob() : res.text().then(msg => {
-        throw new Error(msg)
+        return res.ok ? res.blob() : res.text().then(msg => {
+          throw new Error(msg)
+        });
+      }).then(blob => {
+        // 100mb test ok
+        const data = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const downloadFilename = filename || "NONAME"; // 浏览器保存下载的文件时使用的文件名
+        a.href = data;
+        a.download = downloadFilename;
+        a.click();
+        return downloadFilename;
+      }, error => {
+        if (options.quiet) bc.msg.info(error.message);
+        else throw error;
       });
-    }).then(blob => {
-      // 100mb test ok
-      const data = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const downloadFilename = filename || "NONAME"; // 浏览器保存下载的文件时使用的文件名
-      a.href = data;
-      a.download = downloadFilename;
-      a.click();
-      return downloadFilename;
-    }, error => {
-      if (options.quiet) bc.msg.info(error.message);
-      else throw error;
-    });
+    }
+
+    // 检测限制
+    if (options.limit && options.total > options.limit) {
+      bc.msg.info(
+        `系统限制每次最多导出 ${options.limit} 条数据，当前共有 <b>${options.total}</b> 条数据，已超出限制。请先通过条件搜索减少导出数据的条目数！`
+      );
+      return Promise.resolve();
+    }
+
+    if (options.confirm) {
+      // 先确认后下载
+      return new Promise((resolve, _reject) => {
+        bc.msg.confirm(`导出数据可能耗时较长，需要耐心等待!`, () => resolve(doIt()), () => resolve());
+      })
+    } else return doIt();
   }
 
   return {
