@@ -64,7 +64,7 @@ define(["bc.core"], function (bc) {
         } else {
           return res.text().then(msg => {
             if (options.quiet) bc.msg.info(msg);
-            else throw new Error(msg)
+            throw new Error(msg)
           });
         }
       });
