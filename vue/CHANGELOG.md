@@ -1,5 +1,8 @@
 # [BC 平台的 vue 组件](https://github.com/bcsoft/bc-vue-components)发布历史
 
+## 1.1.1 - 2024-05-08 
+- Fixed page bar error when count = 0
+
 ## 1.1.0 - 2023-06-05 
 - Support radio, checkbox, select for search component
     > single value or multiple values
