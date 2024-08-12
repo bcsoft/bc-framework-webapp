@@ -36,7 +36,7 @@
             logger.info("click:name=" + $li.text() + ";href=" + $a.attr("href"));
           var option = {};
           option.mid = $li.attr("data-mid");
-          option.name = $a.text();
+          option.title = option.name = $a.text();
           option.type = $li.attr("data-type");
           option.url = $a.attr("href");
           option.standalone = $li.attr("data-standalone") == "true";
@@ -333,7 +333,7 @@
       option = eval("(" + option + ")");
       option.mid = $this.attr("data-mid");
       option.iconClass = $this.attr("data-iconClass");
-      option.name = $this.attr("data-name");
+      option.title = option.name = $this.attr("data-name");
       option.order = $this.attr("data-order");
       option.url = $this.attr("data-url");
       option.standalone = $this.attr("data-standalone") == "true";
