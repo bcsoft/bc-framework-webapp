@@ -4797,6 +4797,7 @@ $document.delegate(".inputIcon", {
     // 获取函数参数，调用回调函数
     var args = $this.attr("data-click-args");
     var context = scope && $page.data("scopeType") === "instance" ? scope : $page.get(0);
+    context.eventTarget = this;
     if (args) {
       args = eval("(" + args + ")");
       if ($.isArray(args)) {
@@ -4807,6 +4808,7 @@ $document.delegate(".inputIcon", {
     } else {
       fn.call(context);
     }
+    delete context.eventTarget;
   }
 });
 /**
