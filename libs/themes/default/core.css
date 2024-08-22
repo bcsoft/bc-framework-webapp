@@ -599,14 +599,29 @@ ul.bc-menu > li.ui-menu-item > a, .horizontal.ui-widget-content a {
 	flex-direction: row;
 	flex-wrap: nowrap;
 	justify-content: flex-start;
-	align-items: flex-start;
+	align-items: center; /** 垂直方向居中 */
+}
+.hlayout > label {
+	margin-right: 0.4em;
+	display: flex;
+	align-items: center;
+}
+.hlayout > label > input[type=radio], 
+.hlayout > label > input[type=checkbox] {
+	width: auto;
+	margin-left: 0.2em;
+	margin-right: 0.2em;
 }
 
-.vlayout > .unflex, .vlayout > *, .hlayout > .unflex, .hlayout > * {
+.vlayout > .unflex, .vlayout > * {
 	/* 覆盖父元素的align-items属性，定义自己如何沿着侧轴排列
 	auto | flex-start | flex-end | center | baseline | stretch */
 	align-self: stretch;
 	/* 子代的弹性比 */
+	flex: none;
+}
+
+.hlayout > .unflex, .hlayout > * {
 	flex: none;
 }
 
