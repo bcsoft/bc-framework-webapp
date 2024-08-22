@@ -599,14 +599,29 @@ ul.bc-menu > li.ui-menu-item > a, .horizontal.ui-widget-content a {
 	flex-direction: row;
 	flex-wrap: nowrap;
 	justify-content: flex-start;
-	align-items: flex-start;
+	align-items: center; /** 垂直方向居中 */
+}
+.hlayout > label {
+	margin-right: 0.4em;
+	display: flex;
+	align-items: center;
+}
+.hlayout > label > input[type=radio], 
+.hlayout > label > input[type=checkbox] {
+	width: auto;
+	margin-left: 0.2em;
+	margin-right: 0.2em;
 }
 
-.vlayout > .unflex, .vlayout > *, .hlayout > .unflex, .hlayout > * {
+.vlayout > .unflex, .vlayout > * {
 	/* 覆盖父元素的align-items属性，定义自己如何沿着侧轴排列
 	auto | flex-start | flex-end | center | baseline | stretch */
 	align-self: stretch;
 	/* 子代的弹性比 */
+	flex: none;
+}
+
+.hlayout > .unflex, .hlayout > * {
 	flex: none;
 }
 
@@ -1244,7 +1259,6 @@ div.bc-desktop> table.bottomIcons #quickShowHide.bottomIcon {
 	border: 4px solid #808000;
 	cursor: pointer;
 }
-
 /**
  * 桌面图标
  * innmm -->nn:行号，mm:列号（索引从0开始，偏移值计算公式：x=-mm*52, y=-nn*52）
@@ -1373,7 +1387,6 @@ a.shortcut .i1006 {background-position: -312px -520px;}
 a.shortcut .i1007 {background-position: -364px -520px;}
 a.shortcut .i1008 {background-position: -416px -520px;}
 a.shortcut .i1009 {background-position: -468px -520px;}
-
 /**
  * grid样式
  *
@@ -1966,6 +1979,7 @@ td.topLabel {
   min-width: 6em;
   _width: 6em;
   font-weight: normal;
+  padding-top: 0.2em;
 }
 
 td.top {
@@ -1979,7 +1993,7 @@ td.value {
 
 td.value input, td.value textarea, td.value div.input {
   vertical-align: middle;
-  min-height: 1em;
+  height: 1.819em;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
@@ -1988,7 +2002,7 @@ td.value input, td.value textarea, td.value div.input {
 }
 
 td.value div.input {
-  height: 1.6em;
+  height: 1.819em;
   padding: 0;
   margin: 0;
   font-weight: normal;
@@ -2016,7 +2030,7 @@ _:-webkit-any-link, :root td.justify {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
-  min-height: 1.6em;
+  min-height: 1.819em;
   -webkit-user-modify: read-only;
   -moz-user-modify: read-only;
   user-modify: read-only;
@@ -2028,7 +2042,7 @@ _:-webkit-any-link, :root td.justify {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
-  min-height: 1.6em;
+  min-height: 1.819em;
   -webkit-user-modify: read-write-plaintext-only;
   -moz-user-modify: read-write;
   -moz-user-modify: read-write-plaintext-only;
@@ -2040,7 +2054,7 @@ _:-webkit-any-link, :root td.justify {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
-  min-height: 1.6em;
+  min-height: 1.819em;
   -webkit-user-modify: read-write;
   -moz-user-modify: read-write;
   user-modify: read-write;
@@ -2052,12 +2066,13 @@ td.value div.input .link {
 }
 
 td.value select {
-  height: 1.6em;
+  height: 1.819em;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
   margin: 0;
   padding: 1px 2px;
+  border-radius: 0;
 }
 
 .borderBox {
@@ -2117,7 +2132,7 @@ textarea.nooutline, input.nooutline {
 textarea.autoHeight {
   overflow: hidden;
   resize: none;
-  min-height: 1.6em;
+  min-height: 1.819em;
 }
 
 div.bc-editor {

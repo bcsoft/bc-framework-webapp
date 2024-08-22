@@ -963,6 +963,18 @@ bc.validator = {
     money: function (element) {
       return /^-?(?:\d*|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(element.value);
     },
+    /** 18 位国家标准 GB11643-1999 身份证（6 位数字地址码 + 8 位数字出生日期码 + 3 位数字顺序码 + 1 位数字校验码） */
+    chineseIdCardNo18: function (element) {
+      return /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(element.value);
+    },
+    /** 15 位国家标准 GB11643-1999 身份证（6 位数字地址码 + 6 位数字出生日期码 + 3 位数字顺序码） */
+    chineseIdCardNo15: function (element) {
+      return /^[1-9]\d{5}\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}$/.test(element.value);
+    },
+    /** 15 或 18 位国家标准身份证 */
+    chineseIdCardNo: function (element) {
+      return bc.validator.methods.chineseIdCardNo18(element) || bc.validator.methods.chineseIdCardNo15(element);
+    },
     /** 自定义正则表达式的验证 */
     regexp: function (element) {
       if (!this.pattern) {
@@ -1053,7 +1065,10 @@ bc.validator = {
     minLen: "这里至少需要输入 {0}个字符！",
     maxLen: "这里最多只能输入 {0}个字符！",
     max: "这个值不能大于 {0}！",
-    min: "这个值不能小于 {0}！"
+    min: "这个值不能小于 {0}！",
+    chineseIdCardNo15: "身份证号码格式必须为国家标准 GB11643-1989 中规定的 15 位码<br>（6 位数字地址码 + 6 位数字出生日期码 + 3 位数字顺序码）。",
+    chineseIdCardNo18: "身份证号码格式必须为国家标准 GB11643-1999 中规定的 18 位码<br>（6 位数字地址码 + 8 位数字出生日期码 + 3 位数字顺序码 + 1 位数字校验码）。",
+    chineseIdCardNo: "身份证号码格式必须为国家标准 GB11643-1999 中规定的 18 位码（6 位数字地址码 + 8 位数字出生日期码 + 3 位数字顺序码 + 1 位数字校验码）<br>或国家标准 GB11643-1989 中规定的 15 位码（6 位数字地址码 + 6 位数字出生日期码 + 3 位数字顺序码）。"
   }
 };
 /**
@@ -4908,7 +4923,7 @@ $document.delegate(".autoHeight", {
       $this.css("overflow", "hidden");
     }
     //console.log("minHeight=%s, scrollHeight=%s, h=%s", minHeight, this.scrollHeight, h);
-    $this.height(h + 2);// + ($.browser.mozilla ? 10 : 2));
+    $this.height(h);// + ($.browser.mozilla ? 10 : 2));
   }
 });
 /**
