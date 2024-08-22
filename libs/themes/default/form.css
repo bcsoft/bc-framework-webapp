@@ -109,6 +109,7 @@ td.topLabel {
   min-width: 6em;
   _width: 6em;
   font-weight: normal;
+  padding-top: 0.2em;
 }
 
 td.top {
@@ -122,7 +123,7 @@ td.value {
 
 td.value input, td.value textarea, td.value div.input {
   vertical-align: middle;
-  min-height: 1em;
+  height: 1.819em;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
@@ -131,7 +132,7 @@ td.value input, td.value textarea, td.value div.input {
 }
 
 td.value div.input {
-  height: 1.6em;
+  height: 1.819em;
   padding: 0;
   margin: 0;
   font-weight: normal;
@@ -159,7 +160,7 @@ _:-webkit-any-link, :root td.justify {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
-  min-height: 1.6em;
+  min-height: 1.819em;
   -webkit-user-modify: read-only;
   -moz-user-modify: read-only;
   user-modify: read-only;
@@ -171,7 +172,7 @@ _:-webkit-any-link, :root td.justify {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
-  min-height: 1.6em;
+  min-height: 1.819em;
   -webkit-user-modify: read-write-plaintext-only;
   -moz-user-modify: read-write;
   -moz-user-modify: read-write-plaintext-only;
@@ -183,7 +184,7 @@ _:-webkit-any-link, :root td.justify {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
-  min-height: 1.6em;
+  min-height: 1.819em;
   -webkit-user-modify: read-write;
   -moz-user-modify: read-write;
   user-modify: read-write;
@@ -195,12 +196,13 @@ td.value div.input .link {
 }
 
 td.value select {
-  height: 1.6em;
+  height: 1.819em;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
   margin: 0;
   padding: 1px 2px;
+  border-radius: 0;
 }
 
 .borderBox {
@@ -260,7 +262,7 @@ textarea.nooutline, input.nooutline {
 textarea.autoHeight {
   overflow: hidden;
   resize: none;
-  min-height: 1.6em;
+  min-height: 1.819em;
 }
 
 div.bc-editor {
