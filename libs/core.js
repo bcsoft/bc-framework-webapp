@@ -145,6 +145,11 @@ bc.addParamToUrl = function (url, keyValue, ignoreIfExists) {
   }
 };
 
+/** 在 url 后附加特殊控制键的按下情况，方便特殊用途使用，格式为 `mk=altKey,$ctrlKey,$shiftKey` */
+bc.addMetaKeyStateToUrl = function (url, event, key='mk') {
+  return event ? bc.addParamToUrl(url,`${key}=${event.altKey ? 1 : 0},${event.ctrlKey ? 1 : 0},${event.shiftKey ? 1 : 0}`) : url;
+}
+
 /** 获取 url 中的参数
  * @param url {String} url路径, 如 http://127.0.0.1/test?key1=value1&key2=value21&key2=value22
  * @return {Object} 如 {key1: value1, key2: [value21, value22]}
