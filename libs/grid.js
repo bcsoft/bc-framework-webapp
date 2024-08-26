@@ -545,7 +545,7 @@
         if (!fn) fn = bc.getNested(fnName);		// 无,再从全局区
         if (typeof fn == "function") {
           // 上线文为页面DOM或页面实例
-          fn.call(fnIsInScope && $page.data("scopeType") === "instance" ? scope : $page[0], this, $grid);
+          fn.call(fnIsInScope && $page.data("scopeType") === "instance" ? scope : $page[0], this, $grid, event);
         } else {
           alert("回调函数没有定义：" + fnName);
         }

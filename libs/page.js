@@ -731,7 +731,7 @@ bc.page = {
     });
   },
   /**编辑*/
-  edit: function (option) {
+  edit: function (option, _, event) {
     option = option || {};
     var $page = $(this);
     var url = option.url || $page.attr("data-editUrl");
@@ -756,7 +756,8 @@ bc.page = {
 
       var fromMID = $page.attr("data-mid");
       bc.page.newWin({
-        url: url, data: data || null,
+        url: bc.addMetaKeyStateToUrl(url, event), 
+        data: data || null,
         from: fromMID,
         mid: fromMID + "." + $tds.attr("data-id"),
         name: $tds.attr("data-name") || "未定义",
@@ -776,7 +777,7 @@ bc.page = {
     }
   },
   /**查看*/
-  open: function (option) {
+  open: function (option, _, event) {
     option = option || {};
     var $page = $(this);
     var url = $page.attr("data-openUrl");
@@ -801,7 +802,8 @@ bc.page = {
 
       var fromMID = $page.attr("data-mid");
       bc.page.newWin({
-        url: url, data: data || null,
+        url: bc.addMetaKeyStateToUrl(url, event),
+        data: data || null,
         from: fromMID,
         fromType: $page.is("[data-isTabContent='true']") ? "tab" : null,
         mid: fromMID + "." + $tds.attr("data-id"),
