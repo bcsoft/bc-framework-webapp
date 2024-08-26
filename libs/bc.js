@@ -145,6 +145,11 @@ bc.addParamToUrl = function (url, keyValue, ignoreIfExists) {
   }
 };
 
+/** 在 url 后附加特殊控制键的按下情况，方便特殊用途使用，格式为 `mk=altKey,$ctrlKey,$shiftKey` */
+bc.addMetaKeyStateToUrl = function (url, event, key='mk') {
+  return event ? bc.addParamToUrl(url,`${key}=${event.altKey ? 1 : 0},${event.ctrlKey ? 1 : 0},${event.shiftKey ? 1 : 0}`) : url;
+}
+
 /** 获取 url 中的参数
  * @param url {String} url路径, 如 http://127.0.0.1/test?key1=value1&key2=value21&key2=value22
  * @return {Object} 如 {key1: value1, key2: [value21, value22]}
@@ -1804,7 +1809,7 @@ bc.page = {
     });
   },
   /**编辑*/
-  edit: function (option) {
+  edit: function (option, _, event) {
     option = option || {};
     var $page = $(this);
     var url = option.url || $page.attr("data-editUrl");
@@ -1829,7 +1834,8 @@ bc.page = {
 
       var fromMID = $page.attr("data-mid");
       bc.page.newWin({
-        url: url, data: data || null,
+        url: bc.addMetaKeyStateToUrl(url, event), 
+        data: data || null,
         from: fromMID,
         mid: fromMID + "." + $tds.attr("data-id"),
         name: $tds.attr("data-name") || "未定义",
@@ -1849,7 +1855,7 @@ bc.page = {
     }
   },
   /**查看*/
-  open: function (option) {
+  open: function (option, _, event) {
     option = option || {};
     var $page = $(this);
     var url = $page.attr("data-openUrl");
@@ -1874,7 +1880,8 @@ bc.page = {
 
       var fromMID = $page.attr("data-mid");
       bc.page.newWin({
-        url: url, data: data || null,
+        url: bc.addMetaKeyStateToUrl(url, event),
+        data: data || null,
         from: fromMID,
         fromType: $page.is("[data-isTabContent='true']") ? "tab" : null,
         mid: fromMID + "." + $tds.attr("data-id"),
@@ -3783,7 +3790,7 @@ bc.page.defaultBcTabsOption = {
         if (!fn) fn = bc.getNested(fnName);		// 无,再从全局区
         if (typeof fn == "function") {
           // 上线文为页面DOM或页面实例
-          fn.call(fnIsInScope && $page.data("scopeType") === "instance" ? scope : $page[0], this, $grid);
+          fn.call(fnIsInScope && $page.data("scopeType") === "instance" ? scope : $page[0], this, $grid, event);
         } else {
           alert("回调函数没有定义：" + fnName);
         }
@@ -3800,7 +3807,7 @@ bc.page.defaultBcTabsOption = {
     //var mtype = $this.attr("data-mtype");
     if (url && url.length >= 0) {
       bc.page.newWin({
-        url: url,
+        url: bc.addMetaKeyStateToUrl(url, event),
         mid: $this.attr("data-mid") || url,
         name: $this.attr("data-title") || $this.text() || "未定义"
       });
