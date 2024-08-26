@@ -562,7 +562,7 @@
     //var mtype = $this.attr("data-mtype");
     if (url && url.length >= 0) {
       bc.page.newWin({
-        url: url,
+        url: bc.addMetaKeyStateToUrl(url, event),
         mid: $this.attr("data-mid") || url,
         name: $this.attr("data-title") || $this.text() || "未定义"
       });
