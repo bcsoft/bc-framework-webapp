@@ -442,7 +442,7 @@
         if (typeof click == "string")
           click = bc.getNested(click);//将函数名称转换为函数
         if (typeof click == "function")
-          click.call(pageEl, callback);
+          click.call($page, callback);
         break;
     }
 
