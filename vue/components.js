@@ -743,7 +743,7 @@ define('bc/vue/loading',['vue', 'css!bc/vue/loading'], function (Vue) {
 		},
 		ready: function () {
 			var self = this;
-			var max = 11;
+			var max = 60;
 			setInterval(function () {
 				self.seconds++;
 				if (self.seconds == max) {
